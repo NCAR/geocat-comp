@@ -71,3 +71,28 @@ cdef np.ndarray ncomp_to_np_array(ncomp.ncomp_array* ncarr):
         void PyArray_ENABLEFLAGS(np.ndarray arr, int flags)
     PyArray_ENABLEFLAGS(nparr, np.NPY_OWNDATA)
     return nparr
+
+
+def _linint2(np.ndarray xi, np.ndarray yi, np.ndarray fi, np.ndarray xo, np.ndarray yo, int icycx, double xmsg=-999., int iopt=0):
+    cdef ncomp.ncomp_array* ncomp_xi = np_to_ncomp_array(xi)
+    cdef ncomp.ncomp_array* ncomp_yi = np_to_ncomp_array(yi)
+    cdef ncomp.ncomp_array* ncomp_fi = np_to_ncomp_array(fi)
+    cdef ncomp.ncomp_array* ncomp_xo = np_to_ncomp_array(xo)
+    cdef ncomp.ncomp_array* ncomp_yo = np_to_ncomp_array(yo)
+    cdef ncomp.ncomp_array* ncomp_fo
+
+    cdef long i
+    cdef np.ndarray fo = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [yo.shape[0], xo.shape[0]]), dtype=fi.dtype)
+    ncomp_fo = np_to_ncomp_array(fo)
+
+#   release global interpreter lock
+    cdef int ier
+    with nogil:
+        ier = ncomp.linint2(
+            ncomp_xi, ncomp_yi, ncomp_fi,
+            ncomp_xo, ncomp_yo, ncomp_fo,
+            icycx, xmsg, iopt)
+#   re-acquire interpreter lock
+#   check errors ier
+
+    return fo

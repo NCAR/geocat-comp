@@ -52,3 +52,8 @@ cdef extern from "ncomp/types.h":
 cdef extern from "ncomp/util.h":
     ncomp_array* ncomp_array_alloc(void*, int, int, size_t*)
     void         ncomp_array_free(ncomp_array*, int)
+
+cdef extern from "ncomp/wrapper.h":
+    int linint2(const ncomp_array*, const ncomp_array*, const ncomp_array*,
+                const ncomp_array*, const ncomp_array*, ncomp_array*,
+                int, double, int) nogil;
