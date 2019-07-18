@@ -23,12 +23,3 @@ def linint2(fi, xo, yo, icycx, xmsg=None, iopt=0, meta=False):
         result = xr.DataArray(result)
 
     return result
-
-
-@xr.register_dataarray_accessor('ncomp')
-class Ncomp(object):
-    def __init__(self, xarray_obj):
-        self._obj = xarray_obj
-
-    def linint2(self, xo, yo, icycx, xmsg=None, iopt=0, meta=False):
-        return linint2(self._obj, xo, yo, icycx, xmsg, iopt, meta)

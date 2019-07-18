@@ -82,7 +82,12 @@ def _linint2(np.ndarray xi, np.ndarray yi, np.ndarray fi, np.ndarray xo, np.ndar
     cdef ncomp.ncomp_array* ncomp_fo
 
     cdef long i
-    cdef np.ndarray fo = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [yo.shape[0], xo.shape[0]]), dtype=fi.dtype)
+    if dtype_to_ncomp[fi.dtype] == ncomp.NCOMP_DOUBLE:
+        fo_dtype = np.float64
+    else:
+        fo_dtype = np.float32
+    cdef np.ndarray fo = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [yo.shape[0], xo.shape[0]]), dtype=fo_dtype)
+
     ncomp_fo = np_to_ncomp_array(fo)
 
 #   release global interpreter lock
