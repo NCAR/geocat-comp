@@ -3,12 +3,14 @@ import numpy as np
 import xarray as xr
 from dask.array.core import map_blocks
 
-def linint2(fi, xo, yo, icycx, xmsg=None, iopt=0, meta=False):
+def linint2(fi, xo, yo, icycx, xmsg=None, iopt=0, meta=False, xi=None, yi=None):
     if xmsg is None:
         xmsg = _ncomp.dtype_default_fill[fi.dtype]
 
-    xi = fi.coords[fi.dims[-1]].values
-    yi = fi.coords[fi.dims[-2]].values
+    if xi is None:
+        xi = fi.coords[fi.dims[-1]].values
+    if yi is None:
+        yi = fi.coords[fi.dims[-2]].values
     fi_data = fi.data
     fo_chunks = list(fi.chunks)
     fo_chunks[-2:] = (yo.shape, xo.shape)
