@@ -73,14 +73,14 @@ cdef np.ndarray ncomp_to_np_array(ncomp.ncomp_array* ncarr):
     return nparr
 
 
-def _linint2(np.ndarray xi, np.ndarray yi, np.ndarray fi, np.ndarray xo, np.ndarray yo, int icycx, double xmsg=-999., int iopt=0):
+def _linint2(np.ndarray xi, np.ndarray yi, np.ndarray fi, np.ndarray xo, np.ndarray yo, int icycx, double xmsg=ncomp.DEFAULT_FILL_DOUBLE):
     cdef ncomp.ncomp_array* ncomp_xi = np_to_ncomp_array(xi)
     cdef ncomp.ncomp_array* ncomp_yi = np_to_ncomp_array(yi)
     cdef ncomp.ncomp_array* ncomp_fi = np_to_ncomp_array(fi)
     cdef ncomp.ncomp_array* ncomp_xo = np_to_ncomp_array(xo)
     cdef ncomp.ncomp_array* ncomp_yo = np_to_ncomp_array(yo)
     cdef ncomp.ncomp_array* ncomp_fo
-
+    cdef int iopt = 0
     cdef long i
     if dtype_to_ncomp[fi.dtype] == ncomp.NCOMP_DOUBLE:
         fo_dtype = np.float64

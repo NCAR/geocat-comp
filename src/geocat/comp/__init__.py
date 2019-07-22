@@ -14,7 +14,7 @@ def linint2(fi, xo, yo, icycx, xmsg=None, iopt=0, meta=False, xi=None, yi=None):
     fi_data = fi.data
     fo_chunks = list(fi.chunks)
     fo_chunks[-2:] = (yo.shape, xo.shape)
-    fo = map_blocks(_ncomp._linint2, xi, yi, fi_data, xo, yo, icycx, xmsg, iopt, chunks=fo_chunks, dtype=fi.dtype, drop_axis=[fi.ndim-2, fi.ndim-1], new_axis=[fi.ndim-2, fi.ndim-1])
+    fo = map_blocks(_ncomp._linint2, xi, yi, fi_data, xo, yo, icycx, xmsg, chunks=fo_chunks, dtype=fi.dtype, drop_axis=[fi.ndim-2, fi.ndim-1], new_axis=[fi.ndim-2, fi.ndim-1])
 
     result = fo.compute()
 
