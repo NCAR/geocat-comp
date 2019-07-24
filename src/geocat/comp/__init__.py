@@ -3,7 +3,7 @@ import numpy as np
 import xarray as xr
 from dask.array.core import map_blocks
 
-def linint2(fi, xo, yo, icycx, xmsg=None, meta=False, xi=None, yi=None):
+def linint2(fi, xo, yo, icycx, xmsg=None, meta=True, xi=None, yi=None):
     """Return a 2-dimensionally linearly interpolated grid.
 
     Args:
