@@ -4,7 +4,8 @@ import xarray as xr
 from dask.array.core import map_blocks
 
 def linint2(fi, xo, yo, icycx, xmsg=None, meta=True, xi=None, yi=None):
-    """Return a 2-dimensionally linearly interpolated grid.
+    """Interpolates a regular grid to a rectilinear one using bi-linear
+    interpolation.
 
     Args:
 
