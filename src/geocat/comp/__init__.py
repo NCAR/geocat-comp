@@ -165,6 +165,13 @@ def linint2(fi, xo, yo, icycx, xmsg=None, meta=True, xi=None, yi=None):
     if isinstance(fi_data, da.Array):
         fo_chunks = list(fi.chunks)
         fo_chunks[-2:] = (yo.shape, xo.shape)
+        # map_blocks maps each chunk of fi_data to a separate invocation of
+        # _ncomp._linint2. The "chunks" keyword argument should be the chunked
+        # dimensionality of the expected output; the number of chunks should
+        # match that of fi_data. Additionally, "drop_axis" and "new_axis" in
+        # this case indicate that the two rightmost dimensions of the input
+        # will be dropped from the output array, and that two new axes will be
+        # added instead.
         fo = map_blocks(_ncomp._linint2, xi, yi, fi_data, xo, yo, icycx, xmsg,
                         chunks=fo_chunks, dtype=fi.dtype,
                         drop_axis=[fi.ndim-2, fi.ndim-1],
