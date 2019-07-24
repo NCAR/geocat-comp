@@ -9,8 +9,12 @@ def linint2(fi, xo, yo, icycx, xmsg=None, meta=True, xi=None, yi=None):
     Args:
 
         fi (:class:`xarray.DataArray` or :class:`numpy.ndarray`):
-            Geopotential height in [m] with the rightmost dimensions being
-            bottom_top x south_north x west_east.
+            An array of two or more dimensions. If xi is passed in as an
+            argument, then the size of the rightmost dimension of fi must
+            match the rightmost dimension of xi. Similarly, if yi is
+            passed in as an argument, then the size of the second-
+            rightmost dimension of fi must match the rightmost dimension
+            of yi.
 
             Note:
 
