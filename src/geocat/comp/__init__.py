@@ -163,8 +163,15 @@ def linint2(fi, xo, yo, icycx, xmsg=None, meta=True, xi=None, yi=None):
     fi_data = fi.data
 
     if isinstance(fi_data, da.Array):
-        fo_chunks = list(fi.chunks)
-        fo_chunks[-2:] = (yo.shape, xo.shape)
+        chunks = list(fi.chunks)
+
+        # ensure rightmost dimensions of input are not chunked
+        if chunks[-2:] != [yi.shape, xi.shape]:
+            fi_data = da.rechunk(fi_data, chunks[:-2] + [yi.shape, xi.shape])
+
+        # ensure rightmost dimensions of output are not chunked
+        chunks[-2:] = (yo.shape, xo.shape)
+
         # map_blocks maps each chunk of fi_data to a separate invocation of
         # _ncomp._linint2. The "chunks" keyword argument should be the chunked
         # dimensionality of the expected output; the number of chunks should
@@ -173,12 +180,11 @@ def linint2(fi, xo, yo, icycx, xmsg=None, meta=True, xi=None, yi=None):
         # will be dropped from the output array, and that two new axes will be
         # added instead.
         fo = map_blocks(_ncomp._linint2, xi, yi, fi_data, xo, yo, icycx, xmsg,
-                        chunks=fo_chunks, dtype=fi.dtype,
+                        chunks=chunks, dtype=fi.dtype,
                         drop_axis=[fi.ndim-2, fi.ndim-1],
                         new_axis=[fi.ndim-2, fi.ndim-1])
-        result = fo.compute()
     elif isinstance(fi_data, np.ndarray):
-        result = _ncomp._linint2(xi, yi, fi_data, xo, yo, icycx, xmsg)
+        fo = _ncomp._linint2(xi, yi, fi_data, xo, yo, icycx, xmsg)
     else:
         raise TypeError
 
@@ -187,9 +193,9 @@ def linint2(fi, xo, yo, icycx, xmsg=None, meta=True, xi=None, yi=None):
                   else (xo if k == fi.dims[-1] else yo)
                   for (k, v) in fi.coords.items()}
 
-        result = xr.DataArray(result, attrs=fi.attrs, dims=fi.dims,
+        fo = xr.DataArray(fo, attrs=fi.attrs, dims=fi.dims,
                               coords=coords)
     else:
-        result = xr.DataArray(result)
+        fo = xr.DataArray(fo)
 
-    return result
+    return fo
