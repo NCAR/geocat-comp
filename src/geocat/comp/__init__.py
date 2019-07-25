@@ -4,6 +4,15 @@ import xarray as xr
 import dask.array as da
 from dask.array.core import map_blocks
 
+class Error(Exception):
+    """Base class for exceptions in this module."""
+    pass
+
+class ChunkError(Error):
+    """Exception raised when a Dask array is chunked in a way that is
+    incompatible with an _ncomp function."""
+    pass
+
 def linint2(fi, xo, yo, icycx, xmsg=None, meta=True, xi=None, yi=None):
     """Interpolates a regular grid to a rectilinear one using bi-linear
     interpolation.
@@ -167,7 +176,8 @@ def linint2(fi, xo, yo, icycx, xmsg=None, meta=True, xi=None, yi=None):
 
         # ensure rightmost dimensions of input are not chunked
         if chunks[-2:] != [yi.shape, xi.shape]:
-            fi_data = da.rechunk(fi_data, chunks[:-2] + [yi.shape, xi.shape])
+            raise ChunkError("linint2: the two rightmost dimensions of fi must"
+                             " not be chunked.")
 
         # ensure rightmost dimensions of output are not chunked
         chunks[-2:] = (yo.shape, xo.shape)
