@@ -13,7 +13,7 @@ class ChunkError(Error):
     incompatible with an _ncomp function."""
     pass
 
-def linint2(fi, xo, yo, icycx, xmsg=None, meta=True, xi=None, yi=None):
+def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
     """Interpolates a regular grid to a rectilinear one using bi-linear
     interpolation.
 
@@ -56,6 +56,11 @@ def linint2(fi, xo, yo, icycx, xmsg=None, meta=True, xi=None, yi=None):
             the way around the globe. For example, if your longitude
             values go from, say, -179.75 to 179.75, or 0.5 to 359.5,
             then you would set this to True.
+
+        msg (:obj:`numpy.number`):
+            A numpy scalar value that represent a missing value in fi.
+            This argument allows a user to use a missing value scheme
+            other than NaN or masked arrays, similar to what NCL allows.
 
         meta (:obj:`bool`):
             Set to False to disable metadata; default is True.
@@ -147,9 +152,6 @@ def linint2(fi, xo, yo, icycx, xmsg=None, meta=True, xi=None, yi=None):
 
     """
 
-    if xmsg is None:
-        xmsg = _ncomp.dtype_default_fill[fi.dtype]
-
     if not isinstance(fi, xr.DataArray):
         fi = xr.DataArray(fi)
 
@@ -189,12 +191,12 @@ def linint2(fi, xo, yo, icycx, xmsg=None, meta=True, xi=None, yi=None):
         # this case indicate that the two rightmost dimensions of the input
         # will be dropped from the output array, and that two new axes will be
         # added instead.
-        fo = map_blocks(_ncomp._linint2, xi, yi, fi_data, xo, yo, icycx, xmsg,
+        fo = map_blocks(_ncomp._linint2, xi, yi, fi_data, xo, yo, icycx, msg,
                         chunks=chunks, dtype=fi.dtype,
                         drop_axis=[fi.ndim-2, fi.ndim-1],
                         new_axis=[fi.ndim-2, fi.ndim-1])
     elif isinstance(fi_data, np.ndarray):
-        fo = _ncomp._linint2(xi, yi, fi_data, xo, yo, icycx, xmsg)
+        fo = _ncomp._linint2(xi, yi, fi_data, xo, yo, icycx, msg)
     else:
         raise TypeError
 
