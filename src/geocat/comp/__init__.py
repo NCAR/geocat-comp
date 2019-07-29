@@ -17,6 +17,11 @@ def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
     """Interpolates a regular grid to a rectilinear one using bi-linear
     interpolation.
 
+    linint2 uses bilinear interpolation to interpolate from one
+    rectilinear grid to another. The input grid may be cyclic in the x
+    direction. The interpolation is first performed in the x direction,
+    and then in the y direction.
+
     Args:
 
         fi (:class:`xarray.DataArray` or :class:`numpy.ndarray`):
@@ -26,6 +31,11 @@ def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
             is passed in as an argument, then the size of the second-
             rightmost dimension of fi must match the rightmost dimension
             of yi.
+
+            If missing values are present, then linint2 will perform the
+            bilinear interpolation at all points possible, but will
+            return missing values at coordinates which could not be
+            used.
 
             Note:
 
@@ -42,12 +52,22 @@ def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
             For geo-referenced data, xo is generally the longitude
             array.
 
+            If the output coordinates (xo) are outside those of the
+            input coordinates (xi), then the fo values at those
+            coordinates will be set to missing (i.e. no extrapolation is
+            performed).
+
         yo (:class:`xarray.DataArray` or :class:`numpy.ndarray`):
             A one-dimensional array that specifies the Y coordinates of
             the return array. It must be strictly monotonically
             increasing, but may be unequally spaced.
 
             For geo-referenced data, yo is generally the latitude array.
+
+            If the output coordinates (yo) are outside those of the
+            input coordinates (yi), then the fo values at those
+            coordinates will be set to missing (i.e. no extrapolation is
+            performed).
 
         icycx (:obj:`bool`):
             An option to indicate whether the rightmost dimension of fi
