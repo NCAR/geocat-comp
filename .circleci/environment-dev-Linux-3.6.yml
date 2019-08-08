@@ -1,0 +1,12 @@
+name: geocat-comp-dev
+channels:
+  - conda-forge
+dependencies:
+  - python=3.6
+  - gcc_linux-64
+  - cython
+  - numpy
+  - xarray
+  - dask
+  - distributed
+  - pytest
