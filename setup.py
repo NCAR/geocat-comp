@@ -11,6 +11,9 @@ import numpy
 import os
 import sys
 
+with open("src/geocat/comp/version.py") as f:
+    exec(f.read())
+
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 PREFIX = os.path.normpath(sys.prefix)
 
@@ -30,5 +33,5 @@ setup(
     package_dir={'': 'src'},
     namespace_packages=['geocat'],
     packages=["geocat.comp"],
-    version='0.1a'
+    version=__version__,
 )
