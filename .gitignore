@@ -1,2 +1,2 @@
-/src/geocat/comp/_ncomp/ncomp.c
+/src/geocat/comp/_ncomp/*.cpp
 /build/
