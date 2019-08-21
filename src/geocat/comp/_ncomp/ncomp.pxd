@@ -13,7 +13,7 @@ cdef extern from "ncomp/constants.h":
     cdef char   DEFAULT_FILL_CHAR "DEFAULT_FILL_CHAR";
 
 cdef extern from "ncomp/types.h":
-    cdef enum NCOMP_TYPES:
+    cdef enum NcompTypes:
         NCOMP_BOOL
         NCOMP_BYTE
         NCOMP_UBYTE
@@ -51,11 +51,10 @@ cdef extern from "ncomp/types.h":
         void*           addr
         int             has_missing
         ncomp_missing   msg
-        size_t          shape[1]
+        size_t*         shape
 
 cdef extern from "ncomp/util.h":
     ncomp_array* ncomp_array_alloc(void*, int, int, size_t*)
-    void         ncomp_array_free(ncomp_array*, int)
 
 cdef extern from "ncomp/wrapper.h":
     int linint2(const ncomp_array*, const ncomp_array*, const ncomp_array*,

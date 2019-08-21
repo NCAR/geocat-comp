@@ -12,9 +12,21 @@ import os
 import sys
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
-PREFIX = os.path.normpath(sys.prefix)
 
-include_dirs = [os.path.join(PREFIX, 'include'), numpy.get_include()]
+try:
+    PREFIX = os.path.normpath(os.environ["NCOMP_SRC"])
+    NCOMP_INC = os.path.join(PREFIX, 'src')
+    NCOMP_LIB = os.path.join(PREFIX, 'src', '.libs')
+except KeyError:
+    PREFIX = sys.prefix
+    NCOMP_INC = os.path.join(PREFIX, 'include')
+    NCOMP_LIB = os.path.join(PREFIX, 'lib')
+
+include_dirs = [NCOMP_INC, numpy.get_include()]
+library_dirs = [NCOMP_LIB]
+
+print(include_dirs)
+print(library_dirs)
 
 extensions = [
     Extension("geocat.comp._ncomp", ["src/geocat/comp/_ncomp/ncomp.pyx"],
