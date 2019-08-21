@@ -1,4 +1,5 @@
 from . import _ncomp
+from .version import __version__
 import numpy as np
 import xarray as xr
 import dask.array as da
@@ -129,7 +130,6 @@ def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
                 specified as a keyword argument.
 
     Returns:
-
         :class:`xarray.DataArray`: The interpolated grid. If the *meta*
         parameter is True, then the result will include named dimensions
         matching the input array. The returned value will have the same

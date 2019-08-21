@@ -1,0 +1,61 @@
+version: 2
+# Tell CircleCI to use this workflow
+workflows:
+  version: 2
+  default:
+    jobs:
+      - "build-ncomp"
+      - "python-3.6":
+          requires:
+            - "build-ncomp"
+      - "python-3.7":
+          requires:
+            - "build-ncomp"
+
+default-job: &default-job
+  docker:
+    - image: conda/miniconda3:latest
+  steps:
+    - checkout
+    - restore_cache:
+        key: deps-{{ .Environment.CIRCLE_PROJECT_REPONAME }}-{{ .Environment.CIRCLE_WORKFLOW_UPSTREAM_JOB_IDS }}
+    - run:
+        name: Build geocat-comp
+        command: ./.circleci/install-circle.sh
+    - run:
+        name: Run tests
+        command: ./.circleci/${TEST_SCRIPT}
+
+jobs:
+  "build-ncomp":
+    docker:
+      - image: conda/miniconda3:latest
+    environment:
+      NCOMP_ENV_NAME: "build-ncomp"
+      NCOMP_GIT_REPO: "https://github.com/NCAR/ncomp.git"
+    steps:
+      - checkout
+      - run:
+          name: Build NComp
+          command: ./.circleci/build-ncomp.sh
+      - save_cache:
+          key: deps-{{ .Environment.CIRCLE_PROJECT_REPONAME }}-{{ .Environment.CIRCLE_WORKFLOW_JOB_ID }}
+          paths:
+            - /usr/local/envs/build-ncomp
+            - /usr/local/pkgs
+
+  "python-3.6":
+    <<: *default-job
+    environment:
+      PYTHON: "3.6"
+      ENV_NAME: "geocat-comp-dev"
+      NCOMP_ENV_NAME: "build-ncomp"
+      TEST_SCRIPT: "run-checks.sh"
+
+  "python-3.7":
+    <<: *default-job
+    environment:
+      PYTHON: "3.7"
+      ENV_NAME: "geocat-comp-dev"
+      NCOMP_ENV_NAME: "build-ncomp"
+      TEST_SCRIPT: "run-checks.sh"
