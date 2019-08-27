@@ -1,9 +1,13 @@
 cdef extern from "ncomp/constants.h":
     cdef double DEFAULT_FILL "DEFAULT_FILL_DOUBLE";
     cdef char   DEFAULT_FILL_INT8 "NC_FILL_BYTE";
+    cdef unsigned char   DEFAULT_FILL_UINT8 "NC_FILL_UBYTE";
     cdef short  DEFAULT_FILL_INT16 "NC_FILL_SHORT";
+    cdef unsigned short  DEFAULT_FILL_UINT16 "NC_FILL_USHORT";
     cdef int    DEFAULT_FILL_INT32 "NC_FILL_INT";
+    cdef unsigned int    DEFAULT_FILL_UINT32 "NC_FILL_UINT";
     cdef long   DEFAULT_FILL_INT64 "NC_FILL_INT64";
+    cdef unsigned long   DEFAULT_FILL_UINT64 "NC_FILL_UINT64";
     cdef float  DEFAULT_FILL_FLOAT "NC_FILL_FLOAT";
     cdef double DEFAULT_FILL_DOUBLE "NC_FILL_DOUBLE";
     cdef char   DEFAULT_FILL_CHAR "DEFAULT_FILL_CHAR";
@@ -52,3 +56,8 @@ cdef extern from "ncomp/types.h":
 cdef extern from "ncomp/util.h":
     ncomp_array* ncomp_array_alloc(void*, int, int, size_t*)
     void         ncomp_array_free(ncomp_array*, int)
+
+cdef extern from "ncomp/wrapper.h":
+    int linint2(const ncomp_array*, const ncomp_array*, const ncomp_array*,
+                const ncomp_array*, const ncomp_array*, ncomp_array*,
+                int, int) nogil;
