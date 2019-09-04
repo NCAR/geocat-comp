@@ -13,7 +13,7 @@ cdef extern from "ncomp/constants.h":
     cdef char   DEFAULT_FILL_CHAR "DEFAULT_FILL_CHAR";
 
 cdef extern from "ncomp/types.h":
-    cdef enum NCOMP_TYPES:
+    cdef enum NcompTypes:
         NCOMP_BOOL
         NCOMP_BYTE
         NCOMP_UBYTE
