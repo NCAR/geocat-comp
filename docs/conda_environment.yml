@@ -1,0 +1,10 @@
+channels:
+  - conda-forge
+  - ncar
+dependencies:
+  - python=3.7
+  - cython
+  - numpy
+  - xarray
+  - dask
+  - ncomp
