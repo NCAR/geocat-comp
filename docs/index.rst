@@ -30,6 +30,7 @@ GeoCAT-comp
 
    ./installation
    ./api
+   ./examples
    ./support
 
 
