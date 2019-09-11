@@ -14,9 +14,9 @@ from mpl_toolkits.axes_grid1 import AxesGrid
 
 # Open a netCDF data file using xarray default engine and load the data into xarrays
 ds = xr.open_dataset("sst.nc")
-sst = ds.TEMP[0,0,:,0:-1]
+sst = ds.TEMP[0,0,:,:]
 lat = ds.LAT[:]
-lon = ds.LON[0:-1]
+lon = ds.LON[:]
 
 # Provide interpolation grid and call $linint2$ function from $geocat-comp$
 newlat = np.linspace(min(lat), max(lat), 128)
