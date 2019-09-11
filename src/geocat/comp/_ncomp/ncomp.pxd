@@ -60,3 +60,9 @@ cdef extern from "ncomp/wrapper.h":
     int linint2(const ncomp_array*, const ncomp_array*, const ncomp_array*,
                 const ncomp_array*, const ncomp_array*, ncomp_array*,
                 int, int) nogil;
+
+    int rcm2rgrid(const ncomp_array* lat2d, const ncomp_array* lon2d, const ncomp_array* fi,
+                  const ncomp_array* lat1d, const ncomp_array* lon1d, ncomp_array* fo) nogil;
+
+    int rgrid2rcm(const ncomp_array* lat1d, const ncomp_array* lon1d, const ncomp_array* fi, 
+                  const ncomp_array* lat2d, const ncomp_array* lon2d, ncomp_array* fo) nogil;

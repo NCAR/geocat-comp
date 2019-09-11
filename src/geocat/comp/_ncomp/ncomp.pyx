@@ -1,5 +1,4 @@
 # cython: language_level=3, boundscheck=False
-# distutils: language = c++
 
 cimport ncomp
 #from libc.stdlib cimport malloc, free
@@ -284,3 +283,219 @@ def _linint2(np.ndarray xi, np.ndarray yi, np.ndarray fi, np.ndarray xo, np.ndar
     fo[fo == fo_msg] = np.nan
 
     return fo
+
+def _rcm2rgrid(np.ndarray lat2d, np.ndarray lon2d, np.ndarray fi, np.ndarray lat1d, np.ndarray lon1d, msg=None):
+    """Interpolates data on a curvilinear grid (i.e. RCM, WRF, NARR) to a rectilinear grid.
+
+    Args:
+
+        lat2d (:class:`numpy.ndarray`):
+	    A two-dimensional array that specifies the latitudes locations
+	    of fi. Because this array is two-dimensional it is not an associated
+	    coordinate variable of `fi`. The latitude order must be south-to-north.
+
+        lon2d (:class:`numpy.ndarray`):
+	    A two-dimensional array that specifies the longitude locations
+	    of fi. Because this array is two-dimensional it is not an associated
+	    coordinate variable of `fi`. The latitude order must be west-to-east.
+
+        fi (:class:`numpy.ndarray`):
+	    A multi-dimensional array to be interpolated. The rightmost two
+	    dimensions (latitude, longitude) are the dimensions to be interpolated.
+
+        lat1d (:class:`numpy.ndarray`):
+	    A one-dimensional array that specifies the latitude coordinates of
+	    the regular grid. Must be monotonically increasing.
+
+        lon1d (:class:`numpy.ndarray`):
+	    A one-dimensional array that specifies the longitude coordinates of
+	    the regular grid. Must be monotonically increasing.
+
+        msg (:obj:`numpy.number`):
+            A numpy scalar value that represent a missing value in fi.
+            This argument allows a user to use a missing value scheme
+            other than NaN or masked arrays, similar to what NCL allows.
+
+    Returns:
+        :class:`numpy.ndarray`: The interpolated grid. A multi-dimensional array
+	of the same size as fi except that the rightmost dimension sizes have been
+	replaced by the sizes of lat and lon respectively.
+	Double if fi is double, otherwise float.
+
+    Description:
+        Interpolates RCM (Regional Climate Model), WRF (Weather Research and Forecasting) and
+    	NARR (North American Regional Reanalysis) grids to a rectilinear grid. Actually, this
+	function will interpolate most grids that use curvilinear latitude/longitude grids.
+	No extrapolation is performed beyond the range of the input coordinates. Missing values
+	are allowed but ignored.
+
+	The weighting method used is simple inverse distance squared. Missing values are allowed
+	but ignored.
+
+	The code searches the input curvilinear grid latitudes and longitudes for the four
+	grid points that surround a specified output grid coordinate. Because one or more of
+	these input points could contain missing values, fewer than four points
+	could be used in the interpolation.
+
+	Curvilinear grids which have two-dimensional latitude and longitude coordinate axes present
+	some issues because the coordinates are not necessarily monotonically increasing. The simple
+	search algorithm used by rcm2rgrid is not capable of handling all cases. The result is that,
+	sometimes, there are small gaps in the interpolated grids. Any interior points not
+	interpolated in the initial interpolation pass will be filled using linear interpolation.
+        In some cases, edge points may not be filled.
+
+    """
+    cdef ncomp.ncomp_array* ncomp_lat2d = np_to_ncomp_array(lat2d)
+    cdef ncomp.ncomp_array* ncomp_lon2d = np_to_ncomp_array(lon2d)
+    cdef ncomp.ncomp_array* ncomp_fi    = np_to_ncomp_array(fi)
+    cdef ncomp.ncomp_array* ncomp_lat1d = np_to_ncomp_array(lat1d)
+    cdef ncomp.ncomp_array* ncomp_lon1d = np_to_ncomp_array(lon1d)
+
+    cdef ncomp.ncomp_array* ncomp_fo
+    cdef long i
+
+    # Set output type and dimensions. Double if `fi` is double, otherwise float.
+    if ncomp_fi.type == ncomp.NCOMP_DOUBLE:
+        fo_dtype = np.float64
+    else:
+        fo_dtype = np.float32
+    cdef np.ndarray fo = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat1d.shape[0], lon1d.shape[0]]), dtype=fo_dtype)
+
+    missing_inds_fi = None
+
+    if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
+        missing_inds_fi = np.isnan(fi)
+        msg = get_default_fill(fi)
+    else:
+        missing_inds_fi = (fi == msg)
+
+    set_ncomp_msg(&ncomp_fi.msg, msg) # always set missing on ncomp_fi
+
+    if missing_inds_fi.any():
+        ncomp_fi.has_missing = 1
+        fi[missing_inds_fi] = msg
+
+    ncomp_fo = np_to_ncomp_array(fo)
+
+#   release global interpreter lock
+    cdef int ier
+    with nogil:
+        ier = ncomp.rcm2rgrid(
+            ncomp_lat2d, ncomp_lon2d, ncomp_fi,
+            ncomp_lat1d, ncomp_lon1d, ncomp_fo)
+
+#   re-acquire interpreter lock
+#   check errors ier
+
+    if missing_inds_fi is not None and missing_inds_fi.any():
+        fi[missing_inds_fi] = np.nan
+
+    if ncomp_fo.type == ncomp.NCOMP_DOUBLE:
+        fo_msg = ncomp_fo.msg.msg_double
+    else:
+        fo_msg = ncomp_fo.msg.msg_float
+
+    fo[fo == fo_msg] = np.nan
+
+    return fo
+
+def _rgrid2rcm(np.ndarray lat1d, np.ndarray lon1d, np.ndarray fi, np.ndarray lat2d, np.ndarray lon2d, msg=None):
+    """Interpolates data on a rectilinear lat/lon grid to a curvilinear grid like those used by the RCM, WRF and NARR models/datasets.
+
+    Args:
+
+        lat1d (:class:`numpy.ndarray`):
+	    A one-dimensional array that specifies the latitude coordinates of
+	    the regular grid. Must be monotonically increasing.
+
+        lon1d (:class:`numpy.ndarray`):
+	    A one-dimensional array that specifies the longitude coordinates of
+	    the regular grid. Must be monotonically increasing.
+
+        fi (:class:`numpy.ndarray`):
+	    A multi-dimensional array to be interpolated. The rightmost two
+	    dimensions (latitude, longitude) are the dimensions to be interpolated.
+
+        lat2d (:class:`numpy.ndarray`):
+	    A two-dimensional array that specifies the latitude locations of `fi`.
+	    Because this array is two-dimensional, it is not an associated
+	    coordinate variable of `fi`.
+
+        lon2d (:class:`numpy.ndarray`):
+	    A two-dimensional array that specifies the longitude locations of `fi`.
+	    Because this array is two-dimensional, it is not an associated
+	    coordinate variable of `fi`.
+
+        msg (:obj:`numpy.number`):
+            A numpy scalar value that represent a missing value in fi.
+            This argument allows a user to use a missing value scheme
+            other than NaN or masked arrays, similar to what NCL allows.
+
+    Returns:
+        :class:`numpy.ndarray`: The interpolated grid. A multi-dimensional array of the
+	same size as `fi` except that the rightmost dimension sizes have been replaced
+	by the sizes of `lat2d` and `lon2d` respectively. Double if `fi` is double,
+	otherwise float.
+
+    Description:
+        Interpolates data on a rectilinear lat/lon grid to a curvilinear grid, such as those
+	used by the RCM (Regional Climate Model), WRF (Weather Research and Forecasting) and
+	NARR (North American Regional Reanalysis) models/datasets. No extrapolation is
+	performed beyond the range of the input coordinates. The method used is simple inverse
+	distance weighting. Missing values are allowed but ignored.
+
+    """
+    cdef ncomp.ncomp_array* ncomp_lat1d = np_to_ncomp_array(lat1d)
+    cdef ncomp.ncomp_array* ncomp_lon1d = np_to_ncomp_array(lon1d)
+    cdef ncomp.ncomp_array* ncomp_fi    = np_to_ncomp_array(fi)
+    cdef ncomp.ncomp_array* ncomp_lat2d = np_to_ncomp_array(lat2d)
+    cdef ncomp.ncomp_array* ncomp_lon2d = np_to_ncomp_array(lon2d)
+
+    cdef ncomp.ncomp_array* ncomp_fo
+    cdef long i
+
+    # Set output type and dimensions. Double if `fi` is double, otherwise float.
+    if ncomp_fi.type == ncomp.NCOMP_DOUBLE:
+        fo_dtype = np.float64
+    else:
+        fo_dtype = np.float32
+    cdef np.ndarray fo = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat2d.shape[0], lon2d.shape[0]]), dtype=fo_dtype)
+
+    missing_inds_fi = None
+
+    if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
+        missing_inds_fi = np.isnan(fi)
+        msg = get_default_fill(fi)
+    else:
+        missing_inds_fi = (fi == msg)
+
+    set_ncomp_msg(&ncomp_fi.msg, msg) # always set missing on ncomp_fi
+
+    if missing_inds_fi.any():
+        ncomp_fi.has_missing = 1
+        fi[missing_inds_fi] = msg
+
+    ncomp_fo = np_to_ncomp_array(fo)
+
+#   release global interpreter lock
+    cdef int ier
+    with nogil:
+        ier = ncomp.rgrid2rcm(
+            ncomp_lat1d, ncomp_lon1d, ncomp_fi,
+            ncomp_lat2d, ncomp_lon2d, ncomp_fo)
+
+#   re-acquire interpreter lock
+#   check errors ier
+
+    if missing_inds_fi is not None and missing_inds_fi.any():
+        fi[missing_inds_fi] = np.nan
+
+    if ncomp_fo.type == ncomp.NCOMP_DOUBLE:
+        fo_msg = ncomp_fo.msg.msg_double
+    else:
+        fo_msg = ncomp_fo.msg.msg_float
+
+    fo[fo == fo_msg] = np.nan
+
+    return fo
+
