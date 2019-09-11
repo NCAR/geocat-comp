@@ -1,8 +1,7 @@
-# cython: language_level=3, boundscheck=False
-
+# cython: language_level=3, boundscheck=False, embedsignature=True
 cimport ncomp
-#from libc.stdlib cimport malloc, free
-#from libc.stdio cimport printf
+from libc.stdlib cimport malloc, free
+from libc.stdio cimport printf
 
 import cython
 import numpy as np
@@ -127,7 +126,6 @@ cdef set_ncomp_msg(ncomp.ncomp_missing* ncomp_msg, num):
         ncomp_msg.msg_longdouble = ncomp_to_dtype[ncomp_type](num)
 
 @cython.embedsignature(True)
-@cython.binding(True)
 def _linint2(np.ndarray xi, np.ndarray yi, np.ndarray fi, np.ndarray xo, np.ndarray yo, int icycx, msg=None):
     """Interpolates a regular grid to a rectilinear one using bi-linear
     interpolation.

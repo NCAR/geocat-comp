@@ -6,6 +6,13 @@ GeoCAT-comp is the computational component of the [GeoCAT](https://ncar.github.i
 GeoCAT-comp depends on a separate C/Fortran library called "[ncomp](https://github.com/NCAR/ncomp)", which contains these Fortran routines.
 
 
+Documentation
+=============
+
+[GeoCAT-comp documentation on Read the Docs](https://geocat-comp.readthedocs.io)
+
+
+
 Build instructions
 ==================
 
