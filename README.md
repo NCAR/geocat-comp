@@ -13,30 +13,10 @@ Documentation
 
 
 
-Build instructions
-==================
+Installation and build instructions
+===================================
 
-GeoCAT-comp requires the following dependencies to be installed:
-
-* Python
-* Cython
-* Numpy
-* Xarray
-* Dask
-* Any C compiler (GCC and Clang have been tested)
-* gfortran
-* [ncomp](https://github.com/NCAR/ncomp) 
-
-GeoCAT-comp can be built by running one of the following commands from the root directory of this repository:
-```
-python setup.py install --prefix=$PREFIX
-```
-or
-```
-pip install --prefix $PREFIX .
-```
-
-where $PREFIX is the path that `ncomp` is installed.
+Please see our documentation for [installation instructions](https://geocat-comp.readthedocs.io/en/latest/installation.html) and [build instructions](https://geocat-comp.readthedocs.io/en/latest/installation.html#building-geocat-comp-from-source).
 
 
 Xarray interface vs NumPy interface
