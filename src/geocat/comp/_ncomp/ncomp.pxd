@@ -61,3 +61,6 @@ cdef extern from "ncomp/wrapper.h":
     int linint2(const ncomp_array*, const ncomp_array*, const ncomp_array*,
                 const ncomp_array*, const ncomp_array*, ncomp_array*,
                 int, int) nogil;
+
+    int eofunc(const ncomp_array*, const ncomp_array*, const attributes*,
+               ncomp_array*, attributes*) nogil;

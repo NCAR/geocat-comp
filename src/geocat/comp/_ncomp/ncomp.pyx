@@ -8,6 +8,11 @@ import numpy as np
 cimport numpy as np
 import functools
 
+class GeocatArray(object):
+    def __init__(self, data, attrs={}):
+        self.data = data
+        self.attrs = attrs
+
 dtype_default_fill = {
              "DEFAULT_FILL":       ncomp.DEFAULT_FILL_DOUBLE,
              np.dtype(np.int8):    np.int8(ncomp.DEFAULT_FILL_INT8),
@@ -281,3 +286,30 @@ def _linint2(np.ndarray xi, np.ndarray yi, np.ndarray fi, np.ndarray xo, np.ndar
     fo[fo == fo_msg] = np.nan
 
     return fo
+
+@cython.embedsignature(True)
+def _eofunc(np.ndarray np_input, int neval, opt={}):
+    """EOFUNC DOCUMENTATION GOES HERE"""
+    # convert np_input to ncomp_array
+    cdef ncomp.ncomp_array* ncomp_input = np_to_ncomp_array(np_input)
+    
+    # convert opt dict to ncomp_attributes struct
+    cdef ncomp_attributes* attrs = dict_to_ncomp_attributes(opt)
+
+    # allocate output ncomp_array and ncomp_attributes
+    cdef ncomp.ncomp_array* ncomp_output
+    cdef ncomp.ncomp_attributes* attrs_output
+
+    cdef int ier
+    with nogil:
+        ier = ncomp.eofunc(ncomp_input, neval, attrs, ncomp_output, attrs_output)
+
+    # convert ncomp_output to np.ndarray
+    np_output = ncomp_to_np_array(ncomp_output)
+
+    # convert attrs_output to dict
+    # do something here
+    np_attrs_dict = {}
+
+    return (np_output, np_attrs_dict)
+
