@@ -289,10 +289,68 @@ def _linint2(np.ndarray xi, np.ndarray yi, np.ndarray fi, np.ndarray xo, np.ndar
 
 @cython.embedsignature(True)
 def _eofunc(np.ndarray np_input, int neval, opt={}):
-    """EOFUNC DOCUMENTATION GOES HERE"""
+    """Computes empirical orthogonal functions (EOFs, aka: Principal Component
+    Analysis).
+
+    Args:
+
+      data (:class:`numpy.ndarray`):
+        A multi-dimensional array in which the rightmost dimension is the number
+        of observations. Generally, this is the time dimension. If your rightmost
+        dimension is not time, then see eofunc_n. Commonly, the data array
+        contains anomalies from some base climatology, however, this is not
+        required.
+
+      neval (:obj:`int`):
+        A scalar integer that specifies the number of eigenvalues and
+        eigenvectors to be returned. This is usually less than or equal to the
+        minimum number of observations or number of variables.
+
+      options (:obj:`dict`):
+        - "jopt"        : both routines
+        - "return_eval" : both routines (unadvertised)
+        - "return_trace": return trace
+        - "return_pcrit": return pcrit
+        - "pcrit"       : transpose routine only
+        - "anomalies"   : If True, anomalies have already been calculated by
+                        user, and this interface shouldn't remove them.
+        - "transpose"   : If True, call transpose routine no matter what
+                      : If False, don't call transpose routine no matter what
+        - "oldtranspose": If True, call Dennis' old transpose routine.
+        - "debug"       : turn on debug
+
+      Returns:
+        A multi-dimensional array containing normalized EOFs. The returned
+        array will be of the same size as data with the rightmost dimension
+        removed and an additional leftmost dimension of the same size as neval
+        added. Double if data is double, float otherwise.
+
+        The return variable will have associated with it the following
+        attributes:
+
+          - eval: a one-dimensional array of size neval that contains the
+                  eigenvalues.
+          - pcvar: a one-dimensional float array of size neval equal to the
+                   percent variance associated with each eigenvalue.
+          - pcrit: The same value and type of options["pcrit"] if the user
+                   changed the default.
+          - matrix: A string indicating the type of matrix used,
+                    "correlation" or "covariance".
+          - method: A string indicating if the input array, data, was/was-not
+                    transposed for the purpose of computing the eigenvalues and
+                    eigenvectors. The string can have two values: "transpose"
+                    or "no transpose"
+          - eval_transpose: This attribute is returned only if
+                            method="transpose". eval_transpose will contain the
+                            eigenvalues of the transposed covariance matrix.
+                            These eigenvalues are then scaled such that they are
+                            consistent with the original input data.
+
+
+    """
     # convert np_input to ncomp_array
     cdef ncomp.ncomp_array* ncomp_input = np_to_ncomp_array(np_input)
-    
+
     # convert opt dict to ncomp_attributes struct
     cdef ncomp_attributes* attrs = dict_to_ncomp_attributes(opt)
 
@@ -312,4 +370,3 @@ def _eofunc(np.ndarray np_input, int neval, opt={}):
     np_attrs_dict = {}
 
     return (np_output, np_attrs_dict)
-
