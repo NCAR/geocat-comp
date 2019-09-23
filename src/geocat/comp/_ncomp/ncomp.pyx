@@ -94,36 +94,36 @@ cdef np.ndarray ncomp_to_np_array(ncomp.ncomp_array* ncarr):
     return nparr
 
 
-cdef set_ncomp_msg(ncomp.ncomp_missing* ncomp_msg, num):
-    ncomp_type = num.dtype.num
+cdef set_ncomp_msg(ncomp.ncomp_missing* ncomp_msg, msg):
+    ncomp_type = msg.dtype.num
     if ncomp_type == ncomp.NCOMP_FLOAT:
-        ncomp_msg.msg_float = ncomp_to_dtype[ncomp_type](num)
+        ncomp_msg.msg_float = ncomp_to_dtype[ncomp_type](msg)
     elif ncomp_type == ncomp.NCOMP_DOUBLE:
-        ncomp_msg.msg_double = ncomp_to_dtype[ncomp_type](num)
+        ncomp_msg.msg_double = ncomp_to_dtype[ncomp_type](msg)
     elif ncomp_type == ncomp.NCOMP_BOOL:
-        ncomp_msg.msg_bool = ncomp_to_dtype[ncomp_type](num)
+        ncomp_msg.msg_bool = ncomp_to_dtype[ncomp_type](msg)
     elif ncomp_type == ncomp.NCOMP_BYTE:
-        ncomp_msg.msg_byte = ncomp_to_dtype[ncomp_type](num)
+        ncomp_msg.msg_byte = ncomp_to_dtype[ncomp_type](msg)
     elif ncomp_type == ncomp.NCOMP_UBYTE:
-        ncomp_msg.msg_ubyte = ncomp_to_dtype[ncomp_type](num)
+        ncomp_msg.msg_ubyte = ncomp_to_dtype[ncomp_type](msg)
     elif ncomp_type == ncomp.NCOMP_SHORT:
-        ncomp_msg.msg_short = ncomp_to_dtype[ncomp_type](num)
+        ncomp_msg.msg_short = ncomp_to_dtype[ncomp_type](msg)
     elif ncomp_type == ncomp.NCOMP_USHORT:
-        ncomp_msg.msg_ushort = ncomp_to_dtype[ncomp_type](num)
+        ncomp_msg.msg_ushort = ncomp_to_dtype[ncomp_type](msg)
     elif ncomp_type == ncomp.NCOMP_INT:
-        ncomp_msg.msg_int = ncomp_to_dtype[ncomp_type](num)
+        ncomp_msg.msg_int = ncomp_to_dtype[ncomp_type](msg)
     elif ncomp_type == ncomp.NCOMP_UINT:
-        ncomp_msg.msg_uint = ncomp_to_dtype[ncomp_type](num)
+        ncomp_msg.msg_uint = ncomp_to_dtype[ncomp_type](msg)
     elif ncomp_type == ncomp.NCOMP_LONG:
-        ncomp_msg.msg_long = ncomp_to_dtype[ncomp_type](num)
+        ncomp_msg.msg_long = ncomp_to_dtype[ncomp_type](msg)
     elif ncomp_type == ncomp.NCOMP_ULONG:
-        ncomp_msg.msg_ulong = ncomp_to_dtype[ncomp_type](num)
+        ncomp_msg.msg_ulong = ncomp_to_dtype[ncomp_type](msg)
     elif ncomp_type == ncomp.NCOMP_LONGLONG:
-        ncomp_msg.msg_longlong = ncomp_to_dtype[ncomp_type](num)
+        ncomp_msg.msg_longlong = ncomp_to_dtype[ncomp_type](msg)
     elif ncomp_type == ncomp.NCOMP_ULONGLONG:
-        ncomp_msg.msg_ulonglong = ncomp_to_dtype[ncomp_type](num)
+        ncomp_msg.msg_ulonglong = ncomp_to_dtype[ncomp_type](msg)
     elif ncomp_type == ncomp.NCOMP_LONGDOUBLE:
-        ncomp_msg.msg_longdouble = ncomp_to_dtype[ncomp_type](num)
+        ncomp_msg.msg_longdouble = ncomp_to_dtype[ncomp_type](msg)
 
 @cython.embedsignature(True)
 def _linint2(np.ndarray xi, np.ndarray yi, np.ndarray fi, np.ndarray xo, np.ndarray yo, int icycx, msg=None):
@@ -317,7 +317,7 @@ def _rcm2rgrid(np.ndarray lat2d, np.ndarray lon2d, np.ndarray fi, np.ndarray lat
     Returns:
         :class:`numpy.ndarray`: The interpolated grid. A multi-dimensional array
 	of the same size as fi except that the rightmost dimension sizes have been
-	replaced by the sizes of lat and lon respectively.
+	replaced by the sizes of lat1d and lon1d respectively.
 	Double if fi is double, otherwise float.
 
     Description:

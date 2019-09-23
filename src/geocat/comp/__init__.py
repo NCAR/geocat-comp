@@ -232,7 +232,70 @@ def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
 
     return fo
 
-def rcm2rgrid(lat2d, lon2d, fi, lat1d, lon1d, msg=None, meta=True, xi=None, yi=None):
+def rcm2rgrid(lat2d, lon2d, fi, lat1d, lon1d, msg=None, meta=True):
+    """Interpolates data on a curvilinear grid (i.e. RCM, WRF, NARR) to a rectilinear grid.
+
+    Args:
+
+        lat2d (:class:`numpy.ndarray`):
+	    A two-dimensional array that specifies the latitudes locations
+	    of fi. Because this array is two-dimensional it is not an associated
+	    coordinate variable of `fi`. The latitude order must be south-to-north.
+
+        lon2d (:class:`numpy.ndarray`):
+	    A two-dimensional array that specifies the longitude locations
+	    of fi. Because this array is two-dimensional it is not an associated
+	    coordinate variable of `fi`. The latitude order must be west-to-east.
+
+        fi (:class:`numpy.ndarray`):
+	    A multi-dimensional array to be interpolated. The rightmost two
+	    dimensions (latitude, longitude) are the dimensions to be interpolated.
+
+        lat1d (:class:`numpy.ndarray`):
+	    A one-dimensional array that specifies the latitude coordinates of
+	    the regular grid. Must be monotonically increasing.
+
+        lon1d (:class:`numpy.ndarray`):
+	    A one-dimensional array that specifies the longitude coordinates of
+	    the regular grid. Must be monotonically increasing.
+
+        msg (:obj:`numpy.number`):
+            A numpy scalar value that represent a missing value in fi.
+            This argument allows a user to use a missing value scheme
+            other than NaN or masked arrays, similar to what NCL allows.
+
+        meta (:obj:`bool`):
+            Set to False to disable metadata; default is True.
+
+    Returns:
+        :class:`numpy.ndarray`: The interpolated grid. A multi-dimensional array
+	of the same size as fi except that the rightmost dimension sizes have been
+	replaced by the sizes of lat1d and lon1d respectively.
+	Double if fi is double, otherwise float.
+
+    Description:
+        Interpolates RCM (Regional Climate Model), WRF (Weather Research and Forecasting) and
+        NARR (North American Regional Reanalysis) grids to a rectilinear grid. Actually, this
+	function will interpolate most grids that use curvilinear latitude/longitude grids.
+	No extrapolation is performed beyond the range of the input coordinates. Missing values
+	are allowed but ignored.
+
+	The weighting method used is simple inverse distance squared. Missing values are allowed
+	but ignored.
+
+	The code searches the input curvilinear grid latitudes and longitudes for the four
+	grid points that surround a specified output grid coordinate. Because one or more of
+	these input points could contain missing values, fewer than four points
+	could be used in the interpolation.
+
+	Curvilinear grids which have two-dimensional latitude and longitude coordinate axes present
+	some issues because the coordinates are not necessarily monotonically increasing. The simple
+	search algorithm used by rcm2rgrid is not capable of handling all cases. The result is that,
+	sometimes, there are small gaps in the interpolated grids. Any interior points not
+	interpolated in the initial interpolation pass will be filled using linear interpolation.
+        In some cases, edge points may not be filled.
+
+    """
 
     # Basic sanity checks
     if lat2d.shape[0] != lon2d.shape[0] or lat2d.shape[1] != lon2d.shape[1]:
@@ -240,19 +303,13 @@ def rcm2rgrid(lat2d, lon2d, fi, lat1d, lon1d, msg=None, meta=True, xi=None, yi=N
 
     if lat2d.shape[0] < 2 or lon2d.shape[0] < 2 or lat2d.shape[1] < 2 or lon2d.shape[1] < 2:
         raise Exception("ERROR rcm2rgrid: The input/output lat/lon grids must have at least 2 elements !")
-        
+
     if fi.ndim < 2:
         raise Exception("ERROR rcm2rgrid: fi must be at least two dimensions !\n")
 
     if fi.shape[fi.ndim - 2] != lat2d.shape[0] or fi.shape[fi.ndim - 1] != lon2d.shape[1]:
         raise Exception("ERROR rcm2rgrid: The rightmost dimensions of fi must be (nlat2d x nlon2d),"
                         "where nlat2d and nlon2d are the size of the lat2d/lon2d arrays !")
-
-    if lat2d[0,0] < lat2d[-1,0] and lat2d[0,1] < lat2d[-1,1]:
-        raise Exception("ERROR rcm2rgrid: lat2d dimensions have to be ordered from south-to-north !")
-
-    if lon2d[0,0] < lon2d[-1,0] and lon2d[0,1] < lon2d[-1,1]:
-        raise Exception("ERROR rcm2rgrid: lon2d dimensions have to be ordered from west-to-east !")
 
     if isinstance(lat2d, xr.DataArray):
         lat2d = lat2d.values
@@ -303,7 +360,56 @@ def rcm2rgrid(lat2d, lon2d, fi, lat1d, lon1d, msg=None, meta=True, xi=None, yi=N
 
     return fo
 
-def rgrid2rcm(lat1d, lon1d, fi, lat2d, lon2d, msg=None, meta=True, xi=None, yi=None):
+def rgrid2rcm(lat1d, lon1d, fi, lat2d, lon2d, msg=None, meta=True):
+    """Interpolates data on a rectilinear lat/lon grid to a curvilinear grid like
+       those used by the RCM, WRF and NARR models/datasets.
+
+    Args:
+
+        lat1d (:class:`numpy.ndarray`):
+	    A one-dimensional array that specifies the latitude coordinates of
+	    the regular grid. Must be monotonically increasing.
+
+        lon1d (:class:`numpy.ndarray`):
+	    A one-dimensional array that specifies the longitude coordinates of
+	    the regular grid. Must be monotonically increasing.
+
+        fi (:class:`numpy.ndarray`):
+	    A multi-dimensional array to be interpolated. The rightmost two
+	    dimensions (latitude, longitude) are the dimensions to be interpolated.
+
+        lat2d (:class:`numpy.ndarray`):
+	    A two-dimensional array that specifies the latitude locations
+	    of fi. Because this array is two-dimensional it is not an associated
+	    coordinate variable of `fi`.
+
+        lon2d (:class:`numpy.ndarray`):
+	    A two-dimensional array that specifies the longitude locations
+	    of fi. Because this array is two-dimensional it is not an associated
+	    coordinate variable of `fi`.
+
+        msg (:obj:`numpy.number`):
+            A numpy scalar value that represent a missing value in fi.
+            This argument allows a user to use a missing value scheme
+            other than NaN or masked arrays, similar to what NCL allows.
+
+        meta (:obj:`bool`):
+            Set to False to disable metadata; default is True.
+
+    Returns:
+        :class:`numpy.ndarray`: The interpolated grid. A multi-dimensional array of the
+	same size as `fi` except that the rightmost dimension sizes have been replaced
+	by the sizes of `lat2d` and `lon2d` respectively. Double if `fi` is double,
+	otherwise float.
+
+    Description:
+        Interpolates data on a rectilinear lat/lon grid to a curvilinear grid, such as those
+	used by the RCM (Regional Climate Model), WRF (Weather Research and Forecasting) and
+	NARR (North American Regional Reanalysis) models/datasets. No extrapolation is
+	performed beyond the range of the input coordinates. The method used is simple inverse
+	distance weighting. Missing values are allowed but ignored.
+
+    """
 
     # Basic sanity checks
     if lat2d.shape[0] != lon2d.shape[0] or lat2d.shape[1] != lon2d.shape[1]:
@@ -311,7 +417,7 @@ def rgrid2rcm(lat1d, lon1d, fi, lat2d, lon2d, msg=None, meta=True, xi=None, yi=N
 
     if lat2d.shape[0] < 2 or lon2d.shape[0] < 2 or lat2d.shape[1] < 2 or lon2d.shape[1] < 2:
         raise Exception("ERROR rgrid2rcm: The input/output lat/lon grids must have at least 2 elements !")
-        
+
     if fi.ndim < 2:
         raise Exception("ERROR rgrid2rcm: fi must be at least two dimensions !\n")
 
@@ -367,4 +473,3 @@ def rgrid2rcm(lat1d, lon1d, fi, lat2d, lon2d, msg=None, meta=True, xi=None, yi=N
         fo = xr.DataArray(fo)
 
     return fo
-
