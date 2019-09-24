@@ -352,21 +352,46 @@ def _eofunc(np.ndarray np_input, int neval, opt={}):
     cdef ncomp.ncomp_array* ncomp_input = np_to_ncomp_array(np_input)
 
     # convert opt dict to ncomp_attributes struct
-    cdef ncomp_attributes* attrs = dict_to_ncomp_attributes(opt)
+    cdef ncomp.ncomp_attributes* attrs = dict_to_ncomp_attributes(opt)
 
     # allocate output ncomp_array and ncomp_attributes
-    cdef ncomp.ncomp_array* ncomp_output
-    cdef ncomp.ncomp_attributes* attrs_output
+    cdef ncomp.ncomp_array ncomp_output
+    cdef ncomp.ncomp_attributes attrs_output
 
     cdef int ier
     with nogil:
-        ier = ncomp.eofunc(ncomp_input, neval, attrs, ncomp_output, attrs_output)
+        ier = ncomp.eofunc(ncomp_input, neval, attrs, &ncomp_output, &attrs_output)
 
     # convert ncomp_output to np.ndarray
-    np_output = ncomp_to_np_array(ncomp_output)
+    np_output = ncomp_to_np_array(&ncomp_output)
 
     # convert attrs_output to dict
     # do something here
-    np_attrs_dict = {}
+    np_attrs_dict = ncomp_attributes_to_dict(attrs_output)
 
     return (np_output, np_attrs_dict)
+
+cdef ncomp.ncomp_single_attribute* np_to_ncomp_single_attribute(char* name, np.ndarray nparr):
+    cdef long long_addr = nparr.__array_interface__['data'][0]
+    cdef void* addr = <void*> long_addr
+    cdef int ndim = nparr.ndim
+    cdef size_t* shape = <size_t*> nparr.shape
+    cdef int np_type = nparr.dtype.num
+    return <ncomp.ncomp_single_attribute*> ncomp.create_ncomp_single_attribute(name, addr, np_type, ndim, shape)
+
+cdef ncomp.ncomp_attributes* dict_to_ncomp_attributes(d):
+    nAttribute = len(d)
+    cdef ncomp.ncomp_attributes* out_attrs = ncomp.ncomp_attributes_allocate(nAttribute)
+    print(out_attrs.nAttribute)
+    for i, k in enumerate(d):
+        v = d[k]
+        out_attrs.attribute_array[i] = np_to_ncomp_single_attribute(k, v)
+    return out_attrs
+
+cdef ncomp_attributes_to_dict(ncomp.ncomp_attributes attrs):
+    d = {}
+    cdef ncomp.ncomp_single_attribute* attr
+    for i in range(attrs.nAttribute):
+        attr = (attrs.attribute_array)[i]
+        d[attr.name] = ncomp_to_np_array(attr.value)
+    return d

@@ -51,20 +51,24 @@ cdef extern from "ncomp/types.h":
         void*           addr
         int             has_missing
         ncomp_missing   msg
-        size_t*          shape
+        size_t*         shape
 
     ctypedef struct ncomp_single_attribute:
-      char *        name
-      ncomp_array*  value
+        char *        name
+        ncomp_array*  value
 
     ctypedef struct ncomp_attributes:
-      int                       nAttribute
-      ncomp_single_attribute *  attribute_array
+        int                        nAttribute
+        ncomp_single_attribute **  attribute_array
 
 
 cdef extern from "ncomp/util.h":
     ncomp_array* ncomp_array_alloc(void*, int, int, size_t*)
     void         ncomp_array_free(ncomp_array*, int)
+    ncomp_single_attribute* create_ncomp_single_attribute(char *, void *, int, int, size_t *);
+    ncomp_attributes* ncomp_attributes_allocate(int);
+
+
 
 cdef extern from "ncomp/wrapper.h":
     int linint2(const ncomp_array*, const ncomp_array*, const ncomp_array*,
