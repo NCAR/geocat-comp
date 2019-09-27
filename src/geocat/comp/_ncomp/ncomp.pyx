@@ -8,6 +8,21 @@ import numpy as np
 cimport numpy as np
 import functools
 
+def carrayify(f):
+    """
+    A decorator that ensures that :class:`numpy.ndarray` arguments are
+    C-contiguous in memory. The decorator function takes no arguments.
+    """
+    @functools.wraps(f)
+    def wrapper(*args, **kwargs):
+        new_args = list(args)
+        for i, arg in enumerate(new_args):
+            if isinstance(arg, np.ndarray) and not arg.flags.carray:
+                new_args[i] = np.ascontiguousarray(arg)
+        return f(*new_args, **kwargs)
+    return wrapper
+
+
 dtype_default_fill = {
              "DEFAULT_FILL":       ncomp.DEFAULT_FILL_DOUBLE,
              np.dtype(np.int8):    np.int8(ncomp.DEFAULT_FILL_INT8),
