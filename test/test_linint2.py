@@ -10,6 +10,7 @@ n = 127
 
 xi = np.linspace(0, n, num=n//2 + 1, dtype=np.float64)
 yi = np.linspace(0, n, num=n//2 + 1, dtype=np.float64)
+yi_reverse = yi[::-1].copy()
 xo = np.linspace(xi.min(), xi.max(), num=xi.shape[0] * 2 - 1)
 yo = np.linspace(yi.min(), yi.max(), num=yi.shape[0] * 2 - 1)
 fi_np = np.random.rand(96, 3, len(yi), len(xi)).astype(np.float64)
@@ -128,3 +129,44 @@ class Test_linint2_dask(ut.TestCase):
         fi = xr.DataArray(fi_np, dims=['time', 'level', 'lat', 'lon'], coords={'lat': yi, 'lon': xi}).chunk(chunks)
         with self.assertRaises(geocat.comp.ChunkError):
             fo = geocat.comp.linint2(fi, xo, yo, 0)
+
+
+class Test_linint2_numpy(ut.TestCase):
+    def test_linint2_fi_np(self):
+        fo = geocat.comp.linint2(fi_np, xo, yo, 0, xi=xi, yi=yi)
+        np.testing.assert_array_equal(fi_np, fo[..., ::2, ::2].values)
+
+    def test_linint2_fi_np_no_xi_yi(self):
+        with self.assertRaises(geocat.comp.CoordinateError):
+            fo = geocat.comp.linint2(fi_np, xo, yo, 0)
+
+    def test_linint2_fi_np_no_yi(self):
+        with self.assertRaises(geocat.comp.CoordinateError):
+            fo = geocat.comp.linint2(fi_np, xo, yo, 0, xi=xi)
+
+    def test_linint2_fi_np_no_xi(self):
+        with self.assertRaises(geocat.comp.CoordinateError):
+            fo = geocat.comp.linint2(fi_np, xo, yo, 0, yi=yi)
+
+
+class Test_linint2_non_monotonic(ut.TestCase):
+    def test_linint2_non_monotonic_xr(self):
+        fi = xr.DataArray(fi_np[:,:,::-1,:], dims=['time', 'level', 'lat', 'lon'], coords={'lat': yi_reverse, 'lon': xi}).chunk(chunks)
+        with self.assertWarns(geocat.comp._ncomp.NcompWarning):
+            geocat.comp.linint2(fi, xo, yo, 0).compute()
+
+    def test_linint2_non_monotonic_np(self):
+        with self.assertWarns(geocat.comp._ncomp.NcompWarning):
+            geocat.comp.linint2(fi_np[:,:,::-1,:], xo, yo, 0, xi=xi, yi=yi_reverse)
+
+
+class Test_linint2_non_contiguous(ut.TestCase):
+    def test_linint2_non_contiguous_xr(self):
+        fi = xr.DataArray(fi_np[:,:,::-1,:], dims=['time', 'level', 'lat', 'lon'], coords={'lat': yi_reverse, 'lon': xi}).chunk(chunks)
+        fo = geocat.comp.linint2(fi[:,:,::-1,:], xo, yo, 0)
+        np.testing.assert_array_equal(fi[:,:,::-1,:].values, fo[..., ::2, ::2].values)
+
+    def test_linint2_non_contiguous_np(self):
+        fi = xr.DataArray(fi_np[:,:,::-1,:], dims=['time', 'level', 'lat', 'lon'], coords={'lat': yi_reverse, 'lon': xi}).chunk(chunks)
+        fo = geocat.comp.linint2(fi[:,:,::-1,:].values, xo, yo, 0, xi=xi, yi=yi_reverse[::-1])
+        np.testing.assert_array_equal(fi[:,:,::-1,:].values, fo[..., ::2, ::2].values)
