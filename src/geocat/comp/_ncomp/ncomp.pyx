@@ -7,6 +7,13 @@ import cython
 import numpy as np
 cimport numpy as np
 import functools
+import warnings
+
+class NcompWarning(Warning):
+    pass
+
+class NcompError(Exception):
+    pass
 
 def carrayify(f):
     """
@@ -286,6 +293,9 @@ def _linint2(np.ndarray xi, np.ndarray yi, np.ndarray fi, np.ndarray xo, np.ndar
             icycx, iopt)
 #   re-acquire interpreter lock
 #   check errors ier
+    if ier:
+        warnings.warn("linint2: {}: xi, yi, xo, and yo must be monotonically increasing".format(ier),
+                      NcompWarning)
 
     if missing_inds_fi is not None and missing_inds_fi.any():
         fi[missing_inds_fi] = np.nan
