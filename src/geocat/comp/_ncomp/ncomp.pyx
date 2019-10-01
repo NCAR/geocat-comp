@@ -140,9 +140,11 @@ cdef set_ncomp_msg(ncomp.ncomp_missing* ncomp_msg, num):
     elif ncomp_type == ncomp.NCOMP_LONGDOUBLE:
         ncomp_msg.msg_longdouble = ncomp_to_dtype[ncomp_type](num)
 
-@cython.embedsignature(True)
+@carrayify
 def _linint2(np.ndarray xi, np.ndarray yi, np.ndarray fi, np.ndarray xo, np.ndarray yo, int icycx, msg=None):
-    """Interpolates a regular grid to a rectilinear one using bi-linear
+    """_linint2(xi, yi, fi, xo, yo, icycx, msg=None)
+
+    Interpolates a regular grid to a rectilinear one using bi-linear
     interpolation.
 
     linint2 uses bilinear interpolation to interpolate from one
