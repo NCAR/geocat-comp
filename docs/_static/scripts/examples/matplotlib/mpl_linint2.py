@@ -6,7 +6,6 @@ import xarray as xr
 import geocat.comp
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
-import matplotlib.ticker as mticker
 from matplotlib import cm
 from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
 from cartopy.mpl.geoaxes import GeoAxes
@@ -18,24 +17,28 @@ sst = ds.TEMP[0,0,:,:]
 lat = ds.LAT[:]
 lon = ds.LON[:]
 
-# Provide interpolation grid and call $linint2$ function from $geocat-comp$
-newlat = np.linspace(min(lat), max(lat), 128)
-newlon = np.linspace(min(lon), max(lon), 360)
-newsst = geocat.comp.linint2(sst, newlon, newlat, 0)
+# Provide (output) interpolation grid and call `linint2` function from `geocat-comp`
+newlat = np.linspace(min(lat), max(lat), 24)
+newlon = np.linspace(min(lon), max(lon), 72)
 
-# Visualize the interpolated grid $newsst$ using matplotlib and cartopy
-#### -----  Graphics using cartopy and matplotlib ----- ####
+# Invoke `linint2` from `geocat-comp`
+newsst = geocat.comp.linint2(sst, newlon, newlat, False)
+
 projection = ccrs.PlateCarree()
 axes_class = (GeoAxes, dict(map_projection=projection))
 fig = plt.figure(figsize=(10,8))
 axgr = AxesGrid(fig, 111, axes_class=axes_class,
                 nrows_ncols=(2, 1),
                 axes_pad=0.7,
-                cbar_location='bottom',
+                cbar_location='right',
                 cbar_mode='single',
-                cbar_pad=0.1,
-                cbar_size='10%',
+                cbar_pad=0.5,
+                cbar_size='3%',
                 label_mode='')  # note the empty label_mode
+
+plot_options = dict(transform=projection,
+                    cmap=cm.jet,
+                    vmin=-30, vmax=30, levels=16, extend='neither', add_colorbar=False, xtitle='')
 
 for i, ax in enumerate(axgr):
     ax.coastlines()
@@ -48,13 +51,14 @@ for i, ax in enumerate(axgr):
 
     # Plot contours for both the subplots
     if( i==0 ):
-        X, Y = np.meshgrid(lon, lat)
-        p=ax.contourf(X, Y, sst, levels=16, transform=projection, cmap=cm.jet)
+        sst.plot.contourf(ax=ax, **plot_options)
         ax.set_title('Original Grid', fontsize=14, fontweight='bold')
     else:
-        newX, newY = np.meshgrid(newlon, newlat)
-        p=ax.contourf(newX, newY, newsst, levels=16, transform=projection, cmap=cm.jet)
-        ax.set_title('ReGrid - linint2', fontsize=14, fontweight='bold')
+        newsst.plot.contourf(ax=ax, **plot_options)
+        ax.set_title('Regrid (to coarse) - linint2', fontsize=14, fontweight='bold')
+
+    ax.xaxis.label.set_visible(False)
+    ax.yaxis.label.set_visible(False)
 
 # Add color bar and label details (title, size, etc.)
 cax=axgr.cbar_axes[0]
@@ -65,5 +69,5 @@ axis.label.set_size(16)
 axis.major_ticklabels.set_size(10)
 
 # Save figure and show
-plt.savefig('linint2', dpi=300)
+plt.savefig('linint2.png', dpi=300)
 plt.show()
