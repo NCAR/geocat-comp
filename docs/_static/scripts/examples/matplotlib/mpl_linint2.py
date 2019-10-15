@@ -54,7 +54,7 @@ for i, ax in enumerate(axgr):
         sst.plot.contourf(ax=ax, **plot_options)
         ax.set_title('Original Grid', fontsize=14, fontweight='bold')
     else:
-        newsst.plot.contourf(ax=ax, **plot_options)
+        p = newsst.plot.contourf(ax=ax, **plot_options)
         ax.set_title('Regrid (to coarse) - linint2', fontsize=14, fontweight='bold')
 
     ax.xaxis.label.set_visible(False)
