@@ -314,7 +314,7 @@ def _linint2(np.ndarray xi, np.ndarray yi, np.ndarray fi, np.ndarray xo, np.ndar
 
     return fo
 
-@cython.embedsignature(True)
+@carrayify
 def _eofunc(np.ndarray np_input, int neval, opt={}):
     """Computes empirical orthogonal functions (EOFs, aka: Principal Component
     Analysis).
