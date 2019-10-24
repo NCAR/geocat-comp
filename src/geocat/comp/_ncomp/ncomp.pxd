@@ -61,3 +61,7 @@ cdef extern from "ncomp/wrapper.h":
     int linint2(const ncomp_array*, const ncomp_array*, const ncomp_array*,
                 const ncomp_array*, const ncomp_array*, ncomp_array*,
                 int, int) nogil;
+
+    int moc_globe_atl( const ncomp_array *, const ncomp_array *, const ncomp_array *,
+                       const ncomp_array *, const ncomp_array *, const ncomp_array *,
+                       ncomp_array * ) nogil;

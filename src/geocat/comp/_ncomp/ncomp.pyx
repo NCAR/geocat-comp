@@ -308,3 +308,62 @@ def _linint2(np.ndarray xi, np.ndarray yi, np.ndarray fi, np.ndarray xo, np.ndar
     fo[fo == fo_msg] = np.nan
 
     return fo
+
+
+
+@carrayify
+def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolus, np.ndarray a_submeso, np.ndarray tlat, np.ndarray rmlak):
+    """Facilitates calculating the meridional overturning circulation for the globe and Atlantic.
+    Args:
+    lat_aux_grid (:class:`numpy.ndarray`):
+        Latitude grid for transport diagnostics.
+
+    a_wvel (:class:`numpy.ndarray`):
+        Area weighted Eulerian-mean vertical velocity [TAREA*WVEL].
+
+    a_bolus (:class:`numpy.ndarray`):
+        Area weighted Eddy-induced (bolus) vertical velocity [TAREA*WISOP].
+
+    a_submeso (:class:`numpy.ndarray`):
+        Area weighted submeso vertical velocity [TAREA*WSUBM].
+
+    tlat (:class:`numpy.ndarray`):
+        Array of t-grid latitudes.
+
+    rmlak (:class:`numpy.ndarray`):
+        Basin index number: [0]=Globe, [1]=Atlantic
+
+    Returns:
+        :class:`numpy.ndarray`: A multi-dimensional array of size [moc_comp] x
+        [n_transport_reg] x [kdepth] x [nyaux] where:
+
+        - moc_comp refers to the three components returned
+        - n_transport_reg refers to the Globe and Atlantic
+        - kdepth is the the number of vertical levels of the work arrays
+        - nyaux is the size of the lat_aux_grid
+
+        The type of the output data will be double only if a_wvel or a_bolus or
+        a_submesa is of type double. Otherwise, the return type will be float.
+    """
+
+    # Convert np_input to ncomp_array
+    cdef ncomp.ncomp_array* ncomp_lat_aux_grid = np_to_ncomp_array(lat_aux_grid)
+    cdef ncomp.ncomp_array* ncomp_a_wvel = np_to_ncomp_array(a_wvel)
+    cdef ncomp.ncomp_array* ncomp_a_bolus = np_to_ncomp_array(a_bolus)
+    cdef ncomp.ncomp_array* ncomp_a_submeso = np_to_ncomp_array(a_submeso)
+    cdef ncomp.ncomp_array* ncomp_tlat = np_to_ncomp_array(tlat)
+    cdef ncomp.ncomp_array* ncomp_rmlak = np_to_ncomp_array(rmlak)
+
+    # Allocate output ncomp_array
+    cdef ncomp.ncomp_array ncomp_output
+
+    cdef int ier
+    with nogil:
+        ier = ncomp.moc_globe_atl(ncomp_lat_aux_grid, ncomp_a_wvel, ncomp_a_bolus,
+                                  ncomp_a_submeso, ncomp_tlat, ncomp_rmlak,
+                                  &ncomp_output)
+
+    # Convert ncomp_output to np.ndarray
+    np_output = ncomp_to_np_array(&ncomp_output)
+
+    return np_output
