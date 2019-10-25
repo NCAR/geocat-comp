@@ -109,8 +109,8 @@ cdef ncomp.ncomp_array* np_to_ncomp_array(np.ndarray nparr):
     cdef int ndim = nparr.ndim
     cdef size_t* shape = <size_t*> nparr.shape
     cdef int np_type = nparr.dtype.num
-    return <ncomp.ncomp_array*> ncomp.ncomp_array_alloc(addr, np_type, ndim, shape)
 
+    return <ncomp.ncomp_array*> ncomp.ncomp_array_alloc(addr, np_type, ndim, shape)
 
 cdef np.ndarray ncomp_to_np_array(ncomp.ncomp_array* ncarr):
     np.import_array()
@@ -314,8 +314,58 @@ def _linint2(np.ndarray xi, np.ndarray yi, np.ndarray fi, np.ndarray xo, np.ndar
 
     return fo
 
+cdef adjust_for_missing_values(np.ndarray np_input, ncomp.ncomp_array* ncomp_input, dict kwargs):
+    missing_value = kwargs.get("missing_value", np.nan)
+
+    missing_mask = None
+    if np.isnan(missing_value):
+        # print("No Missing value provided or it was already set to NaN.")
+        missing_mask = np.isnan(np_input)
+        missing_value = get_default_fill(np_input)
+        np_input[missing_mask] = missing_value
+    else:
+        # print(f"Using provided Missing value: {missing_value}")
+        if np.isnan(np_input).any():
+            raise ValueError(
+                "The missing value is set to a non-NaN value but the data still contains some NaN. "
+                "Either change all the NaN numbers to your provided missing_value or "
+                "change all the missing values to NaN and do not specify the missing_values or specify it as NaN"
+            )
+        if isinstance(missing_value, np.number):
+            if missing_value.dtype != np_input.dtype:
+                missing_value = missing_value.astype(np_input.dtype)
+        else:
+            missing_value = np.asarray([missing_value])[0].astype(np_input.dtype)
+            # alternatively we could do:
+            # missing_value = np.float128(missing_value).astype(np_input.dtype)
+            # however, that's assuming the cating issing_calue to float128 doesn't change anything
+            # prefer the asarray lines, because we let numpy to choose the proper type.
+
+        missing_mask = (np_input == missing_value)
+
+    if missing_mask.any():
+        ncomp_input.has_missing = 1
+        if isinstance(missing_value, np.number):
+            set_ncomp_msg(&ncomp_input.msg, missing_value)
+            if np_input.dtype != missing_value.dtype:
+                raise TypeError(
+                    "This should never be raised at this point. "
+                    "By now the missing_value should have the proper type"
+                )
+        else:
+            set_ncomp_msg(&ncomp_input.msg, np.float128(missing_value).astype(np_input.dtype))
+
+    return missing_mask
+
+cdef reverse_missing_values_adjustments(np.ndarray np_input, np.ndarray missing_mask, dict kwargs):
+    missing_value = kwargs.get("missing_value", np.nan)
+
+    if np.isnan(missing_value) and missing_mask.any():
+        missing_value = get_default_fill(np_input)
+        np_input[missing_mask] = np.nan
+
 @carrayify
-def _eofunc(np.ndarray np_input, int neval, opt={}):
+def _eofunc(np.ndarray np_input, int neval, opt={}, **kwargs):
     """Computes empirical orthogonal functions (EOFs, aka: Principal Component
     Analysis).
 
@@ -333,7 +383,7 @@ def _eofunc(np.ndarray np_input, int neval, opt={}):
         eigenvectors to be returned. This is usually less than or equal to the
         minimum number of observations or number of variables.
 
-      options (:obj:`dict`):
+      opt (:obj:`dict`):
         - "jopt"        : both routines
         - "return_eval" : both routines (unadvertised)
         - "return_trace": return trace
@@ -345,6 +395,9 @@ def _eofunc(np.ndarray np_input, int neval, opt={}):
                       : If False, don't call transpose routine no matter what
         - "oldtranspose": If True, call Dennis' old transpose routine.
         - "debug"       : turn on debug
+
+      kwargs:
+        extra parameters to control the behavior of the function, such as missing_value
 
       Returns:
         A multi-dimensional array containing normalized EOFs. The returned
@@ -377,6 +430,7 @@ def _eofunc(np.ndarray np_input, int neval, opt={}):
     """
     # convert np_input to ncomp_array
     cdef ncomp.ncomp_array* ncomp_input = np_to_ncomp_array(np_input)
+    missing_mask = adjust_for_missing_values(np_input, ncomp_input, kwargs)
 
     # convert opt dict to ncomp_attributes struct
     cdef ncomp.ncomp_attributes* attrs = dict_to_ncomp_attributes(opt)
@@ -392,9 +446,53 @@ def _eofunc(np.ndarray np_input, int neval, opt={}):
     # convert ncomp_output to np.ndarray
     np_output = ncomp_to_np_array(&ncomp_output)
 
+    # making sure that output missing values is NaN
+    output_missing_value = ncomp_output.msg.msg_double \
+            if ncomp_output.type == ncomp.NCOMP_DOUBLE \
+            else ncomp_output.msg.msg_float
+
+    np_output[np_output == output_missing_value] = np.nan
+
     # convert attrs_output to dict
-    # do something here
     np_attrs_dict = ncomp_attributes_to_dict(attrs_output)
+
+    # Reversing the changed values
+    reverse_missing_values_adjustments(np_input, missing_mask, kwargs)
+
+    return (np_output, np_attrs_dict)
+
+@carrayify
+def _eofunc_n(np.ndarray np_input, int neval, int t_dim, opt={}, **kwargs):
+    # convert np_input to ncomp_array
+    cdef ncomp.ncomp_array* ncomp_input = np_to_ncomp_array(np_input)
+    missing_mask = adjust_for_missing_values(np_input, ncomp_input, kwargs)
+
+    # convert opt dict to ncomp_attributes struct
+    cdef ncomp.ncomp_attributes* attrs = dict_to_ncomp_attributes(opt)
+
+    # allocate output ncomp_array and ncomp_attributes
+    cdef ncomp.ncomp_array ncomp_output
+    cdef ncomp.ncomp_attributes attrs_output
+
+    cdef int ier
+    with nogil:
+        ier = ncomp.eofunc_n(ncomp_input, neval, t_dim, attrs, &ncomp_output, &attrs_output)
+
+    # convert ncomp_output to np.ndarray
+    np_output = ncomp_to_np_array(&ncomp_output)
+
+    # making sure that output missing values is NaN
+    output_missing_value = ncomp_output.msg.msg_double \
+            if ncomp_output.type == ncomp.NCOMP_DOUBLE \
+            else ncomp_output.msg.msg_float
+
+    np_output[np_output == output_missing_value] = np.nan
+
+    # convert attrs_output to dict
+    np_attrs_dict = ncomp_attributes_to_dict(attrs_output)
+
+    # Reversing the changed values
+    reverse_missing_values_adjustments(np_input, missing_mask, kwargs)
 
     return (np_output, np_attrs_dict)
 
@@ -409,7 +507,6 @@ cdef ncomp.ncomp_single_attribute* np_to_ncomp_single_attribute(char* name, np.n
 cdef ncomp.ncomp_attributes* dict_to_ncomp_attributes(d):
     nAttribute = len(d)
     cdef ncomp.ncomp_attributes* out_attrs = ncomp.ncomp_attributes_allocate(nAttribute)
-    print(out_attrs.nAttribute)
     for i, k in enumerate(d):
         v = d[k]
         out_attrs.attribute_array[i] = np_to_ncomp_single_attribute(k, v)

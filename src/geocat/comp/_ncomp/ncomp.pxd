@@ -77,3 +77,10 @@ cdef extern from "ncomp/wrapper.h":
 
     int eofunc(const ncomp_array*, const int, const ncomp_attributes*,
                ncomp_array*, ncomp_attributes*) nogil;
+
+    int eofunc_n(const ncomp_array * x_in, const int neval_in,
+                        const int t_dim,
+                        const ncomp_attributes * options_in,
+                        ncomp_array * x_out, ncomp_attributes * attrList_out) nogil;
+
+
