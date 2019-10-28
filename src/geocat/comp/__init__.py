@@ -245,3 +245,117 @@ def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
         fo = xr.DataArray(fo)
 
     return fo
+
+
+
+def moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak,
+                  msg=None, meta=True):
+    """Facilitates calculating the meridional overturning circulation for the
+    globe and Atlantic.
+
+    Args:
+
+        lat_aux_grid (:class:`numpy.ndarray`):
+            Latitude grid for transport diagnostics.
+
+        a_wvel (:class:`numpy.ndarray`):
+            Area weighted Eulerian-mean vertical velocity [TAREA*WVEL].
+
+        a_bolus (:class:`numpy.ndarray`):
+            Area weighted Eddy-induced (bolus) vertical velocity [TAREA*WISOP].
+
+        a_submeso (:class:`numpy.ndarray`):
+            Area weighted submeso vertical velocity [TAREA*WSUBM].
+
+        tlat (:class:`numpy.ndarray`):
+            Array of t-grid latitudes.
+
+        rmlak (:class:`numpy.ndarray`):
+            Basin index number: [0]=Globe, [1]=Atlantic
+
+        msg (:obj:`numpy.number`):
+          A numpy scalar value that represent a missing value.
+          This argument allows a user to use a missing value scheme
+          other than NaN or masked arrays, similar to what NCL allows.
+
+        meta (:obj:`bool`):
+          Set to False to disable metadata; default is True.
+
+        Returns:
+            :class:`numpy.ndarray`: A multi-dimensional array of size [moc_comp] x
+            [n_transport_reg] x [kdepth] x [nyaux] where:
+
+            - moc_comp refers to the three components returned
+            - n_transport_reg refers to the Globe and Atlantic
+            - kdepth is the the number of vertical levels of the work arrays
+            - nyaux is the size of the lat_aux_grid
+
+            The type of the output data will be double only if a_wvel or a_bolus or
+            a_submesa is of type double. Otherwise, the return type will be float.
+
+
+    Examples:
+
+        # TODO: To be included
+
+    """
+
+    # Ensure input arrays are numpy.ndarrays
+    if isinstance(lat_aux_grid, xr.DataArray):
+    lat_aux_grid = lat_aux_grid.values
+
+    if isinstance(a_wvel, xr.DataArray):
+    a_wvel = a_wvel.values
+
+    if isinstance(a_bolus, xr.DataArray):
+        a_bolus = a_bolus.values
+
+    if isinstance(a_submeso, xr.DataArray):
+        a_submeso = a_submeso.values
+
+    if isinstance(tlat, xr.DataArray):
+        tlat = tlat.values
+
+    if isinstance(rmlak, xr.DataArray):
+        rmlak = rmlak.values
+
+    fi_data = fi.data
+
+    if isinstance(fi_data, da.Array):
+        chunks = list(fi.chunks)
+
+        # ensure rightmost dimensions of input are not chunked
+        if chunks[-2:] != [yi.shape, xi.shape]:
+            raise ChunkError("linint2: the two rightmost dimensions of fi must"
+                             " not be chunked.")
+
+        # ensure rightmost dimensions of output are not chunked
+        chunks[-2:] = (yo.shape, xo.shape)
+
+        # map_blocks maps each chunk of fi_data to a separate invocation of
+        # _ncomp._linint2. The "chunks" keyword argument should be the chunked
+        # dimensionality of the expected output; the number of chunks should
+        # match that of fi_data. Additionally, "drop_axis" and "new_axis" in
+        # this case indicate that the two rightmost dimensions of the input
+        # will be dropped from the output array, and that two new axes will be
+        # added instead.
+        fo = map_blocks(_ncomp._linint2, xi, yi, fi_data, xo, yo, icycx, msg,
+                        chunks=chunks, dtype=fi.dtype,
+                        drop_axis=[fi.ndim-2, fi.ndim-1],
+                        new_axis=[fi.ndim-2, fi.ndim-1])
+    elif isinstance(fi_data, np.ndarray):
+        fo = _ncomp._linint2(xi, yi, fi_data, xo, yo, icycx, msg)
+    else:
+        raise TypeError
+
+    if meta:
+        coords = {k:v if k not in fi.dims[-2:]
+                  else (xo if k == fi.dims[-1] else yo)
+                  for (k, v) in fi.coords.items()}
+
+        fo = xr.DataArray(fo, attrs=fi.attrs, dims=fi.dims,
+                              coords=coords)
+    else:
+        fo = xr.DataArray(fo)
+
+    return fo
