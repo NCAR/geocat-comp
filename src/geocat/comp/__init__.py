@@ -245,3 +245,89 @@ def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
         fo = xr.DataArray(fo)
 
     return fo
+
+
+def eofunc(data, neval, **kwargs):
+    """
+    Computes empirical orthogonal functions (EOFs, aka: Principal Component Analysis).
+
+    Args:
+        data:
+            an iterable object containing numbers. It must be at least a 2-dimensional array. The right-most dimension
+            is assumed to be the number of observations. Generally this is the time time dimension. If your right-most
+            dimension is not time, you could pass ``time_dim=x`` as an argument to define which dimension must be treated
+            as time and/or number of observations.
+            Data must be convertible to numpy.array
+        neval:
+            A scalar integer that specifies the number of eigenvalues and eigenvectors to be returned. This is usually
+            less than or equal to the minimum number of observations or number of variables.
+        **kwargs:
+            extra options controlling the behavior of the function. Currently the following are supported:
+            - ``jopt``: an integer that indicates whether to use the covariance matrix or the correlation
+                        matrix. The default is to use the covariance matrix.
+            - ``pcrit``: a float value between ``0`` and ``100`` that indicates the percentage of non-missing points
+                         that must exist at any single point in order to be calculated. The default is 50%. Points that
+                         contain all missing values will automatically be set to missing.
+            - ''time_dim``: an integer defining the time dimension. it must be between ``0`` and ``data.ndim - 1`` or it
+                            could be ``-1`` indicating the last dimension. The default balue is -1.
+            - ``missing_value``: a value defining the missing value. The default is ``np.nan``.
+
+    """
+    # Parsing Options
+    options = {}
+    if "jopt" in kwargs:
+        if not isinstance(kwargs["jopt"], str):
+            raise TypeError('jopt must be a string set to eirther "correlation" or "covariance".')
+        if str.lower(kwargs["jopt"]) not in {"covariance", "correlation"}:
+            raise ValueError("jopt must be set to either covariance or correlation.")
+
+        options[b'jopt'] = np.asarray(1) if str.lower(kwargs["jopt"]) == "correlation" else np.asarray(0)
+
+    if "pcrit" in kwargs:
+        provided_pcrit = np.asarray(kwargs["pcrit"]).astype(np.float64)
+        if provided_pcrit.size != 1:
+            raise ValueError("Only a single number must be provided for pcrit.")
+
+        if (provided_pcrit >= 0.0) and (provided_pcrit <= 100.0):
+            options[b'pcrit'] = provided_pcrit
+        else:
+            raise ValueError("pcrit must be between 0 and 100")
+
+    missing_value = kwargs["missing_value"] if "missing_value" in kwargs else np.nan
+    print("missing_value: ", missing_value)
+
+    np_data = np.asarray(data)
+    time_dim = -1
+    if "time_dim" in kwargs:
+        time_dim = int(kwargs["time_dim"])
+        if (time_dim > (np_data.ndim - 1)) or (time_dim < -1):
+            raise ValueError("time_dim must be a value between 0 and (data.ndim - 1) or it could be -1 indicating the "
+                             "last dimension")
+
+    # checking neval
+    accepted_neval = int(neval)
+    if accepted_neval <= 0:
+        raise ValueError("neval must be a positive non-zero integer value.")
+
+    print(options)
+    if (time_dim == -1) or (time_dim == (np.ndim - 1)):
+        print("calling eofunc: ...")
+        response = _ncomp._eofunc(np_data, accepted_neval, options, missing_value=missing_value)
+    else:
+        print("calling eofunc_n: ...")
+        response = _ncomp._eofunc_n(np_data, accepted_neval, time_dim, options, missing_value=missing_value)
+
+    eof = response[0]
+    attrs = {}
+    # converting the keys to string instead of bytes also fixing matrix and method
+    # TODO: once Kevin's work on char * is merged, we could remove this part or change it properly.
+    for k, v in response[1].items():
+        if k in {b'matrix', b'method'}:
+            attrs[k.decode('utf-8')] = v.tostring().decode('utf-8')[:-1]
+        else:
+            attrs[k.decode('utf-8')] = v
+
+    return eof, attrs
+
+
+
