@@ -294,27 +294,26 @@ def eofunc(data, neval, **kwargs):
             raise ValueError("pcrit must be between 0 and 100")
 
     missing_value = kwargs["missing_value"] if "missing_value" in kwargs else np.nan
-    print("missing_value: ", missing_value)
+
 
     np_data = np.asarray(data)
     time_dim = -1
     if "time_dim" in kwargs:
         time_dim = int(kwargs["time_dim"])
-        if (time_dim > (np_data.ndim - 1)) or (time_dim < -1):
-            raise ValueError("time_dim must be a value between 0 and (data.ndim - 1) or it could be -1 indicating the "
-                             "last dimension")
+        if (time_dim >= np_data.ndim) or (time_dim < -np_data.ndim):
+            raise ValueError(f"dimension out of bound. The input data has {np_data.ndim} dimension."
+                             f" hence, time_dim must be between {-np_data.ndim} and {np_data.ndim - 1 }")
+    if time_dim < 0:
+        time_dim = np_data.ndim + time_dim
 
     # checking neval
     accepted_neval = int(neval)
     if accepted_neval <= 0:
         raise ValueError("neval must be a positive non-zero integer value.")
 
-    print(options)
-    if (time_dim == -1) or (time_dim == (np.ndim - 1)):
-        print("calling eofunc: ...")
+    if (time_dim == (np_data.ndim - 1)):
         response = _ncomp._eofunc(np_data, accepted_neval, options, missing_value=missing_value)
     else:
-        print("calling eofunc_n: ...")
         response = _ncomp._eofunc_n(np_data, accepted_neval, time_dim, options, missing_value=missing_value)
 
     eof = response[0]

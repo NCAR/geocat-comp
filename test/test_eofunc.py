@@ -955,6 +955,246 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertEqual("covariance", attrs['matrix'])
         self.assertEqual("transpose", attrs['method'])
 
+    def test_eofunc_n_01(self):
+        data = self._sample_data[1]
+
+        eof, attrs = eofunc(data, 1, time_dim=1)
+
+        self.assertEqual((1, 4, 4), eof.shape)
+
+        for e in np.nditer(eof):
+            self.assertAlmostEqual(0.25, e, 2)
+
+        self.assertEqual(5, len(attrs))
+
+        self.assertAlmostEqual(85.33333, attrs['eval_transpose'][0], 4)
+        self.assertAlmostEqual(100.0, attrs['pcvar'][0], 1)
+        self.assertAlmostEqual(426.66666, attrs['eval'][0], 4)
+
+        self.assertEqual("covariance", attrs['matrix'])
+        self.assertEqual("transpose", attrs['method'])
+
+    def test_eofunc_n_02(self):
+        data = self._sample_data[1]
+
+        eof, attrs = eofunc(data, 1, time_dim=1, jopt="correlation")
+
+        self.assertEqual((1, 4, 4), eof.shape)
+
+        for e in np.nditer(eof):
+            self.assertAlmostEqual(0.25, e, 2)
+
+        self.assertEqual(5, len(attrs))
+
+        self.assertAlmostEqual(3.2000, attrs['eval_transpose'][0], 4)
+        self.assertAlmostEqual(100.0, attrs['pcvar'][0], 1)
+        self.assertAlmostEqual(16.0000, attrs['eval'][0], 4)
+
+        self.assertEqual("correlation", attrs['matrix'])
+        self.assertEqual("transpose", attrs['method'])
+
+    def test_eofunc_n_03(self):
+        data = self._sample_data[1]
+
+        eof, attrs = eofunc(data, 1, time_dim=0, jopt="covariance", pcrit=32)
+
+        self.assertEqual((1, 4, 4), eof.shape)
+
+        for e in np.nditer(eof):
+            self.assertAlmostEqual(0.25, e, 2)
+
+        self.assertEqual(6, len(attrs))
+
+        self.assertAlmostEqual(1365.3333, attrs['eval_transpose'][0], 4)
+        self.assertAlmostEqual(100.0, attrs['pcvar'][0], 1)
+        self.assertAlmostEqual(6826.6667, attrs['eval'][0], 4)
+        self.assertAlmostEqual(32.00000, attrs['pcrit'][0], 4)
+
+        self.assertEqual("covariance", attrs['matrix'])
+        self.assertEqual("transpose", attrs['method'])
+
+    def test_eofunc_n_03_1(self):
+        data = self._sample_data[1]
+
+        eof, attrs = eofunc(data, 1, time_dim=0, jopt="covariance", pcrit=32)
+
+        self.assertEqual((1, 4, 4), eof.shape)
+
+        for e in np.nditer(eof):
+            self.assertAlmostEqual(0.25, e, 2)
+
+        self.assertEqual(6, len(attrs))
+
+        self.assertAlmostEqual(1365.3333, attrs['eval_transpose'][0], 4)
+        self.assertAlmostEqual(100.0, attrs['pcvar'][0], 1)
+        self.assertAlmostEqual(6826.6667, attrs['eval'][0], 4)
+        self.assertAlmostEqual(32.00000, attrs['pcrit'][0], 4)
+
+        self.assertEqual("covariance", attrs['matrix'])
+        self.assertEqual("transpose", attrs['method'])
+
+    def test_eofunc_n_04(self):
+        data = self._sample_data[3]
+
+        eof, attrs = eofunc(data, 1, time_dim=1, jopt="covariance", pcrit=32)
+
+        self.assertEqual((1, 4, 4), eof.shape)
+
+        expected_results = [0.3139, 0.1243, 0.1274, -99.0, 0.3139, 0.0318, 0.3139, -99.0, 0.3139, 0.2821, 0.3139, 0.0303, 0.3139, 0.3139, 0.3139, 0.3139]
+        for e in zip(expected_results, eof.reshape((16, 1)).tolist()):
+            if (e[0] != -99):
+                self.assertAlmostEqual(e[0], e[1][0], 4)
+            else:
+                self.assertTrue(np.isnan(e[1]))
+
+        self.assertEqual(6, len(attrs))
+
+        self.assertAlmostEqual(84.75415, attrs['eval_transpose'][0], 4)
+        self.assertAlmostEqual(102.4951, attrs['pcvar'][0], 1)
+        self.assertAlmostEqual(339.0166, attrs['eval'][0], 4)
+        self.assertAlmostEqual(32.00000, attrs['pcrit'][0], 4)
+
+        self.assertEqual("covariance", attrs['matrix'])
+        self.assertEqual("transpose", attrs['method'])
+
+        self.assertTrue(np.isnan(data[0, 0, 3]))
+
+    def test_eofunc_n_05(self):
+        data = self._sample_data[3]
+
+        eof, attrs = eofunc(data, 1, time_dim=1, jopt="covariance", pcrit=32, missing_value=np.nan)
+
+        self.assertEqual((1, 4, 4), eof.shape)
+
+        expected_results = [0.3139, 0.1243, 0.1274, -99.0, 0.3139, 0.0318, 0.3139, -99.0, 0.3139, 0.2821, 0.3139, 0.0303, 0.3139, 0.3139, 0.3139, 0.3139]
+        for e in zip(expected_results, eof.reshape((16, 1)).tolist()):
+            if (e[0] != -99):
+                self.assertAlmostEqual(e[0], e[1][0], 4)
+            else:
+                self.assertTrue(np.isnan(e[1]))
+
+        self.assertEqual(6, len(attrs))
+
+        self.assertAlmostEqual(84.75415, attrs['eval_transpose'][0], 4)
+        self.assertAlmostEqual(102.4951, attrs['pcvar'][0], 1)
+        self.assertAlmostEqual(339.0166, attrs['eval'][0], 4)
+        self.assertAlmostEqual(32.00000, attrs['pcrit'][0], 4)
+
+        self.assertEqual("covariance", attrs['matrix'])
+        self.assertEqual("transpose", attrs['method'])
+
+        self.assertTrue(np.isnan(data[0, 0, 3]))
+
+    def test_eofunc_n_06(self):
+        data = self._sample_data[3]
+
+        with self.assertRaises(ValueError):
+            eofunc(data, 1, time_dim=1, missing_value=42)
+
+    def test_eofunc_n_07(self):
+        data = self._sample_data[2]
+
+        eof, attrs = eofunc(data, 1, time_dim=1, jopt="covariance", pcrit=32, missing_value=np.float64(-99.0))
+
+        self.assertEqual((1, 4, 4), eof.shape)
+
+        expected_results = [0.3139, 0.1243, 0.1274, -99.0, 0.3139, 0.0318, 0.3139, -99.0, 0.3139, 0.2821, 0.3139, 0.0303, 0.3139, 0.3139, 0.3139, 0.3139]
+        for e in zip(expected_results, eof.reshape((16, 1)).tolist()):
+            if (e[0] != -99):
+                self.assertAlmostEqual(e[0], e[1][0], 4)
+            else:
+                self.assertTrue(np.isnan(e[1]))
+
+        self.assertEqual(6, len(attrs))
+
+        self.assertAlmostEqual(84.75415, attrs['eval_transpose'][0], 4)
+        self.assertAlmostEqual(102.4951, attrs['pcvar'][0], 1)
+        self.assertAlmostEqual(339.0166, attrs['eval'][0], 4)
+        self.assertAlmostEqual(32.00000, attrs['pcrit'][0], 4)
+
+        self.assertEqual("covariance", attrs['matrix'])
+        self.assertEqual("transpose", attrs['method'])
+
+        self.assertEqual(-99, data[0, 0, 3])
+
+    def test_eofunc_n_08(self):
+        data = self._sample_data[2]
+
+        eof, attrs = eofunc(data, 1, time_dim=1, jopt="covariance", pcrit=32, missing_value=-99)
+
+        self.assertEqual((1, 4, 4), eof.shape)
+
+        expected_results = [0.3139, 0.1243, 0.1274, -99.0, 0.3139, 0.0318, 0.3139, -99.0, 0.3139, 0.2821, 0.3139, 0.0303, 0.3139, 0.3139, 0.3139, 0.3139]
+        for e in zip(expected_results, eof.reshape((16, 1)).tolist()):
+            if (e[0] != -99):
+                self.assertAlmostEqual(e[0], e[1][0], 4)
+            else:
+                self.assertTrue(np.isnan(e[1]))
+
+        self.assertEqual(6, len(attrs))
+
+        self.assertAlmostEqual(84.75415, attrs['eval_transpose'][0], 4)
+        self.assertAlmostEqual(102.4951, attrs['pcvar'][0], 1)
+        self.assertAlmostEqual(339.0166, attrs['eval'][0], 4)
+        self.assertAlmostEqual(32.00000, attrs['pcrit'][0], 4)
+
+        self.assertEqual("covariance", attrs['matrix'])
+        self.assertEqual("transpose", attrs['method'])
+
+        self.assertEqual(-99, data[0, 0, 3])
+
+    def test_eofunc_n_09(self):
+        data = self._sample_data[2]
+
+        eof, attrs = eofunc(data, 1, time_dim=1, jopt="covariance", pcrit=32, missing_value=np.int8(-99))
+
+        self.assertEqual((1, 4, 4), eof.shape)
+
+        expected_results = [0.3139, 0.1243, 0.1274, -99.0, 0.3139, 0.0318, 0.3139, -99.0, 0.3139, 0.2821, 0.3139, 0.0303, 0.3139, 0.3139, 0.3139, 0.3139]
+        for e in zip(expected_results, eof.reshape((16, 1)).tolist()):
+            if (e[0] != -99):
+                self.assertAlmostEqual(e[0], e[1][0], 4)
+            else:
+                self.assertTrue(np.isnan(e[1]))
+
+        self.assertEqual(6, len(attrs))
+
+        self.assertAlmostEqual(84.75415, attrs['eval_transpose'][0], 4)
+        self.assertAlmostEqual(102.4951, attrs['pcvar'][0], 1)
+        self.assertAlmostEqual(339.0166, attrs['eval'][0], 4)
+        self.assertAlmostEqual(32.00000, attrs['pcrit'][0], 4)
+
+        self.assertEqual("covariance", attrs['matrix'])
+        self.assertEqual("transpose", attrs['method'])
+
+        self.assertEqual(-99, data[0, 0, 3])
+
+    def test_eofunc_n_10(self):
+        data = self._sample_data[2]
+
+        eof, attrs = eofunc(data, 1, time_dim=1, jopt="covariance", pcrit=32, missing_value=np.int8(-99))
+
+        self.assertEqual((1, 4, 4), eof.shape)
+
+        expected_results = [0.3139, 0.1243, 0.1274, -99.0, 0.3139, 0.0318, 0.3139, -99.0, 0.3139, 0.2821, 0.3139, 0.0303, 0.3139, 0.3139, 0.3139, 0.3139]
+        for e in zip(expected_results, eof.reshape((16, 1)).tolist()):
+            if (e[0] != -99):
+                self.assertAlmostEqual(e[0], e[1][0], 4)
+            else:
+                self.assertTrue(np.isnan(e[1]))
+
+        self.assertEqual(6, len(attrs))
+
+        self.assertAlmostEqual(84.75415, attrs['eval_transpose'][0], 4)
+        self.assertAlmostEqual(102.4951, attrs['pcvar'][0], 1)
+        self.assertAlmostEqual(339.0166, attrs['eval'][0], 4)
+        self.assertAlmostEqual(32.00000, attrs['pcrit'][0], 4)
+
+        self.assertEqual("covariance", attrs['matrix'])
+        self.assertEqual("transpose", attrs['method'])
+
+        self.assertEqual(-99, data[0, 0, 3])
+
 
 
 

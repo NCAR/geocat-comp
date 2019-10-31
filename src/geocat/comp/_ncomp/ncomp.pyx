@@ -355,9 +355,6 @@ cdef adjust_for_missing_values(np.ndarray np_input, ncomp.ncomp_array* ncomp_inp
         else:
             set_ncomp_msg(&ncomp_input.msg, np.float128(missing_value).astype(np_input.dtype))
 
-    print("_cython: missing_value: ", missing_value)
-    print("_cython: Missing_value Type", type(missing_value))
-    print("_cython: missing_value.dtype", missing_value.dtype)
     return missing_mask
 
 cdef reverse_missing_values_adjustments(np.ndarray np_input, np.ndarray missing_mask, dict kwargs):
