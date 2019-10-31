@@ -14,6 +14,11 @@ class ChunkError(Error):
     incompatible with an _ncomp function."""
     pass
 
+class CoordinateError(Error):
+    """Exception raised when a GeoCAT-comp function is passed a NumPy array as
+    an argument without a required coordinate array being passed separately."""
+    pass
+
 def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
     """Interpolates a regular grid to a rectilinear one using bi-linear
     interpolation.
@@ -104,9 +109,12 @@ def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
             array.
 
             Note:
-                If left unspecified, the rightmost coordinate dimension
-                of fi will be used. This parameter must be specified as
-                a keyword argument.
+                If fi is of type :class:`xarray.DataArray` and xi is
+                left unspecified, then the rightmost coordinate
+                dimension of fi will be used. If fi is not of type
+                :class:`xarray.DataArray`, then xi becomes a mandatory
+                parameter. This parameter must be specified as a keyword
+                argument.
 
         yi (:class:`numpy.ndarray`):
             An array that specifies the Y coordinates of the fi array.
@@ -125,9 +133,12 @@ def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
             For geo-referenced data, yi is generally the latitude array.
 
             Note:
-                If left unspecified, the second-to-rightmost coordinate
-                dimension of fi will be used. This parameter must be
-                specified as a keyword argument.
+                If fi is of type :class:`xarray.DataArray` and xi is
+                left unspecified, then the second-to-rightmost
+                coordinate dimension of fi will be used. If fi is not of
+                type :class:`xarray.DataArray`, then xi becomes a
+                mandatory parameter. This parameter must be specified as
+                a keyword argument.
 
     Returns:
         :class:`xarray.DataArray`: The interpolated grid. If the *meta*
@@ -174,6 +185,9 @@ def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
 
     if not isinstance(fi, xr.DataArray):
         fi = xr.DataArray(fi)
+        if xi is None or yi is None:
+            raise CoordinateError("linint2: arguments xi and yi must be passed"
+                    " explicitly if fi is not an xarray.DataArray.")
 
     if xi is None:
         xi = fi.coords[fi.dims[-1]].values

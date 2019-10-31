@@ -7,6 +7,28 @@ import cython
 import numpy as np
 cimport numpy as np
 import functools
+import warnings
+
+class NcompWarning(Warning):
+    pass
+
+class NcompError(Exception):
+    pass
+
+def carrayify(f):
+    """
+    A decorator that ensures that :class:`numpy.ndarray` arguments are
+    C-contiguous in memory. The decorator function takes no arguments.
+    """
+    @functools.wraps(f)
+    def wrapper(*args, **kwargs):
+        new_args = list(args)
+        for i, arg in enumerate(new_args):
+            if isinstance(arg, np.ndarray) and not arg.flags.carray:
+                new_args[i] = np.ascontiguousarray(arg)
+        return f(*new_args, **kwargs)
+    return wrapper
+
 
 dtype_default_fill = {
              "DEFAULT_FILL":       ncomp.DEFAULT_FILL_DOUBLE,
@@ -125,9 +147,11 @@ cdef set_ncomp_msg(ncomp.ncomp_missing* ncomp_msg, num):
     elif ncomp_type == ncomp.NCOMP_LONGDOUBLE:
         ncomp_msg.msg_longdouble = ncomp_to_dtype[ncomp_type](num)
 
-@cython.embedsignature(True)
+@carrayify
 def _linint2(np.ndarray xi, np.ndarray yi, np.ndarray fi, np.ndarray xo, np.ndarray yo, int icycx, msg=None):
-    """Interpolates a regular grid to a rectilinear one using bi-linear
+    """_linint2(xi, yi, fi, xo, yo, icycx, msg=None)
+
+    Interpolates a regular grid to a rectilinear one using bi-linear
     interpolation.
 
     linint2 uses bilinear interpolation to interpolate from one
@@ -269,6 +293,9 @@ def _linint2(np.ndarray xi, np.ndarray yi, np.ndarray fi, np.ndarray xo, np.ndar
             icycx, iopt)
 #   re-acquire interpreter lock
 #   check errors ier
+    if ier:
+        warnings.warn("linint2: {}: xi, yi, xo, and yo must be monotonically increasing".format(ier),
+                      NcompWarning)
 
     if missing_inds_fi is not None and missing_inds_fi.any():
         fi[missing_inds_fi] = np.nan
