@@ -249,7 +249,7 @@ def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
 
 
 def moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak,
-                  msg=None, meta=True):
+                  msg=None, meta=False):
     """Facilitates calculating the meridional overturning circulation for the
     globe and Atlantic.
 
@@ -302,10 +302,10 @@ def moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak,
 
     # Ensure input arrays are numpy.ndarrays
     if isinstance(lat_aux_grid, xr.DataArray):
-    lat_aux_grid = lat_aux_grid.values
+        lat_aux_grid = lat_aux_grid.values
 
     if isinstance(a_wvel, xr.DataArray):
-    a_wvel = a_wvel.values
+        a_wvel = a_wvel.values
 
     if isinstance(a_bolus, xr.DataArray):
         a_bolus = a_bolus.values
@@ -319,43 +319,15 @@ def moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak,
     if isinstance(rmlak, xr.DataArray):
         rmlak = rmlak.values
 
-    fi_data = fi.data
 
-    if isinstance(fi_data, da.Array):
-        chunks = list(fi.chunks)
-
-        # ensure rightmost dimensions of input are not chunked
-        if chunks[-2:] != [yi.shape, xi.shape]:
-            raise ChunkError("linint2: the two rightmost dimensions of fi must"
-                             " not be chunked.")
-
-        # ensure rightmost dimensions of output are not chunked
-        chunks[-2:] = (yo.shape, xo.shape)
-
-        # map_blocks maps each chunk of fi_data to a separate invocation of
-        # _ncomp._linint2. The "chunks" keyword argument should be the chunked
-        # dimensionality of the expected output; the number of chunks should
-        # match that of fi_data. Additionally, "drop_axis" and "new_axis" in
-        # this case indicate that the two rightmost dimensions of the input
-        # will be dropped from the output array, and that two new axes will be
-        # added instead.
-        fo = map_blocks(_ncomp._linint2, xi, yi, fi_data, xo, yo, icycx, msg,
-                        chunks=chunks, dtype=fi.dtype,
-                        drop_axis=[fi.ndim-2, fi.ndim-1],
-                        new_axis=[fi.ndim-2, fi.ndim-1])
-    elif isinstance(fi_data, np.ndarray):
-        fo = _ncomp._linint2(xi, yi, fi_data, xo, yo, icycx, msg)
-    else:
-        raise TypeError
+    # Call ncomp function
+    out_arr = _ncomp._moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso,
+                                    tlat, rmlak, msg)
 
     if meta:
-        coords = {k:v if k not in fi.dims[-2:]
-                  else (xo if k == fi.dims[-1] else yo)
-                  for (k, v) in fi.coords.items()}
-
-        fo = xr.DataArray(fo, attrs=fi.attrs, dims=fi.dims,
-                              coords=coords)
+        pass
+        # TODO: Retaining possible metadata might be revised in the future
     else:
-        fo = xr.DataArray(fo)
+        out_arr = xr.DataArray(out_arr)
 
-    return fo
+    return out_arr

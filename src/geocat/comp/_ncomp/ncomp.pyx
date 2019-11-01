@@ -312,7 +312,7 @@ def _linint2(np.ndarray xi, np.ndarray yi, np.ndarray fi, np.ndarray xo, np.ndar
 
 
 @carrayify
-def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolus, np.ndarray a_submeso, np.ndarray tlat, np.ndarray rmlak):
+def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolus, np.ndarray a_submeso, np.ndarray tlat, np.ndarray rmlak, msg=None):
     """Facilitates calculating the meridional overturning circulation for the globe and Atlantic.
     Args:
     lat_aux_grid (:class:`numpy.ndarray`):
@@ -332,6 +332,11 @@ def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolu
 
     rmlak (:class:`numpy.ndarray`):
         Basin index number: [0]=Globe, [1]=Atlantic
+
+    msg (:obj:`numpy.number`):
+        A numpy scalar value that represent a missing value in a_wvel.
+        This argument allows a user to use a missing value scheme
+        other than NaN or masked arrays, similar to what NCL allows.
 
     Returns:
         :class:`numpy.ndarray`: A multi-dimensional array of size [moc_comp] x
@@ -354,6 +359,21 @@ def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolu
     cdef ncomp.ncomp_array* ncomp_tlat = np_to_ncomp_array(tlat)
     cdef ncomp.ncomp_array* ncomp_rmlak = np_to_ncomp_array(rmlak)
 
+    # Handle missing values
+    missing_inds_a_wvel = None
+
+    if msg is None or np.isnan(msg):    # if no missing value specified, assume NaNs
+        missing_inds_a_wvel = np.isnan(a_wvel)
+        msg = get_default_fill(a_wvel)
+    else:
+        missing_inds_a_wvel = (a_wvel == msg)
+
+    set_ncomp_msg(&ncomp_a_wvel.msg, msg)    # always set missing on ncomp_a_wvel
+
+    if missing_inds_a_wvel.any():
+        ncomp_a_wvel.has_missing = 1
+        a_wvel[missing_inds_a_wvel] = msg
+
     # Allocate output ncomp_array
     cdef ncomp.ncomp_array ncomp_output
 
@@ -363,7 +383,20 @@ def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolu
                                   ncomp_a_submeso, ncomp_tlat, ncomp_rmlak,
                                   &ncomp_output)
 
+    # Check errors ier
+    if ier:
+      warnings.warn("moc_globe_atl: {}: There is an error".format(ier), NcompWarning)
+
     # Convert ncomp_output to np.ndarray
     np_output = ncomp_to_np_array(&ncomp_output)
+
+    # Make sure output missing values are NaN
+    output_missing_value = ncomp_output.msg.msg_double
+
+    if ncomp_output.type != ncomp.NCOMP_DOUBLE \
+        output_missing_value = ncomp_output.msg.msg_float
+
+    np_output[np_output == output_missing_value] = np.nan
+
 
     return np_output
