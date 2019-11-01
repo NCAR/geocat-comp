@@ -393,7 +393,7 @@ def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolu
     # Make sure output missing values are NaN
     output_missing_value = ncomp_output.msg.msg_double
 
-    if ncomp_output.type != ncomp.NCOMP_DOUBLE \
+    if ncomp_output.type != ncomp.NCOMP_DOUBLE:
         output_missing_value = ncomp_output.msg.msg_float
 
     np_output[np_output == output_missing_value] = np.nan
