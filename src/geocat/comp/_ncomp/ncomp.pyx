@@ -29,12 +29,6 @@ def carrayify(f):
         return f(*new_args, **kwargs)
     return wrapper
 
-
-class GeocatArray(object):
-    def __init__(self, data, attrs={}):
-        self.data = data
-        self.attrs = attrs
-
 dtype_default_fill = {
              "DEFAULT_FILL":       ncomp.DEFAULT_FILL_DOUBLE,
              np.dtype(np.int8):    np.int8(ncomp.DEFAULT_FILL_INT8),

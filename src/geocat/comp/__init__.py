@@ -247,7 +247,7 @@ def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
     return fo
 
 
-def eofunc(data, neval, **kwargs):
+def eofunc(data, neval, **kwargs) -> xr.DataArray:
     """
     Computes empirical orthogonal functions (EOFs, aka: Principal Component Analysis).
 
@@ -263,14 +263,18 @@ def eofunc(data, neval, **kwargs):
             less than or equal to the minimum number of observations or number of variables.
         **kwargs:
             extra options controlling the behavior of the function. Currently the following are supported:
-            - ``jopt``: an integer that indicates whether to use the covariance matrix or the correlation
+            - ``jopt``: a string that indicates whether to use the covariance matrix or the correlation
                         matrix. The default is to use the covariance matrix.
             - ``pcrit``: a float value between ``0`` and ``100`` that indicates the percentage of non-missing points
                          that must exist at any single point in order to be calculated. The default is 50%. Points that
                          contain all missing values will automatically be set to missing.
             - ''time_dim``: an integer defining the time dimension. it must be between ``0`` and ``data.ndim - 1`` or it
-                            could be ``-1`` indicating the last dimension. The default balue is -1.
+                            could be ``-1`` indicating the last dimension. The default value is -1.
             - ``missing_value``: a value defining the missing value. The default is ``np.nan``.
+            - ``meta``: if set to ``True`` (or a value that evaluates to ``True``) the properties or attributes
+                        associated to the input data are also transferred to the output data. This is equivalent
+                        to the ``_Wrap`` version of the functions in ``NCL``. This only works if the input data is
+                        of type ``xarray.DataArray``.
 
     """
     # Parsing Options
@@ -295,8 +299,15 @@ def eofunc(data, neval, **kwargs):
 
     missing_value = kwargs["missing_value"] if "missing_value" in kwargs else np.nan
 
+    # the input data must be convertible to numpy array
+    np_data = None
+    if isinstance(data, np.ndarray):
+        np_data = data
+    elif isinstance(data, xr.DataArray):
+        np_data = data.data
+    else:
+        np_data = np.asarray(data)
 
-    np_data = np.asarray(data)
     time_dim = -1
     if "time_dim" in kwargs:
         time_dim = int(kwargs["time_dim"])
@@ -316,8 +327,7 @@ def eofunc(data, neval, **kwargs):
     else:
         response = _ncomp._eofunc_n(np_data, accepted_neval, time_dim, options, missing_value=missing_value)
 
-    eof = response[0]
-    attrs = {}
+    attrs = data.attrs if isinstance(data, xr.DataArray) and bool(kwargs.get("meta", False)) else {}
     # converting the keys to string instead of bytes also fixing matrix and method
     # TODO: once Kevin's work on char * is merged, we could remove this part or change it properly.
     for k, v in response[1].items():
@@ -326,7 +336,7 @@ def eofunc(data, neval, **kwargs):
         else:
             attrs[k.decode('utf-8')] = v
 
-    return eof, attrs
+    return xr.DataArray(response[0], attrs=attrs)
 
 
 

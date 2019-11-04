@@ -1,6 +1,7 @@
 from abc import ABCMeta
 from unittest import TestCase
 import numpy as np
+from dask.array.tests.test_xarray import xr
 
 from geocat.comp._ncomp import _eofunc
 from geocat.comp._ncomp import _eofunc_n
@@ -695,9 +696,11 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_00(self):
         data = self._sample_data[0]
 
-        eof, attrs = eofunc(data, 1)
+        results = eofunc(data, 1)
+        eof = results.data
+        attrs = results.attrs
 
-        self.assertEqual((1, 4, 4), eof.shape)
+        self.assertEqual((1, 4, 4), results.shape)
 
         for e in np.nditer(eof):
             self.assertAlmostEqual(0.25, e, 2)
@@ -713,7 +716,9 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_01(self):
         data = self._sample_data[1]
 
-        eof, attrs = eofunc(data, 1)
+        results = eofunc(data, 1)
+        eof = results.data
+        attrs = results.attrs
 
         self.assertEqual((1, 4, 4), eof.shape)
 
@@ -731,7 +736,9 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_02(self):
         data = self._sample_data[1]
 
-        eof, attrs = eofunc(data, 1, jopt="covariance")
+        results = eofunc(data, 1, jopt="covariance")
+        eof = results.data
+        attrs = results.attrs
 
         self.assertEqual((1, 4, 4), eof.shape)
 
@@ -749,7 +756,9 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_03(self):
         data = self._sample_data[1]
 
-        eof, attrs = eofunc(data, 1, jopt="correlation")
+        results = eofunc(data, 1, jopt="correlation")
+        eof = results.data
+        attrs = results.attrs
 
         self.assertEqual((1, 4, 4), eof.shape)
 
@@ -778,7 +787,9 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_06(self):
         data = self._sample_data[1]
 
-        eof, attrs = eofunc(data, 1, jopt="correlation", pcrit=32.0)
+        results = eofunc(data, 1, jopt="correlation", pcrit=32.0)
+        eof = results.data
+        attrs = results.attrs
 
         self.assertEqual((1, 4, 4), eof.shape)
 
@@ -798,7 +809,9 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_07(self):
         data = self._sample_data[1]
 
-        eof, attrs = eofunc(data, 1, jopt="correlation", pcrit=32)
+        results = eofunc(data, 1, jopt="correlation", pcrit=32)
+        eof = results.data
+        attrs = results.attrs
 
         self.assertEqual((1, 4, 4), eof.shape)
 
@@ -818,7 +831,9 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_08(self):
         data = self._sample_data[3]
 
-        eof, attrs = eofunc(data, 1, jopt="correlation", pcrit=32)
+        results = eofunc(data, 1, jopt="correlation", pcrit=32)
+        eof = results.data
+        attrs = results.attrs
 
         self.assertEqual((1, 4, 4), eof.shape)
 
@@ -841,7 +856,9 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_09(self):
         data = self._sample_data[3]
 
-        eof, attrs = eofunc(data, 1, jopt="correlation", pcrit=32, missing_value=np.nan)
+        results = eofunc(data, 1, jopt="correlation", pcrit=32, missing_value=np.nan)
+        eof = results.data
+        attrs = results.attrs
 
         self.assertEqual((1, 4, 4), eof.shape)
 
@@ -870,7 +887,9 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_11(self):
         data = self._sample_data[2]
 
-        eof, attrs = eofunc(data, 1, jopt="correlation", pcrit=32, missing_value=-99.0)
+        results = eofunc(data, 1, jopt="correlation", pcrit=32, missing_value=-99.0)
+        eof = results.data
+        attrs = results.attrs
 
         self.assertEqual((1, 4, 4), eof.shape)
 
@@ -893,7 +912,9 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_12(self):
         data = self._sample_data[2]
 
-        eof, attrs = eofunc(data, 1, jopt="correlation", pcrit=32, missing_value=-99) #None-double
+        results = eofunc(data, 1, jopt="correlation", pcrit=32, missing_value=-99) #None-double
+        eof = results.data
+        attrs = results.attrs
 
         self.assertEqual((1, 4, 4), eof.shape)
 
@@ -916,7 +937,9 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_13(self):
         data = self._sample_data[2]
 
-        eof, attrs = eofunc(data, 1, jopt="correlation", pcrit=32, missing_value=np.int8(-99))  # None-double np.number
+        results = eofunc(data, 1, jopt="correlation", pcrit=32, missing_value=np.int8(-99))  # None-double np.number
+        eof = results.data
+        attrs = results.attrs
 
         self.assertEqual((1, 4, 4), eof.shape)
 
@@ -939,7 +962,9 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_14(self):
         data = self._sample_data[4]
 
-        eof, attrs = eofunc(data, 1)
+        results = eofunc(data, 1)
+        eof = results.data
+        attrs = results.attrs
 
         self.assertEqual((1, 4, 4), eof.shape)
 
@@ -955,10 +980,62 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertEqual("covariance", attrs['matrix'])
         self.assertEqual("transpose", attrs['method'])
 
+    def test_eofunc_15(self):
+        data = xr.DataArray(self._sample_data[0])
+        data.attrs["prop1"] = "prop1"
+        data.attrs["prop2"] = 2
+
+        results = eofunc(data, 1)
+        eof = results.data
+        attrs = results.attrs
+
+        self.assertEqual((1, 4, 4), results.shape)
+
+        for e in np.nditer(eof):
+            self.assertAlmostEqual(0.25, e, 2)
+
+        self.assertEqual(5, len(attrs))
+
+        self.assertAlmostEqual(5.33333, attrs['eval_transpose'][0], 4)
+        self.assertAlmostEqual(100.0, attrs['pcvar'][0], 1)
+        self.assertAlmostEqual(26.66666, attrs['eval'][0], 4)
+        self.assertEqual("covariance", attrs['matrix'])
+        self.assertEqual("transpose", attrs['method'])
+        self.assertFalse("prop1" in attrs)
+        self.assertFalse("prop2" in attrs)
+
+    def test_eofunc_16(self):
+        data = xr.DataArray(self._sample_data[0])
+        data.attrs["prop1"] = "prop1"
+        data.attrs["prop2"] = 2
+
+        results = eofunc(data, 1, meta=True)
+        eof = results.data
+        attrs = results.attrs
+
+        self.assertEqual((1, 4, 4), results.shape)
+
+        for e in np.nditer(eof):
+            self.assertAlmostEqual(0.25, e, 2)
+
+        self.assertEqual(7, len(attrs))
+
+        self.assertAlmostEqual(5.33333, attrs['eval_transpose'][0], 4)
+        self.assertAlmostEqual(100.0, attrs['pcvar'][0], 1)
+        self.assertAlmostEqual(26.66666, attrs['eval'][0], 4)
+        self.assertEqual("covariance", attrs['matrix'])
+        self.assertEqual("transpose", attrs['method'])
+        self.assertTrue("prop1" in attrs)
+        self.assertTrue("prop2" in attrs)
+        self.assertEqual("prop1", attrs["prop1"])
+        self.assertEqual(2, attrs["prop2"])
+
     def test_eofunc_n_01(self):
         data = self._sample_data[1]
 
-        eof, attrs = eofunc(data, 1, time_dim=1)
+        results = eofunc(data, 1, time_dim=1)
+        eof = results.data
+        attrs = results.attrs
 
         self.assertEqual((1, 4, 4), eof.shape)
 
@@ -977,7 +1054,9 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_n_02(self):
         data = self._sample_data[1]
 
-        eof, attrs = eofunc(data, 1, time_dim=1, jopt="correlation")
+        results = eofunc(data, 1, time_dim=1, jopt="correlation")
+        eof = results.data
+        attrs = results.attrs
 
         self.assertEqual((1, 4, 4), eof.shape)
 
@@ -996,7 +1075,9 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_n_03(self):
         data = self._sample_data[1]
 
-        eof, attrs = eofunc(data, 1, time_dim=0, jopt="covariance", pcrit=32)
+        results = eofunc(data, 1, time_dim=0, jopt="covariance", pcrit=32)
+        eof = results.data
+        attrs = results.attrs
 
         self.assertEqual((1, 4, 4), eof.shape)
 
@@ -1016,7 +1097,9 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_n_03_1(self):
         data = self._sample_data[1]
 
-        eof, attrs = eofunc(data, 1, time_dim=0, jopt="covariance", pcrit=32)
+        results = eofunc(data, 1, time_dim=0, jopt="covariance", pcrit=32)
+        eof = results.data
+        attrs = results.attrs
 
         self.assertEqual((1, 4, 4), eof.shape)
 
@@ -1036,7 +1119,9 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_n_04(self):
         data = self._sample_data[3]
 
-        eof, attrs = eofunc(data, 1, time_dim=1, jopt="covariance", pcrit=32)
+        results = eofunc(data, 1, time_dim=1, jopt="covariance", pcrit=32)
+        eof = results.data
+        attrs = results.attrs
 
         self.assertEqual((1, 4, 4), eof.shape)
 
@@ -1062,7 +1147,9 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_n_05(self):
         data = self._sample_data[3]
 
-        eof, attrs = eofunc(data, 1, time_dim=1, jopt="covariance", pcrit=32, missing_value=np.nan)
+        results = eofunc(data, 1, time_dim=1, jopt="covariance", pcrit=32, missing_value=np.nan)
+        eof = results.data
+        attrs = results.attrs
 
         self.assertEqual((1, 4, 4), eof.shape)
 
@@ -1094,7 +1181,9 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_n_07(self):
         data = self._sample_data[2]
 
-        eof, attrs = eofunc(data, 1, time_dim=1, jopt="covariance", pcrit=32, missing_value=np.float64(-99.0))
+        results = eofunc(data, 1, time_dim=1, jopt="covariance", pcrit=32, missing_value=np.float64(-99.0))
+        eof = results.data
+        attrs = results.attrs
 
         self.assertEqual((1, 4, 4), eof.shape)
 
@@ -1120,7 +1209,9 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_n_08(self):
         data = self._sample_data[2]
 
-        eof, attrs = eofunc(data, 1, time_dim=1, jopt="covariance", pcrit=32, missing_value=-99)
+        results = eofunc(data, 1, time_dim=1, jopt="covariance", pcrit=32, missing_value=-99)
+        eof = results.data
+        attrs = results.attrs
 
         self.assertEqual((1, 4, 4), eof.shape)
 
@@ -1146,7 +1237,9 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_n_09(self):
         data = self._sample_data[2]
 
-        eof, attrs = eofunc(data, 1, time_dim=1, jopt="covariance", pcrit=32, missing_value=np.int8(-99))
+        results = eofunc(data, 1, time_dim=1, jopt="covariance", pcrit=32, missing_value=np.int8(-99))
+        eof = results.data
+        attrs = results.attrs
 
         self.assertEqual((1, 4, 4), eof.shape)
 
@@ -1172,7 +1265,9 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_n_10(self):
         data = self._sample_data[2]
 
-        eof, attrs = eofunc(data, 1, time_dim=1, jopt="covariance", pcrit=32, missing_value=np.int8(-99))
+        results = eofunc(data, 1, time_dim=1, jopt="covariance", pcrit=32, missing_value=np.int8(-99))
+        eof = results.data
+        attrs = results.attrs
 
         self.assertEqual((1, 4, 4), eof.shape)
 
