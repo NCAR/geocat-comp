@@ -5,19 +5,23 @@ import xarray as xr
 import dask.array as da
 from dask.array.core import map_blocks
 
+
 class Error(Exception):
     """Base class for exceptions in this module."""
     pass
+
 
 class ChunkError(Error):
     """Exception raised when a Dask array is chunked in a way that is
     incompatible with an _ncomp function."""
     pass
 
+
 class CoordinateError(Error):
     """Exception raised when a GeoCAT-comp function is passed a NumPy array as
     an argument without a required coordinate array being passed separately."""
     pass
+
 
 def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
     """Interpolates a regular grid to a rectilinear one using bi-linear
@@ -187,7 +191,7 @@ def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
         fi = xr.DataArray(fi)
         if xi is None or yi is None:
             raise CoordinateError("linint2: arguments xi and yi must be passed"
-                    " explicitly if fi is not an xarray.DataArray.")
+                                  " explicitly if fi is not an xarray.DataArray.")
 
     if xi is None:
         xi = fi.coords[fi.dims[-1]].values
@@ -255,9 +259,8 @@ def eofunc(data, neval, **kwargs) -> xr.DataArray:
         data:
             an iterable object containing numbers. It must be at least a 2-dimensional array. The right-most dimension
             is assumed to be the number of observations. Generally this is the time time dimension. If your right-most
-            dimension is not time, you could pass ``time_dim=x`` as an argument to define which dimension must be treated
-            as time and/or number of observations.
-            Data must be convertible to numpy.array
+            dimension is not time, you could pass ``time_dim=x`` as an argument to define which dimension must be
+            treated as time and/or number of observations. Data must be convertible to numpy.array
         neval:
             A scalar integer that specifies the number of eigenvalues and eigenvectors to be returned. This is usually
             less than or equal to the minimum number of observations or number of variables.
