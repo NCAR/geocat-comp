@@ -5,6 +5,7 @@ set -eo pipefail
 
 conda config --set always_yes true --set changeps1 false --set quiet true
 conda config --add channels conda-forge
+conda list -f python -e >> /usr/local/conda-meta/pinned
 conda install git
 git clone ${NCOMP_GIT_REPO}
 cd ncomp
