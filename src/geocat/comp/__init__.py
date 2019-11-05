@@ -339,7 +339,7 @@ def eofunc(data, neval, **kwargs) -> xr.DataArray:
         else:
             attrs[k.decode('utf-8')] = v
 
-    if isinstance(data, xr.DataArray):
+    if isinstance(data, xr.DataArray) and bool(kwargs.get("meta", False)):
         dims = ["evn"] + [data.dims[i] for i in range(data.ndim) if i != time_dim]
         coords = {k: v for (k, v) in data.coords.items() if k != data.dims[time_dim]}
     else:
