@@ -339,7 +339,19 @@ def eofunc(data, neval, **kwargs) -> xr.DataArray:
         else:
             attrs[k.decode('utf-8')] = v
 
-    return xr.DataArray(response[0], attrs=attrs)
+    if isinstance(data, xr.DataArray):
+        dims = ["evn"] + [data.dims[i] for i in range(data.ndim) if i != time_dim]
+        coords = {k: v for (k, v) in data.coords.items() if k != data.dims[time_dim]}
+    else:
+        dims = ["evn"] + [f"dim_{i}" for i in range(np_data.ndim) if i != time_dim]
+        coords = {}
+
+    return xr.DataArray(
+        response[0],
+        attrs=attrs,
+        dims=dims,
+        coords=coords
+    )
 
 
 
