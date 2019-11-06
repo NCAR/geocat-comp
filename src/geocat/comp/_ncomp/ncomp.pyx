@@ -555,12 +555,12 @@ def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolu
     """
 
     # Convert np_input to ncomp_array
-    cdef ncomp.ncomp_array* ncomp_lat_aux_grid = np_to_ncomp_array(lat_aux_grid)
-    cdef ncomp.ncomp_array* ncomp_a_wvel = np_to_ncomp_array(a_wvel)
-    cdef ncomp.ncomp_array* ncomp_a_bolus = np_to_ncomp_array(a_bolus)
-    cdef ncomp.ncomp_array* ncomp_a_submeso = np_to_ncomp_array(a_submeso)
-    cdef ncomp.ncomp_array* ncomp_tlat = np_to_ncomp_array(tlat)
-    cdef ncomp.ncomp_array* ncomp_rmlak = np_to_ncomp_array(rmlak)
+    cdef libncomp.ncomp_array* ncomp_lat_aux_grid = np_to_ncomp_array(lat_aux_grid)
+    cdef libncomp.ncomp_array* ncomp_a_wvel = np_to_ncomp_array(a_wvel)
+    cdef libncomp.ncomp_array* ncomp_a_bolus = np_to_ncomp_array(a_bolus)
+    cdef libncomp.ncomp_array* ncomp_a_submeso = np_to_ncomp_array(a_submeso)
+    cdef libncomp.ncomp_array* ncomp_tlat = np_to_ncomp_array(tlat)
+    cdef libncomp.ncomp_array* ncomp_rmlak = np_to_ncomp_array(rmlak)
 
     # Handle missing values
     missing_inds_a_wvel = None
@@ -578,11 +578,11 @@ def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolu
         a_wvel[missing_inds_a_wvel] = msg
 
     # Allocate output ncomp_array
-    cdef ncomp.ncomp_array ncomp_output
+    cdef libncomp.ncomp_array ncomp_output
 
     cdef int ier
     with nogil:
-        ier = ncomp.moc_globe_atl(ncomp_lat_aux_grid, ncomp_a_wvel, ncomp_a_bolus,
+        ier = libncomp.moc_globe_atl(ncomp_lat_aux_grid, ncomp_a_wvel, ncomp_a_bolus,
                                   ncomp_a_submeso, ncomp_tlat, ncomp_rmlak,
                                   &ncomp_output)
 
@@ -596,7 +596,7 @@ def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolu
     # Make sure output missing values are NaN
     output_missing_value = ncomp_output.msg.msg_double
 
-    if ncomp_output.type != ncomp.NCOMP_DOUBLE:
+    if ncomp_output.type != libncomp.NCOMP_DOUBLE:
         output_missing_value = ncomp_output.msg.msg_float
 
     np_output[np_output == output_missing_value] = np.nan
