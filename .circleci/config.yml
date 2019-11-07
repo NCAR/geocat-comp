@@ -11,6 +11,9 @@ workflows:
       - "python-3.7":
           requires:
             - "build-ncomp"
+      - "python-3.8":
+          requires:
+            - "build-ncomp"
 
 default-job: &default-job
   docker:
@@ -56,6 +59,14 @@ jobs:
     <<: *default-job
     environment:
       PYTHON: "3.7"
+      ENV_NAME: "geocat-comp-dev"
+      NCOMP_ENV_NAME: "build-ncomp"
+      TEST_SCRIPT: "run-checks.sh"
+
+  "python-3.8":
+    <<: *default-job
+    environment:
+      PYTHON: "3.8"
       ENV_NAME: "geocat-comp-dev"
       NCOMP_ENV_NAME: "build-ncomp"
       TEST_SCRIPT: "run-checks.sh"
