@@ -10,23 +10,23 @@ from geocat.comp._ncomp import _moc_globe_atl
 class BaseTestClass(metaclass=ABCMeta):
 
     # Dimensions
-    nyaux = 3            # nyaux = lat_aux_grid->shape[0]
-    kdep = 4             # kdep  = a_wvel/a_bolus/a_submeso->shape[0]
-    nlat = 5             # nlat  = a_wvel/a_bolus/a_submeso->shape[1] AND tlat->shape[0] AND rmlak->shape[1]
-    mlon = 6             # mlon  = a_wvel/a_bolus/a_submeso->shape[2] AND tlat->shape[1] AND rmlak->shape[2]
+    _nyaux = 3            # nyaux = lat_aux_grid->shape[0]
+    _kdep = 4             # kdep  = a_wvel/a_bolus/a_submeso->shape[0]
+    _nlat = 5             # nlat  = a_wvel/a_bolus/a_submeso->shape[1] AND tlat->shape[0] AND rmlak->shape[1]
+    _mlon = 6             # mlon  = a_wvel/a_bolus/a_submeso->shape[2] AND tlat->shape[1] AND rmlak->shape[2]
 
-    kdepnyaux2   = 2 * kdep * nyaux
-    nlatmlon     = nlat * mlon
-    kdepnlatmlon = kdep * nlatmlon
+    _kdepnyaux2   = 2 * _kdep * _nyaux
+    _nlatmlon     = _nlat * _mlon
+    _kdepnlatmlon = _kdep * _nlatmlon
 
     # Generate arbitrary data
-    tmp_a_double = np.linspace(1, kdepnlatmlon, num = kdepnlatmlon, dtype = np.double).reshape((kdep, nlat, mlon))
+    tmp_a_double = np.linspace(1, _kdepnlatmlon, num = _kdepnlatmlon, dtype = np.double).reshape((_kdep, _nlat, _mlon))
 
-    tmp_a_float64 = np.linspace(1, kdepnlatmlon, num = kdepnlatmlon, dtype = np.float64).reshape((kdep, nlat, mlon))
+    tmp_a_float64 = np.linspace(1, _kdepnlatmlon, num = _kdepnlatmlon, dtype = np.float64).reshape((_kdep, _nlat, _mlon))
 
-    tmp_a_float32 = np.linspace(1, kdepnlatmlon, num = kdepnlatmlon, dtype = np.float32).reshape((kdep, nlat, mlon))
+    tmp_a_float32 = np.linspace(1, _kdepnlatmlon, num = _kdepnlatmlon, dtype = np.float32).reshape((_kdep, _nlat, _mlon))
 
-    tmp_a_int64 = np.linspace(1, kdepnlatmlon, num = kdepnlatmlon, dtype = np.int64).reshape((kdep, nlat, mlon))
+    tmp_a_int64 = np.linspace(1, _kdepnlatmlon, num = _kdepnlatmlon, dtype = np.int64).reshape((_kdep, _nlat, _mlon))
 
     tmp_a_double_msg_99 = tmp_a_double
     tmp_a_double_msg_99[1,1,1] = -99
@@ -36,11 +36,12 @@ class BaseTestClass(metaclass=ABCMeta):
     tmp_a_double_msg_nan[tmp_a_double_msg_nan == -99] = np.nan
 
     # Generate test data
-    _lat_aux_grid = np.asarray([5, 10, 15], dtype='double').reshape((1,3))
+    # _lat_aux_grid = np.asarray([5, 10, 15], dtype='double').reshape((1,3))
+    _lat_aux_grid = np.asarray([5, 10, 15], dtype='double')
 
-    _rmlak = np.ones((2,nlat,mlon), dtype = np.int64)
+    _rmlak = np.ones((2, _nlat, _mlon), dtype = np.int64)
 
-    _t_lat = np.linspace(1, nlatmlon, num = nlatmlon, dtype = np.double).reshape((nlat, mlon))
+    _t_lat = np.linspace(1, _nlatmlon, num = _nlatmlon, dtype = np.double).reshape((_nlat, _mlon))
 
     # Initialize _a type data
     _a_wvel = []
@@ -79,7 +80,7 @@ class Test_Moc_Globe_Atl(TestCase, BaseTestClass):
                                   self._t_lat,
                                   self._rmlak)
 
-        self.assertEqual((3, 2, kdep, nyaux), out_arr.shape)
+        self.assertEqual((3, 2, self._kdep, self._nyaux), out_arr.shape)
 
         #for e in np.nditer(result):
         #    self.assertAlmostEqual(0.25, e, 2)
