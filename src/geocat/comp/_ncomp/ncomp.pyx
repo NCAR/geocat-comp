@@ -70,6 +70,7 @@ cdef class Array:
         a.ndim = ncarr.ndim
         a.shape = ncarr.shape
         a.type = ncarr.type
+        a.addr = ncarr.addr
         a.numpy = a.ncomp_to_np_array()
         return a
 
@@ -470,72 +471,72 @@ def _eofunc(np.ndarray np_input, int neval, opt={}, **kwargs):
 
     """
     # convert np_input to ncomp_array
-    cdef libncomp.ncomp_array* ncomp_input = np_to_ncomp_array(np_input)
-    missing_mask = adjust_for_missing_values(np_input, ncomp_input, kwargs)
+    input = Array.from_np(np_input)
+    missing_mask = adjust_for_missing_values(input.numpy, input.ncomp, kwargs)
 
     # convert opt dict to ncomp_attributes struct
     cdef libncomp.ncomp_attributes* attrs = dict_to_ncomp_attributes(opt)
 
     # allocate output ncomp_array and ncomp_attributes
-    cdef libncomp.ncomp_array ncomp_output
+    cdef libncomp.ncomp_array* ncomp_output = NULL
     cdef libncomp.ncomp_attributes attrs_output
 
     cdef int ier
     with nogil:
-        ier = libncomp.eofunc(ncomp_input, neval, attrs, &ncomp_output, &attrs_output)
+        ier = libncomp.eofunc(input.ncomp, neval, attrs, &ncomp_output, &attrs_output)
 
     # convert ncomp_output to np.ndarray
-    np_output = ncomp_to_np_array(&ncomp_output)
+    output = Array.from_ncomp(ncomp_output)
 
     # making sure that output missing values is NaN
-    output_missing_value = ncomp_output.msg.msg_double \
-            if ncomp_output.type == libncomp.NCOMP_DOUBLE \
-            else ncomp_output.msg.msg_float
+    output_missing_value = output.ncomp.msg.msg_double \
+            if output.ncomp.type == libncomp.NCOMP_DOUBLE \
+            else output.ncomp.msg.msg_float
 
-    np_output[np_output == output_missing_value] = np.nan
+    output.numpy[output.numpy == output_missing_value] = np.nan
 
     # convert attrs_output to dict
     np_attrs_dict = ncomp_attributes_to_dict(attrs_output)
 
     # Reversing the changed values
-    reverse_missing_values_adjustments(np_input, missing_mask, kwargs)
+    reverse_missing_values_adjustments(input.numpy, missing_mask, kwargs)
 
-    return (np_output, np_attrs_dict)
+    return (output.numpy, np_attrs_dict)
 
 @carrayify
 def _eofunc_n(np.ndarray np_input, int neval, int t_dim, opt={}, **kwargs):
     # convert np_input to ncomp_array
-    cdef libncomp.ncomp_array* ncomp_input = np_to_ncomp_array(np_input)
-    missing_mask = adjust_for_missing_values(np_input, ncomp_input, kwargs)
+    input = Array.from_np(np_input)
+    missing_mask = adjust_for_missing_values(input.numpy, input.ncomp, kwargs)
 
     # convert opt dict to ncomp_attributes struct
     cdef libncomp.ncomp_attributes* attrs = dict_to_ncomp_attributes(opt)
 
     # allocate output ncomp_array and ncomp_attributes
-    cdef libncomp.ncomp_array ncomp_output
+    cdef libncomp.ncomp_array* ncomp_output = NULL
     cdef libncomp.ncomp_attributes attrs_output
 
     cdef int ier
     with nogil:
-        ier = libncomp.eofunc_n(ncomp_input, neval, t_dim, attrs, &ncomp_output, &attrs_output)
+        ier = libncomp.eofunc_n(input.ncomp, neval, t_dim, attrs, &ncomp_output, &attrs_output)
 
     # convert ncomp_output to np.ndarray
-    np_output = ncomp_to_np_array(&ncomp_output)
+    output = Array.from_ncomp(ncomp_output)
 
     # making sure that output missing values is NaN
-    output_missing_value = ncomp_output.msg.msg_double \
-            if ncomp_output.type == libncomp.NCOMP_DOUBLE \
-            else ncomp_output.msg.msg_float
+    output_missing_value = output.ncomp.msg.msg_double \
+            if output.ncomp.type == libncomp.NCOMP_DOUBLE \
+            else output.ncomp.msg.msg_float
 
-    np_output[np_output == output_missing_value] = np.nan
+    output.numpy[output.numpy == output_missing_value] = np.nan
 
     # convert attrs_output to dict
     np_attrs_dict = ncomp_attributes_to_dict(attrs_output)
 
     # Reversing the changed values
-    reverse_missing_values_adjustments(np_input, missing_mask, kwargs)
+    reverse_missing_values_adjustments(input.numpy, missing_mask, kwargs)
 
-    return (np_output, np_attrs_dict)
+    return (output.numpy, np_attrs_dict)
 
 cdef libncomp.ncomp_single_attribute* np_to_ncomp_single_attribute(char* name, np.ndarray nparr):
     cdef long long_addr = nparr.__array_interface__['data'][0]
