@@ -514,6 +514,75 @@ cdef ncomp_attributes_to_dict(libncomp.ncomp_attributes attrs):
     return d
 
 
+
+cdef printNcompArray(libncomp.ncomp_array* ncarr):
+
+    cdef int* data_d
+    cdef double* data_f
+
+    cdef int num_dim = ncarr.ndim
+    cdef int numel = 1
+
+    cdef double current_elem_f
+    cdef int current_elem_d
+
+    if ncarr.type == libncomp.NCOMP_INT:
+            data_d = <int*>ncarr.addr
+    else:
+        data_f = <double*>ncarr.addr
+
+    for i in range(num_dim):
+        numel = numel * ncarr.shape[i]
+        #printf("i: %d\n", i)
+        #printf("Shape: %d\n", ncarr.shape[i])
+
+    #printf("Num Elements: %d\n", numel)
+
+    for ind in range(numel):
+        if ncarr.type == libncomp.NCOMP_INT:
+            current_elem_d = data_d[ind]
+            printf("%d ", current_elem_d)
+        else:
+            current_elem_f = data_f[ind]
+            printf("%f ", current_elem_f)
+
+    printf("\n\n")
+
+
+cdef printNumpyArray(np.ndarray arr):
+
+    cdef int current_elem_d
+    cdef double current_elem_f
+
+    cdef int num_dim = arr.ndim
+    cdef size_t* shape = <size_t*> arr.shape
+    cdef int np_type = arr.dtype.num
+    cdef int curr_dim
+
+    for i in range(num_dim):
+        curr_dim = shape[i]
+        #printf("%d ", curr_dim)
+
+    printf("\n")
+
+    #printf("Num Dims: %d\n", num_dim)
+
+
+
+    if arr.dtype == np.int64:
+
+        for ind in np.nditer(arr):
+            current_elem_d = ind
+            printf("%d ", current_elem_d)
+    else:
+
+        for ind in np.nditer(arr):
+            current_elem_f = ind
+            printf("%f ", current_elem_f)
+
+    printf("\n\n")
+
+
 @carrayify
 def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolus, np.ndarray a_submeso, np.ndarray tlat, np.ndarray rmlak, msg=None):
     """Facilitates calculating the meridional overturning circulation for the globe and Atlantic.
@@ -577,6 +646,20 @@ def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolu
         ncomp_a_wvel.has_missing = 1
         a_wvel[missing_inds_a_wvel] = msg
 
+    #printf("\n\nNCOMP lat_aux_grid: ")
+    #printNumpyArray(ncomp_to_np_array(ncomp_lat_aux_grid))
+    #printf("NCOMP a_wvel: ")
+    #printNumpyArray(ncomp_to_np_array(ncomp_a_wvel))
+    #printf("NCOMP a_bolus: ")
+    #printNumpyArray(ncomp_to_np_array(ncomp_a_bolus))
+    #printf("NCOMP a_submeso: ")
+    #printNumpyArray(ncomp_to_np_array(ncomp_a_submeso))
+    #printf("NCOMP t_lat: ")
+    #printNcompArray(ncomp_tlat)
+    #printf("NCOMP rmlak: ")
+    #printNcompArray(ncomp_rmlak)
+
+
     # Allocate output ncomp_array
     cdef libncomp.ncomp_array ncomp_output
 
@@ -592,6 +675,9 @@ def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolu
 
     # Convert ncomp_output to np.ndarray
     np_output = ncomp_to_np_array(&ncomp_output)
+
+    #printf("np_output: ")
+    #printNumpyArray(np_output)
 
     # Make sure output missing values are NaN
     output_missing_value = ncomp_output.msg.msg_double
