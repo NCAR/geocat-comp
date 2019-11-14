@@ -388,7 +388,7 @@ def moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak,
           Set to False to disable metadata; default is True.
 
         Returns:
-            :class:`numpy.ndarray`: A multi-dimensional array of size [moc_comp] x
+            :class:`xarray.DataArray`: A multi-dimensional array of size [moc_comp] x
             [n_transport_reg] x [kdepth] x [nyaux] where:
 
             - moc_comp refers to the three components returned
@@ -424,6 +424,12 @@ def moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak,
 
     if isinstance(rmlak, xr.DataArray):
         rmlak = rmlak.values
+
+    # Make sure msg has the correct dtype even if given wrong type or a scalar instead of np.num
+    if a_wvel.dtype == np.float64:
+        msg = np.float64(msg)
+    else:
+        msg = np.float32(msg)
 
 
     # Call ncomp function

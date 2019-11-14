@@ -103,6 +103,7 @@ cdef libncomp.ncomp_array* np_to_ncomp_array(np.ndarray nparr):
     cdef int ndim = nparr.ndim
     cdef size_t* shape = <size_t*> nparr.shape
     cdef int np_type = nparr.dtype.num
+
     return <libncomp.ncomp_array*> libncomp.ncomp_array_alloc(addr, np_type, ndim, shape)
 
 cdef np.ndarray ncomp_to_np_array(libncomp.ncomp_array* ncarr):
@@ -567,8 +568,6 @@ cdef printNumpyArray(np.ndarray arr):
 
     #printf("Num Dims: %d\n", num_dim)
 
-
-
     if arr.dtype == np.int64:
 
         for ind in np.nditer(arr):
@@ -646,20 +645,6 @@ def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolu
         ncomp_a_wvel.has_missing = 1
         a_wvel[missing_inds_a_wvel] = msg
 
-    #printf("\n\nNCOMP lat_aux_grid: ")
-    #printNumpyArray(ncomp_to_np_array(ncomp_lat_aux_grid))
-    #printf("NCOMP a_wvel: ")
-    #printNumpyArray(ncomp_to_np_array(ncomp_a_wvel))
-    #printf("NCOMP a_bolus: ")
-    #printNumpyArray(ncomp_to_np_array(ncomp_a_bolus))
-    #printf("NCOMP a_submeso: ")
-    #printNumpyArray(ncomp_to_np_array(ncomp_a_submeso))
-    #printf("NCOMP t_lat: ")
-    #printNcompArray(ncomp_tlat)
-    #printf("NCOMP rmlak: ")
-    #printNcompArray(ncomp_rmlak)
-
-
     # Allocate output ncomp_array
     cdef libncomp.ncomp_array ncomp_output
 
@@ -676,16 +661,13 @@ def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolu
     # Convert ncomp_output to np.ndarray
     np_output = ncomp_to_np_array(&ncomp_output)
 
-    #printf("np_output: ")
-    #printNumpyArray(np_output)
-
     # Make sure output missing values are NaN
     output_missing_value = ncomp_output.msg.msg_double
 
     if ncomp_output.type != libncomp.NCOMP_DOUBLE:
         output_missing_value = ncomp_output.msg.msg_float
 
-    np_output[np_output == output_missing_value] = np.nan
-
+    # TODO: May need revisit for output missing value
+    # np_output[np_output == output_missing_value] = np.nan
 
     return np_output

@@ -32,8 +32,17 @@ class BaseTestClass(metaclass=ABCMeta):
     tmp_a_double_msg_99[1,1,1] = -99
     tmp_a_double_msg_99[1,2,3] = -99
 
+    tmp_a_float32_msg_99 = tmp_a_float32.copy()
+    tmp_a_float32_msg_99[0, 1, 1] = -99
+    tmp_a_float32_msg_99[0, 2, 3] = -99
+    tmp_a_float32_msg_99[1, 1, 1] = -99
+    tmp_a_float32_msg_99[1, 2, 3] = -99
+
     tmp_a_double_msg_nan = tmp_a_double_msg_99.copy()
     tmp_a_double_msg_nan[tmp_a_double_msg_nan == -99] = np.nan
+
+    tmp_a_float32_msg_nan = tmp_a_float32_msg_99.copy()
+    tmp_a_float32_msg_nan[tmp_a_float32_msg_nan == -99] = np.nan
 
     # Generate test data
     # _lat_aux_grid = np.asarray([5, 10, 15], dtype='double').reshape((1,3))
@@ -52,67 +61,202 @@ class BaseTestClass(metaclass=ABCMeta):
     _a_wvel.append(tmp_a_float32)
     _a_wvel.append(tmp_a_int64)
     _a_wvel.append(tmp_a_double_msg_99)
+    _a_wvel.append(tmp_a_float32_msg_99)
     _a_wvel.append(tmp_a_double_msg_nan)
+    _a_wvel.append(tmp_a_float32_msg_nan)
 
     _a_bolus.append(tmp_a_float64)
     _a_bolus.append(tmp_a_float32)
     _a_bolus.append(tmp_a_int64)
     _a_bolus.append(tmp_a_double_msg_99)
+    _a_bolus.append(tmp_a_float32_msg_99)
     _a_bolus.append(tmp_a_double_msg_nan)
+    _a_bolus.append(tmp_a_float32_msg_nan)
 
     _a_submeso.append(tmp_a_float64)
     _a_submeso.append(tmp_a_float32)
     _a_submeso.append(tmp_a_int64)
     _a_submeso.append(tmp_a_double_msg_99)
+    _a_submeso.append(tmp_a_float32_msg_99)
     _a_submeso.append(tmp_a_double_msg_nan)
+    _a_submeso.append(tmp_a_float32_msg_nan)
+
+    # Generate expected NCL outputs
+    _ncl_truth = []
+
+    tmp_output = [0.00, 35.00, 60.00, 0.00, 185.00, 210.00, 0.00, 335.00, 360.00, 0.00, 485.00, 510.00, 0.00,
+                        35.00, 60.00, 0.00, 185.00, 210.00, 0.00, 335.00, 360.00, 0.00, 485.00, 510.00, 0.00, 35.00,
+                        60.00, 0.00, 185.00, 210.00, 0.00, 335.00, 360.00, 0.00, 485.00, 510.00, 0.00, 35.00, 60.00,
+                        0.00, 185.00, 210.00, 0.00, 335.00, 360.00, 0.00, 485.00, 510.00, 0.00, 35.00, 60.00, 0.00,
+                        185.00, 210.00, 0.00, 335.00, 360.00, 0.00, 485.00, 510.00, 0.00, 35.00, 60.00, 0.00, 185.00,
+                        210.00, 0.00, 335.00, 360.00, 0.00, 485.00, 510.00]
+
+    tmp_output_msg = [0.00, 27.00, 60.00, 0.00, 147.00, 210.00, 0.00, 335.00, 360.00, 0.00, 485.00, 510.00, 0.00,
+                      27.00, 60.00, 0.00, 147.00, 210.00, 0.00, 335.00, 360.00, 0.00, 485.00, 510.00, 0.00, 27.00,
+                      60.00, 0.00, 147.00, 210.00, 0.00, 335.00, 360.00, 0.00, 485.00, 510.00, 0.00, 27.00, 60.00,
+                      0.00, 147.00, 210.00, 0.00, 335.00, 360.00, 0.00, 485.00, 510.00, 0.00, 27.00, 60.00, 0.00,
+                      147.00, 210.00, 0.00, 335.00, 360.00, 0.00, 485.00, 510.00, 0.00, 27.00, 60.00, 0.00, 147.00,
+                      210.00, 0.00, 335.00, 360.00, 0.00, 485.00, 510.00]
+
+    _ncl_truth.append(tmp_output)
+    _ncl_truth.append(tmp_output_msg)
 
 
 class Test_Moc_Globe_Atl(TestCase, BaseTestClass):
 
-    # Test if output dimension and type is correct for all FLOAT64 inputs
-    def test_moc_globe_atl_01(self):
+    # Test if output dimension, type, and values are correct for all FLOAT64 inputs
+    def test_moc_globe_atl_float64(self):
 
         out_arr = geocat.comp.moc_globe_atl(self._lat_aux_grid,
                                   self._a_wvel[0],
                                   self._a_bolus[0],
                                   self._a_submeso[0],
                                   self._t_lat,
-                                  self._rmlak)
+                                  self._rmlak,
+                                  msg=None,
+                                  meta=False)
 
         self.assertEqual((3, 2, self._kdep, self._nyaux), out_arr.shape)
 
         self.assertEqual(np.float64, out_arr.dtype)
 
-        # for e in np.nditer(out_arr):
-        #    self.assertAlmostEqual(0.25, e, 2)
+        out_arr_vals = out_arr.values.reshape((72, 1)).tolist()
+        for e in zip(self._ncl_truth[0], out_arr_vals):
+            if np.isnan(e[0]) or np.isnan(e[1][0]):
+                sdf = 6
+            self.assertAlmostEqual(e[0], e[1][0], 2)
 
-    # Test if output dimension and type is correct for all FLOAT32 inputs
-    def test_moc_globe_atl_02(self):
+    # Test if output dimension, type, and values are correct for all FLOAT32 inputs
+    def test_moc_globe_atl_float32(self):
 
         out_arr = geocat.comp.moc_globe_atl(self._lat_aux_grid,
                                   self._a_wvel[1],
                                   self._a_bolus[1],
                                   self._a_submeso[1],
                                   self._t_lat,
-                                  self._rmlak)
+                                  self._rmlak,
+                                  msg=None,
+                                  meta=False)
 
         self.assertEqual((3, 2, self._kdep, self._nyaux), out_arr.shape)
 
         self.assertEqual(np.float32, out_arr.dtype)
 
-    # Test if output dimension and type is correct for all INT64 inputs
-    def test_moc_globe_atl_03(self):
+        out_arr_vals = out_arr.values.reshape((72, 1)).tolist()
+        for e in zip(self._ncl_truth[0], out_arr_vals):
+            if np.isnan(e[0]) or np.isnan(e[1][0]):
+                sdf = 6
+            self.assertAlmostEqual(e[0], e[1][0], 2)
+
+    # Test if output dimension, type, and values are correct for all INT64 inputs
+    def test_moc_globe_atl_int64(self):
 
         out_arr = geocat.comp.moc_globe_atl(self._lat_aux_grid,
                                   self._a_wvel[2],
                                   self._a_bolus[2],
                                   self._a_submeso[2],
                                   self._t_lat,
-                                  self._rmlak)
+                                  self._rmlak,
+                                  msg=None,
+                                  meta=False)
 
         self.assertEqual((3, 2, self._kdep, self._nyaux), out_arr.shape)
 
         self.assertEqual(np.float32, out_arr.dtype)
+
+        out_arr_vals = out_arr.values.reshape((72, 1)).tolist()
+        for e in zip(self._ncl_truth[0], out_arr_vals):
+            if np.isnan(e[0]) or np.isnan(e[1][0]):
+                sdf = 6
+            self.assertAlmostEqual(e[0], e[1][0], 2)
+
+    # Test if output dimension, type, and values are correct for FLOAT64 input with user-defined missing value
+    def test_moc_globe_atl_msg_99(self):
+
+        out_arr = geocat.comp.moc_globe_atl(self._lat_aux_grid,
+                                  self._a_wvel[3],
+                                  self._a_bolus[0],
+                                  self._a_submeso[0],
+                                  self._t_lat,
+                                  self._rmlak,
+                                  msg=-99,
+                                  meta=False)
+
+        self.assertEqual((3, 2, self._kdep, self._nyaux), out_arr.shape)
+
+        self.assertEqual(np.float64, out_arr.dtype)
+
+        out_arr_vals = out_arr.values.reshape((72, 1)).tolist()
+        for e in zip(self._ncl_truth[1], out_arr_vals):
+            if np.isnan(e[0]) or np.isnan(e[1][0]):
+                sdf = 6
+            self.assertAlmostEqual(e[0], e[1][0], 2)
+
+    # Test if output dimension, type, and values are correct for FLOAT32 input with user-defined missing value
+    def test_moc_globe_atl_msg_99_float32(self):
+
+        out_arr = geocat.comp.moc_globe_atl(self._lat_aux_grid,
+                                  self._a_wvel[4],
+                                  self._a_bolus[0],
+                                  self._a_submeso[0],
+                                  self._t_lat,
+                                  self._rmlak,
+                                  msg=-99,
+                                  meta=False)
+
+        self.assertEqual((3, 2, self._kdep, self._nyaux), out_arr.shape)
+
+        self.assertEqual(np.float64, out_arr.dtype)
+
+        out_arr_vals = out_arr.values.reshape((72, 1)).tolist()
+        for e in zip(self._ncl_truth[1], out_arr_vals):
+            if np.isnan(e[0]) or np.isnan(e[1][0]):
+                sdf = 6
+            self.assertAlmostEqual(e[0], e[1][0], 2)
+
+    # Test if output dimension, type, and values are correct for FLOAT64 input with np.nan missing value
+    def test_moc_globe_atl_msg_nan(self):
+
+        out_arr = geocat.comp.moc_globe_atl(self._lat_aux_grid,
+                                  self._a_wvel[5],
+                                  self._a_bolus[0],
+                                  self._a_submeso[0],
+                                  self._t_lat,
+                                  self._rmlak,
+                                  msg = np.nan,
+                                  meta = False)
+
+        self.assertEqual((3, 2, self._kdep, self._nyaux), out_arr.shape)
+
+        self.assertEqual(np.float64, out_arr.dtype)
+
+        out_arr_vals = out_arr.values.reshape((72, 1)).tolist()
+        for e in zip(self._ncl_truth[1], out_arr_vals):
+            if np.isnan(e[0]) or np.isnan(e[1][0]):
+                sdf = 6
+            self.assertAlmostEqual(e[0], e[1][0], 2)
+
+    # Test if output dimension, type, and values are correct for FLOAT32 input with np.nan missing value
+    def test_moc_globe_atl_msg_nan_float32(self):
+
+        out_arr = geocat.comp.moc_globe_atl(self._lat_aux_grid,
+                                  self._a_wvel[6],
+                                  self._a_bolus[0],
+                                  self._a_submeso[0],
+                                  self._t_lat,
+                                  self._rmlak,
+                                  msg = np.nan,
+                                  meta = False)
+
+        self.assertEqual((3, 2, self._kdep, self._nyaux), out_arr.shape)
+
+        self.assertEqual(np.float64, out_arr.dtype)
+
+        out_arr_vals = out_arr.values.reshape((72, 1)).tolist()
+        for e in zip(self._ncl_truth[1], out_arr_vals):
+            if np.isnan(e[0]) or np.isnan(e[1][0]):
+                sdf = 6
+            self.assertAlmostEqual(e[0], e[1][0], 2)
 
 
     # Test if output type is correct
