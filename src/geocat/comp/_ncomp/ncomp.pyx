@@ -430,7 +430,7 @@ def _eofunc(np.ndarray np_input, int neval, opt={}, **kwargs):
     cdef libncomp.ncomp_attributes* attrs = dict_to_ncomp_attributes(opt)
 
     # allocate output ncomp_array and ncomp_attributes
-    cdef libncomp.ncomp_array ncomp_output
+    cdef libncomp.ncomp_array* ncomp_output = NULL
     cdef libncomp.ncomp_attributes attrs_output
 
     cdef int ier
@@ -438,7 +438,7 @@ def _eofunc(np.ndarray np_input, int neval, opt={}, **kwargs):
         ier = libncomp.eofunc(ncomp_input, neval, attrs, &ncomp_output, &attrs_output)
 
     # convert ncomp_output to np.ndarray
-    np_output = ncomp_to_np_array(&ncomp_output)
+    np_output = ncomp_to_np_array(ncomp_output)
 
     # making sure that output missing values is NaN
     output_missing_value = ncomp_output.msg.msg_double \
@@ -465,7 +465,7 @@ def _eofunc_n(np.ndarray np_input, int neval, int t_dim, opt={}, **kwargs):
     cdef libncomp.ncomp_attributes* attrs = dict_to_ncomp_attributes(opt)
 
     # allocate output ncomp_array and ncomp_attributes
-    cdef libncomp.ncomp_array ncomp_output
+    cdef libncomp.ncomp_array* ncomp_output = NULL
     cdef libncomp.ncomp_attributes attrs_output
 
     cdef int ier
@@ -473,7 +473,7 @@ def _eofunc_n(np.ndarray np_input, int neval, int t_dim, opt={}, **kwargs):
         ier = libncomp.eofunc_n(ncomp_input, neval, t_dim, attrs, &ncomp_output, &attrs_output)
 
     # convert ncomp_output to np.ndarray
-    np_output = ncomp_to_np_array(&ncomp_output)
+    np_output = ncomp_to_np_array(ncomp_output)
 
     # making sure that output missing values is NaN
     output_missing_value = ncomp_output.msg.msg_double \
@@ -646,7 +646,7 @@ def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolu
         a_wvel[missing_inds_a_wvel] = msg
 
     # Allocate output ncomp_array
-    cdef libncomp.ncomp_array ncomp_output
+    cdef libncomp.ncomp_array* ncomp_output = NULL
 
     cdef int ier
     with nogil:
@@ -659,7 +659,7 @@ def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolu
       warnings.warn("moc_globe_atl: {}: There is an error".format(ier), NcompWarning)
 
     # Convert ncomp_output to np.ndarray
-    np_output = ncomp_to_np_array(&ncomp_output)
+    np_output = ncomp_to_np_array(ncomp_output)
 
     # Make sure output missing values are NaN
     output_missing_value = ncomp_output.msg.msg_double
