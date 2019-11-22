@@ -361,22 +361,22 @@ def moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak,
 
     Args:
 
-        lat_aux_grid (:class:`numpy.ndarray`):
+        lat_aux_grid (:class:`xarray.DataArray` or :class:`numpy.ndarray`):
             Latitude grid for transport diagnostics.
 
-        a_wvel (:class:`numpy.ndarray`):
+        a_wvel (:class:`xarray.DataArray` or :class:`numpy.ndarray`):
             Area weighted Eulerian-mean vertical velocity [TAREA*WVEL].
 
-        a_bolus (:class:`numpy.ndarray`):
+        a_bolus (:class:`xarray.DataArray` or :class:`numpy.ndarray`):
             Area weighted Eddy-induced (bolus) vertical velocity [TAREA*WISOP].
 
-        a_submeso (:class:`numpy.ndarray`):
+        a_submeso (:class:`xarray.DataArray` or :class:`numpy.ndarray`):
             Area weighted submeso vertical velocity [TAREA*WSUBM].
 
-        tlat (:class:`numpy.ndarray`):
+        tlat (:class:`xarray.DataArray` or :class:`numpy.ndarray`):
             Array of t-grid latitudes.
 
-        rmlak (:class:`numpy.ndarray`):
+        rmlak (:class:`xarray.DataArray` or :class:`numpy.ndarray`):
             Basin index number: [0]=Globe, [1]=Atlantic
 
         msg (:obj:`numpy.number`):
@@ -436,7 +436,7 @@ def moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak,
     out_arr = _ncomp._moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso,
                                     tlat, rmlak, msg)
 
-    if meta:
+    if meta and isinstance(input, xr.DataArray):
         pass
         # TODO: Retaining possible metadata might be revised in the future
     else:
