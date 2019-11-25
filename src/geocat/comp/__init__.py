@@ -300,7 +300,7 @@ def eofunc(data, neval, **kwargs) -> xr.DataArray:
         else:
             raise ValueError("pcrit must be between 0 and 100")
 
-    missing_value = kwargs["missing_value"] if "missing_value" in kwargs else np.nan
+    missing_value = kwargs.get("missing_value", np.nan)
 
     # the input data must be convertible to numpy array
     np_data = None
@@ -331,6 +331,9 @@ def eofunc(data, neval, **kwargs) -> xr.DataArray:
         response = _ncomp._eofunc_n(np_data, accepted_neval, time_dim, options, missing_value=missing_value)
 
     attrs = data.attrs if isinstance(data, xr.DataArray) and bool(kwargs.get("meta", False)) else {}
+    attrs["_FillValue"] = np.nan
+    attrs["missing_value"] = np.nan
+
     # converting the keys to string instead of bytes also fixing matrix and method
     # TODO: once Kevin's work on char * is merged, we could remove this part or change it properly.
     for k, v in response[1].items():

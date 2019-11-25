@@ -705,7 +705,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         for e in np.nditer(eof):
             self.assertAlmostEqual(0.25, e, 2)
 
-        self.assertEqual(5, len(attrs))
+        self.assertEqual(7, len(attrs))
 
         self.assertAlmostEqual(5.33333, attrs['eval_transpose'][0], 4)
         self.assertAlmostEqual(100.0, attrs['pcvar'][0], 1)
@@ -725,7 +725,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         for e in np.nditer(eof):
             self.assertAlmostEqual(0.25, e, 2)
 
-        self.assertEqual(5, len(attrs))
+        self.assertEqual(7, len(attrs))
 
         self.assertAlmostEqual(5.33333, attrs['eval_transpose'][0], 4)
         self.assertAlmostEqual(100.0, attrs['pcvar'][0], 1)
@@ -745,7 +745,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         for e in np.nditer(eof):
             self.assertAlmostEqual(0.25, e, 2)
 
-        self.assertEqual(5, len(attrs))
+        self.assertEqual(7, len(attrs))
 
         self.assertAlmostEqual(5.33333, attrs['eval_transpose'][0], 4)
         self.assertAlmostEqual(100.0, attrs['pcvar'][0], 1)
@@ -765,7 +765,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         for e in np.nditer(eof):
             self.assertAlmostEqual(0.25, e, 2)
 
-        self.assertEqual(5, len(attrs))
+        self.assertEqual(7, len(attrs))
 
         self.assertAlmostEqual(3.20000, attrs['eval_transpose'][0], 4)
         self.assertAlmostEqual(100.0, attrs['pcvar'][0], 1)
@@ -796,7 +796,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         for e in np.nditer(eof):
             self.assertAlmostEqual(0.25, e, 2)
 
-        self.assertEqual(6, len(attrs))
+        self.assertEqual(8, len(attrs))
 
         self.assertAlmostEqual(3.20000, attrs['eval_transpose'][0], 4)
         self.assertAlmostEqual(100.0, attrs['pcvar'][0], 1)
@@ -818,7 +818,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         for e in np.nditer(eof):
             self.assertAlmostEqual(0.25, e, 2)
 
-        self.assertEqual(6, len(attrs))
+        self.assertEqual(8, len(attrs))
 
         self.assertAlmostEqual(3.20000, attrs['eval_transpose'][0], 4)
         self.assertAlmostEqual(100.0, attrs['pcvar'][0], 1)
@@ -841,7 +841,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         for e in zip(expected_results, eof.reshape((16, 1)).tolist()):
             self.assertAlmostEqual(e[0], e[1][0], 4)
 
-        self.assertEqual(6, len(attrs))
+        self.assertEqual(8, len(attrs))
 
         self.assertAlmostEqual(2.9852, attrs['eval_transpose'][0], 4)
         self.assertAlmostEqual(98.71625, attrs['pcvar'][0], 1)
@@ -866,7 +866,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         for e in zip(expected_results, eof.reshape((16, 1)).tolist()):
             self.assertAlmostEqual(e[0], e[1][0], 4)
 
-        self.assertEqual(6, len(attrs))
+        self.assertEqual(8, len(attrs))
 
         self.assertAlmostEqual(2.9852, attrs['eval_transpose'][0], 4)
         self.assertAlmostEqual(98.71625, attrs['pcvar'][0], 1)
@@ -897,7 +897,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         for e in zip(expected_results, eof.reshape((16, 1)).tolist()):
             self.assertAlmostEqual(e[0], e[1][0], 4)
 
-        self.assertEqual(6, len(attrs))
+        self.assertEqual(8, len(attrs))
 
         self.assertAlmostEqual(2.9852, attrs['eval_transpose'][0], 4)
         self.assertAlmostEqual(98.71625, attrs['pcvar'][0], 1)
@@ -922,7 +922,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         for e in zip(expected_results, eof.reshape((16, 1)).tolist()):
             self.assertAlmostEqual(e[0], e[1][0], 4)
 
-        self.assertEqual(6, len(attrs))
+        self.assertEqual(8, len(attrs))
 
         self.assertAlmostEqual(2.9852, attrs['eval_transpose'][0], 4)
         self.assertAlmostEqual(98.71625, attrs['pcvar'][0], 1)
@@ -947,7 +947,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         for e in zip(expected_results, eof.reshape((16, 1)).tolist()):
             self.assertAlmostEqual(e[0], e[1][0], 4)
 
-        self.assertEqual(6, len(attrs))
+        self.assertEqual(8, len(attrs))
 
         self.assertAlmostEqual(2.9852, attrs['eval_transpose'][0], 4)
         self.assertAlmostEqual(98.71625, attrs['pcvar'][0], 1)
@@ -971,7 +971,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         for e in np.nditer(eof):
             self.assertAlmostEqual(0.25, e, 2)
 
-        self.assertEqual(5, len(attrs))
+        self.assertEqual(7, len(attrs))
 
         self.assertAlmostEqual(5.33333, attrs['eval_transpose'][0], 4)
         self.assertAlmostEqual(100.0, attrs['pcvar'][0], 1)
@@ -994,7 +994,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         for e in np.nditer(eof):
             self.assertAlmostEqual(0.25, e, 2)
 
-        self.assertEqual(5, len(attrs))
+        self.assertEqual(7, len(attrs))
 
         self.assertAlmostEqual(5.33333, attrs['eval_transpose'][0], 4)
         self.assertAlmostEqual(100.0, attrs['pcvar'][0], 1)
@@ -1018,7 +1018,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         for e in np.nditer(eof):
             self.assertAlmostEqual(0.25, e, 2)
 
-        self.assertEqual(7, len(attrs))
+        self.assertEqual(9, len(attrs))
 
         self.assertAlmostEqual(5.33333, attrs['eval_transpose'][0], 4)
         self.assertAlmostEqual(100.0, attrs['pcvar'][0], 1)
@@ -1042,7 +1042,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         for e in np.nditer(eof):
             self.assertAlmostEqual(0.25, e, 2)
 
-        self.assertEqual(5, len(attrs))
+        self.assertEqual(7, len(attrs))
 
         self.assertAlmostEqual(85.33333, attrs['eval_transpose'][0], 4)
         self.assertAlmostEqual(100.0, attrs['pcvar'][0], 1)
@@ -1063,7 +1063,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         for e in np.nditer(eof):
             self.assertAlmostEqual(0.25, e, 2)
 
-        self.assertEqual(5, len(attrs))
+        self.assertEqual(7, len(attrs))
 
         self.assertAlmostEqual(3.2000, attrs['eval_transpose'][0], 4)
         self.assertAlmostEqual(100.0, attrs['pcvar'][0], 1)
@@ -1084,7 +1084,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         for e in np.nditer(eof):
             self.assertAlmostEqual(0.25, e, 2)
 
-        self.assertEqual(6, len(attrs))
+        self.assertEqual(8, len(attrs))
 
         self.assertAlmostEqual(1365.3333, attrs['eval_transpose'][0], 4)
         self.assertAlmostEqual(100.0, attrs['pcvar'][0], 1)
@@ -1106,7 +1106,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         for e in np.nditer(eof):
             self.assertAlmostEqual(0.25, e, 2)
 
-        self.assertEqual(6, len(attrs))
+        self.assertEqual(8, len(attrs))
 
         self.assertAlmostEqual(1365.3333, attrs['eval_transpose'][0], 4)
         self.assertAlmostEqual(100.0, attrs['pcvar'][0], 1)
@@ -1132,7 +1132,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
             else:
                 self.assertTrue(np.isnan(e[1]))
 
-        self.assertEqual(6, len(attrs))
+        self.assertEqual(8, len(attrs))
 
         self.assertAlmostEqual(84.75415, attrs['eval_transpose'][0], 4)
         self.assertAlmostEqual(102.4951, attrs['pcvar'][0], 1)
@@ -1160,7 +1160,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
             else:
                 self.assertTrue(np.isnan(e[1]))
 
-        self.assertEqual(6, len(attrs))
+        self.assertEqual(8, len(attrs))
 
         self.assertAlmostEqual(84.75415, attrs['eval_transpose'][0], 4)
         self.assertAlmostEqual(102.4951, attrs['pcvar'][0], 1)
@@ -1194,7 +1194,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
             else:
                 self.assertTrue(np.isnan(e[1]))
 
-        self.assertEqual(6, len(attrs))
+        self.assertEqual(8, len(attrs))
 
         self.assertAlmostEqual(84.75415, attrs['eval_transpose'][0], 4)
         self.assertAlmostEqual(102.4951, attrs['pcvar'][0], 1)
@@ -1222,7 +1222,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
             else:
                 self.assertTrue(np.isnan(e[1]))
 
-        self.assertEqual(6, len(attrs))
+        self.assertEqual(8, len(attrs))
 
         self.assertAlmostEqual(84.75415, attrs['eval_transpose'][0], 4)
         self.assertAlmostEqual(102.4951, attrs['pcvar'][0], 1)
@@ -1250,7 +1250,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
             else:
                 self.assertTrue(np.isnan(e[1]))
 
-        self.assertEqual(6, len(attrs))
+        self.assertEqual(8, len(attrs))
 
         self.assertAlmostEqual(84.75415, attrs['eval_transpose'][0], 4)
         self.assertAlmostEqual(102.4951, attrs['pcvar'][0], 1)
@@ -1278,7 +1278,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
             else:
                 self.assertTrue(np.isnan(e[1]))
 
-        self.assertEqual(6, len(attrs))
+        self.assertEqual(8, len(attrs))
 
         self.assertAlmostEqual(84.75415, attrs['eval_transpose'][0], 4)
         self.assertAlmostEqual(102.4951, attrs['pcvar'][0], 1)

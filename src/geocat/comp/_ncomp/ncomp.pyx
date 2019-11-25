@@ -485,6 +485,9 @@ def _eofunc(np.ndarray np_input, int neval, opt={}, **kwargs):
     with nogil:
         ier = libncomp.eofunc(input.ncomp, neval, attrs, &ncomp_output, &attrs_output)
 
+    if ier != 0:
+        raise NcompError(f"An error occured while calling  libncomp.eofunc. error code: {ier}")
+
     # convert ncomp_output to np.ndarray
     output = Array.from_ncomp(ncomp_output)
 
