@@ -1,3 +1,4 @@
+# cython: language_level=3
 cdef extern from "ncomp/constants.h":
     cdef double DEFAULT_FILL "DEFAULT_FILL_DOUBLE";
     cdef char   DEFAULT_FILL_INT8 "NC_FILL_BYTE";
@@ -77,11 +78,11 @@ cdef extern from "ncomp/wrapper.h":
 
     int eofunc(const ncomp_array * x_in, const int neval_in,
                const ncomp_attributes * options_in,
-               ncomp_array* x_out, ncomp_attributes* attrList_out) nogil;
+               ncomp_array** x_out, ncomp_attributes* attrList_out) nogil;
 
     int eofunc_n(const ncomp_array * x_in, const int neval_in,
                  const int t_dim,
                  const ncomp_attributes * options_in,
-                 ncomp_array * x_out, ncomp_attributes * attrList_out) nogil;
+                 ncomp_array ** x_out, ncomp_attributes * attrList_out) nogil;
 
 
