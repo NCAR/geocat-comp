@@ -1,5 +1,7 @@
 # cython: language_level=3, boundscheck=False, embedsignature=True
-cimport ncomp as libncomp
+from ._ncomp cimport libncomp
+from . cimport _ncomp
+
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
 
@@ -31,26 +33,8 @@ def carrayify(f):
 
 
 cdef class Array:
-    cdef libncomp.ncomp_array* ncomp
-    cdef np.ndarray            numpy
-    cdef int                   ndim
-    cdef int                   type
-    cdef void*                 addr
-    cdef size_t*               shape
-
     def __init__(self):
         raise NotImplementedError("_ncomp.Array must be instantiated using the from_np or from_ncomp methods.")
-
-    cdef libncomp.ncomp_array* np_to_ncomp_array(self):
-        return <libncomp.ncomp_array*> libncomp.ncomp_array_alloc(self.addr, self.type, self.ndim, self.shape)
-
-    cdef np.ndarray ncomp_to_np_array(self):
-        np.import_array()
-        nparr = np.PyArray_SimpleNewFromData(self.ndim, <np.npy_intp *> self.shape, self.type, self.addr)
-        cdef extern from "numpy/arrayobject.h":
-            void PyArray_ENABLEFLAGS(np.ndarray arr, int flags)
-        PyArray_ENABLEFLAGS(nparr, np.NPY_OWNDATA)
-        return nparr
 
     @staticmethod
     cdef Array from_np(np.ndarray nparr):
@@ -60,7 +44,7 @@ cdef class Array:
         a.shape = <size_t*>nparr.shape
         a.type = nparr.dtype.num
         a.addr = <void*> (<unsigned long> nparr.__array_interface__['data'][0])
-        a.ncomp = a.np_to_ncomp_array()
+        a.ncomp = np_to_ncomp_array(nparr)
         return a
 
     @staticmethod
@@ -71,7 +55,7 @@ cdef class Array:
         a.shape = ncarr.shape
         a.type = ncarr.type
         a.addr = ncarr.addr
-        a.numpy = a.ncomp_to_np_array()
+        a.numpy = ncomp_to_np_array(ncarr)
         return a
 
     def __dealloc__(self):

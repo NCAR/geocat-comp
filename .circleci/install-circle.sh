@@ -10,5 +10,5 @@ conda env update -f .circleci/environment-dev-$(uname)-${PYTHON}.yml --name ${EN
 conda env list
 source activate ${ENV_NAME}
 #pip install pip --upgrade
-pip install --no-deps --quiet -e .
+pip install --no-deps --quiet .
 conda list -n ${ENV_NAME}
