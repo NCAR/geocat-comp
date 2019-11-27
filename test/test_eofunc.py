@@ -1,18 +1,18 @@
 from abc import ABCMeta
 from unittest import TestCase
 import numpy as np
-from dask.array.tests.test_xarray import xr
+# from dask.array.tests.test_xarray import xr
+import xarray as xr
 
-from geocat.comp._ncomp import _eofunc
-from geocat.comp._ncomp import _eofunc_n
+from geocat.comp._ncomp import _eofunc, _eofunc_n, _eofunc_ts, _eofunc_ts_n
 from geocat.comp import eofunc
 
 
 class BaseEOFuncTestClass(metaclass=ABCMeta):
-    _sample_data = []
+    _sample_data_eofunc = []
 
     # _sample_data[ 0 ]
-    _sample_data.append(
+    _sample_data_eofunc.append(
         [[[0, 1, 2, 3],
           [4, 5, 6, 7],
           [8, 9, 10, 11],
@@ -35,7 +35,7 @@ class BaseEOFuncTestClass(metaclass=ABCMeta):
     )
 
     # _sample_data[ 1 ]
-    _sample_data.append(np.arange(64, dtype='double').reshape((4, 4, 4)))
+    _sample_data_eofunc.append(np.arange(64, dtype='double').reshape((4, 4, 4)))
 
     # _sample_data[ 2 ]
     tmp_data = np.asarray(
@@ -44,7 +44,7 @@ class BaseEOFuncTestClass(metaclass=ABCMeta):
          51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63],
         dtype='double'
     ).reshape((4, 4, 4))
-    _sample_data.append(tmp_data)
+    _sample_data_eofunc.append(tmp_data)
 
     # _sample_data[ 3 ]
     tmp_data = np.asarray(
@@ -54,15 +54,16 @@ class BaseEOFuncTestClass(metaclass=ABCMeta):
         dtype='double'
     ).reshape((4, 4, 4))
     tmp_data[tmp_data == -99] = np.nan
-    _sample_data.append(tmp_data)
+    _sample_data_eofunc.append(tmp_data)
 
     # _sample_data[ 4 ]
-    _sample_data.append( np.arange(64, dtype='int64').reshape((4, 4, 4)) )
+    _sample_data_eofunc.append(np.arange(64, dtype='int64').reshape((4, 4, 4)))
 
+    _nc_ds = xr.open_dataset("../resources/sst.nc")
 
 class Test_pyx_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_pyx_01(self):
-        data = self._sample_data[1]
+        data = self._sample_data_eofunc[1]
 
         response = _eofunc(data, 1)
 
@@ -84,7 +85,7 @@ class Test_pyx_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertEqual("transpose", properties[b'method'].tostring().decode('ascii')[:-1])
 
     def test_eofunc_pyx_02(self):
-        data = self._sample_data[1]
+        data = self._sample_data_eofunc[1]
 
         options = {b'jopt': np.asarray([1])}
         response = _eofunc(data, 1, options)
@@ -107,7 +108,7 @@ class Test_pyx_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertEqual("transpose", properties[b'method'].tostring().decode('ascii')[:-1])
 
     def test_eofunc_pyx_03(self):
-        data = self._sample_data[1]
+        data = self._sample_data_eofunc[1]
 
         options = {
             b'jopt': np.asarray(1.0),
@@ -159,7 +160,7 @@ class Test_pyx_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertEqual("transpose", properties[b'method'].tostring().decode('ascii')[:-1])
 
     def test_eofunc_pyx_04(self):
-        data =self._sample_data[3]
+        data =self._sample_data_eofunc[3]
 
         options = {
             b'jopt': np.asarray(1.0),
@@ -190,7 +191,7 @@ class Test_pyx_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertTrue(np.isnan(data[0, 0, 3]))
 
     def test_eofunc_pyx_05(self):
-        data = self._sample_data[3]
+        data = self._sample_data_eofunc[3]
 
         options = {
             b'jopt': np.asarray(1.0),
@@ -221,7 +222,7 @@ class Test_pyx_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertTrue(np.isnan(data[0, 0, 3]))
 
     def test_eofunc_pyx_06(self):
-        data = self._sample_data[3]
+        data = self._sample_data_eofunc[3]
 
         options = {
             b'jopt': np.asarray(1.0),
@@ -232,7 +233,7 @@ class Test_pyx_eofunc(TestCase, BaseEOFuncTestClass):
             _eofunc(data, 1, options, missing_value=42)
 
     def test_eofunc_pyx_07(self):
-        data = self._sample_data[2]
+        data = self._sample_data_eofunc[2]
 
         options = {
             b'jopt': np.asarray(1.0),
@@ -263,7 +264,7 @@ class Test_pyx_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertAlmostEqual(-99.0, data[0, 0, 3], 1)
 
     def test_eofunc_pyx_08(self):
-        data = self._sample_data[2]
+        data = self._sample_data_eofunc[2]
 
         options = {
             b'jopt': np.asarray(1.0),
@@ -294,7 +295,7 @@ class Test_pyx_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertAlmostEqual(-99.0, data[0, 0, 3], 1)
 
     def test_eofunc_pyx_09(self):
-        data = self._sample_data[2]
+        data = self._sample_data_eofunc[2]
 
         options = {
             b'jopt': np.asarray(1.0),
@@ -324,7 +325,7 @@ class Test_pyx_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertAlmostEqual(-99.0, data[0, 0, 3], 1)
 
     def test_eofunc_pyx_10(self):
-        data = self._sample_data[4]
+        data = self._sample_data_eofunc[4]
 
         response = _eofunc(data, 1)
 
@@ -346,7 +347,7 @@ class Test_pyx_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertEqual("transpose", properties[b'method'].tostring().decode('ascii')[:-1])
 
     def test_eofunc_pyx_11(self):
-        data = self._sample_data[4]
+        data = self._sample_data_eofunc[4]
 
         options = {}
         accepted_neval = int(1)
@@ -373,7 +374,7 @@ class Test_pyx_eofunc(TestCase, BaseEOFuncTestClass):
 
 class Test_pyx_eofunc_n(TestCase, BaseEOFuncTestClass):
     def test_eofunc_n_pyx_01(self):
-        data = self._sample_data[1]
+        data = self._sample_data_eofunc[1]
 
         response = _eofunc_n(data, 1, 1)
 
@@ -395,7 +396,7 @@ class Test_pyx_eofunc_n(TestCase, BaseEOFuncTestClass):
         self.assertEqual("transpose", properties[b'method'].tostring().decode('ascii')[:-1])
 
     def test_eofunc_n_pyx_02(self):
-        data = self._sample_data[1]
+        data = self._sample_data_eofunc[1]
 
         options = {
             b'jopt': np.asarray(1)
@@ -421,7 +422,7 @@ class Test_pyx_eofunc_n(TestCase, BaseEOFuncTestClass):
         self.assertEqual("transpose", properties[b'method'].tostring().decode('ascii')[:-1])
 
     def test_eofunc_n_pyx_03(self):
-        data = self._sample_data[1]
+        data = self._sample_data_eofunc[1]
 
         options = {
             b'jopt': np.asarray(0),
@@ -449,7 +450,7 @@ class Test_pyx_eofunc_n(TestCase, BaseEOFuncTestClass):
         self.assertEqual("transpose", properties[b'method'].tostring().decode('ascii')[:-1])
 
     def test_eofunc_n_pyx_03_1(self):
-        data = self._sample_data[1]
+        data = self._sample_data_eofunc[1]
 
         options = {
             b'jopt': np.asarray(0),
@@ -477,7 +478,7 @@ class Test_pyx_eofunc_n(TestCase, BaseEOFuncTestClass):
         self.assertEqual("transpose", properties[b'method'].tostring().decode('ascii')[:-1])
 
     def test_eofunc_n_pyx_04(self):
-        data = self._sample_data[3]
+        data = self._sample_data_eofunc[3]
 
         options = {
             b'jopt': np.asarray(0),
@@ -511,7 +512,7 @@ class Test_pyx_eofunc_n(TestCase, BaseEOFuncTestClass):
         self.assertTrue(np.isnan(data[0, 0, 3]))
 
     def test_eofunc_n_pyx_05(self):
-        data = self._sample_data[3]
+        data = self._sample_data_eofunc[3]
 
         options = {
             b'jopt': np.asarray(0),
@@ -545,7 +546,7 @@ class Test_pyx_eofunc_n(TestCase, BaseEOFuncTestClass):
         self.assertTrue(np.isnan(data[0, 0, 3]))
 
     def test_eofunc_n_pyx_06(self):
-        data = self._sample_data[3]
+        data = self._sample_data_eofunc[3]
 
         options = {
             b'jopt': np.asarray(0),
@@ -556,7 +557,7 @@ class Test_pyx_eofunc_n(TestCase, BaseEOFuncTestClass):
             response = _eofunc_n(data, 1, 1, options, missing_value=42)
 
     def test_eofunc_n_pyx_07(self):
-        data = self._sample_data[2]
+        data = self._sample_data_eofunc[2]
 
         options = {
             b'jopt': np.asarray(0),
@@ -590,7 +591,7 @@ class Test_pyx_eofunc_n(TestCase, BaseEOFuncTestClass):
         self.assertEqual(-99, data[0, 0, 3])
 
     def test_eofunc_n_pyx_08(self):
-        data = self._sample_data[2]
+        data = self._sample_data_eofunc[2]
 
         options = {
             b'jopt': np.asarray(0),
@@ -624,7 +625,7 @@ class Test_pyx_eofunc_n(TestCase, BaseEOFuncTestClass):
         self.assertEqual(-99, data[0, 0, 3])
 
     def test_eofunc_n_pyx_09(self):
-        data = self._sample_data[2]
+        data = self._sample_data_eofunc[2]
 
         options = {
             b'jopt': np.asarray(0),
@@ -658,7 +659,7 @@ class Test_pyx_eofunc_n(TestCase, BaseEOFuncTestClass):
         self.assertEqual(-99, data[0, 0, 3])
 
     def test_eofunc_n_pyx_10(self):
-        data = self._sample_data[2]
+        data = self._sample_data_eofunc[2]
 
         options = {
             b'jopt': np.asarray(0),
@@ -691,10 +692,9 @@ class Test_pyx_eofunc_n(TestCase, BaseEOFuncTestClass):
 
         self.assertEqual(-99, data[0, 0, 3])
 
-
 class Test_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_00(self):
-        data = self._sample_data[0]
+        data = self._sample_data_eofunc[0]
 
         results = eofunc(data, 1)
         eof = results.data
@@ -714,7 +714,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertEqual("transpose", attrs['method'])
 
     def test_eofunc_01(self):
-        data = self._sample_data[1]
+        data = self._sample_data_eofunc[1]
 
         results = eofunc(data, 1)
         eof = results.data
@@ -734,7 +734,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertEqual("transpose", attrs['method'])
 
     def test_eofunc_02(self):
-        data = self._sample_data[1]
+        data = self._sample_data_eofunc[1]
 
         results = eofunc(data, 1, jopt="covariance")
         eof = results.data
@@ -754,7 +754,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertEqual("transpose", attrs['method'])
 
     def test_eofunc_03(self):
-        data = self._sample_data[1]
+        data = self._sample_data_eofunc[1]
 
         results = eofunc(data, 1, jopt="correlation")
         eof = results.data
@@ -775,17 +775,17 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertEqual("transpose", attrs['method'])
 
     def test_eofunc_04(self):
-        data = self._sample_data[1]
+        data = self._sample_data_eofunc[1]
         with self.assertRaises(ValueError):
             eofunc(data, 1, jopt="Not_supported")
 
     def test_eofunc_05(self):
-        data = self._sample_data[1]
+        data = self._sample_data_eofunc[1]
         with self.assertRaises(TypeError):
             eofunc(data, 1, jopt=0)
 
     def test_eofunc_06(self):
-        data = self._sample_data[1]
+        data = self._sample_data_eofunc[1]
 
         results = eofunc(data, 1, jopt="correlation", pcrit=32.0)
         eof = results.data
@@ -807,7 +807,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertEqual("transpose", attrs['method'])
 
     def test_eofunc_07(self):
-        data = self._sample_data[1]
+        data = self._sample_data_eofunc[1]
 
         results = eofunc(data, 1, jopt="correlation", pcrit=32)
         eof = results.data
@@ -829,7 +829,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertEqual("transpose", attrs['method'])
 
     def test_eofunc_08(self):
-        data = self._sample_data[3]
+        data = self._sample_data_eofunc[3]
 
         results = eofunc(data, 1, jopt="correlation", pcrit=32)
         eof = results.data
@@ -854,7 +854,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertTrue(np.isnan(data[0, 0, 3]))
 
     def test_eofunc_09(self):
-        data = self._sample_data[3]
+        data = self._sample_data_eofunc[3]
 
         results = eofunc(data, 1, jopt="correlation", pcrit=32, missing_value=np.nan)
         eof = results.data
@@ -879,13 +879,13 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertTrue(np.isnan(data[0, 0, 3]))
 
     def test_eofunc_10(self):
-        data = self._sample_data[3]
+        data = self._sample_data_eofunc[3]
 
         with self.assertRaises(ValueError):
             eofunc(data, 1, jopt="correlation", pcrit=32, missing_value=42)
 
     def test_eofunc_11(self):
-        data = self._sample_data[2]
+        data = self._sample_data_eofunc[2]
 
         results = eofunc(data, 1, jopt="correlation", pcrit=32, missing_value=-99.0)
         eof = results.data
@@ -910,7 +910,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertAlmostEqual(-99.0, data[0, 0, 3], 1)
 
     def test_eofunc_12(self):
-        data = self._sample_data[2]
+        data = self._sample_data_eofunc[2]
 
         results = eofunc(data, 1, jopt="correlation", pcrit=32, missing_value=-99) #None-double
         eof = results.data
@@ -935,7 +935,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertAlmostEqual(-99.0, data[0, 0, 3], 1)
 
     def test_eofunc_13(self):
-        data = self._sample_data[2]
+        data = self._sample_data_eofunc[2]
 
         results = eofunc(data, 1, jopt="correlation", pcrit=32, missing_value=np.int8(-99))  # None-double np.number
         eof = results.data
@@ -960,7 +960,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertAlmostEqual(-99.0, data[0, 0, 3], 1)
 
     def test_eofunc_14(self):
-        data = self._sample_data[4]
+        data = self._sample_data_eofunc[4]
 
         results = eofunc(data, 1)
         eof = results.data
@@ -981,7 +981,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertEqual("transpose", attrs['method'])
 
     def test_eofunc_15(self):
-        data = xr.DataArray(self._sample_data[0])
+        data = xr.DataArray(self._sample_data_eofunc[0])
         data.attrs["prop1"] = "prop1"
         data.attrs["prop2"] = 2
 
@@ -1005,7 +1005,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertFalse("prop2" in attrs)
 
     def test_eofunc_16(self):
-        data = xr.DataArray(self._sample_data[0])
+        data = xr.DataArray(self._sample_data_eofunc[0])
         data.attrs["prop1"] = "prop1"
         data.attrs["prop2"] = 2
 
@@ -1031,7 +1031,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertEqual(2, attrs["prop2"])
 
     def test_eofunc_n_01(self):
-        data = self._sample_data[1]
+        data = self._sample_data_eofunc[1]
 
         results = eofunc(data, 1, time_dim=1)
         eof = results.data
@@ -1052,7 +1052,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertEqual("transpose", attrs['method'])
 
     def test_eofunc_n_02(self):
-        data = self._sample_data[1]
+        data = self._sample_data_eofunc[1]
 
         results = eofunc(data, 1, time_dim=1, jopt="correlation")
         eof = results.data
@@ -1073,7 +1073,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertEqual("transpose", attrs['method'])
 
     def test_eofunc_n_03(self):
-        data = self._sample_data[1]
+        data = self._sample_data_eofunc[1]
 
         results = eofunc(data, 1, time_dim=0, jopt="covariance", pcrit=32)
         eof = results.data
@@ -1095,7 +1095,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertEqual("transpose", attrs['method'])
 
     def test_eofunc_n_03_1(self):
-        data = self._sample_data[1]
+        data = self._sample_data_eofunc[1]
 
         results = eofunc(data, 1, time_dim=0, jopt="covariance", pcrit=32)
         eof = results.data
@@ -1117,7 +1117,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertEqual("transpose", attrs['method'])
 
     def test_eofunc_n_04(self):
-        data = self._sample_data[3]
+        data = self._sample_data_eofunc[3]
 
         results = eofunc(data, 1, time_dim=1, jopt="covariance", pcrit=32)
         eof = results.data
@@ -1145,7 +1145,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertTrue(np.isnan(data[0, 0, 3]))
 
     def test_eofunc_n_05(self):
-        data = self._sample_data[3]
+        data = self._sample_data_eofunc[3]
 
         results = eofunc(data, 1, time_dim=1, jopt="covariance", pcrit=32, missing_value=np.nan)
         eof = results.data
@@ -1173,13 +1173,13 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertTrue(np.isnan(data[0, 0, 3]))
 
     def test_eofunc_n_06(self):
-        data = self._sample_data[3]
+        data = self._sample_data_eofunc[3]
 
         with self.assertRaises(ValueError):
             eofunc(data, 1, time_dim=1, missing_value=42)
 
     def test_eofunc_n_07(self):
-        data = self._sample_data[2]
+        data = self._sample_data_eofunc[2]
 
         results = eofunc(data, 1, time_dim=1, jopt="covariance", pcrit=32, missing_value=np.float64(-99.0))
         eof = results.data
@@ -1207,7 +1207,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertEqual(-99, data[0, 0, 3])
 
     def test_eofunc_n_08(self):
-        data = self._sample_data[2]
+        data = self._sample_data_eofunc[2]
 
         results = eofunc(data, 1, time_dim=1, jopt="covariance", pcrit=32, missing_value=-99)
         eof = results.data
@@ -1235,7 +1235,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertEqual(-99, data[0, 0, 3])
 
     def test_eofunc_n_09(self):
-        data = self._sample_data[2]
+        data = self._sample_data_eofunc[2]
 
         results = eofunc(data, 1, time_dim=1, jopt="covariance", pcrit=32, missing_value=np.int8(-99))
         eof = results.data
@@ -1263,7 +1263,7 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
         self.assertEqual(-99, data[0, 0, 3])
 
     def test_eofunc_n_10(self):
-        data = self._sample_data[2]
+        data = self._sample_data_eofunc[2]
 
         results = eofunc(data, 1, time_dim=1, jopt="covariance", pcrit=32, missing_value=np.int8(-99))
         eof = results.data
@@ -1290,6 +1290,105 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
 
         self.assertEqual(-99, data[0, 0, 3])
 
+    def test_sst_01(self):
+        sst = self._nc_ds.sst
+
+        actual_response = eofunc(sst, 5, time_dim=0)
+
+        print(actual_response.attrs.keys())
+
+        expected_response = self._nc_ds.evec
+
+        np.testing.assert_array_almost_equal(
+            expected_response.data,
+            actual_response.data
+        )
+
+        np.testing.assert_array_almost_equal(
+            expected_response.attrs["eval_transpose"],
+            actual_response.attrs["eval_transpose"]
+        )
+
+        np.testing.assert_array_almost_equal(
+            expected_response.attrs["eval"],
+            actual_response.attrs["eval"]
+        )
+
+        np.testing.assert_array_almost_equal(
+            expected_response.attrs["pcvar"],
+            actual_response.attrs["pcvar"]
+        )
+
+        np.testing.assert_equal(
+            actual_response.attrs["matrix"],
+            expected_response.attrs["matrix"]
+        )
+
+        np.testing.assert_equal(
+            actual_response.attrs["method"],
+            expected_response.attrs["method"]
+        )
 
 
+class Test_pyx_eofunc_ts(TestCase, BaseEOFuncTestClass):
+    def test_01(self):
+        sst = self._nc_ds.sst
+        evec = self._nc_ds.evec
+        expected_tsout = self._nc_ds.tsout
+
+        properly_arranged = np.moveaxis(sst.data, 0, 2)
+        response = _eofunc_ts(properly_arranged, evec.data)
+
+        actual_tsout = response[0]
+        np.testing.assert_equal(
+            actual_tsout.shape,
+            expected_tsout.shape
+        )
+
+        np.testing.assert_array_almost_equal(
+            actual_tsout,
+            expected_tsout.data
+        )
+
+        actual_attrs = response[1]
+        np.testing.assert_array_almost_equal(
+            actual_attrs[b"ts_mean"],
+            expected_tsout.attrs["ts_mean"]
+        )
+
+        np.testing.assert_equal(
+            actual_attrs[b"matrix"].tostring().decode('ascii')[:-1],
+            expected_tsout.attrs["matrix"]
+        )
+
+
+class Test_pyx_eofunc_ts_n(TestCase, BaseEOFuncTestClass):
+    def test_01(self):
+        sst = self._nc_ds.sst
+        evec = self._nc_ds.evec
+        expected_tsout = self._nc_ds.tsout
+
+        response = _eofunc_ts_n(sst.data, evec.data, 0)
+
+        actual_tsout = response[0]
+        np.testing.assert_equal(
+            actual_tsout.shape,
+            expected_tsout.shape
+        )
+
+        np.testing.assert_array_almost_equal(
+            actual_tsout,
+            expected_tsout.data
+        )
+
+        actual_attrs = response[1]
+        np.testing.assert_array_almost_equal(
+            actual_attrs[b"ts_mean"],
+            expected_tsout.attrs["ts_mean"]
+        )
+
+        np.testing.assert_equal(
+            actual_attrs[b"matrix"].tostring().decode('ascii')[:-1],
+            expected_tsout.attrs["matrix"]
+        )
 

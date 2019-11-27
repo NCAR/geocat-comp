@@ -8,3 +8,5 @@ dependencies:
   - xarray
   - dask
   - ncomp
+  - scipy
+  - netcdf4

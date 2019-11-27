@@ -90,7 +90,7 @@ cdef extern from "ncomp/wrapper.h":
       const ncomp_array * evec_in,
       const ncomp_attributes * options_in,
       ncomp_array ** x_out,
-      ncomp_attributes * attrs_out);
+      ncomp_attributes * attrs_out) nogil;
 
     int eofunc_ts_n(
         const ncomp_array * x_in,
@@ -98,5 +98,5 @@ cdef extern from "ncomp/wrapper.h":
         const ncomp_attributes * options_in,
         const int t_dim,
         ncomp_array ** x_out,
-        ncomp_attributes * attrs_out);
+        ncomp_attributes * attrs_out) nogil;
 
