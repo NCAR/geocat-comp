@@ -515,73 +515,6 @@ cdef ncomp_attributes_to_dict(libncomp.ncomp_attributes attrs):
     return d
 
 
-
-cdef printNcompArray(libncomp.ncomp_array* ncarr):
-
-    cdef int* data_d
-    cdef double* data_f
-
-    cdef int num_dim = ncarr.ndim
-    cdef int numel = 1
-
-    cdef double current_elem_f
-    cdef int current_elem_d
-
-    if ncarr.type == libncomp.NCOMP_INT:
-            data_d = <int*>ncarr.addr
-    else:
-        data_f = <double*>ncarr.addr
-
-    for i in range(num_dim):
-        numel = numel * ncarr.shape[i]
-        #printf("i: %d\n", i)
-        #printf("Shape: %d\n", ncarr.shape[i])
-
-    #printf("Num Elements: %d\n", numel)
-
-    for ind in range(numel):
-        if ncarr.type == libncomp.NCOMP_INT:
-            current_elem_d = data_d[ind]
-            printf("%d ", current_elem_d)
-        else:
-            current_elem_f = data_f[ind]
-            printf("%f ", current_elem_f)
-
-    printf("\n\n")
-
-
-cdef printNumpyArray(np.ndarray arr):
-
-    cdef int current_elem_d
-    cdef double current_elem_f
-
-    cdef int num_dim = arr.ndim
-    cdef size_t* shape = <size_t*> arr.shape
-    cdef int np_type = arr.dtype.num
-    cdef int curr_dim
-
-    for i in range(num_dim):
-        curr_dim = shape[i]
-        #printf("%d ", curr_dim)
-
-    printf("\n")
-
-    #printf("Num Dims: %d\n", num_dim)
-
-    if arr.dtype == np.int64:
-
-        for ind in np.nditer(arr):
-            current_elem_d = ind
-            printf("%d ", current_elem_d)
-    else:
-
-        for ind in np.nditer(arr):
-            current_elem_f = ind
-            printf("%f ", current_elem_f)
-
-    printf("\n\n")
-
-
 @carrayify
 def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolus, np.ndarray a_submeso, np.ndarray tlat, np.ndarray rmlak, msg=None):
     """Facilitates calculating the meridional overturning circulation for the globe and Atlantic.
@@ -656,7 +589,7 @@ def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolu
 
     # Check errors ier
     if ier:
-      warnings.warn("moc_globe_atl: {}: There is an error".format(ier), NcompWarning)
+      raise NcompError(f"moc_globe_atl: There is an error: {ier}")
 
     # Convert ncomp_output to np.ndarray
     np_output = ncomp_to_np_array(ncomp_output)
@@ -667,7 +600,7 @@ def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolu
     if ncomp_output.type != libncomp.NCOMP_DOUBLE:
         output_missing_value = ncomp_output.msg.msg_float
 
-    # TODO: May need revisit for output missing value
+    # TODO: May need to revisit for output missing value
     # np_output[np_output == output_missing_value] = np.nan
 
     return np_output
