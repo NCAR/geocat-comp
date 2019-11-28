@@ -1,3 +1,4 @@
+# cython: language_level=3
 cdef extern from "ncomp/constants.h":
     cdef double DEFAULT_FILL "DEFAULT_FILL_DOUBLE";
     cdef char   DEFAULT_FILL_INT8 "NC_FILL_BYTE";

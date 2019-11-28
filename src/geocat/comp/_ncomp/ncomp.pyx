@@ -29,6 +29,56 @@ def carrayify(f):
         return f(*new_args, **kwargs)
     return wrapper
 
+
+cdef class Array:
+    cdef libncomp.ncomp_array* ncomp
+    cdef np.ndarray            numpy
+    cdef int                   ndim
+    cdef int                   type
+    cdef void*                 addr
+    cdef size_t*               shape
+
+    def __init__(self):
+        raise NotImplementedError("_ncomp.Array must be instantiated using the from_np or from_ncomp methods.")
+
+    cdef libncomp.ncomp_array* np_to_ncomp_array(self):
+        return <libncomp.ncomp_array*> libncomp.ncomp_array_alloc(self.addr, self.type, self.ndim, self.shape)
+
+    cdef np.ndarray ncomp_to_np_array(self):
+        np.import_array()
+        nparr = np.PyArray_SimpleNewFromData(self.ndim, <np.npy_intp *> self.shape, self.type, self.addr)
+        cdef extern from "numpy/arrayobject.h":
+            void PyArray_ENABLEFLAGS(np.ndarray arr, int flags)
+        PyArray_ENABLEFLAGS(nparr, np.NPY_OWNDATA)
+        return nparr
+
+    @staticmethod
+    cdef Array from_np(np.ndarray nparr):
+        cdef Array a = Array.__new__(Array)
+        a.numpy = nparr
+        a.ndim = nparr.ndim
+        a.shape = <size_t*>nparr.shape
+        a.type = nparr.dtype.num
+        a.addr = <void*> (<unsigned long> nparr.__array_interface__['data'][0])
+        a.ncomp = a.np_to_ncomp_array()
+        return a
+
+    @staticmethod
+    cdef Array from_ncomp(libncomp.ncomp_array* ncarr):
+        cdef Array a = Array.__new__(Array)
+        a.ncomp = ncarr
+        a.ndim = ncarr.ndim
+        a.shape = ncarr.shape
+        a.type = ncarr.type
+        a.addr = ncarr.addr
+        a.numpy = a.ncomp_to_np_array()
+        return a
+
+    def __dealloc__(self):
+        if self.ncomp is not NULL:
+            libncomp.ncomp_array_free(self.ncomp, 1)
+
+
 dtype_default_fill = {
              "DEFAULT_FILL":       libncomp.DEFAULT_FILL_DOUBLE,
              np.dtype(np.int8):    np.int8(libncomp.DEFAULT_FILL_INT8),
@@ -98,8 +148,7 @@ def get_ncomp_type(arr):
 
 
 cdef libncomp.ncomp_array* np_to_ncomp_array(np.ndarray nparr):
-    cdef long long_addr = nparr.__array_interface__['data'][0]
-    cdef void* addr = <void*> long_addr
+    cdef void* addr = <void*> (<unsigned long> nparr.__array_interface__['data'][0])
     cdef int ndim = nparr.ndim
     cdef size_t* shape = <size_t*> nparr.shape
     cdef int np_type = nparr.dtype.num
@@ -147,7 +196,7 @@ cdef set_ncomp_msg(libncomp.ncomp_missing* ncomp_msg, num):
         ncomp_msg.msg_longdouble = ncomp_to_dtype[ncomp_type](num)
 
 @carrayify
-def _linint2(np.ndarray xi, np.ndarray yi, np.ndarray fi, np.ndarray xo, np.ndarray yo, int icycx, msg=None):
+def _linint2(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.ndarray xo_np, np.ndarray yo_np, int icycx, msg=None):
     """_linint2(xi, yi, fi, xo, yo, icycx, msg=None)
 
     Interpolates a regular grid to a rectilinear one using bi-linear
@@ -253,42 +302,42 @@ def _linint2(np.ndarray xi, np.ndarray yi, np.ndarray fi, np.ndarray xo, np.ndar
 
     """
 
-    cdef libncomp.ncomp_array* ncomp_xi = np_to_ncomp_array(xi)
-    cdef libncomp.ncomp_array* ncomp_yi = np_to_ncomp_array(yi)
-    cdef libncomp.ncomp_array* ncomp_fi = np_to_ncomp_array(fi)
-    cdef libncomp.ncomp_array* ncomp_xo = np_to_ncomp_array(xo)
-    cdef libncomp.ncomp_array* ncomp_yo = np_to_ncomp_array(yo)
-    cdef libncomp.ncomp_array* ncomp_fo
+    xi = Array.from_np(xi_np)
+    yi = Array.from_np(yi_np)
+    fi = Array.from_np(fi_np)
+    xo = Array.from_np(xo_np)
+    yo = Array.from_np(yo_np)
+
     cdef int iopt = 0
     cdef long i
-    if ncomp_fi.type == libncomp.NCOMP_DOUBLE:
+    if fi.type == libncomp.NCOMP_DOUBLE:
         fo_dtype = np.float64
     else:
         fo_dtype = np.float32
-    cdef np.ndarray fo = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [yo.shape[0], xo.shape[0]]), dtype=fo_dtype)
+    cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [yo.shape[0], xo.shape[0]]), dtype=fo_dtype)
 
     missing_inds_fi = None
 
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
-        missing_inds_fi = np.isnan(fi)
-        msg = get_default_fill(fi)
+        missing_inds_fi = np.isnan(fi.numpy)
+        msg = get_default_fill(fi.numpy)
     else:
-        missing_inds_fi = (fi == msg)
+        missing_inds_fi = (fi.numpy == msg)
 
-    set_ncomp_msg(&ncomp_fi.msg, msg) # always set missing on ncomp_fi
+    set_ncomp_msg(&(fi.ncomp.msg), msg) # always set missing on fi.ncomp
 
     if missing_inds_fi.any():
-        ncomp_fi.has_missing = 1
-        fi[missing_inds_fi] = msg
+        fi.ncomp.has_missing = 1
+        fi.numpy[missing_inds_fi] = msg
 
-    ncomp_fo = np_to_ncomp_array(fo)
+    fo = Array.from_np(fo_np)
 
 #   release global interpreter lock
     cdef int ier
     with nogil:
         ier = libncomp.linint2(
-            ncomp_xi, ncomp_yi, ncomp_fi,
-            ncomp_xo, ncomp_yo, ncomp_fo,
+            xi.ncomp, yi.ncomp, fi.ncomp,
+            xo.ncomp, yo.ncomp, fo.ncomp,
             icycx, iopt)
 #   re-acquire interpreter lock
 #   check errors ier
@@ -297,16 +346,16 @@ def _linint2(np.ndarray xi, np.ndarray yi, np.ndarray fi, np.ndarray xo, np.ndar
                       NcompWarning)
 
     if missing_inds_fi is not None and missing_inds_fi.any():
-        fi[missing_inds_fi] = np.nan
+        fi.numpy[missing_inds_fi] = np.nan
 
-    if ncomp_fo.type == libncomp.NCOMP_DOUBLE:
-        fo_msg = ncomp_fo.msg.msg_double
+    if fo.type == libncomp.NCOMP_DOUBLE:
+        fo_msg = fo.ncomp.msg.msg_double
     else:
-        fo_msg = ncomp_fo.msg.msg_float
+        fo_msg = fo.ncomp.msg.msg_float
 
-    fo[fo == fo_msg] = np.nan
+    fo.numpy[fo.numpy == fo_msg] = np.nan
 
-    return fo
+    return fo.numpy
 
 cdef adjust_for_missing_values(np.ndarray np_input, libncomp.ncomp_array* ncomp_input, dict kwargs):
     missing_value = kwargs.get("missing_value", np.nan)
@@ -423,8 +472,8 @@ def _eofunc(np.ndarray np_input, int neval, opt={}, **kwargs):
 
     """
     # convert np_input to ncomp_array
-    cdef libncomp.ncomp_array* ncomp_input = np_to_ncomp_array(np_input)
-    missing_mask = adjust_for_missing_values(np_input, ncomp_input, kwargs)
+    input = Array.from_np(np_input)
+    missing_mask = adjust_for_missing_values(input.numpy, input.ncomp, kwargs)
 
     # convert opt dict to ncomp_attributes struct
     cdef libncomp.ncomp_attributes* attrs = dict_to_ncomp_attributes(opt)
@@ -435,31 +484,31 @@ def _eofunc(np.ndarray np_input, int neval, opt={}, **kwargs):
 
     cdef int ier
     with nogil:
-        ier = libncomp.eofunc(ncomp_input, neval, attrs, &ncomp_output, &attrs_output)
+        ier = libncomp.eofunc(input.ncomp, neval, attrs, &ncomp_output, &attrs_output)
 
     # convert ncomp_output to np.ndarray
-    np_output = ncomp_to_np_array(ncomp_output)
+    output = Array.from_ncomp(ncomp_output)
 
     # making sure that output missing values is NaN
-    output_missing_value = ncomp_output.msg.msg_double \
-            if ncomp_output.type == libncomp.NCOMP_DOUBLE \
-            else ncomp_output.msg.msg_float
+    output_missing_value = output.ncomp.msg.msg_double \
+            if output.ncomp.type == libncomp.NCOMP_DOUBLE \
+            else output.ncomp.msg.msg_float
 
-    np_output[np_output == output_missing_value] = np.nan
+    output.numpy[output.numpy == output_missing_value] = np.nan
 
     # convert attrs_output to dict
     np_attrs_dict = ncomp_attributes_to_dict(attrs_output)
 
     # Reversing the changed values
-    reverse_missing_values_adjustments(np_input, missing_mask, kwargs)
+    reverse_missing_values_adjustments(input.numpy, missing_mask, kwargs)
 
-    return (np_output, np_attrs_dict)
+    return (output.numpy, np_attrs_dict)
 
 @carrayify
 def _eofunc_n(np.ndarray np_input, int neval, int t_dim, opt={}, **kwargs):
     # convert np_input to ncomp_array
-    cdef libncomp.ncomp_array* ncomp_input = np_to_ncomp_array(np_input)
-    missing_mask = adjust_for_missing_values(np_input, ncomp_input, kwargs)
+    input = Array.from_np(np_input)
+    missing_mask = adjust_for_missing_values(input.numpy, input.ncomp, kwargs)
 
     # convert opt dict to ncomp_attributes struct
     cdef libncomp.ncomp_attributes* attrs = dict_to_ncomp_attributes(opt)
@@ -470,25 +519,25 @@ def _eofunc_n(np.ndarray np_input, int neval, int t_dim, opt={}, **kwargs):
 
     cdef int ier
     with nogil:
-        ier = libncomp.eofunc_n(ncomp_input, neval, t_dim, attrs, &ncomp_output, &attrs_output)
+        ier = libncomp.eofunc_n(input.ncomp, neval, t_dim, attrs, &ncomp_output, &attrs_output)
 
     # convert ncomp_output to np.ndarray
-    np_output = ncomp_to_np_array(ncomp_output)
+    output = Array.from_ncomp(ncomp_output)
 
     # making sure that output missing values is NaN
-    output_missing_value = ncomp_output.msg.msg_double \
-            if ncomp_output.type == libncomp.NCOMP_DOUBLE \
-            else ncomp_output.msg.msg_float
+    output_missing_value = output.ncomp.msg.msg_double \
+            if output.ncomp.type == libncomp.NCOMP_DOUBLE \
+            else output.ncomp.msg.msg_float
 
-    np_output[np_output == output_missing_value] = np.nan
+    output.numpy[output.numpy == output_missing_value] = np.nan
 
     # convert attrs_output to dict
     np_attrs_dict = ncomp_attributes_to_dict(attrs_output)
 
     # Reversing the changed values
-    reverse_missing_values_adjustments(np_input, missing_mask, kwargs)
+    reverse_missing_values_adjustments(input.numpy, missing_mask, kwargs)
 
-    return (np_output, np_attrs_dict)
+    return (output.numpy, np_attrs_dict)
 
 cdef libncomp.ncomp_single_attribute* np_to_ncomp_single_attribute(char* name, np.ndarray nparr):
     cdef long long_addr = nparr.__array_interface__['data'][0]
@@ -592,7 +641,7 @@ def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolu
       raise NcompError(f"moc_globe_atl: There is an error: {ier}")
 
     # Convert ncomp_output to np.ndarray
-    np_output = ncomp_to_np_array(ncomp_output)
+    output = Array.from_ncomp(ncomp_output)
 
     # Make sure output missing values are NaN
     output_missing_value = ncomp_output.msg.msg_double
@@ -601,6 +650,6 @@ def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolu
         output_missing_value = ncomp_output.msg.msg_float
 
     # TODO: May need to revisit for output missing value
-    # np_output[np_output == output_missing_value] = np.nan
+    # output.numpy[output.numpy == output_missing_value] = np.nan
 
-    return np_output
+    return output.numpy
