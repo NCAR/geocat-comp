@@ -152,6 +152,7 @@ cdef libncomp.ncomp_array* np_to_ncomp_array(np.ndarray nparr):
     cdef int ndim = nparr.ndim
     cdef size_t* shape = <size_t*> nparr.shape
     cdef int np_type = nparr.dtype.num
+
     return <libncomp.ncomp_array*> libncomp.ncomp_array_alloc(addr, np_type, ndim, shape)
 
 cdef np.ndarray ncomp_to_np_array(libncomp.ncomp_array* ncarr):
@@ -561,3 +562,94 @@ cdef ncomp_attributes_to_dict(libncomp.ncomp_attributes attrs):
         attr = (attrs.attribute_array)[i]
         d[attr.name] = ncomp_to_np_array(attr.value)
     return d
+
+
+@carrayify
+def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolus, np.ndarray a_submeso, np.ndarray tlat, np.ndarray rmlak, msg=None):
+    """Facilitates calculating the meridional overturning circulation for the globe and Atlantic.
+    Args:
+    lat_aux_grid (:class:`numpy.ndarray`):
+        Latitude grid for transport diagnostics.
+
+    a_wvel (:class:`numpy.ndarray`):
+        Area weighted Eulerian-mean vertical velocity [TAREA*WVEL].
+
+    a_bolus (:class:`numpy.ndarray`):
+        Area weighted Eddy-induced (bolus) vertical velocity [TAREA*WISOP].
+
+    a_submeso (:class:`numpy.ndarray`):
+        Area weighted submeso vertical velocity [TAREA*WSUBM].
+
+    tlat (:class:`numpy.ndarray`):
+        Array of t-grid latitudes.
+
+    rmlak (:class:`numpy.ndarray`):
+        Basin index number: [0]=Globe, [1]=Atlantic
+
+    msg (:obj:`numpy.number`):
+        A numpy scalar value that represent a missing value in a_wvel.
+        This argument allows a user to use a missing value scheme
+        other than NaN or masked arrays, similar to what NCL allows.
+
+    Returns:
+        :class:`numpy.ndarray`: A multi-dimensional array of size [moc_comp] x
+        [n_transport_reg] x [kdepth] x [nyaux] where:
+
+        - moc_comp refers to the three components returned
+        - n_transport_reg refers to the Globe and Atlantic
+        - kdepth is the the number of vertical levels of the work arrays
+        - nyaux is the size of the lat_aux_grid
+
+        The type of the output data will be double only if a_wvel or a_bolus or
+        a_submesa is of type double. Otherwise, the return type will be float.
+    """
+
+    # Convert np_input to ncomp_array
+    cdef libncomp.ncomp_array* ncomp_lat_aux_grid = np_to_ncomp_array(lat_aux_grid)
+    cdef libncomp.ncomp_array* ncomp_a_wvel = np_to_ncomp_array(a_wvel)
+    cdef libncomp.ncomp_array* ncomp_a_bolus = np_to_ncomp_array(a_bolus)
+    cdef libncomp.ncomp_array* ncomp_a_submeso = np_to_ncomp_array(a_submeso)
+    cdef libncomp.ncomp_array* ncomp_tlat = np_to_ncomp_array(tlat)
+    cdef libncomp.ncomp_array* ncomp_rmlak = np_to_ncomp_array(rmlak)
+
+    # Handle missing values
+    missing_inds_a_wvel = None
+
+    if msg is None or np.isnan(msg):    # if no missing value specified, assume NaNs
+        missing_inds_a_wvel = np.isnan(a_wvel)
+        msg = get_default_fill(a_wvel)
+    else:
+        missing_inds_a_wvel = (a_wvel == msg)
+
+    set_ncomp_msg(&ncomp_a_wvel.msg, msg)    # always set missing on ncomp_a_wvel
+
+    if missing_inds_a_wvel.any():
+        ncomp_a_wvel.has_missing = 1
+        a_wvel[missing_inds_a_wvel] = msg
+
+    # Allocate output ncomp_array
+    cdef libncomp.ncomp_array* ncomp_output = NULL
+
+    cdef int ier
+    with nogil:
+        ier = libncomp.moc_globe_atl(ncomp_lat_aux_grid, ncomp_a_wvel, ncomp_a_bolus,
+                                  ncomp_a_submeso, ncomp_tlat, ncomp_rmlak,
+                                  &ncomp_output)
+
+    # Check errors ier
+    if ier:
+      raise NcompError(f"moc_globe_atl: There is an error: {ier}")
+
+    # Convert ncomp_output to np.ndarray
+    output = Array.from_ncomp(ncomp_output)
+
+    # Make sure output missing values are NaN
+    output_missing_value = ncomp_output.msg.msg_double
+
+    if ncomp_output.type != libncomp.NCOMP_DOUBLE:
+        output_missing_value = ncomp_output.msg.msg_float
+
+    # TODO: May need to revisit for output missing value
+    # output.numpy[output.numpy == output_missing_value] = np.nan
+
+    return output.numpy
