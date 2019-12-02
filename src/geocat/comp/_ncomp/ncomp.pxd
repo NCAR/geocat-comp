@@ -100,3 +100,6 @@ cdef extern from "ncomp/wrapper.h":
         ncomp_array ** x_out,
         ncomp_attributes * attrs_out) nogil;
 
+    int moc_globe_atl( const ncomp_array *, const ncomp_array *, const ncomp_array *,
+                      const ncomp_array *, const ncomp_array *, const ncomp_array *,
+                      ncomp_array ** ) nogil;
