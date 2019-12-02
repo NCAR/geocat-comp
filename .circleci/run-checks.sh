@@ -6,4 +6,6 @@ set -eo pipefail
 source activate ${ENV_NAME}
 pip install netcdf4
 pip install scipy
+pwd
+ls
 pytest --verbose test
