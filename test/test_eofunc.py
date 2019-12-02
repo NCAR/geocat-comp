@@ -5,7 +5,7 @@ import numpy as np
 import xarray as xr
 
 from geocat.comp._ncomp import _eofunc, _eofunc_n, _eofunc_ts, _eofunc_ts_n
-from geocat.comp import eofunc
+from geocat.comp import eofunc, eofunc_ts
 
 
 class BaseEOFuncTestClass(metaclass=ABCMeta):
@@ -60,6 +60,7 @@ class BaseEOFuncTestClass(metaclass=ABCMeta):
     _sample_data_eofunc.append(np.arange(64, dtype='int64').reshape((4, 4, 4)))
 
     _nc_ds = xr.open_dataset("../resources/sst.nc")
+
 
 class Test_pyx_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_pyx_01(self):
@@ -692,6 +693,7 @@ class Test_pyx_eofunc_n(TestCase, BaseEOFuncTestClass):
 
         self.assertEqual(-99, data[0, 0, 3])
 
+
 class Test_eofunc(TestCase, BaseEOFuncTestClass):
     def test_eofunc_00(self):
         data = self._sample_data_eofunc[0]
@@ -1295,8 +1297,6 @@ class Test_eofunc(TestCase, BaseEOFuncTestClass):
 
         actual_response = eofunc(sst, 5, time_dim=0)
 
-        print(actual_response.attrs.keys())
-
         expected_response = self._nc_ds.evec
 
         np.testing.assert_array_almost_equal(
@@ -1391,4 +1391,105 @@ class Test_pyx_eofunc_ts_n(TestCase, BaseEOFuncTestClass):
             actual_attrs[b"matrix"].tostring().decode('ascii')[:-1],
             expected_tsout.attrs["matrix"]
         )
+
+
+class Test_eofunc_ts(TestCase, BaseEOFuncTestClass):
+    def test_01(self):
+        sst = self._nc_ds.sst
+        evec = self._nc_ds.evec
+        expected_tsout = self._nc_ds.tsout
+
+        actual_tsout = eofunc_ts(sst.data, evec.data, time_dim=0)
+
+        np.testing.assert_equal(
+            actual_tsout.shape,
+            expected_tsout.shape
+        )
+
+        np.testing.assert_array_almost_equal(
+            actual_tsout,
+            expected_tsout.data
+        )
+
+        np.testing.assert_array_almost_equal(
+            actual_tsout.attrs["ts_mean"],
+            expected_tsout.attrs["ts_mean"]
+        )
+
+        np.testing.assert_equal(
+            actual_tsout.attrs["matrix"],
+            expected_tsout.attrs["matrix"]
+        )
+
+        print(actual_tsout)
+
+    def test_02(self):
+        sst = self._nc_ds.sst
+        evec = self._nc_ds.evec
+        expected_tsout = self._nc_ds.tsout
+
+        actual_tsout = eofunc_ts(sst, evec, time_dim=0, meta=True)
+
+
+        np.testing.assert_equal(
+            actual_tsout.shape,
+            expected_tsout.shape
+        )
+
+        np.testing.assert_array_almost_equal(
+            actual_tsout,
+            expected_tsout.data
+        )
+
+        np.testing.assert_array_almost_equal(
+            actual_tsout.attrs["ts_mean"],
+            expected_tsout.attrs["ts_mean"]
+        )
+
+        np.testing.assert_equal(
+            actual_tsout.attrs["matrix"],
+            expected_tsout.attrs["matrix"]
+        )
+
+        for k, v in sst.attrs.items():
+            np.testing.assert_equal(
+                actual_tsout.attrs[k],
+                v
+            )
+
+        np.testing.assert_equal(
+            actual_tsout.coords["time"].data,
+            sst.coords["time"].data
+        )
+
+        # print(actual_tsout)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
