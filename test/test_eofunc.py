@@ -59,8 +59,10 @@ class BaseEOFuncTestClass(metaclass=ABCMeta):
     # _sample_data[ 4 ]
     _sample_data_eofunc.append(np.arange(64, dtype='int64').reshape((4, 4, 4)))
     import os
-    here = os.path.dirname(os.path.dirname(__file__))
-    here = os.path.join(here, "resources")
+    here = os.path.join(
+        os.path.dirname(os.path.dirname(__file__)),
+        "resources"
+    )
     filename = os.path.join(here, "sst.nc")
     _nc_ds = xr.open_dataset(filename)
 
@@ -1423,8 +1425,6 @@ class Test_eofunc_ts(TestCase, BaseEOFuncTestClass):
             actual_tsout.attrs["matrix"],
             expected_tsout.attrs["matrix"]
         )
-
-        print(actual_tsout)
 
     def test_02(self):
         sst = self._nc_ds.sst
