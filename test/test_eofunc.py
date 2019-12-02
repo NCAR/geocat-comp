@@ -58,8 +58,11 @@ class BaseEOFuncTestClass(metaclass=ABCMeta):
 
     # _sample_data[ 4 ]
     _sample_data_eofunc.append(np.arange(64, dtype='int64').reshape((4, 4, 4)))
-
-    _nc_ds = xr.open_dataset("../resources/sst.nc")
+    import os
+    here = os.path.dirname(os.path.dirname(__file__))
+    here = os.path.join(here, "resources")
+    filename = os.path.join(here, "sst.nc")
+    _nc_ds = xr.open_dataset(filename)
 
 
 class Test_pyx_eofunc(TestCase, BaseEOFuncTestClass):
