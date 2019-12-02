@@ -1430,7 +1430,6 @@ class Test_eofunc_ts(TestCase, BaseEOFuncTestClass):
 
         actual_tsout = eofunc_ts(sst, evec, time_dim=0, meta=True)
 
-
         np.testing.assert_equal(
             actual_tsout.shape,
             expected_tsout.shape
