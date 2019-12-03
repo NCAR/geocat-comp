@@ -1,3 +1,5 @@
+from typing import Iterable
+
 from . import _ncomp
 from .version import __version__
 import numpy as np
@@ -251,7 +253,7 @@ def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
     return fo
 
 
-def eofunc(data, neval, **kwargs) -> xr.DataArray:
+def eofunc(data: Iterable, neval, **kwargs) -> xr.DataArray:
     """
     Computes empirical orthogonal functions (EOFs, aka: Principal Component Analysis).
 
@@ -357,12 +359,14 @@ def eofunc(data, neval, **kwargs) -> xr.DataArray:
     )
 
 
-def eofunc_ts(data, evec, **kwargs) -> xr.DataArray:
+def eofunc_ts(data: Iterable, evec, **kwargs) -> xr.DataArray:
     """
     Calculates the time series of the amplitudes associated with each eigenvalue in an EOF.
     Args:
-        data:
-        evec:
+        data: An Iterable convertible to `numpy.ndarray` in which the rightmost dimension is the number of
+              observations. Generally, this is the time dimension. If your rightmost dimension is not time, then pass
+              `time_dim` as an extra options.
+        evec: An Iterable convertible to `numpy.ndarray` containing the EOFs calculated using `eofunc`.
         **kwargs:
             extra options controlling the behavior of the function. Currently the following are supported:
             - ``jopt``: a string that indicates whether to use the covariance matrix or the correlation
@@ -375,7 +379,48 @@ def eofunc_ts(data, evec, **kwargs) -> xr.DataArray:
                         to the ``_Wrap`` version of the functions in ``NCL``. This only works if the input data is
                         of type ``xarray.DataArray``.
 
-    Returns:
+    Returns: A two-dimensional array dimensioned by the number of eigenvalues selected in `eofunc` by the size of the
+             time dimension of data. Will contain the following attribute:
+             - `ts_mean`: an array of the same size and type as `evec` containing the means removed from data as part
+                          of the calculation.
+
+    Examples:
+        * Passing a xarray:
+
+        >>> # Openning a data set:
+        ... ds = xr.open_dataset("dataset.nc")
+        >>> # Extracting SST (Sea Surface temperature)
+        ... sst = ds.sst
+        >>> evec = eofunc(sst, 5)
+        >>> ts = eofunc(sst, evec)
+
+        * Passing a numpy array:
+
+        >>> # Openning a data set:
+        ... ds = xr.open_dataset("dataset.nc")
+        >>> # Extracting SST (Sea Surface temperature) as Numpy Array
+        ... sst = ds.sst.data
+        >>> evec = eofunc(sst, 5)
+        >>> ts = eofunc(sst, evec.data)
+
+        * Transferring the attributes from input to the output:
+
+        >>> # Openning a data set:
+        ... ds = xr.open_dataset("dataset.nc")
+        >>> # Extracting SST (Sea Surface temperature)
+        ... sst = ds.sst
+        >>> evec = eofunc(sst, 5)
+        >>> ts = eofunc(sst, evec, meta=True)
+
+        * Defining the time dimension:
+
+        >>> # Openning a data set:
+        ... ds = xr.open_dataset("dataset.nc")
+        >>> # Extracting SST (Sea Surface temperature)
+        ... sst = ds.sst
+        >>> evec = eofunc(sst, 5, time_dim=0)
+        >>> ts = eofunc(sst, evec, time_dim=0)
+
 
     """
     # Parsing Options

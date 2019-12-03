@@ -12,3 +12,7 @@ GeoCAT-comp routines
    :toctree: ./generated/
 
    geocat.comp.linint2
+
+   geocat.comp.eofunc
+
+   geocat.com.eofunc_ts
