@@ -10,5 +10,3 @@ dependencies:
   - dask
   - distributed
   - pytest
-  - netcdf4
-  - scipy
