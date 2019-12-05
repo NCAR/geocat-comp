@@ -103,8 +103,7 @@ def _ndpolyfit(
     if (not np.isnan(missing_value)) and has_missing:
         y_rearranged[mask] = np.nan
 
-
-    if (has_missing):
+    if has_missing:
         raise NotImplemented()
     else:
         polyfit_output = np.polyfit(
