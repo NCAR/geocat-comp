@@ -33,5 +33,5 @@ setup(
     package_dir={'': 'src'},
     namespace_packages=['geocat'],
     packages=["geocat.comp"],
-    version=__version__,
+    version=__version__, install_requires=['numpy', 'xarray', 'dask[complete]']
 )

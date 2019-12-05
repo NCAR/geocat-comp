@@ -5,6 +5,8 @@ import xarray as xr
 import dask.array as da
 from dask.array.core import map_blocks
 
+from .extra import ndpolyfit
+
 
 class Error(Exception):
     """Base class for exceptions in this module."""
