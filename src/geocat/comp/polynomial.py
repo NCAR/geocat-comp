@@ -44,9 +44,9 @@ def ndpolyfit(x: Iterable, y: Iterable, deg: int, axis: int = 0, **kwargs) -> (x
         x = np.asarray(x)
 
     if isinstance(y, np.ndarray):
-        return _ndpolyfit(y, x, axis, deg, rcond, full, w, cov, missing_value)
+        return _ndpolyfit(x, y, axis, deg, rcond, full, w, cov, missing_value)
     if isinstance(y, xr.DataArray):
-        output = _ndpolyfit(y.data, x, axis, deg, rcond, full, w, cov, missing_value)
+        output = _ndpolyfit(x, y.data, axis, deg, rcond, full, w, cov, missing_value)
         attrs = output.attrs
 
         if meta:
@@ -155,22 +155,22 @@ def _ndpolyfit(
 
     mask = np.logical_not(np.isfinite(y_rearranged))
 
-    has_missing = mask.any()
-    all_row_missing = np.all(mask, axis=1)
-    row_with_missing = np.any(mask, axis=1)
-    if np.all(all_row_missing == row_with_missing):
-        rows_to_keep = np.logical_not(all_row_missing)
-        y_rearranged = y_rearranged[rows_to_keep, :]
-        x = x[rows_to_keep]
-        has_missing = False
-        # mask = np.full(y_rearranged.shape, False, dtype=bool)  # This is not actually needed any longer
-
-    if np.isnan(missing_value):
-        if np.isnan(x).any():
-            raise ValueError("x cannot have missing values")
+    if mask.any():
+        all_row_missing = np.all(mask, axis=1)
+        row_with_missing = np.any(mask, axis=1)
+        if np.all(all_row_missing == row_with_missing):
+            rows_to_keep = np.logical_not(all_row_missing)
+            y_rearranged = y_rearranged[rows_to_keep, :]
+            x = x[rows_to_keep]
+            has_missing = False
+            # mask = np.full(y_rearranged.shape, False, dtype=bool)  # This is not actually needed any longer
+        else:
+            has_missing = True
     else:
-        if np.any(x == missing_value):
-            raise ValueError("x cannot have missing values")
+        has_missing = False
+
+    if np.isnan(x).any():
+        raise ValueError("x cannot have missing values")
 
     if has_missing:
         tmp_results = []
