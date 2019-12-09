@@ -714,17 +714,17 @@ def _rcm2rgrid(np.ndarray lat2d, np.ndarray lon2d, np.ndarray fi, np.ndarray lat
         In some cases, edge points may not be filled.
 
     """
-    cdef ncomp.ncomp_array* ncomp_lat2d = np_to_ncomp_array(lat2d)
-    cdef ncomp.ncomp_array* ncomp_lon2d = np_to_ncomp_array(lon2d)
-    cdef ncomp.ncomp_array* ncomp_fi    = np_to_ncomp_array(fi)
-    cdef ncomp.ncomp_array* ncomp_lat1d = np_to_ncomp_array(lat1d)
-    cdef ncomp.ncomp_array* ncomp_lon1d = np_to_ncomp_array(lon1d)
+    cdef libncomp.ncomp_array* ncomp_lat2d = np_to_ncomp_array(lat2d)
+    cdef libncomp.ncomp_array* ncomp_lon2d = np_to_ncomp_array(lon2d)
+    cdef libncomp.ncomp_array* ncomp_fi    = np_to_ncomp_array(fi)
+    cdef libncomp.ncomp_array* ncomp_lat1d = np_to_ncomp_array(lat1d)
+    cdef libncomp.ncomp_array* ncomp_lon1d = np_to_ncomp_array(lon1d)
 
-    cdef ncomp.ncomp_array* ncomp_fo
+    cdef libncomp.ncomp_array* ncomp_fo
     cdef long i
 
     # Set output type and dimensions. Double if `fi` is double, otherwise float.
-    if ncomp_fi.type == ncomp.NCOMP_DOUBLE:
+    if ncomp_fi.type == libncomp.NCOMP_DOUBLE:
         fo_dtype = np.float64
     else:
         fo_dtype = np.float32
@@ -749,17 +749,20 @@ def _rcm2rgrid(np.ndarray lat2d, np.ndarray lon2d, np.ndarray fi, np.ndarray lat
 #   release global interpreter lock
     cdef int ier
     with nogil:
-        ier = ncomp.rcm2rgrid(
+        ier = libncomp.rcm2rgrid(
             ncomp_lat2d, ncomp_lon2d, ncomp_fi,
             ncomp_lat1d, ncomp_lon1d, ncomp_fo)
 
 #   re-acquire interpreter lock
-#   check errors ier
+    # Check errors ier
+    if ier:
+      raise NcompError(f"rcm2rgrid: There is an error: {ier}")
+
 
     if missing_inds_fi is not None and missing_inds_fi.any():
         fi[missing_inds_fi] = np.nan
 
-    if ncomp_fo.type == ncomp.NCOMP_DOUBLE:
+    if ncomp_fo.type == libncomp.NCOMP_DOUBLE:
         fo_msg = ncomp_fo.msg.msg_double
     else:
         fo_msg = ncomp_fo.msg.msg_float
@@ -814,17 +817,17 @@ def _rgrid2rcm(np.ndarray lat1d, np.ndarray lon1d, np.ndarray fi, np.ndarray lat
 	distance weighting. Missing values are allowed but ignored.
 
     """
-    cdef ncomp.ncomp_array* ncomp_lat1d = np_to_ncomp_array(lat1d)
-    cdef ncomp.ncomp_array* ncomp_lon1d = np_to_ncomp_array(lon1d)
-    cdef ncomp.ncomp_array* ncomp_fi    = np_to_ncomp_array(fi)
-    cdef ncomp.ncomp_array* ncomp_lat2d = np_to_ncomp_array(lat2d)
-    cdef ncomp.ncomp_array* ncomp_lon2d = np_to_ncomp_array(lon2d)
+    cdef libncomp.ncomp_array* ncomp_lat1d = np_to_ncomp_array(lat1d)
+    cdef libncomp.ncomp_array* ncomp_lon1d = np_to_ncomp_array(lon1d)
+    cdef libncomp.ncomp_array* ncomp_fi    = np_to_ncomp_array(fi)
+    cdef libncomp.ncomp_array* ncomp_lat2d = np_to_ncomp_array(lat2d)
+    cdef libncomp.ncomp_array* ncomp_lon2d = np_to_ncomp_array(lon2d)
 
-    cdef ncomp.ncomp_array* ncomp_fo
+    cdef libncomp.ncomp_array* ncomp_fo
     cdef long i
 
     # Set output type and dimensions. Double if `fi` is double, otherwise float.
-    if ncomp_fi.type == ncomp.NCOMP_DOUBLE:
+    if ncomp_fi.type == libncomp.NCOMP_DOUBLE:
         fo_dtype = np.float64
     else:
         fo_dtype = np.float32
@@ -849,17 +852,21 @@ def _rgrid2rcm(np.ndarray lat1d, np.ndarray lon1d, np.ndarray fi, np.ndarray lat
 #   release global interpreter lock
     cdef int ier
     with nogil:
-        ier = ncomp.rgrid2rcm(
+        ier = libncomp.rgrid2rcm(
             ncomp_lat1d, ncomp_lon1d, ncomp_fi,
             ncomp_lat2d, ncomp_lon2d, ncomp_fo)
 
 #   re-acquire interpreter lock
-#   check errors ier
+
+    # Check errors ier
+    if ier:
+      raise NcompError(f"rgrid2rcm: There is an error: {ier}")
+
 
     if missing_inds_fi is not None and missing_inds_fi.any():
         fi[missing_inds_fi] = np.nan
 
-    if ncomp_fo.type == ncomp.NCOMP_DOUBLE:
+    if ncomp_fo.type == libncomp.NCOMP_DOUBLE:
         fo_msg = ncomp_fo.msg.msg_double
     else:
         fo_msg = ncomp_fo.msg.msg_float

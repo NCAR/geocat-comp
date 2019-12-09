@@ -317,16 +317,16 @@ def rcm2rgrid(lat2d, lon2d, fi, lat1d, lon1d, msg=None, meta=False):
 
     # Basic sanity checks
     if lat2d.shape[0] != lon2d.shape[0] or lat2d.shape[1] != lon2d.shape[1]:
-        raise Exception("ERROR rcm2rgrid: The input lat/lon grids must be the same size !")
+        raise Error("ERROR rcm2rgrid: The input lat/lon grids must be the same size !")
 
     if lat2d.shape[0] < 2 or lon2d.shape[0] < 2 or lat2d.shape[1] < 2 or lon2d.shape[1] < 2:
-        raise Exception("ERROR rcm2rgrid: The input/output lat/lon grids must have at least 2 elements !")
+        raise Error("ERROR rcm2rgrid: The input/output lat/lon grids must have at least 2 elements !")
 
     if fi.ndim < 2:
-        raise Exception("ERROR rcm2rgrid: fi must be at least two dimensions !\n")
+        raise Error("ERROR rcm2rgrid: fi must be at least two dimensions !\n")
 
     if fi.shape[fi.ndim - 2] != lat2d.shape[0] or fi.shape[fi.ndim - 1] != lon2d.shape[1]:
-        raise Exception("ERROR rcm2rgrid: The rightmost dimensions of fi must be (nlat2d x nlon2d),"
+        raise Error("ERROR rcm2rgrid: The rightmost dimensions of fi must be (nlat2d x nlon2d),"
                         "where nlat2d and nlon2d are the size of the lat2d/lon2d arrays !")
 
     if isinstance(lat2d, xr.DataArray):
@@ -431,16 +431,16 @@ def rgrid2rcm(lat1d, lon1d, fi, lat2d, lon2d, msg=None, meta=False):
 
     # Basic sanity checks
     if lat2d.shape[0] != lon2d.shape[0] or lat2d.shape[1] != lon2d.shape[1]:
-        raise Exception("ERROR rgrid2rcm: The output lat2D/lon2D grids must be the same size !")
+        raise Error("ERROR rgrid2rcm: The output lat2D/lon2D grids must be the same size !")
 
     if lat2d.shape[0] < 2 or lon2d.shape[0] < 2 or lat2d.shape[1] < 2 or lon2d.shape[1] < 2:
-        raise Exception("ERROR rgrid2rcm: The input/output lat/lon grids must have at least 2 elements !")
+        raise Error("ERROR rgrid2rcm: The input/output lat/lon grids must have at least 2 elements !")
 
     if fi.ndim < 2:
-        raise Exception("ERROR rgrid2rcm: fi must be at least two dimensions !\n")
+        raise Error("ERROR rgrid2rcm: fi must be at least two dimensions !\n")
 
     if fi.shape[fi.ndim - 2] != lat1d.shape[0] or fi.shape[fi.ndim - 1] != lon1d.shape[0]:
-        raise Exception("ERROR rgrid2rcm: The rightmost dimensions of fi must be (nlat1d x nlon1d),"
+        raise Error("ERROR rgrid2rcm: The rightmost dimensions of fi must be (nlat1d x nlon1d),"
                         "where nlat1d and nlon1d are the size of the lat1d/lon1d arrays !")
 
     if isinstance(lat1d, xr.DataArray):
