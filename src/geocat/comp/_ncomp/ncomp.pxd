@@ -1,3 +1,4 @@
+# cython: language_level=3
 cdef extern from "ncomp/constants.h":
     cdef double DEFAULT_FILL "DEFAULT_FILL_DOUBLE";
     cdef char   DEFAULT_FILL_INT8 "NC_FILL_BYTE";
@@ -53,8 +54,20 @@ cdef extern from "ncomp/types.h":
         ncomp_missing   msg
         size_t*         shape
 
+    ctypedef struct ncomp_single_attribute:
+        char *        name
+        ncomp_array*  value
+
+    ctypedef struct ncomp_attributes:
+        int                        nAttribute
+        ncomp_single_attribute **  attribute_array
+
+
 cdef extern from "ncomp/util.h":
     ncomp_array* ncomp_array_alloc(void*, int, int, size_t*)
+    void         ncomp_array_free(ncomp_array*, int)
+    ncomp_single_attribute* create_ncomp_single_attribute(char *, void *, int, int, size_t *);
+    ncomp_attributes* ncomp_attributes_allocate(int);
 
 cdef extern from "ncomp/wrapper.h":
     int linint2(const ncomp_array*, const ncomp_array*, const ncomp_array*,
@@ -66,3 +79,17 @@ cdef extern from "ncomp/wrapper.h":
 
     int rgrid2rcm(const ncomp_array* lat1d, const ncomp_array* lon1d, const ncomp_array* fi, 
                   const ncomp_array* lat2d, const ncomp_array* lon2d, ncomp_array* fo) nogil;
+
+    int eofunc(const ncomp_array * x_in, const int neval_in,
+               const ncomp_attributes * options_in,
+               ncomp_array** x_out, ncomp_attributes* attrList_out) nogil;
+
+    int eofunc_n(const ncomp_array * x_in, const int neval_in,
+                 const int t_dim,
+                 const ncomp_attributes * options_in,
+                 ncomp_array ** x_out, ncomp_attributes * attrList_out) nogil;
+
+    int moc_globe_atl( const ncomp_array *, const ncomp_array *, const ncomp_array *,
+                      const ncomp_array *, const ncomp_array *, const ncomp_array *,
+                      ncomp_array ** ) nogil;
+
