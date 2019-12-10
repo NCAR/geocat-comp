@@ -10,7 +10,8 @@ def ndpolyfit(x: Iterable, y: Iterable, deg: int, axis: int = 0, **kwargs) -> (x
     An extension to `numpy.polyfit` function to work with multi-dimensional arrays. If `y` is of shape, let's say
     `(s0, s1, s2, s3)`, the `axis=1`, and `deg=1`, then the output would be `(s0, 2, s2, s3)`. So, the function fits
     a first degree polynomial (because `deg=1`) along the second dimension (because `axis=1`) for every other dimension.
-    The other change from `numpy.polyfit` is that this method also handles the missing values.
+    The other change from `numpy.polyfit` is that this method also handles the missing values. Also, this version, has
+    support for Dask array and chunked Dask arrays.
 
     Args:
 
