@@ -758,7 +758,6 @@ def _rcm2rgrid(np.ndarray lat2d, np.ndarray lon2d, np.ndarray fi, np.ndarray lat
     if ier:
       raise NcompError(f"rcm2rgrid: There is an error: {ier}")
 
-
     if missing_inds_fi is not None and missing_inds_fi.any():
         fi[missing_inds_fi] = np.nan
 
@@ -857,11 +856,9 @@ def _rgrid2rcm(np.ndarray lat1d, np.ndarray lon1d, np.ndarray fi, np.ndarray lat
             ncomp_lat2d, ncomp_lon2d, ncomp_fo)
 
 #   re-acquire interpreter lock
-
     # Check errors ier
     if ier:
       raise NcompError(f"rgrid2rcm: There is an error: {ier}")
-
 
     if missing_inds_fi is not None and missing_inds_fi.any():
         fi[missing_inds_fi] = np.nan
