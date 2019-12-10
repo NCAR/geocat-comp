@@ -85,4 +85,21 @@ cdef extern from "ncomp/wrapper.h":
                  const ncomp_attributes * options_in,
                  ncomp_array ** x_out, ncomp_attributes * attrList_out) nogil;
 
+    int eofunc_ts(
+      const ncomp_array * x_in,
+      const ncomp_array * evec_in,
+      const ncomp_attributes * options_in,
+      ncomp_array ** x_out,
+      ncomp_attributes * attrs_out) nogil;
 
+    int eofunc_ts_n(
+        const ncomp_array * x_in,
+        const ncomp_array * evec_in,
+        const ncomp_attributes * options_in,
+        const int t_dim,
+        ncomp_array ** x_out,
+        ncomp_attributes * attrs_out) nogil;
+
+    int moc_globe_atl( const ncomp_array *, const ncomp_array *, const ncomp_array *,
+                      const ncomp_array *, const ncomp_array *, const ncomp_array *,
+                      ncomp_array ** ) nogil;
