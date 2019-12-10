@@ -11,25 +11,50 @@ def ndpolyfit(x: Iterable, y: Iterable, deg: int, axis: int = 0, **kwargs) -> (x
     `(s0, s1, s2, s3)`, the `axis=1`, and `deg=1`, then the output would be `(s0, 2, s2, s3)`. So, the function fits
     a first degree polynomial (because `deg=1`) along the second dimension (because `axis=1`) for every other dimension.
     The other change from `numpy.polyfit` is that this method also handles the missing values.
+
     Args:
-        x: x-coordinate, an Iterable object of shape `(M,)`, `(M, 1)`, or `(1, M)` where `M = y.shape(axis)`. It cannot
-           have `nan` or missing values.
-        y: y-coordinate, an Iterable containing the data. It could be list, `numpy.ndarray`, `xr.DataArray`, Dask array.
-           or any Iterable convertible to `numpy.ndarray`. In case of Dask Array, The data could be chunked. It is
-           recommended no to chunk along the `axis` provided.
-        axis: the axis to fit the polynomial to. Default is 0.
-        deg: degree of the fitting polynomial
-        kwargs: Extra parameter controlling the method behavior:
-        - rcond: Relative condition number of the fit. Refer to `numpy.polyfit` for further details.
-        - full: Switch determining nature of return value. Refer to `numpy.polyfit` for further details.
-        - w: Weights applied to the y-coordinates of the sample points. Refer to `numpy.polyfit` for further details.
-        - cov: Determines whether to return the covariance matrix. Refer to `numpy.polyfit` for further details.
-        - missing_value: The value to be treated as missing. Default is `np.nan`
-        - meta: If set to `True` and the input, i.e. `y`, is of type `xr.DataArray`, the attributes associated to the
+
+        x (:class:`array_like`):
+            x-coordinate, an Iterable object of shape `(M,)`, `(M, 1)`, or `(1, M)` where `M = y.shape(axis)`. It cannot
+            have `nan` or missing values.
+
+        y (:class:`array_like`)
+            y-coordinate, an Iterable containing the data. It could be list, `numpy.ndarray`, `xr.DataArray`, Dask array.
+            or any Iterable convertible to `numpy.ndarray`. In case of Dask Array, The data could be chunked. It is
+            recommended no to chunk along the `axis` provided.
+
+        axis (:class:`int`):
+            the axis to fit the polynomial to. Default is 0.
+
+        deg (:class:`int`):
+            degree of the fitting polynomial
+
+        kwargs (:class:`dict`, optional):
+            Extra parameter controlling the method behavior:
+
+            rcond (:class:`float`, optional):
+                Relative condition number of the fit. Refer to `numpy.polyfit` for further details.
+
+            full (:class:`bool`, optional):
+                Switch determining nature of return value. Refer to `numpy.polyfit` for further details.
+
+            w (:class:`array_like`, optional):
+                Weights applied to the y-coordinates of the sample points. Refer to `numpy.polyfit` for further details.
+
+            cov (:class:`bool`, optional):
+                Determines whether to return the covariance matrix. Refer to `numpy.polyfit` for further details.
+
+            missing_value (:class:`number` or :class:`np.nan`, optional):
+                The value to be treated as missing. Default is `np.nan`
+
+            meta (:class:`bool`, optional):
+                If set to `True` and the input, i.e. `y`, is of type `xr.DataArray`, the attributes associated to the
                 input are transferred to the output.
 
-    Returns: an `xarray.DataArray` or `numpy.ndarray` containing the coefficients of the fitted polynomial.
+    Returns:
+        an `xarray.DataArray` or `numpy.ndarray` containing the coefficients of the fitted polynomial.
     """
+
     rcond = kwargs.get("rcond", None)
     full = kwargs.get("full", False)
     w = kwargs.get("w", None)
@@ -105,22 +130,44 @@ def _ndpolyfit(
     `(s0, s1, s2, s3)`, the `axis=1`, and `deg=1`, then the output would be `(s0, 2, s2, s3)`. So, the function fits
     a first degree polynomial (because `deg=1`) along the second dimension (because `axis=1`) for every other dimension.
     The other change from `numpy.polyfit` is that this method also handles the missing values.
-    Args:
-        x: x-coordinate, `numpy.ndarray` of shape `(M,)`, `(M, 1)`, or `(1, M)` where `M = y.shape(axis)`. It cannot
-           have `nan`.
-        y: y-coordinate, 'numpy.ndarray`.
-        axis: the axis to fit the polynomial to. Default is 0.
-        deg: degree of the fitting polynomial
-        rcond: Relative condition number of the fit. Refer to `numpy.polyfit` for further details.
-        full: Switch determining nature of return value. Refer to `numpy.polyfit` for further details.
-        w: Weights applied to the y-coordinates of the sample points. Refer to `numpy.polyfit` for further details.
-        cov: Determines whether to return the covariance matrix. Refer to `numpy.polyfit` for further details.
-        missing_value: The value to be treated as missing. Default is `np.nan`
-        xarray_output: Determines the type of the output. If set to `True` the output would be of type `xr.DataArray`
-                       and the some extra information are attached to the output as attributes. Otherwise, the output
-                       would be of type `np.ndarray` containing only the coefficients of the fitted polynomial.
 
-    Returns: an `xarray.DataArray` or `numpy.ndarray` containing the coefficients of the fitted polynomial.
+    Args:
+
+        x (:class:`np.ndarray`):
+            x-coordinate, `numpy.ndarray` of shape `(M,)`, `(M, 1)`, or `(1, M)` where `M = y.shape(axis)`. It cannot
+            have `nan`.
+
+        y (:class:`np.ndarray`):
+            y-coordinate, 'numpy.ndarray`.
+
+        axis (:class:`int`, optional):
+            the axis to fit the polynomial to. Default is 0.
+
+        deg (:class:`int`, optional):
+            degree of the fitting polynomial
+
+        rcond (:class:`float`, optional):
+            Relative condition number of the fit. Refer to `numpy.polyfit` for further details.
+
+        full (:class:`bool`, optional):
+            Switch determining nature of return value. Refer to `numpy.polyfit` for further details.
+
+        w (:class:`array_like`, optional):
+            Weights applied to the y-coordinates of the sample points. Refer to `numpy.polyfit` for further details.
+
+        cov (:class:`bool`, optional):
+            Determines whether to return the covariance matrix. Refer to `numpy.polyfit` for further details.
+
+        missing_value (:class:`number` or :class:`np.nan`, optional):
+            The value to be treated as missing. Default is `np.nan`
+
+        xarray_output (:class:`bool`, optional):
+            Determines the type of the output. If set to `True` the output would be of type `xr.DataArray`
+            and the some extra information are attached to the output as attributes. Otherwise, the output
+            would be of type `np.ndarray` containing only the coefficients of the fitted polynomial.
+
+    Returns:
+        an `xarray.DataArray` or `numpy.ndarray` containing the coefficients of the fitted polynomial.
 
     """
 

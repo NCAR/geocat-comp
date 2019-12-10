@@ -12,3 +12,4 @@ GeoCAT-comp routines
    :toctree: ./generated/
 
    geocat.comp.linint2
+   geocat.comp.ndpolyfit
