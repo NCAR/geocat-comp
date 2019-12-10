@@ -12,4 +12,6 @@ GeoCAT-comp routines
    :toctree: ./generated/
 
    geocat.comp.linint2
+   geocat.comp.eofunc
+   geocat.comp.eofunc_ts
    geocat.comp.ndpolyfit
