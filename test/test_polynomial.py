@@ -307,6 +307,12 @@ class test_ndpolyfit(TestCase):
             np.testing.assert_almost_equal(expected_p, actual_p)
 
 
+class test_internal_ndpolyval(TestCase):
+    pass
+
+
+
+
 
 
 

@@ -334,6 +334,40 @@ def _reverse_rearrange_axis(data: np.ndarray, axis, trailing_shape: tuple) -> np
     return np.moveaxis(data.reshape((data.shape[0], * trailing_shape)), 0, axis)
 
 
+def isvector(input: Iterable) -> bool:
+    if isinstance(input, np.ndarray):
+        return (input.size != 1) and \
+               (
+                   (input.ndim == 1) or \
+                   ((input.ndim == 2) and (np.any(input.shape==1)))
+               )
+    else:
+        return isvector(np.asarray(input))
+
+
+def _ndpolyval(p: np.ndarray, x: np.ndarray, axis: int = 0, **kwargs):
+    if not isinstance(p, np.ndarray):
+        raise TypeError("This function accepts only numpy.ndarray as p.")
+
+    if not isinstance(x, np.ndarray):
+        raise TypeError("This function accepts only numpy.ndarray as x.")
+
+    axis = _check_axis(axis, p.ndim)
+
+    if (x.ndim != 1) and (x.ndim != p.ndim):
+        raise ValueError("x has invalid number of dimension. x must be either 1 dimensionn.")
+
+    if isvector(x):
+        tmp_shape = np.ones(p.ndim)
+        tmp_shape[axis] = x.size
+        x = x.reshape(tuple(tmp_shape))
+
+    y = np.zeros(p.shape)
+
+    for i in range(p.shape[axis]):
+        y += p.take([i], axis=axis) * np.power(x, p.ndim - 1 - i)
+
+    return y
 
 
 
