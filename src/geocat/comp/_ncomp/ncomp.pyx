@@ -653,6 +653,7 @@ def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolu
 
     return output.numpy
 
+@carrayify
 def _rcm2rgrid(np.ndarray lat2d, np.ndarray lon2d, np.ndarray fi, np.ndarray lat1d, np.ndarray lon1d, msg=None):
     """Interpolates data on a curvilinear grid (i.e. RCM, WRF, NARR) to a rectilinear grid.
 
@@ -770,6 +771,7 @@ def _rcm2rgrid(np.ndarray lat2d, np.ndarray lon2d, np.ndarray fi, np.ndarray lat
 
     return fo
 
+@carrayify
 def _rgrid2rcm(np.ndarray lat1d, np.ndarray lon1d, np.ndarray fi, np.ndarray lat2d, np.ndarray lon2d, msg=None):
     """Interpolates data on a rectilinear lat/lon grid to a curvilinear grid like those used by the RCM, WRF and NARR models/datasets.
 
