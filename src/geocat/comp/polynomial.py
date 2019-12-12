@@ -1,8 +1,69 @@
-from typing import Iterable
+from typing import Iterable, Any
 
 import numpy as np
 import xarray as xr
 import dask.array as da
+
+
+def _get_missing_value(data: xr.DataArray, args: dict) -> Any:
+    """
+     Attempts to extract missing_vallue. It first checks in the arguments, for `missing_value` key. If that's not
+     provided, and the data is of type `xr.DataArray`, the `missing_value` and `_FillValue` are looked up in the
+     attributes, in that order. If all fails, `np.nan` as default is returned.
+    Args:
+        data (:class: `xr.DataArray` or `Any`):
+            a data with possible attrs property.
+        args (:class: `Dict`):
+            a dictionary that may contain `missing_value` key.
+
+    Returns:
+        of course, a value for missing_value. What else did you expect?!
+
+    """
+    if "missing_value" in args:
+        missing_value = args["missing_value"]
+    elif isinstance(data, xr.DataArray):
+        if "missing_value" in data.attrs:
+            missing_value = data.attrs["missing_value"]
+        elif "_FillValue" in data.attrs:
+            missing_value = data.attrs["_FillValue"]
+        else:
+            missing_value = np.nan
+    else:
+        missing_value = np.nan
+
+    return missing_value
+
+
+def _unchuck_ifneeded(data: da.Array, axis: int) -> da.Array:
+    """
+    Make sures that the `Dask.Array` is not chunked along the specified axis. If it is chunked, it returns a new
+    rechunked `Dask.Array` array, with the same chunking except along the specified axis.
+
+    Args:
+
+        data (:class: `Dask.Array`(:
+            The data
+
+        axis (:class: `int`):
+            The axis that must not be chunked
+
+    Returns (:class: `Dask.Array`):
+        a `Dask.Array` which is not chunked along the specified axis.
+
+    """
+    if isinstance(data, da.Array):
+        shape = data.shape
+        chunksize = data.chunksize
+        axis = _check_axis(axis, data.ndim)
+        if shape[axis] != chunksize[axis]:
+            data = data.rechunk(
+                (*chunksize[0:axis], shape[axis], *chunksize[axis + 1:len(chunksize)])
+            )
+        return data
+    else:
+        raise TypeError("data must be a dask array.")
+
 
 
 def ndpolyfit(x: Iterable, y: Iterable, deg: int, axis: int = 0, **kwargs) -> (xr.DataArray, da.Array):
@@ -60,7 +121,7 @@ def ndpolyfit(x: Iterable, y: Iterable, deg: int, axis: int = 0, **kwargs) -> (x
     full = kwargs.get("full", False)
     w = kwargs.get("w", None)
     cov = kwargs.get("cov", False)
-    missing_value = kwargs.get("missing_value", np.nan)
+    missing_value = _get_missing_value(y, kwargs)
     meta = kwargs.get("meta", True)
 
     # converting x to numpy.ndarray
@@ -90,13 +151,7 @@ def ndpolyfit(x: Iterable, y: Iterable, deg: int, axis: int = 0, **kwargs) -> (x
             )
         return output
     if isinstance(y, da.Array):
-        shape = y.shape
-        chunksize = y.chunksize
-        axis = _check_axis(axis, y.ndim)
-        if shape[axis] != chunksize[axis]:
-            y = y.rechunk(
-                (*chunksize[0:axis], shape[axis], *chunksize[axis + 1:len(chunksize)])
-            )
+        y = _unchuck_ifneeded(y, axis)
 
         return y.map_blocks(
             _ndpolyfit,
@@ -338,11 +393,44 @@ def isvector(input: Iterable) -> bool:
     if isinstance(input, np.ndarray):
         return (input.size != 1) and \
                (
-                   (input.ndim == 1) or \
-                   ((input.ndim == 2) and (np.any(input.shape==1)))
+                   (input.ndim == 1) or
+                   ((input.ndim == 2) and (np.any(input.shape == 1)))
                )
     else:
         return isvector(np.asarray(input))
+
+
+def _to_numpy_ndarray(data: Iterable) -> np.ndarray:
+    if isinstance(data, xr.DataArray):
+        data = data.data
+    elif not isinstance(data, np.ndarray):
+        data = np.asarray(data)
+
+    return data
+
+
+def ndpolyval(p: Iterable, x: Iterable = None, axis: int = 0, **kwargs):
+    p_ndarr = _to_numpy_ndarray(p)
+
+    axis = _check_axis(axis, p_ndarr.ndim)
+
+    if isinstance(x, da.Array):
+        x = _unchuck_ifneeded(x, axis)
+
+        y = x.map_blocks(
+            lambda b: _ndpolyval(p_ndarr, b, axis)
+        )
+    else:
+        x_ndarr = _to_numpy_ndarray(x)
+        y = _ndpolyval(p_ndarr, x_ndarr, axis)
+
+    attrs = {"p": p} if kwargs.get("return_info", False) else {}
+
+    output = xr.DataArray(
+        y,
+        attrs=attrs
+    )
+    return output
 
 
 def _ndpolyval(p: np.ndarray, x: np.ndarray, axis: int = 0, **kwargs):
@@ -358,14 +446,28 @@ def _ndpolyval(p: np.ndarray, x: np.ndarray, axis: int = 0, **kwargs):
         raise ValueError("x has invalid number of dimension. x must be either 1 dimensionn.")
 
     if isvector(x):
-        tmp_shape = np.ones(p.ndim)
-        tmp_shape[axis] = x.size
-        x = x.reshape(tuple(tmp_shape))
+        x_original_size = x.size
+        other_dims = np.asarray(p.shape)[np.arange(p.ndim) != axis]
+        x = np.moveaxis(
+            np.tile(
+                x.reshape((-1, )),
+                np.prod(other_dims)
+            ).reshape((*other_dims, x_original_size)),
+            -1,
+            axis
+        )
 
-    y = np.zeros(p.shape)
+    else:
+        if not ( \
+                np.all(x.shape[:axis] == p.shape[:axis]) and \
+                np.all(x.shape[(axis+1):x.ndim] == p.shape[(axis+1):p.ndim])
+        ):
+            raise ValueError("x has invalid shape.")
+
+    y = np.zeros(x.shape)
 
     for i in range(p.shape[axis]):
-        y += p.take([i], axis=axis) * np.power(x, p.ndim - 1 - i)
+        y += p.take([i], axis=axis) * np.power(x, p.shape[axis] - 1 - i)
 
     return y
 
