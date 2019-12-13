@@ -307,6 +307,28 @@ class test_ndpolyfit(TestCase):
 
             np.testing.assert_almost_equal(expected_p, actual_p)
 
+    def test_8(self):
+        x = xr.DataArray(np.arange(-10, 10).astype(dtype=np.float))
+        max_dim = 6
+        max_dim_size = 11
+
+        for i in range(5):
+            expected_p = np.random.randint(-10, 10, size=2)
+            while expected_p[0] == 0:
+                expected_p = np.random.randint(-10, 10, size=2)
+
+            y = expected_p[0] * x + expected_p[1]
+
+            other_dims = np.random.randint(1, max_dim_size, np.random.randint(1, max_dim))
+            axis = np.random.randint(0, other_dims.ndim + 1)
+            y = xr.DataArray(np.moveaxis(np.tile(y, (*other_dims, 1)), -1, axis))
+            expected_p = np.moveaxis(np.tile(expected_p, (*other_dims, 1)), -1, axis)
+
+            y = da.from_array(y, chunks=np.ones((y.ndim,)))
+            actual_p = ndpolyfit(x, y, deg=1, axis=axis)
+
+            np.testing.assert_almost_equal(expected_p, actual_p)
+
 
 class test_internal_ndpolyval(TestCase):
     def test_01(self):
@@ -476,6 +498,44 @@ class test_ndpolyval(TestCase):
             for i in range(deg+1):
                 y_expected += p.take([i], axis=axis) * np.power(x, deg - i)
 
+            y_actual = ndpolyval(p, x, axis=axis)
+
+            np.testing.assert_almost_equal(
+                y_actual.data,
+                y_expected.data
+            )
+
+    def test_03(self):
+        for i in range(50):
+            # these limits are just to limit the time it takes to test.
+            deg = np.random.randint(0, 4)  # Maximum polynomial degree = 3
+            ndim = np.random.randint(1, 6)  # Maximim 5-Dimensional array
+            axis = np.random.randint(0, ndim)
+            max_dim_size = 11  # The maximum number of elements along one dimension
+
+            if ndim > 1:
+                tmp_shape = np.random.randint(1, max_dim_size, size=ndim)
+                data_shape = tmp_shape.copy()
+                data_shape[axis] = np.random.randint(1, max_dim_size)
+                data_shape = tuple(data_shape)
+
+                p_shape = tmp_shape.copy()
+                p_shape[axis] = deg + 1
+                p_shape = tuple(p_shape)
+            else:
+                data_shape = (np.random.randint(1, max_dim_size), )
+                p_shape = (deg + 1, )
+
+            p = np.random.random(size=p_shape)
+            x_nparr = np.random.random(size=data_shape)
+            x = da.from_array(x_nparr, chunks=np.ones((ndim, )))
+
+            y_expected = np.zeros(data_shape)
+
+            for i in range(deg+1):
+                y_expected += p.take([i], axis=axis) * np.power(x_nparr, deg - i)
+
+            print(x)
             y_actual = ndpolyval(p, x, axis=axis)
 
             np.testing.assert_almost_equal(

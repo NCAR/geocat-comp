@@ -57,9 +57,7 @@ def _unchuck_ifneeded(data: da.Array, axis: int) -> da.Array:
         chunksize = data.chunksize
         axis = _check_axis(axis, data.ndim)
         if shape[axis] != chunksize[axis]:
-            data = data.rechunk(
-                (*chunksize[0:axis], shape[axis], *chunksize[axis + 1:len(chunksize)])
-            )
+            data = data.rechunk({axis: -1})
         return data
     else:
         raise TypeError("data must be a dask array.")
@@ -151,20 +149,14 @@ def ndpolyfit(x: Iterable, y: Iterable, deg: int, axis: int = 0, **kwargs) -> (x
             )
         return output
     if isinstance(y, da.Array):
+        print(y)
         y = _unchuck_ifneeded(y, axis)
 
+        print(y)
         return y.map_blocks(
-            _ndpolyfit,
-            x=x,
-            axis=axis,
-            deg=deg,
-            rcond=rcond,
-            full=full,
-            w=w,
-            cov=cov,
-            missing_value=missing_value,
-            xarray_ouput=False
-        )
+            lambda b: _ndpolyfit(x, b, axis, deg, rcond, full, w, cov, missing_value, False),
+            dtype=np.float64
+        ).compute()
     else:
         return _ndpolyfit(np.asarray(y), x, axis, deg, rcond, full, w, cov, missing_value)
 
@@ -415,11 +407,15 @@ def ndpolyval(p: Iterable, x: Iterable = None, axis: int = 0, **kwargs):
     axis = _check_axis(axis, p_ndarr.ndim)
 
     if isinstance(x, da.Array):
-        x = _unchuck_ifneeded(x, axis)
-
-        y = x.map_blocks(
-            lambda b: _ndpolyval(p_ndarr, b, axis)
-        )
+        raise NotImplemented("Dask_array support is not implemented yet.")
+        # x = _unchuck_ifneeded(x, axis)
+        #
+        # y = x.map_blocks(
+        #     _ndpolyval,
+        #     p=p_ndarr,
+        #     axis=axis,
+        #     dtype=np.float64
+        # )
     else:
         x_ndarr = _to_numpy_ndarray(x)
         y = _ndpolyval(p_ndarr, x_ndarr, axis)
@@ -433,7 +429,7 @@ def ndpolyval(p: Iterable, x: Iterable = None, axis: int = 0, **kwargs):
     return output
 
 
-def _ndpolyval(p: np.ndarray, x: np.ndarray, axis: int = 0, **kwargs):
+def _ndpolyval(p: np.ndarray, x: np.ndarray, axis: int = 0, **kwargs) -> np.ndarray:
     if not isinstance(p, np.ndarray):
         raise TypeError("This function accepts only numpy.ndarray as p.")
 
