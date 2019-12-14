@@ -1,5 +1,7 @@
 # cython: language_level=3, boundscheck=False, embedsignature=True
-cimport ncomp as libncomp
+from ._ncomp cimport libncomp
+from . cimport _ncomp
+
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
 
@@ -31,26 +33,8 @@ def carrayify(f):
 
 
 cdef class Array:
-    cdef libncomp.ncomp_array* ncomp
-    cdef np.ndarray            numpy
-    cdef int                   ndim
-    cdef int                   type
-    cdef void*                 addr
-    cdef size_t*               shape
-
     def __init__(self):
         raise NotImplementedError("_ncomp.Array must be instantiated using the from_np or from_ncomp methods.")
-
-    cdef libncomp.ncomp_array* np_to_ncomp_array(self):
-        return <libncomp.ncomp_array*> libncomp.ncomp_array_alloc(self.addr, self.type, self.ndim, self.shape)
-
-    cdef np.ndarray ncomp_to_np_array(self):
-        np.import_array()
-        nparr = np.PyArray_SimpleNewFromData(self.ndim, <np.npy_intp *> self.shape, self.type, self.addr)
-        cdef extern from "numpy/arrayobject.h":
-            void PyArray_ENABLEFLAGS(np.ndarray arr, int flags)
-        PyArray_ENABLEFLAGS(nparr, np.NPY_OWNDATA)
-        return nparr
 
     @staticmethod
     cdef Array from_np(np.ndarray nparr):
@@ -60,7 +44,7 @@ cdef class Array:
         a.shape = <size_t*>nparr.shape
         a.type = nparr.dtype.num
         a.addr = <void*> (<unsigned long> nparr.__array_interface__['data'][0])
-        a.ncomp = a.np_to_ncomp_array()
+        a.ncomp = np_to_ncomp_array(nparr)
         return a
 
     @staticmethod
@@ -71,7 +55,7 @@ cdef class Array:
         a.shape = ncarr.shape
         a.type = ncarr.type
         a.addr = ncarr.addr
-        a.numpy = a.ncomp_to_np_array()
+        a.numpy = ncomp_to_np_array(ncarr)
         return a
 
     def __dealloc__(self):
@@ -152,7 +136,6 @@ cdef libncomp.ncomp_array* np_to_ncomp_array(np.ndarray nparr):
     cdef int ndim = nparr.ndim
     cdef size_t* shape = <size_t*> nparr.shape
     cdef int np_type = nparr.dtype.num
-
     return <libncomp.ncomp_array*> libncomp.ncomp_array_alloc(addr, np_type, ndim, shape)
 
 cdef np.ndarray ncomp_to_np_array(libncomp.ncomp_array* ncarr):
@@ -651,7 +634,7 @@ cdef ncomp_attributes_to_dict(libncomp.ncomp_attributes attrs):
 
 
 @carrayify
-def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolus, np.ndarray a_submeso, np.ndarray tlat, np.ndarray rmlak, msg=None):
+def _moc_globe_atl(np.ndarray lat_aux_grid_np, np.ndarray a_wvel_np, np.ndarray a_bolus_np, np.ndarray a_submeso_np, np.ndarray tlat_np, np.ndarray rmlak_np, msg=None):
     """Facilitates calculating the meridional overturning circulation for the globe and Atlantic.
     Args:
     lat_aux_grid (:class:`numpy.ndarray`):
@@ -691,40 +674,41 @@ def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolu
     """
 
     # Convert np_input to ncomp_array
-    cdef libncomp.ncomp_array* ncomp_lat_aux_grid = np_to_ncomp_array(lat_aux_grid)
-    cdef libncomp.ncomp_array* ncomp_a_wvel = np_to_ncomp_array(a_wvel)
-    cdef libncomp.ncomp_array* ncomp_a_bolus = np_to_ncomp_array(a_bolus)
-    cdef libncomp.ncomp_array* ncomp_a_submeso = np_to_ncomp_array(a_submeso)
-    cdef libncomp.ncomp_array* ncomp_tlat = np_to_ncomp_array(tlat)
-    cdef libncomp.ncomp_array* ncomp_rmlak = np_to_ncomp_array(rmlak)
+    lat_aux_grid = Array.from_np(lat_aux_grid_np)
+    a_wvel       = Array.from_np(a_wvel_np)
+    a_bolus      = Array.from_np(a_bolus_np)
+    a_submeso    = Array.from_np(a_submeso_np)
+    tlat         = Array.from_np(tlat_np)
+    rmlak        = Array.from_np(rmlak_np)
 
     # Handle missing values
     missing_inds_a_wvel = None
 
     if msg is None or np.isnan(msg):    # if no missing value specified, assume NaNs
-        missing_inds_a_wvel = np.isnan(a_wvel)
-        msg = get_default_fill(a_wvel)
+        missing_inds_a_wvel = np.isnan(a_wvel.numpy)
+        msg = get_default_fill(a_wvel.numpy)
     else:
-        missing_inds_a_wvel = (a_wvel == msg)
+        missing_inds_a_wvel = (a_wvel.numpy == msg)
 
-    set_ncomp_msg(&ncomp_a_wvel.msg, msg)    # always set missing on ncomp_a_wvel
+    #set_ncomp_msg(&ncomp_a_wvel.msg, msg)    # always set missing on ncomp_a_wvel
+    set_ncomp_msg(&(a_wvel.ncomp.msg), msg)    # always set missing on ncomp_a_wvel
 
     if missing_inds_a_wvel.any():
-        ncomp_a_wvel.has_missing = 1
-        a_wvel[missing_inds_a_wvel] = msg
+        a_wvel.ncomp.has_missing = 1
+        a_wvel.numpy[missing_inds_a_wvel] = msg
 
     # Allocate output ncomp_array
     cdef libncomp.ncomp_array* ncomp_output = NULL
 
     cdef int ier
     with nogil:
-        ier = libncomp.moc_globe_atl(ncomp_lat_aux_grid, ncomp_a_wvel, ncomp_a_bolus,
-                                  ncomp_a_submeso, ncomp_tlat, ncomp_rmlak,
+        ier = libncomp.moc_globe_atl(lat_aux_grid.ncomp, a_wvel.ncomp, a_bolus.ncomp,
+                                  a_submeso.ncomp, tlat.ncomp, rmlak.ncomp,
                                   &ncomp_output)
 
     # Check errors ier
     if ier:
-      raise NcompError(f"moc_globe_atl: There is an error: {ier}")
+        raise NcompError(f"moc_globe_atl: There is an error: {ier}")
 
     # Convert ncomp_output to np.ndarray
     output = Array.from_ncomp(ncomp_output)
