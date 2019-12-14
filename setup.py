@@ -34,5 +34,10 @@ setup(
     package_data={'geocat': ['__init__.pxd', 'comp/*.pxd']},
     namespace_packages=['geocat'],
     packages=["geocat", "geocat.comp"],
-    version=__version__,
+    version=__version__, 
+    install_requires=[
+        'numpy', 
+        'xarray', 
+        'dask[complete]'
+    ]
 )
