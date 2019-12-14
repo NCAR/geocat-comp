@@ -309,8 +309,8 @@ class test_ndpolyfit(TestCase):
 
     def test_8(self):
         x = xr.DataArray(np.arange(-10, 10).astype(dtype=np.float))
-        max_dim = 6
-        max_dim_size = 11
+        max_dim = 3
+        max_dim_size = 5
 
         for i in range(3):
             expected_p = np.random.randint(-10, 10, size=2)
@@ -506,7 +506,7 @@ class test_ndpolyval(TestCase):
             )
 
     def test_03(self):
-        for i in range(50):
+        for i in range(5):
             # these limits are just to limit the time it takes to test.
             deg = np.random.randint(0, 4)  # Maximum polynomial degree = 3
             ndim = np.random.randint(1, 6)  # Maximim 5-Dimensional array
@@ -535,9 +535,7 @@ class test_ndpolyval(TestCase):
             for i in range(deg+1):
                 y_expected += p.take([i], axis=axis) * np.power(x_nparr, deg - i)
 
-            print(x)
             y_actual = ndpolyval(p, x, axis=axis)
-
             np.testing.assert_almost_equal(
                 y_actual.data,
                 y_expected.data

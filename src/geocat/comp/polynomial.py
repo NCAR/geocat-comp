@@ -149,10 +149,8 @@ def ndpolyfit(x: Iterable, y: Iterable, deg: int, axis: int = 0, **kwargs) -> (x
             )
         return output
     if isinstance(y, da.Array):
-        print(y)
         y = _unchuck_ifneeded(y, axis)
 
-        print(y)
         return y.map_blocks(
             lambda b: _ndpolyfit(x, b, axis, deg, rcond, full, w, cov, missing_value, False),
             dtype=np.float64
@@ -403,19 +401,17 @@ def _to_numpy_ndarray(data: Iterable) -> np.ndarray:
 
 def ndpolyval(p: Iterable, x: Iterable = None, axis: int = 0, **kwargs):
     p_ndarr = _to_numpy_ndarray(p)
-
     axis = _check_axis(axis, p_ndarr.ndim)
-
     if isinstance(x, da.Array):
-        raise NotImplemented("Dask_array support is not implemented yet.")
-        # x = _unchuck_ifneeded(x, axis)
-        #
-        # y = x.map_blocks(
-        #     _ndpolyval,
-        #     p=p_ndarr,
-        #     axis=axis,
-        #     dtype=np.float64
-        # )
+        x = _unchuck_ifneeded(x, axis)
+        x_chunks = list(x.chunks)
+        x_chunks[axis] = p_ndarr.shape[axis]
+        p_dask = da.from_array(p_ndarr, chunks=x_chunks)
+        y = da.map_blocks(
+            lambda p_blocks, x_blocks: _ndpolyval(p_blocks, x_blocks, axis),
+            p_dask, x,
+            dtype=np.float64
+        ).compute()
     else:
         x_ndarr = _to_numpy_ndarray(x)
         y = _ndpolyval(p_ndarr, x_ndarr, axis)
