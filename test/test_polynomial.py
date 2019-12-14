@@ -312,7 +312,7 @@ class test_ndpolyfit(TestCase):
         max_dim = 6
         max_dim_size = 11
 
-        for i in range(5):
+        for i in range(3):
             expected_p = np.random.randint(-10, 10, size=2)
             while expected_p[0] == 0:
                 expected_p = np.random.randint(-10, 10, size=2)
