@@ -400,6 +400,33 @@ def _to_numpy_ndarray(data: Iterable) -> np.ndarray:
 
 
 def ndpolyval(p: Iterable, x: Iterable = None, axis: int = 0, **kwargs):
+    """
+    Extended version of `numpy.polyval` to support multi-dimensional outputs provided by `geocat.comp.ndpolyfit`.
+
+    As the name suggest, this version supports a multi-dimensional `p` array. Let's say `p` is of dimension `(s0,s1,s2)`
+    and `axis=1`, then the output would be of dimension `(s0, M, s2)` where M depends on `x`.
+    The same way, you `x` could be a multi dimensional array or a single array. In another word, `x` is either of
+    dimension `(M, )`, `(M, 1)`, `(1, M)` or, in our example, of dimension `(s0, M, s2)`. When `x` is not the vector,
+    is must have the same dimension as of `p` except for the dimension that is defined by `axis`.
+
+    Args:
+
+        p (:class:`Iterable`):
+            the polynomial coeficients
+
+        x (:class:`Iterable`):
+            the coordinates where polynomial must be evaluated
+
+        axis (:class:`int`):
+        The axis where the polynomials are there.
+
+        **kwargs:
+            Currently not used.
+
+    Returns (:class: `xr.DataArray`:
+        polynomial evaluated with the provided coordinates.
+
+    """
     p_ndarr = _to_numpy_ndarray(p)
     axis = _check_axis(axis, p_ndarr.ndim)
     if isinstance(x, da.Array):
