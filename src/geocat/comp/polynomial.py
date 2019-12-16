@@ -35,7 +35,7 @@ def _get_missing_value(data: xr.DataArray, args: dict) -> Any:
     return missing_value
 
 
-def _unchunck_ifneeded(data: da.Array, axis: int) -> da.Array:
+def _unchunk_ifneeded(data: da.Array, axis: int) -> da.Array:
     """
     Make sures that the `Dask.Array` is not chunked along the specified axis. If it is chunked, it returns a new
     rechunked `Dask.Array` array, with the same chunking except along the specified axis.
