@@ -7,7 +7,7 @@ import xarray as xr
 import dask.array as da
 from dask.array.core import map_blocks
 
-from .polynomial import ndpolyfit
+from .polynomial import ndpolyfit, ndpolyval
 
 
 class Error(Exception):
