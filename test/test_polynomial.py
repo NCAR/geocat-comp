@@ -542,7 +542,19 @@ class test_ndpolyval(TestCase):
             )
 
 
+class test_detrend(TestCase):
+    def test_01(self):
+        x = np.linspace(0, 2, 9, dtype=np.float64) * np.pi
+        print("x: ", x)
+        y0 = 1.0 * x
+        y1 = np.sin(x)
+        print("y0: ", y0)
+        print("y1: ", y1)
+        y = y0 + y1
 
+        p = ndpolyfit(x, y, deg=1)
+
+        print(p)
 
 
 

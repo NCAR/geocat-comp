@@ -399,7 +399,7 @@ def _to_numpy_ndarray(data: Iterable) -> np.ndarray:
     return data
 
 
-def ndpolyval(p: Iterable, x: Iterable = None, axis: int = 0, **kwargs):
+def ndpolyval(p: Iterable, x: Iterable, axis: int = 0, **kwargs):
     """
     Extended version of `numpy.polyval` to support multi-dimensional outputs provided by `geocat.comp.ndpolyfit`.
 
@@ -491,6 +491,35 @@ def _ndpolyval(p: np.ndarray, x: np.ndarray, axis: int = 0, **kwargs) -> np.ndar
     return y
 
 
+def detrend(data: Iterable, deg=1, axis=0, **kwargs):
+    if (int(deg) != deg) or (deg < 0):
+        raise ValueError("deg must be non-negative integer value.")
+
+    return_info = bool(kwargs.get("return_info", True))
+
+    missing_value = _get_missing_value(data, kwargs)
+
+    try:
+        data_shape = data.shape \
+            if isinstance(data, (np.ndarray, xr.DataArray, da.Array)) \
+            else np.asarray(data).shape
+    except:
+        raise TypeError("Could not extract the shape of data")
+
+    x = kwargs.get("x", None)
+    if x is None:
+        x = np.arange(data_shape[axis], dtype=float)
+
+    p = ndpolyfit(x, data, deg, axis, missing_value=missing_value)
+
+    data_fitted = ndpolyval(p, x, axis)
+
+    data_detrended = xr.DataArray(data) - data_fitted
+
+    if return_info:
+        data_detrended.attrs["p"] = p
+
+    return data_detrended
 
 
 
