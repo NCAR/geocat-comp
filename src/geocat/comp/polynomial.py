@@ -35,7 +35,7 @@ def _get_missing_value(data: xr.DataArray, args: dict) -> Any:
     return missing_value
 
 
-def _unchuck_ifneeded(data: da.Array, axis: int) -> da.Array:
+def _unchunck_ifneeded(data: da.Array, axis: int) -> da.Array:
     """
     Make sures that the `Dask.Array` is not chunked along the specified axis. If it is chunked, it returns a new
     rechunked `Dask.Array` array, with the same chunking except along the specified axis.
@@ -149,7 +149,7 @@ def ndpolyfit(x: Iterable, y: Iterable, deg: int, axis: int = 0, **kwargs) -> (x
             )
         return output
     if isinstance(y, da.Array):
-        y = _unchuck_ifneeded(y, axis)
+        y = _unchunck_ifneeded(y, axis)
 
         return y.map_blocks(
             lambda b: _ndpolyfit(x, b, axis, deg, rcond, full, w, cov, missing_value, False),
@@ -405,9 +405,9 @@ def ndpolyval(p: Iterable, x: Iterable = None, axis: int = 0, **kwargs):
 
     As the name suggest, this version supports a multi-dimensional `p` array. Let's say `p` is of dimension `(s0,s1,s2)`
     and `axis=1`, then the output would be of dimension `(s0, M, s2)` where M depends on `x`.
-    The same way, you `x` could be a multi dimensional array or a single array. In another word, `x` is either of
-    dimension `(M, )`, `(M, 1)`, `(1, M)` or, in our example, of dimension `(s0, M, s2)`. When `x` is not the vector,
-    is must have the same dimension as of `p` except for the dimension that is defined by `axis`.
+    The same way, `x` could be a multi dimensional array or a single array. In another word, `x` is either of
+    dimension `(M, )`, `(M, 1)`, `(1, M)` or, in this example, of dimension `(s0, M, s2)`. When `x` is not the vector,
+    it must have the same dimension as of `p` except for the dimension that is defined by `axis`.
 
     Args:
 
@@ -426,11 +426,65 @@ def ndpolyval(p: Iterable, x: Iterable = None, axis: int = 0, **kwargs):
     Returns (:class: `xr.DataArray`:
         polynomial evaluated with the provided coordinates.
 
+    Example:
+        * Fitting a first degree polynomial and calculating the residual manually:
+
+        >>> from geocat.comp.polynomial import ndpolyfit, ndpolyval
+        >>> import numpy as np
+        >>> n = 10
+        >>> x = np.linspace(0, 1, n)
+        >>> print(x.shape)
+        (10,)
+        >>> y = np.random.random((3, 4, n, 2, 5))
+        >>> print(y.shape)
+        (3, 4, 10, 2, 5)
+        >>> # First fitting a first degree polynomial to our 5-Dimensional array
+        ... p = ndpolyfit(x, y, deg=1, axis=2)
+        >>> print("p.shape: ", p.shape)
+        p.shape:  (3, 4, 2, 2, 5)
+        >>> # Now re-evaluating the polynomial at the same points:
+        ... y_fitted = ndpolyval(p, x, axis=2)
+        >>> We are ready to manually calculate the residual now:
+        ... signed_residual = y_fitted - y
+        >>> y_fitted.shape
+        (3, 4, 10, 2, 5)
+
+        * when evaluating x can be another multi-dimensional array
+
+        >>> # Let's work on the p that was calculated in previous example
+        ... # using the command:
+        ... #           p = ndpolyfit(x, y, deg=1, axis=2)
+        ... print("p.shape: ", p.shape)
+        p.shape:  (3, 4, 2, 2, 5)
+
+        >>> # Let's pass x which has 20 members this time:
+        ... x = np.random.random(20)
+        >>> print("x.shape: ", x.shape)
+        x.shape:  (20,)
+        >>> new_y = ndpolyval(p, x, axis=2)
+        >>> print("new_y.shape: ", new_y.shape) # Note new_y.shape[2] = 20
+        new_y.shape:  (3, 4, 20, 2, 5)
+
+        >>> # Now let's make a multi-dimensional x
+        ... # NOTE: all dimension, except axis=2 is the same as the one in p
+        ... #       because during fitting step axis was set to 2
+        ... x = np.random.random((3, 4, 42, 2, 5))
+        >>> new_y = ndpolyval(p, x, axis=2)
+        >>> print("new_y.shape: ", new_y.shape) # Note new_y.shape[2] = 42
+        new_y.shape:  (3, 4, 42, 2, 5)
+
+        >>> # now if a wrongly sized array is passed, you would get an error:
+        ... x = np.random.random((5, 2, 42, 4, 3))
+        >>> new_y = ndpolyval(p, x, axis=2)
+        Traceback (most recent call last):
+          ...
+        ValueError: x has invalid shape.
+
     """
     p_ndarr = _to_numpy_ndarray(p)
     axis = _check_axis(axis, p_ndarr.ndim)
     if isinstance(x, da.Array):
-        x = _unchuck_ifneeded(x, axis)
+        x = _unchunck_ifneeded(x, axis)
         x_chunks = list(x.chunks)
         x_chunks[axis] = p_ndarr.shape[axis]
         p_dask = da.from_array(p_ndarr, chunks=x_chunks)
