@@ -149,7 +149,7 @@ def ndpolyfit(x: Iterable, y: Iterable, deg: int, axis: int = 0, **kwargs) -> (x
             )
         return output
     if isinstance(y, da.Array):
-        y = _unchunck_ifneeded(y, axis)
+        y = _unchunk_ifneeded(y, axis)
 
         return y.map_blocks(
             lambda b: _ndpolyfit(x, b, axis, deg, rcond, full, w, cov, missing_value, False),
@@ -484,7 +484,7 @@ def ndpolyval(p: Iterable, x: Iterable = None, axis: int = 0, **kwargs):
     p_ndarr = _to_numpy_ndarray(p)
     axis = _check_axis(axis, p_ndarr.ndim)
     if isinstance(x, da.Array):
-        x = _unchunck_ifneeded(x, axis)
+        x = _unchunk_ifneeded(x, axis)
         x_chunks = list(x.chunks)
         x_chunks[axis] = p_ndarr.shape[axis]
         p_dask = da.from_array(p_ndarr, chunks=x_chunks)
