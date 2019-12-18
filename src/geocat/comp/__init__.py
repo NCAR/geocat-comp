@@ -317,6 +317,32 @@ def rcm2rgrid(lat2d, lon2d, fi, lat1d, lon1d, msg=None, meta=False):
 	interpolated in the initial interpolation pass will be filled using linear interpolation.
         In some cases, edge points may not be filled.
 
+    Examples:
+
+        Example 1: Using rcm2rgrid with :class:`xarray.DataArray` input
+
+        .. code-block:: python
+
+            import numpy as np
+            import xarray as xr
+            import geocat.comp
+
+            # Open a netCDF data file using xarray default engine and load the data stream
+            ds = xr.open_dataset("./ruc.nc")
+
+            # [INPUT] Grid & data info on the source curvilinear
+            ht_curv=ds.DIST_236_CBL[:]
+            lat2D_curv=ds.gridlat_236[:]
+            lon2D_curv=ds.gridlon_236[:]
+
+            # [OUTPUT] Grid on destination rectilinear grid (or read the 1D lat and lon from
+            #          an other .nc file.
+            newlat1D_rect=np.linspace(lat2D_curv.min(), lat2D_curv.max(), 100)
+            newlon1D_rect=np.linspace(lon2D_curv.min(), lon2D_curv.max(), 100)
+
+            ht_rect = geocat.comp.rcm2rgrid(lat2D_curv, lon2D_curv, ht_curv, newlat1D_rect, newlon1D_rect)
+
+
     """
 
     # Basic sanity checks
@@ -426,6 +452,37 @@ def rgrid2rcm(lat1d, lon1d, fi, lat2d, lon2d, msg=None, meta=False):
 	NARR (North American Regional Reanalysis) models/datasets. No extrapolation is
 	performed beyond the range of the input coordinates. The method used is simple inverse
 	distance weighting. Missing values are allowed but ignored.
+
+    Examples:
+
+        Example 1: Using rgrid2rcm with :class:`xarray.DataArray` input
+
+        .. code-block:: python
+
+            import numpy as np
+            import xarray as xr
+            import geocat.comp
+
+            # Open a netCDF data file using xarray default engine and load the data stream
+            # input grid and data
+            ds_rect = xr.open_dataset("./DATAFILE_RECT.nc")
+
+            # [INPUT] Grid & data info on the source rectilinear
+            ht_rect   =ds_rect.SOME_FIELD[:]
+            lat1D_rect=ds_rect.gridlat_[:]
+            lon1D_rect=ds_rect.gridlon_[:]
+
+            # Open a netCDF data file using xarray default engine and load the data stream
+            # for output grid
+            ds_curv = xr.open_dataset("./DATAFILE_CURV.nc")
+
+            # [OUTPUT] Grid on destination curvilinear grid (or read the 2D lat and lon from
+            #          an other .nc file
+            newlat2D_rect=ds_curv.gridlat2D_[:]
+            newlon2D_rect=ds_curv.gridlat2D_[:]
+
+            ht_curv = geocat.comp.rgrid2rcm(lat1D_rect, lon1D_rect, ht_rect, newlat2D_curv, newlon2D_curv)
+
 
     """
 
