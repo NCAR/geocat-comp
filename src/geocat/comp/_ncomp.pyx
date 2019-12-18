@@ -801,16 +801,15 @@ def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.nd
         fo_dtype = np.float32
     cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat1d.shape[0], lon1d.shape[0]]), dtype=fo_dtype)
 
-    missing_inds_fi = None
+    replace_fi_nans = False
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
         missing_inds_fi = np.isnan(fi.numpy)
         msg = get_default_fill(fi.numpy)
-    else:
-        missing_inds_fi = (fi.numpy == msg)
+	replace_fi_nans = True
 
     set_ncomp_msg(&(fi.ncomp.msg), msg) # always set missing on fi.ncomp
 
-    if missing_inds_fi.any():
+    if replace_fi_nans and missing_inds_fi.any():
         fi.ncomp.has_missing = 1
         fi.numpy[missing_inds_fi] = msg
 
@@ -828,7 +827,7 @@ def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.nd
         warnings.warn("rcm2rgrid: There is an error code: {}".format(ier),
                       NcompWarning)
 
-    if missing_inds_fi is not None and missing_inds_fi.any():
+    if replace_fi_nans and fi.ncomp.has_missing:
         fi.numpy[missing_inds_fi] = np.nan
 
     if fo.type == libncomp.NCOMP_DOUBLE:
@@ -902,17 +901,15 @@ def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.nd
         fo_dtype = np.float32
     cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat2d.shape[0], lon2d.shape[0]]), dtype=fo_dtype)
 
-    missing_inds_fi = None
-
+    replace_fi_nans = False
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
         missing_inds_fi = np.isnan(fi.numpy)
         msg = get_default_fill(fi.numpy)
-    else:
-        missing_inds_fi = (fi.numpy == msg)
+	replace_fi_nans = True
 
     set_ncomp_msg(&(fi.ncomp.msg), msg) # always set missing on fi.ncomp
 
-    if missing_inds_fi.any():
+    if replace_fi_nans and missing_inds_fi.any():
         fi.ncomp.has_missing = 1
         fi.numpy[missing_inds_fi] = msg
 
@@ -930,7 +927,7 @@ def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.nd
         warnings.warn("rgrid2rcm: There is an error code: {}".format(ier),
                       NcompWarning)
 
-    if missing_inds_fi is not None and missing_inds_fi.any():
+    if replace_fi_nans and fi.ncomp.has_missing:
         fi.numpy[missing_inds_fi] = np.nan
 
     if fo.type == libncomp.NCOMP_DOUBLE:
