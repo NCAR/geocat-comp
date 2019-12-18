@@ -366,13 +366,9 @@ def rcm2rgrid(lat2d, lon2d, fi, lat1d, lon1d, msg=None, meta=False):
     else:
         raise TypeError
 
-    if meta:
-        coords = {k:v if k not in fi.dims[-2:]
-                  else (lat1d if k == fi.dims[-1] else lon1d)
-                  for (k, v) in fi.coords.items()}
-
-        fo = xr.DataArray(fo, attrs=fi.attrs, dims=fi.dims,
-                          coords=coords)
+    if meta and isinstance(input, xr.DataArray):
+        pass
+        # TODO: Retaining possible metadata might be revised in the future
     else:
         fo = xr.DataArray(fo)
 
@@ -480,13 +476,9 @@ def rgrid2rcm(lat1d, lon1d, fi, lat2d, lon2d, msg=None, meta=False):
     else:
         raise TypeError
 
-    if meta:
-        coords = {k:v if k not in fi.dims[-2:]
-                  else (lat2d if k == fi.dims[-1] else lon2d)
-                  for (k, v) in fi.coords.items()}
-
-        fo = xr.DataArray(fo, attrs=fi.attrs, dims=fi.dims,
-                          coords=coords)
+    if meta and isinstance(input, xr.DataArray):
+        pass
+        # TODO: Retaining possible metadata might be revised in the future
     else:
         fo = xr.DataArray(fo)
 

@@ -654,8 +654,10 @@ def _moc_globe_atl(np.ndarray lat_aux_grid, np.ndarray a_wvel, np.ndarray a_bolu
     return output.numpy
 
 @carrayify
-def _rcm2rgrid(np.ndarray lat2d, np.ndarray lon2d, np.ndarray fi, np.ndarray lat1d, np.ndarray lon1d, msg=None):
-    """Interpolates data on a curvilinear grid (i.e. RCM, WRF, NARR) to a rectilinear grid.
+def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.ndarray lat1d_np, np.ndarray lon1d_np, msg=None):
+    """_rcm2rgrid(lat2d, lon2d, fi, lat1d, lon1d, msg=None)
+
+    Interpolates data on a curvilinear grid (i.e. RCM, WRF, NARR) to a rectilinear grid.
 
     Args:
 
@@ -715,64 +717,59 @@ def _rcm2rgrid(np.ndarray lat2d, np.ndarray lon2d, np.ndarray fi, np.ndarray lat
         In some cases, edge points may not be filled.
 
     """
-    cdef libncomp.ncomp_array* ncomp_lat2d = np_to_ncomp_array(lat2d)
-    cdef libncomp.ncomp_array* ncomp_lon2d = np_to_ncomp_array(lon2d)
-    cdef libncomp.ncomp_array* ncomp_fi    = np_to_ncomp_array(fi)
-    cdef libncomp.ncomp_array* ncomp_lat1d = np_to_ncomp_array(lat1d)
-    cdef libncomp.ncomp_array* ncomp_lon1d = np_to_ncomp_array(lon1d)
+    lat2d = Array.from_np(lat2d_np)
+    lon2d = Array.from_np(lon2d_np)
+    fi    = Array.from_np(fi_np)
+    lat1d = Array.from_np(lat1d_np)
+    lon1d = Array.from_np(lon1d_np)
 
-    cdef libncomp.ncomp_array* ncomp_fo
     cdef long i
-
     # Set output type and dimensions. Double if `fi` is double, otherwise float.
-    if ncomp_fi.type == libncomp.NCOMP_DOUBLE:
+    if fi.type == libncomp.NCOMP_DOUBLE:
         fo_dtype = np.float64
     else:
         fo_dtype = np.float32
-    cdef np.ndarray fo = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat1d.shape[0], lon1d.shape[0]]), dtype=fo_dtype)
+    cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat1d.shape[0], lon1d.shape[0]]), dtype=fo_dtype)
 
     missing_inds_fi = None
-
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
-        missing_inds_fi = np.isnan(fi)
-        msg = get_default_fill(fi)
+        missing_inds_fi = np.isnan(fi.numpy)
+        msg = get_default_fill(fi.numpy)
     else:
-        missing_inds_fi = (fi == msg)
+        missing_inds_fi = (fi.numpy == msg)
 
-    set_ncomp_msg(&ncomp_fi.msg, msg) # always set missing on ncomp_fi
+    set_ncomp_msg(&(fi.ncomp.msg), msg) # always set missing on fi.ncomp
 
     if missing_inds_fi.any():
-        ncomp_fi.has_missing = 1
-        fi[missing_inds_fi] = msg
+        fi.ncomp.has_missing = 1
+        fi.numpy[missing_inds_fi] = msg
 
-    ncomp_fo = np_to_ncomp_array(fo)
+    fo = Array.from_np(fo_np)
 
 #   release global interpreter lock
     cdef int ier
     with nogil:
-        ier = libncomp.rcm2rgrid(
-            ncomp_lat2d, ncomp_lon2d, ncomp_fi,
-            ncomp_lat1d, ncomp_lon1d, ncomp_fo)
+        ier = libncomp.rcm2rgrid(lat2d, lon2d, fi, lat1d, lon1d, fo)
 
 #   re-acquire interpreter lock
     # Check errors ier
     if ier:
-      raise NcompError(f"rcm2rgrid: There is an error: {ier}")
+        warnings.warn("rcm2rgrid: There is an error code: {}".format{ier},
+                      NcompWarning)
 
     if missing_inds_fi is not None and missing_inds_fi.any():
-        fi[missing_inds_fi] = np.nan
+        fi.numpy[missing_inds_fi] = np.nan
 
-    if ncomp_fo.type == libncomp.NCOMP_DOUBLE:
-        fo_msg = ncomp_fo.msg.msg_double
+    if fo.type == libncomp.NCOMP_DOUBLE:
+        fo_msg = fo.msg.msg_double
     else:
-        fo_msg = ncomp_fo.msg.msg_float
+        fo_msg = fo.msg.msg_float
+    fo.numpy[fo.numpy == fo_msg] = np.nan
 
-    fo[fo == fo_msg] = np.nan
-
-    return fo
+    return fo.numpy
 
 @carrayify
-def _rgrid2rcm(np.ndarray lat1d, np.ndarray lon1d, np.ndarray fi, np.ndarray lat2d, np.ndarray lon2d, msg=None):
+def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.ndarray lat2d_np, np.ndarray lon2d_np, msg=None):
     """Interpolates data on a rectilinear lat/lon grid to a curvilinear grid like those used by the RCM, WRF and NARR models/datasets.
 
     Args:
@@ -818,58 +815,56 @@ def _rgrid2rcm(np.ndarray lat1d, np.ndarray lon1d, np.ndarray fi, np.ndarray lat
 	distance weighting. Missing values are allowed but ignored.
 
     """
-    cdef libncomp.ncomp_array* ncomp_lat1d = np_to_ncomp_array(lat1d)
-    cdef libncomp.ncomp_array* ncomp_lon1d = np_to_ncomp_array(lon1d)
-    cdef libncomp.ncomp_array* ncomp_fi    = np_to_ncomp_array(fi)
-    cdef libncomp.ncomp_array* ncomp_lat2d = np_to_ncomp_array(lat2d)
-    cdef libncomp.ncomp_array* ncomp_lon2d = np_to_ncomp_array(lon2d)
+    lat1d = Array.from_np(lat1d_np)
+    lon1d = Array.from_np(lon1d_np)
+    fi    = Array.from_np(fi_np)
+    lat2d = Array.from_np(lat2d_np)
+    lon2d = Array.from_np(lon2d_np)
 
-    cdef libncomp.ncomp_array* ncomp_fo
     cdef long i
-
     # Set output type and dimensions. Double if `fi` is double, otherwise float.
-    if ncomp_fi.type == libncomp.NCOMP_DOUBLE:
+    if fi.type == libncomp.NCOMP_DOUBLE:
         fo_dtype = np.float64
     else:
         fo_dtype = np.float32
-    cdef np.ndarray fo = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat2d.shape[0], lon2d.shape[0]]), dtype=fo_dtype)
+    cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat2d.shape[0], lon2d.shape[0]]), dtype=fo_dtype)
 
     missing_inds_fi = None
 
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
-        missing_inds_fi = np.isnan(fi)
-        msg = get_default_fill(fi)
+        missing_inds_fi = np.isnan(fi.numpy)
+        msg = get_default_fill(fi.numpy)
     else:
-        missing_inds_fi = (fi == msg)
+        missing_inds_fi = (fi.numpy == msg)
 
-    set_ncomp_msg(&ncomp_fi.msg, msg) # always set missing on ncomp_fi
+    set_ncomp_msg(&(fi.ncomp.msg), msg) # always set missing on fi.ncomp
 
     if missing_inds_fi.any():
-        ncomp_fi.has_missing = 1
-        fi[missing_inds_fi] = msg
+        fi.ncomp.has_missing = 1
+        fi.numpy[missing_inds_fi] = msg
 
-    ncomp_fo = np_to_ncomp_array(fo)
+    fo = Array.from_np(fo_np)
 
 #   release global interpreter lock
     cdef int ier
     with nogil:
-        ier = libncomp.rgrid2rcm(
-            ncomp_lat1d, ncomp_lon1d, ncomp_fi,
-            ncomp_lat2d, ncomp_lon2d, ncomp_fo)
+        ier = libncomp.rgrid2rcm(lat1d.ncomp, lon1d.ncomp, fi.ncomp,
+                                 lat2d.ncomp, lon2d, fo.ncomp)
 
 #   re-acquire interpreter lock
     # Check errors ier
     if ier:
-      raise NcompError(f"rgrid2rcm: There is an error: {ier}")
+        warnings.warn("rgrid2rcm: There is an error code: {}".format{ier},
+                      NcompWarning)
 
     if missing_inds_fi is not None and missing_inds_fi.any():
-        fi[missing_inds_fi] = np.nan
+        fi.numpy[missing_inds_fi] = np.nan
 
-    if ncomp_fo.type == libncomp.NCOMP_DOUBLE:
-        fo_msg = ncomp_fo.msg.msg_double
+    if fo.type == libncomp.NCOMP_DOUBLE:
+        fo_msg = fo.msg.msg_double
     else:
-        fo_msg = ncomp_fo.msg.msg_float
+        fo_msg = fo.msg.msg_float
 
-    fo[fo == fo_msg] = np.nan
+    fo.numpy[fo.numpy == fo_msg] = np.nan
 
-    return fo
+    return fo.numpy
