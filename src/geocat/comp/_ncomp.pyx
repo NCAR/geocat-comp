@@ -819,7 +819,8 @@ def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.nd
 #   release global interpreter lock
     cdef int ier
     with nogil:
-        ier = libncomp.rcm2rgrid(lat2d, lon2d, fi, lat1d, lon1d, fo)
+        ier = libncomp.rcm2rgrid(lat2d.ncomp, lon2d.ncomp, fi.ncomp,
+                                 lat1d.ncomp, lon1d.ncomp, fo.ncomp)
 
 #   re-acquire interpreter lock
     # Check errors ier
@@ -921,7 +922,7 @@ def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.nd
     cdef int ier
     with nogil:
         ier = libncomp.rgrid2rcm(lat1d.ncomp, lon1d.ncomp, fi.ncomp,
-                                 lat2d.ncomp, lon2d, fo.ncomp)
+                                 lat2d.ncomp, lon2d.ncomp, fo.ncomp)
 
 #   re-acquire interpreter lock
     # Check errors ier
