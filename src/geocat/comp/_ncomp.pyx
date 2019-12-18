@@ -824,7 +824,7 @@ def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.nd
 #   re-acquire interpreter lock
     # Check errors ier
     if ier:
-        warnings.warn("rcm2rgrid: There is an error code: {}".format{ier},
+        warnings.warn("rcm2rgrid: There is an error code: {}".format(ier),
                       NcompWarning)
 
     if missing_inds_fi is not None and missing_inds_fi.any():
@@ -840,7 +840,9 @@ def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.nd
 
 @carrayify
 def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.ndarray lat2d_np, np.ndarray lon2d_np, msg=None):
-    """Interpolates data on a rectilinear lat/lon grid to a curvilinear grid like those used by the RCM, WRF and NARR models/datasets.
+    """_rgrid2rcm(lat1d, lon1d, fi, lat2d, lon2d, msg=None)
+
+    Interpolates data on a rectilinear lat/lon grid to a curvilinear grid like those used by the RCM, WRF and NARR models/datasets.
 
     Args:
 
@@ -924,7 +926,7 @@ def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.nd
 #   re-acquire interpreter lock
     # Check errors ier
     if ier:
-        warnings.warn("rgrid2rcm: There is an error code: {}".format{ier},
+        warnings.warn("rgrid2rcm: There is an error code: {}".format(ier),
                       NcompWarning)
 
     if missing_inds_fi is not None and missing_inds_fi.any():
