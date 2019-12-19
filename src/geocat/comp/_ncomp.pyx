@@ -805,7 +805,7 @@ def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.nd
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
         missing_inds_fi = np.isnan(fi.numpy)
         msg = get_default_fill(fi.numpy)
-	replace_fi_nans = True
+        replace_fi_nans = True
 
     set_ncomp_msg(&(fi.ncomp.msg), msg) # always set missing on fi.ncomp
 
@@ -823,9 +823,8 @@ def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.nd
 
 #   re-acquire interpreter lock
     # Check errors ier
-    if ier:
-        warnings.warn("rcm2rgrid: There is an error code: {}".format(ier),
-                      NcompWarning)
+    if ier != 0:
+        raise NcompError(f"An error occurred while calling libncomp.rcm2rgrid with error code: {ier}")
 
     if replace_fi_nans and fi.ncomp.has_missing:
         fi.numpy[missing_inds_fi] = np.nan
@@ -905,7 +904,7 @@ def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.nd
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
         missing_inds_fi = np.isnan(fi.numpy)
         msg = get_default_fill(fi.numpy)
-	replace_fi_nans = True
+        replace_fi_nans = True
 
     set_ncomp_msg(&(fi.ncomp.msg), msg) # always set missing on fi.ncomp
 
@@ -923,9 +922,8 @@ def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.nd
 
 #   re-acquire interpreter lock
     # Check errors ier
-    if ier:
-        warnings.warn("rgrid2rcm: There is an error code: {}".format(ier),
-                      NcompWarning)
+    if ier != 0:
+        raise NcompError(f"An error occurred while calling libncomp.rgrid2rcm with error code: {ier}")
 
     if replace_fi_nans and fi.ncomp.has_missing:
         fi.numpy[missing_inds_fi] = np.nan
