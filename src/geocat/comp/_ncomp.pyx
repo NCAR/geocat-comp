@@ -835,7 +835,6 @@ def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.nd
         fo_msg = fo.ncomp.msg.msg_float
     fo.numpy[fo.numpy == fo_msg] = np.nan
 
-    print(fo.numpy)
     return fo.numpy
 
 @carrayify
