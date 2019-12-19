@@ -830,11 +830,12 @@ def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.nd
         fi.numpy[missing_inds_fi] = np.nan
 
     if fo.type == libncomp.NCOMP_DOUBLE:
-        fo_msg = fo.msg.msg_double
+        fo_msg = fo.ncomp.msg.msg_double
     else:
-        fo_msg = fo.msg.msg_float
+        fo_msg = fo.ncomp.msg.msg_float
     fo.numpy[fo.numpy == fo_msg] = np.nan
 
+    print(fo.numpy)
     return fo.numpy
 
 @carrayify
@@ -929,9 +930,9 @@ def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.nd
         fi.numpy[missing_inds_fi] = np.nan
 
     if fo.type == libncomp.NCOMP_DOUBLE:
-        fo_msg = fo.msg.msg_double
+        fo_msg = fo.ncomp.msg.msg_double
     else:
-        fo_msg = fo.msg.msg_float
+        fo_msg = fo.ncomp.msg.msg_float
 
     fo.numpy[fo.numpy == fo_msg] = np.nan
 
