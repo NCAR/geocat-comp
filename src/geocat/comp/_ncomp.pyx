@@ -725,7 +725,7 @@ def _moc_globe_atl(np.ndarray lat_aux_grid_np, np.ndarray a_wvel_np, np.ndarray 
     return output.numpy
 
 @carrayify
-def _dpres_plevel(np.ndarray plev_np, np.ndarray psfc_np, np.number ptop_np, msg=None):
+def _dpres_plevel(np.ndarray plev_np, np.ndarray psfc_np, ptop_scalar=None, msg=None):
     """_dpres_plevel(plev, psfc, ptop, msg=None)
 
     Calculates the pressure layer thicknesses of a constant pressure level coordinate system.
@@ -769,7 +769,7 @@ def _dpres_plevel(np.ndarray plev_np, np.ndarray psfc_np, np.number ptop_np, msg
     """
     plev = Array.from_np(plev_np)
     psfc = Array.from_np(psfc_np)
-    ptop = Array.from_np(ptop_np)
+    ptop = Array.from_np(np.ndarray([1], buffer=ptop_scalar, dtype=ptop_scalar.dtype))
 
     replace_psfc_nans = False
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
@@ -803,9 +803,12 @@ def _dpres_plevel(np.ndarray plev_np, np.ndarray psfc_np, np.number ptop_np, msg
 
     # set the output type and missing values
     if ncomp_output_dp.type == libncomp.NCOMP_DOUBLE:
-        ncomp_output_dp_msg = ncomp_output_dp.ncomp.msg.msg_double
+        ncomp_output_dp_msg = ncomp_output_dp.msg.msg_double
     else:
-        ncomp_output_dp_msg = ncomp_output_dp.ncomp.msg.msg_float
-    ncomp_output_dp.numpy[ncomp_output_dp.numpy == ncomp_output_dp_msg] = np.nan
+        ncomp_output_dp_msg = ncomp_output_dp.msg.msg_float
 
-    return ncomp_output_dp.numpy
+    # Convert ncomp_output to np.ndarray
+    output_dp = Array.from_ncomp(ncomp_output_dp)
+    output_dp.numpy[output_dp.numpy == ncomp_output_dp_msg] = np.nan
+
+    return output_dp.numpy
