@@ -786,43 +786,43 @@ def _rcm2points(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.n
     cdef long i
     # Set output type and dimensions. Double if `fi` is double, otherwise float.
     if fi.type == libncomp.NCOMP_DOUBLE:
-	fo_dtype = np.float64
+        fo_dtype = np.float64
     else:
-	fo_dtype = np.float32
+        fo_dtype = np.float32
     cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat1d.shape[0], lon1d.shape[0]]), dtype=fo_dtype)
 
     replace_fi_nans = False
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
-	missing_inds_fi = np.isnan(fi.numpy)
-	msg = get_default_fill(fi.numpy)
-	replace_fi_nans = True
+        missing_inds_fi = np.isnan(fi.numpy)
+        msg = get_default_fill(fi.numpy)
+        replace_fi_nans = True
 
     set_ncomp_msg(&(fi.ncomp.msg), msg) # always set missing on fi.ncomp
 
     if replace_fi_nans and missing_inds_fi.any():
-	fi.ncomp.has_missing = 1
-	fi.numpy[missing_inds_fi] = msg
+        fi.ncomp.has_missing = 1
+        fi.numpy[missing_inds_fi] = msg
 
     fo = Array.from_np(fo_np)
 
     #	release global interpreter lock
     cdef int ier
     with nogil:
-	ier = libncomp.rcm2points(lat2d.ncomp, lon2d.ncomp, fi.ncomp,
-				  lat1d.ncomp, lon1d.ncomp, fo.ncomp, opt)
+        ier = libncomp.rcm2points(lat2d.ncomp, lon2d.ncomp, fi.ncomp,
+                                  lat1d.ncomp, lon1d.ncomp, fo.ncomp, opt)
 
     #	re-acquire interpreter lock
     # Check errors ier
     if ier != 0:
-	raise NcompError(f"An error occurred while calling libncomp.rcm2points with error code: {ier}")
+        raise NcompError(f"An error occurred while calling libncomp.rcm2points with error code: {ier}")
 
     if replace_fi_nans and fi.ncomp.has_missing:
-	fi.numpy[missing_inds_fi] = np.nan
+        fi.numpy[missing_inds_fi] = np.nan
 
     if fo.type == libncomp.NCOMP_DOUBLE:
-	fo_msg = fo.ncomp.msg.msg_double
+        fo_msg = fo.ncomp.msg.msg_double
     else:
-	fo_msg = fo.ncomp.msg.msg_float
+        fo_msg = fo.ncomp.msg.msg_float
     fo.numpy[fo.numpy == fo_msg] = np.nan
 
     return fo.numpy
