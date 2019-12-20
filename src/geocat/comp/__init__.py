@@ -668,46 +668,44 @@ def rcm2points(lat2d, lon2d, fi, lat1dPoints, lon1dPoints, opt=0, msg=None, meta
 
     # Basic sanity checks
     if lat2d.shape[0] != lon2d.shape[0] or lat2d.shape[1] != lon2d.shape[1]:
-	raise DimensionError("ERROR rcm2points: The input lat/lon grids must be the same size !")
+        raise DimensionError("ERROR rcm2points: The input lat/lon grids must be the same size !")
 
     if lat1dPoints.shape[0] != lon1dPoints.shape[0]:
-	raise DimensionError("ERROR rcm2points: The output lat/lon grids must be same size !")
+        raise DimensionError("ERROR rcm2points: The output lat/lon grids must be same size !")
 
     if lat2d.shape[0] < 2 or lon2d.shape[0] < 2 or lat2d.shape[1] < 2 or lon2d.shape[1] < 2:
-	raise DimensionError("ERROR rcm2points: The input/output lat/lon grids must have at least 2 elements !")
+        raise DimensionError("ERROR rcm2points: The input/output lat/lon grids must have at least 2 elements !")
 
     if fi.ndim < 2:
-	raise DimensionError("ERROR rcm2points: fi must be at least two dimensions !\n")
+        raise DimensionError("ERROR rcm2points: fi must be at least two dimensions !\n")
 
     if fi.shape[fi.ndim - 2] != lat2d.shape[0] or fi.shape[fi.ndim - 1] != lon2d.shape[1]:
-	raise DimensionError("ERROR rcm2points: The rightmost dimensions of fi must be (nlat2d x nlon2d),"
-			      "where nlat2d and nlon2d are the size of the lat2d/lon2d arrays !")
+        raise DimensionError("ERROR rcm2points: The rightmost dimensions of fi must be (nlat2d x nlon2d),"
+			     "where nlat2d and nlon2d are the size of the lat2d/lon2d arrays !")
 
     if isinstance(lat2d, xr.DataArray):
-	lat2d = lat2d.values
-
+        lat2d = lat2d.values
     if isinstance(lon2d, xr.DataArray):
-	lon2d = lon2d.values
-
+        lon2d = lon2d.values
     if not isinstance(fi, xr.DataArray):
-	fi = xr.DataArray(fi)
+        fi = xr.DataArray(fi)
 
     # ensure lat1d and lon1d are numpy.ndarrays
     if isinstance(lat1dPoints, xr.DataArray):
-	lat1dPoints = lat1dPoints.values
+        lat1dPoints = lat1dPoints.values
     if isinstance(lon1dPoints, xr.DataArray):
-	lon1dPoints = lon1dPoints.values
+        lon1dPoints = lon1dPoints.values
 
     fi_data = fi.data
 
     if isinstance(fi_data, np.ndarray):
-	fo = _ncomp._rcm2points(lat2d, lon2d, fi_data, lat1dPoints, lon1dPoints, opt, msg)
+        fo = _ncomp._rcm2points(lat2d, lon2d, fi_data, lat1dPoints, lon1dPoints, opt, msg)
     else:
-	raise TypeError
+        raise TypeError
 
     if meta and isinstance(input, xr.DataArray):
-	pass	 # TODO: Retaining possible metadata might be revised in the future
+        pass	 # TODO: Retaining possible metadata might be revised in the future
     else:
-	fo = xr.DataArray(fo)
+        fo = xr.DataArray(fo)
 
     return fo

@@ -726,7 +726,7 @@ def _moc_globe_atl(np.ndarray lat_aux_grid_np, np.ndarray a_wvel_np, np.ndarray 
 
 
 @carrayify
-def _rcm2points(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.ndarray lat1d_np, np.ndarray lon1d_np, opt=0, msg=None):
+def _rcm2points(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.ndarray lat1d_np, np.ndarray lon1d_np, int opt=0, msg=None):
     """_rcm2points(lat2d, lon2d, fi, lat1d, lon1d, msg=None)
 
     Interpolates data on a curvilinear grid (i.e. RCM, WRF, NARR) to an unstructured grid.
@@ -789,7 +789,7 @@ def _rcm2points(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.n
         fo_dtype = np.float64
     else:
         fo_dtype = np.float32
-    cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat1d.shape[0], lon1d.shape[0]]), dtype=fo_dtype)
+    cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat1d.shape[0]]), dtype=fo_dtype) # or lon1d.shape[0]
 
     replace_fi_nans = False
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
