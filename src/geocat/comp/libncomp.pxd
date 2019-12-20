@@ -103,3 +103,6 @@ cdef extern from "ncomp/wrapper.h":
     int moc_globe_atl( const ncomp_array *, const ncomp_array *, const ncomp_array *,
                       const ncomp_array *, const ncomp_array *, const ncomp_array *,
                       ncomp_array ** ) nogil;
+
+    int dpres_plevel( const ncomp_array *, const ncomp_array *, const ncomp_array *,
+                      ncomp_array ** ) nogil;
