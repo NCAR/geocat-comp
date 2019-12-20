@@ -30,7 +30,12 @@ class DimensionError(Error):
      """Exception raised when the arguments of GeoCAT-comp functions argument
      has a mismatch of the necessary dimensionality."""
      pass
- 
+
+class AttrsError(Error):
+     """Exception raised when the arguments of GeoCAT-comp functions argument
+     has a mismatch of attributes with other arguments."""
+     pass
+
 def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
     """Interpolates a regular grid to a rectilinear one using bi-linear
     interpolation.
@@ -586,66 +591,72 @@ def moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak,
 
     return out_arr
 
-def dpres_plevel(plev, psfc, ptop=None, meta=False):
+def dpres_plevel(plev, psfc, ptop=None, msg=None, meta=False):
      """Calculates the pressure layer thicknesses of a constant pressure level coordinate system.
 
      Args:
 
- 	plev (:class:`numpy.ndarray`):
- 	    A one dimensional array containing the constant pressure levels. May be 
-            in ascending or descending order. Must have the same units as `psfc`.
+	plev (:class:`numpy.ndarray`):
+	    A one dimensional array containing the constant pressure levels. May be
+	    in ascending or descending order. Must have the same units as `psfc`.
 
- 	psfc (:class:`numpy.ndarray`):
-            A scalar or an array of up to three dimensions containing the surface 
-            pressure data in Pa or hPa (mb). The rightmost dimensions must be latitude 
-            and longitude. Must have the same units as `plev`.
+	psfc (:class:`numpy.ndarray`):
+	    A scalar or an array of up to three dimensions containing the surface
+	    pressure data in Pa or hPa (mb). The rightmost dimensions must be latitude
+	    and longitude. Must have the same units as `plev`.
 
- 	ptop (:class:`numpy.number`):
-            A scalar specifying the top of the column. ptop should be <= min(plev). 
-            Must have the same units as `plev`.
+	ptop (:class:`numpy.number`):
+	    A scalar specifying the top of the column. ptop should be <= min(plev).
+	    Must have the same units as `plev`.
 
- 	meta (:obj:`bool`):
- 	    Set to False to disable metadata; default is False.
+	msg (:obj:`numpy.number`):
+	    A numpy scalar value that represent a missing value in fi.
+	    This argument allows a user to use a missing value scheme
+	    other than NaN or masked arrays, similar to what NCL allows.
+
+	meta (:obj:`bool`):
+	    Set to False to disable metadata; default is False.
 
      Returns:
- 	:class:`numpy.ndarray`: If psfc is a scalar the return variable will be a 
-        one-dimensional array the same size as `plev`; if `psfc` is two-dimensional 
-        [e.g. (lat,lon)] or three-dimensional [e.g. (time,lat,lon)] then the return 
-        array will have an additional level dimension: (lev,lat,lon) or (time,lev,lat,lon). 
-        The returned type will be double if psfc is double, float otherwise.
+	:class:`numpy.ndarray`: If psfc is a scalar the return variable will be a
+	one-dimensional array the same size as `plev`; if `psfc` is two-dimensional
+	[e.g. (lat,lon)] or three-dimensional [e.g. (time,lat,lon)] then the return
+	array will have an additional level dimension: (lev,lat,lon) or (time,lev,lat,lon).
+	The returned type will be double if `psfc` is double, float otherwise.
 
      Description:
-        Calculates the layer pressure thickness of a constant pressure level system. It 
-        is analogous to `dpres_hybrid_ccm` for hybrid coordinates. At each grid point the 
-        sum of the pressure thicknesses equates to [psfc-ptop]. At each grid point, the 
-        returned values above `ptop` and below `psfc` will be set to the missing value of `psfc`. 
-        If there is no missing value for `psfc` then the missing value will be set to the default 
-        for float or double appropriately. If `ptop` or `psfc` is between plev levels 
-        then the layer thickness is modifed accordingly. If `psfc` is set to a missing value, all 
-        layer thicknesses are set to the appropriate missing value.
+	Calculates the layer pressure thickness of a constant pressure level system. It
+	is analogous to `dpres_hybrid_ccm` for hybrid coordinates. At each grid point the
+	sum of the pressure thicknesses equates to [psfc-ptop]. At each grid point, the
+	returned values above `ptop` and below `psfc` will be set to the missing value of `psfc`.
+	If there is no missing value for `psfc` then the missing value will be set to the default
+	for float or double appropriately. If `ptop` or `psfc` is between plev levels
+	then the layer thickness is modifed accordingly. If `psfc` is set to a missing value, all
+	layer thicknesses are set to the appropriate missing value.
 
-        The primary purpose of this function is to return layer thicknesses to be used to 
-        weight observations for integrations.
+	The primary purpose of this function is to return layer thicknesses to be used to
+	weight observations for integrations.
 
      Examples:
 
  	Example 1: Using dpres_plevel with :class:`xarray.DataArray` input
 
- 	.. code-block:: python
+	.. code-block:: python
 
- 	    import numpy as np
- 	    import xarray as xr
- 	    import geocat.comp
+	    import numpy as np
+	    import xarray as xr
+	    import geocat.comp
 
- 	    # Open a netCDF data file using xarray default engine and load the data stream
- 	    ds = xr.open_dataset("./ruc.nc")
+	    # Open a netCDF data file using xarray default engine and load the data stream
+	    ds = xr.open_dataset("./SOME_NETCDF_FILE.nc")
 
- 	    # [INPUT] Grid & data info on the source curvilinear
- 	    ht_curv=ds.DIST_236_CBL[:]
- 	    lat2D_curv=ds.gridlat_236[:]
- 	    lon2D_curv=ds.gridlon_236[:]
+	    # [INPUT] Grid & data info on the source
+	    psfc = ds.PS
+	    plev = ds.LEV
+	    ptop = 0.0
 
- 	    result = geocat.comp.dpres_plevel(lat2D_curv, lon2D_curv, ht_curv, newlat1D_points, newlon1D_points)
+	    # Call the function
+	    result_dp = geocat.comp.dpres_plevel(plev, psfc, ptop)
 
     """
 
@@ -654,35 +665,27 @@ def dpres_plevel(plev, psfc, ptop=None, meta=False):
         raise DimensionError("ERROR dpres_plevel: The 'psfc' array must be a scalar or be a 2 or 3 dimensional array with right most dimensions lat x lon !")
     if plev.ndim != 1:
         raise DimensionError("ERROR dpres_plevel: The 'plev' array must be 1 dimensional array !")
+    if not isinstance(ptop, np.generic):
+        raise DimensionError("ERROR dpres_plevel: The 'ptop' value must be a scalar !")
     if ptop > min(plev):
-        raise DimensionError("ERROR dpres_plevel: The 'ptop' value must be <= min(plev) !")
-     
+        raise ValueError("ERROR dpres_plevel: The 'ptop' value must be <= min(plev) !")
+    if isinstance(plev, xr.DataArray) and isinstance(psfc, xr.DataArray):
+        if plev.attrs["units"] != psfc.attrs["units"]:
+            raise AttrsError("ERROR dpres_plevel: Units of 'plev' and 'psfc' needs to match !")
+
     if isinstance(plev, xr.DataArray):
         plev = plev.values
     if isinstance(psfc, xr.DataArray):
         psfc = psfc.values
     if ptop is None:
         ptop = min(plev)
-        
-     if not isinstance(fi, xr.DataArray):
-         fi = xr.DataArray(fi)
 
-      # ensure lat1d and lon1d are numpy.ndarrays
-     if isinstance(lat1dPoints, xr.DataArray):
-         lat1dPoints = lat1dPoints.values
-     if isinstance(lon1dPoints, xr.DataArray):
-         lon1dPoints = lon1dPoints.values
+    # call the ncomp 'dpres_plevel' function
+    result_dp = _ncomp._dpres_plevel(plev, psfc, ptop, msg)
 
-      fi_data = fi.data
+    if meta and isinstance(input, xr.DataArray):
+        pass	 # TODO: Retaining possible metadata might be revised in the future
+    else:
+        result_dp = xr.DataArray(result_dp)
 
-      if isinstance(fi_data, np.ndarray):
-          fo = _ncomp._dpres_plevel(lat2d, lon2d, fi_data, lat1dPoints, lon1dPoints, opt, msg)
-     else:
-         raise TypeError
-
-      if meta and isinstance(input, xr.DataArray):
-         pass	 # TODO: Retaining possible metadata might be revised in the future
-     else:
-         fo = xr.DataArray(fo)
-
-      return fo
+    return result_dp
