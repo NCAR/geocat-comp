@@ -16,4 +16,4 @@ GeoCAT-comp routines
    geocat.comp.eofunc_ts
    geocat.comp.ndpolyfit
    geocat.comp.ndpolyval
-
+   geocat.comp.dpres_plevel
