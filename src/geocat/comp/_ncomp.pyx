@@ -769,7 +769,7 @@ def _dpres_plevel(np.ndarray plev_np, np.ndarray psfc_np, ptop_scalar=None, msg=
     """
     plev = Array.from_np(plev_np)
     psfc = Array.from_np(psfc_np)
-    ptop = Array.from_np(np.ndarray([1], buffer=ptop_scalar, dtype=ptop_scalar.dtype))
+    ptop = Array.from_np(np.ndarray([1], buffer=ptop_scalar, dtype=type(ptop_scalar)))
 
     replace_psfc_nans = False
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
