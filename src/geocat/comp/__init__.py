@@ -696,7 +696,7 @@ def rcm2points(lat2d, lon2d, fi, lat1dPoints, lon1dPoints, opt=0, msg=None, meta
     if isinstance(lon1dPoints, xr.DataArray):
         lon1dPoints = lon1dPoints.values
 
-    fi_data = fi.data
+    fi_data = fi.values
 
     if isinstance(fi_data, np.ndarray):
         fo = _ncomp._rcm2points(lat2d, lon2d, fi_data, lat1dPoints, lon1dPoints, opt, msg)
