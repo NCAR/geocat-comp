@@ -724,6 +724,94 @@ def _moc_globe_atl(np.ndarray lat_aux_grid_np, np.ndarray a_wvel_np, np.ndarray 
     return output.numpy
 
 @carrayify
+def _dpres_plevel(np.ndarray plev_np, np.ndarray psfc_np, ptop_scalar, msg=None):
+    """_dpres_plevel(plev, psfc, ptop, msg=None)
+
+    Calculates the pressure layer thicknesses of a constant pressure level coordinate system.
+
+ 	plev (:class:`numpy.ndarray`):
+ 	    A one dimensional array containing the constant pressure levels. May be
+            in ascending or descending order. Must have the same units as `psfc`.
+
+ 	psfc (:class:`numpy.ndarray`):
+            A scalar or an array of up to three dimensions containing the surface
+            pressure data in Pa or hPa (mb). The rightmost dimensions must be latitude
+            and longitude. Must have the same units as `plev`.
+
+ 	ptop (:class:`numpy.number`):
+            A scalar specifying the top of the column. ptop should be <= min(plev).
+            Must have the same units as `plev`.
+
+ 	meta (:obj:`bool`):
+ 	    Set to False to disable metadata; default is False.
+
+     Returns:
+ 	:class:`numpy.ndarray`: If psfc is a scalar the return variable will be a
+        one-dimensional array the same size as `plev`; if `psfc` is two-dimensional
+        [e.g. (lat,lon)] or three-dimensional [e.g. (time,lat,lon)] then the return
+        array will have an additional level dimension: (lev,lat,lon) or (time,lev,lat,lon).
+        The returned type will be double if psfc is double, float otherwise.
+
+     Description:
+        Calculates the layer pressure thickness of a constant pressure level system. It
+        is analogous to `dpres_hybrid_ccm` for hybrid coordinates. At each grid point the
+        sum of the pressure thicknesses equates to [psfc-ptop]. At each grid point, the
+        returned values above `ptop` and below `psfc` will be set to the missing value of `psfc`.
+        If there is no missing value for `psfc` then the missing value will be set to the default
+        for float or double appropriately. If `ptop` or `psfc` is between plev levels
+        then the layer thickness is modifed accordingly. If `psfc` is set to a missing value, all
+        layer thicknesses are set to the appropriate missing value.
+
+        The primary purpose of this function is to return layer thicknesses to be used to
+        weight observations for integrations.
+
+    """
+    plev = Array.from_np(plev_np)
+    psfc = Array.from_np(psfc_np)
+    ptop = Array.from_np(np.ndarray([1], buffer=ptop_scalar, dtype=type(ptop_scalar)))
+
+    replace_psfc_nans = False
+    if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
+        missing_inds_psfc = np.isnan(psfc.numpy)
+        msg = get_default_fill(psfc.numpy)
+        replace_psfc_nans = True
+    else:
+        missing_inds_psfc = (psfc.numpy == msg)
+
+    set_ncomp_msg(&(psfc.ncomp.msg), msg) # always set missing on psfc.ncomp
+
+    if replace_psfc_nans and missing_inds_psfc.any():
+        psfc.ncomp.has_missing = 1
+        psfc.numpy[missing_inds_psfc] = msg
+
+    # Allocate output ncomp_array (memory associated is allcoated within libncomp)
+    cdef libncomp.ncomp_array* ncomp_output_dp = NULL
+
+    # release global interpreter lock
+    cdef int ier
+    with nogil:
+        ier = libncomp.dpres_plevel(plev.ncomp, psfc.ncomp, ptop.ncomp,
+                                    &ncomp_output_dp)
+    # Check errors ier
+    if ier != 0:
+        raise NcompError(f"An error occurred while calling libncomp.dpres_plevel with error code: {ier}")
+
+    # reset the missing values of input 'psfc' to the original missing value (NaN)
+    if replace_psfc_nans and psfc.ncomp.has_missing:
+        psfc.numpy[missing_inds_psfc] = np.nan
+
+    # set the output type and missing values
+    if ncomp_output_dp.type == libncomp.NCOMP_DOUBLE:
+        ncomp_output_dp_msg = ncomp_output_dp.msg.msg_double
+    else:
+        ncomp_output_dp_msg = ncomp_output_dp.msg.msg_float
+
+    # Convert ncomp_output to np.ndarray
+    output_dp = Array.from_ncomp(ncomp_output_dp)
+    output_dp.numpy[output_dp.numpy == ncomp_output_dp_msg] = np.nan
+
+    return output_dp.numpy
+
 def _rcm2points(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.ndarray lat1d_np, np.ndarray lon1d_np, int opt=0, msg=None):
     """_rcm2points(lat2d, lon2d, fi, lat1d, lon1d, msg=None)
 
