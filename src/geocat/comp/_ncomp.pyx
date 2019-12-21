@@ -812,6 +812,109 @@ def _dpres_plevel(np.ndarray plev_np, np.ndarray psfc_np, ptop_scalar, msg=None)
 
     return output_dp.numpy
 
+def _rcm2points(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.ndarray lat1d_np, np.ndarray lon1d_np, int opt=0, msg=None):
+    """_rcm2points(lat2d, lon2d, fi, lat1d, lon1d, msg=None)
+
+    Interpolates data on a curvilinear grid (i.e. RCM, WRF, NARR) to an unstructured grid.
+
+    Args:
+	lat2d (:class:`numpy.ndarray`):
+	    A two-dimensional array that specifies the latitudes locations
+	    of fi. The latitude order must be south-to-north.
+
+	lon2d (:class:`numpy.ndarray`):
+	    A two-dimensional array that specifies the longitude locations
+	    of fi. The latitude order must be west-to-east.
+
+	fi (:class:`numpy.ndarray`):
+	    A multi-dimensional array to be interpolated. The rightmost two
+	    dimensions (latitude, longitude) are the dimensions to be interpolated.
+
+	lat1dPoints (:class:`numpy.ndarray`):
+	    A one-dimensional array that specifies the latitude coordinates of
+	    the output locations.
+
+	lon1dPoints (:class:`numpy.ndarray`):
+	    A one-dimensional array that specifies the longitude coordinates of
+	    the output locations.
+
+	opt (:obj:`numpy.number`):
+	    opt=0 or 1 means use an inverse distance weight interpolation.
+	    opt=2 means use a bilinear interpolation.
+
+	msg (:obj:`numpy.number`):
+	    A numpy scalar value that represent a missing value in fi.
+	    This argument allows a user to use a missing value scheme
+	    other than NaN or masked arrays, similar to what NCL allows.
+
+    Returns:
+	:class:`numpy.ndarray`: The interpolated grid. A multi-dimensional array
+	of the same size as fi except that the rightmost dimension sizes have been
+	replaced by the number of coordinate pairs (lat1dPoints, lon1dPoints).
+	Double if fi is double, otherwise float.
+
+    Description:
+	Interpolates data on a curvilinear grid, such as those used by the RCM (Regional Climate Model),
+	WRF (Weather Research and Forecasting) and NARR (North American Regional Reanalysis)
+	models/datasets to an unstructured grid. All of these have latitudes that are oriented south-to-north.
+
+	A inverse distance squared algorithm is used to perform the interpolation.
+
+	Missing values are allowed and no extrapolation is performed.
+  
+  
+    """
+    lat2d = Array.from_np(lat2d_np)
+    lon2d = Array.from_np(lon2d_np)
+    fi	  = Array.from_np(fi_np)
+    lat1d = Array.from_np(lat1d_np)
+    lon1d = Array.from_np(lon1d_np)
+
+    cdef long i
+    # Set output type and dimensions. Double if `fi` is double, otherwise float.
+    if fi.type == libncomp.NCOMP_DOUBLE:
+        fo_dtype = np.float64
+    else:
+        fo_dtype = np.float32
+    cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat1d.shape[0]]), dtype=fo_dtype) # or lon1d.shape[0]
+    
+    replace_fi_nans = False
+    if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
+        missing_inds_fi = np.isnan(fi.numpy)
+        msg = get_default_fill(fi.numpy)
+        replace_fi_nans = True
+
+    set_ncomp_msg(&(fi.ncomp.msg), msg) # always set missing on fi.ncomp
+
+    if replace_fi_nans and missing_inds_fi.any():
+        fi.ncomp.has_missing = 1
+        fi.numpy[missing_inds_fi] = msg
+
+    fo = Array.from_np(fo_np)
+
+    #	release global interpreter lock
+    cdef int ier
+    with nogil:
+        ier = libncomp.rcm2points(lat2d.ncomp, lon2d.ncomp, fi.ncomp,
+                                  lat1d.ncomp, lon1d.ncomp, fo.ncomp, opt)
+
+    #	re-acquire interpreter lock
+    # Check errors ier
+    if ier != 0:
+        raise NcompError(f"An error occurred while calling libncomp.rcm2points with error code: {ier}")
+    
+    if replace_fi_nans and fi.ncomp.has_missing:
+        fi.numpy[missing_inds_fi] = np.nan
+
+    if fo.type == libncomp.NCOMP_DOUBLE:
+        fo_msg = fo.ncomp.msg.msg_double
+    else:
+        fo_msg = fo.ncomp.msg.msg_float
+    fo.numpy[fo.numpy == fo_msg] = np.nan
+
+    return fo.numpy
+
+@carrayify
 def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.ndarray lat1d_np, np.ndarray lon1d_np, msg=None):
     """_rcm2rgrid(lat2d, lon2d, fi, lat1d, lon1d, msg=None)
 
@@ -873,11 +976,11 @@ def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.nd
 	sometimes, there are small gaps in the interpolated grids. Any interior points not
 	interpolated in the initial interpolation pass will be filled using linear interpolation.
         In some cases, edge points may not be filled.
-
     """
+    
     lat2d = Array.from_np(lat2d_np)
     lon2d = Array.from_np(lon2d_np)
-    fi    = Array.from_np(fi_np)
+    fi	  = Array.from_np(fi_np)
     lat1d = Array.from_np(lat1d_np)
     lon1d = Array.from_np(lon1d_np)
 

@@ -110,3 +110,6 @@ cdef extern from "ncomp/wrapper.h":
 
     int dpres_plevel( const ncomp_array *, const ncomp_array *, const ncomp_array *,
                       ncomp_array ** ) nogil;
+
+    int rcm2points(const ncomp_array* lat2d, const ncomp_array* lon2d, const ncomp_array* fi,
+                   const ncomp_array* lat1d, const ncomp_array* lon1d, ncomp_array* fo, int) nogil;
