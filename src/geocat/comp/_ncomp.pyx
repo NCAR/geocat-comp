@@ -725,7 +725,7 @@ def _moc_globe_atl(np.ndarray lat_aux_grid_np, np.ndarray a_wvel_np, np.ndarray 
     return output.numpy
 
 @carrayify
-def _dpres_plevel(np.ndarray plev_np, np.ndarray psfc_np, ptop_scalar=None, msg=None):
+def _dpres_plevel(np.ndarray plev_np, np.ndarray psfc_np, ptop_scalar, msg=None):
     """_dpres_plevel(plev, psfc, ptop, msg=None)
 
     Calculates the pressure layer thicknesses of a constant pressure level coordinate system.
