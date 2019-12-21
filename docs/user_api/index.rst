@@ -17,3 +17,5 @@ GeoCAT-comp routines
    geocat.comp.ndpolyfit
    geocat.comp.ndpolyval
    geocat.comp.dpres_plevel
+   geocat.comp.rcm2rgrid
+   geocat.comp.rgrid2rcm
