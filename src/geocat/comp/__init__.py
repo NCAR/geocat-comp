@@ -31,7 +31,7 @@ class DimensionError(Error):
      has a mismatch of the necessary dimensionality."""
      pass
 
-class AttrsError(Error):
+class AttributeError(Error):
      """Exception raised when the arguments of GeoCAT-comp functions argument
      has a mismatch of attributes with other arguments."""
      pass
@@ -670,7 +670,7 @@ def dpres_plevel(plev, psfc, ptop=None, msg=None, meta=False):
         raise DimensionError("ERROR dpres_plevel: The 'ptop' value must be a scalar !")
     if isinstance(plev, xr.DataArray) and isinstance(psfc, xr.DataArray):
         if plev.attrs["units"] != psfc.attrs["units"]:
-            raise AttrsError("ERROR dpres_plevel: Units of 'plev' and 'psfc' needs to match !")
+            raise AttributeError("ERROR dpres_plevel: Units of 'plev' and 'psfc' needs to match !")
 
     if isinstance(plev, xr.DataArray):
         plev = plev.values
