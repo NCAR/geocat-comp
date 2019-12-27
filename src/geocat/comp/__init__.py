@@ -36,6 +36,11 @@ class AttributeError(Error):
      has a mismatch of attributes with other arguments."""
      pass
 
+class MetaError(Error):
+     """Exception raised when the support for the retention of metadata is not
+     supported."""
+     pass
+
 def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
     """Interpolates a regular grid to a rectilinear one using bi-linear
     interpolation.
@@ -406,8 +411,7 @@ def rcm2rgrid(lat2d, lon2d, fi, lat1d, lon1d, msg=None, meta=False):
         raise TypeError
 
     if meta and isinstance(input, xr.DataArray):
-        pass
-        # TODO: Retaining possible metadata might be revised in the future
+        raise MetaError("ERROR rcm2rgrid: retention of metadata is not yet supported !")
     else:
         fo = xr.DataArray(fo)
 
@@ -547,8 +551,7 @@ def rgrid2rcm(lat1d, lon1d, fi, lat2d, lon2d, msg=None, meta=False):
         raise TypeError
 
     if meta and isinstance(input, xr.DataArray):
-        pass
-        # TODO: Retaining possible metadata might be revised in the future
+        raise MetaError("ERROR rgrid2rcm: retention of metadata is not yet supported !")
     else:
         fo = xr.DataArray(fo)
 
@@ -874,8 +877,7 @@ def moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak,
                                     tlat, rmlak, msg)
 
     if meta and isinstance(input, xr.DataArray):
-        pass
-        # TODO: Retaining possible metadata might be revised in the future
+        raise MetaError("ERROR moc_globe_atl: retention of metadata is not yet supported !")
     else:
         out_arr = xr.DataArray(out_arr)
 
@@ -948,7 +950,7 @@ def dpres_plevel(plev, psfc, ptop=None, msg=None, meta=False):
             # Call the function
             result_dp = geocat.comp.dpres_plevel(plev, psfc, ptop)
     """
-    
+
     if isinstance(psfc, np.ndarray):
         if psfc.ndim > 3:
             raise DimensionError("ERROR dpres_plevel: The 'psfc' array must be a scalar or be a 2 or 3 dimensional array with right most dimensions lat x lon !")
@@ -979,6 +981,8 @@ def dpres_plevel(plev, psfc, ptop=None, msg=None, meta=False):
     result_dp = _ncomp._dpres_plevel(plev, psfc, ptop, msg)
 
     if meta and isinstance(input, xr.DataArray):
+        raise MetaError("ERROR dpres_plevel: retention of metadata is not yet supported !")
+
         pass     # TODO: Retaining possible metadata might be revised in the future
     else:
         result_dp = xr.DataArray(result_dp)
@@ -1101,7 +1105,159 @@ def rcm2points(lat2d, lon2d, fi, lat1dPoints, lon1dPoints, opt=0, msg=None, meta
         raise TypeError
 
     if meta and isinstance(input, xr.DataArray):
-        pass	 # TODO: Retaining possible metadata might be revised in the future
+        raise MetaError("ERROR rcm2points: retention of metadata is not yet supported !")
+    else:
+        fo = xr.DataArray(fo)
+
+    return fo
+
+
+def linint2_points(fi, xo, yo, icycx, msg=None, meta=False, xi=None, yi=None)
+    """Interpolates from a rectilinear grid to an unstructured grid or locations using bilinear interpolation.
+
+    Args:
+
+        fi (:class:`xarray.DataArray` or :class:`numpy.ndarray`):
+            An array of two or more dimensions. The two rightmost
+            dimensions (nyi x nxi) are the dimensions to be used in
+            the interpolation. If missing values are present, the
+            value of `msg` must be set appropriately.
+
+        xo (:class:`xarray.DataArray` or :class:`numpy.ndarray`):
+            A One-dimensional array that specifies the X (longitude)
+            coordinates of the unstructured grid.
+
+        yo (:class:`xarray.DataArray` or :class:`numpy.ndarray`):
+            A One-dimensional array that specifies the Y (latitude)
+            coordinates of the unstructured grid. It must be the same
+            length as `xo`.
+
+        icycx (:obj:`bool`):
+            An option to indicate whether the rightmost dimension of fi
+            is cyclic. This should be set to True only if you have
+            global data, but your longitude values don't quite wrap all
+            the way around the globe. For example, if your longitude
+            values go from, say, -179.75 to 179.75, or 0.5 to 359.5,
+            then you would set this to True.
+
+        msg (:obj:`numpy.number`):
+            A numpy scalar value that represent a missing value in fi.
+            This argument allows a user to use a missing value scheme
+            other than NaN or masked arrays, similar to what NCL allows.
+
+        meta (:obj:`bool`):
+            Set to True for metadata; default is False.
+
+        xi (:class:`numpy.ndarray`):
+            A strictly monotonically increasing array that specifies
+            the X [longitude] coordinates of the `fi` array.
+
+        yi (:class:`numpy.ndarray`):
+            A strictly monotonically increasing array that specifies
+            the Y [latitude] coordinates of the `fi` array.
+
+    Returns:
+	:class:`numpy.ndarray`: The returned value will have the same
+        dimensions as `fi`, except for the rightmost dimension which will
+        have the same dimension size as the length of `yo` and `xo`. The
+        return type will be double if fi is double, and float otherwise.
+
+    Description:
+        The inint2_points uses bilinear interpolation to interpolate from
+        a rectilinear grid to an unstructured grid.
+
+        If missing values are present, then linint2_points will perform the
+        piecewise linear interpolation at all points possible, but will return
+        missing values at coordinates which could not be used. If one or more
+        of the four closest grid points to a particular (xo,yo) coordinate
+        pair are missing, then the return value for this coordinate pair will
+        be missing.
+
+        If the user inadvertently specifies output coordinates (xo,yo) that
+        are outside those of the input coordinates (xi,yi), the output value
+        at this coordinate pair will be set to missing as no extrapolation
+        is performed.
+
+        linint2_points is different from linint2 in that `xo` and `yo` are
+        coordinate pairs, and need not be monotonically increasing. It is
+        also different in the dimensioning of the return array.
+
+        This function could be used if the user wanted to interpolate gridded
+        data to, say, the location of rawinsonde sites or buoy/xbt locations.
+
+        Warning: if xi contains longitudes, then the xo values must be in the
+        same range. In addition, if the xi values span 0 to 360, then the xo
+        values must also be specified in this range (i.e. -180 to 180 will not work).
+
+    Examples:
+
+        Example 1: Using linint2_points with :class:`xarray.DataArray` input
+
+        .. code-block:: python
+
+            import numpy as np
+            import xarray as xr
+            import geocat.comp
+
+            fi_np = np.random.rand(30, 80)  # random 30x80 array
+
+            # xi and yi do not have to be equally spaced, but they are
+            # in this example
+            xi = np.arange(80)
+            yi = np.arange(30)
+
+            # create target coordinate arrays, in this case use the same
+            # min/max values as xi and yi, but with different spacing
+            xo = np.linspace(xi.min(), xi.max(), 100)
+            yo = np.linspace(yi.min(), yi.max(), 50)
+
+            # create :class:`xarray.DataArray` and chunk it using the
+            # full shape of the original array.
+            # note that xi and yi are attached as coordinate arrays
+            fi = xr.DataArray(fi_np,
+                              dims=['lat', 'lon'],
+                              coords={'lat': yi, 'lon': xi}
+                             ).chunk(fi_np.shape)
+
+            fo = geocat.comp.linint2_points(fi, xo, yo, 0)
+
+    """
+
+    # Basic sanity checks
+    if not isinstance(fi, xr.DataArray):
+        fi = xr.DataArray(fi)
+        if xi is None or yi is None:
+            raise CoordinateError("linint2_points: arguments xi and yi must be passed"
+                                  " explicitly if fi is not an xarray.DataArray !")
+    if xo.shape[0] != yo.shape[0]:
+        raise DimensionError("ERROR linint2_points: The xo and yo must be the same size !")
+    if fi.ndim < 2:
+        raise DimensionError("ERROR linint2_points: fi must be at least two dimensions !\n")
+
+    if xi is None:
+        xi = fi.coords[fi.dims[-1]].values
+    elif isinstance(xi, xr.DataArray):
+        xi = xi.values
+
+    if yi is None:
+        yi = fi.coords[fi.dims[-2]].values
+    elif isinstance(yi, xr.DataArray):
+        yi = yi.values
+
+    if isinstance(xo, xr.DataArray):
+        xo = xo.values
+    if isinstance(yo, xr.DataArray):
+        yo = yo.values
+
+    fi_data = fi.data
+
+    if isinstance(fi_data, np.ndarray):
+        fo = _ncomp._linint2_points(xi, yi, fi_data, xo, yo, icycx, msg)
+    else:
+        raise TypeError
+
+    if meta and isinstance(input, xr.DataArray):
+        raise MetaError("ERROR linint2_points: retention of metadata is not yet supported !")
     else:
         fo = xr.DataArray(fo)
 

@@ -113,3 +113,7 @@ cdef extern from "ncomp/wrapper.h":
 
     int rcm2points(const ncomp_array* lat2d, const ncomp_array* lon2d, const ncomp_array* fi,
                    const ncomp_array* lat1d, const ncomp_array* lon1d, ncomp_array* fo, int) nogil;
+
+    int linint2points(const ncomp_array*, const ncomp_array*, const ncomp_array*,
+                      const ncomp_array*, const ncomp_array*, ncomp_array*,
+                      int) nogil;
