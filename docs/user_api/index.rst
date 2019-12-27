@@ -20,3 +20,4 @@ GeoCAT-comp routines
    geocat.comp.rcm2points
    geocat.comp.rcm2rgrid
    geocat.comp.rgrid2rcm
+   geocat.comp.linint2_points
