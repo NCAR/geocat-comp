@@ -36,6 +36,11 @@ class AttributeError(Error):
      has a mismatch of attributes with other arguments."""
      pass
 
+class MetaError(Error):
+     """Exception raised when the support for the retention of metadata is not
+     supported."""
+     pass
+
 def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
     """Interpolates a regular grid to a rectilinear one using bi-linear
     interpolation.
@@ -1260,7 +1265,7 @@ def triple2grid(x, y, data, xgrid, ygrid, **kwargs):
         raise TypeError
 
     if meta and isinstance(input, xr.DataArray):
-        pass	 # TODO: Retaining possible metadata might be revised in the future
+        raise MetaError("ERROR triple2grid: retention of metadata is not yet supported !")
     else:
         fo = xr.DataArray(fo)
 
@@ -1345,7 +1350,7 @@ def grid2triple(x, y, z, msg=None, meta=False):
         raise TypeError
 
     if meta and isinstance(input, xr.DataArray):
-        pass	 # TODO: Retaining possible metadata might be revised in the future
+        raise MetaError("ERROR grid2triple: retention of metadata is not yet supported !")
     else:
         fo = xr.DataArray(fo)
 
