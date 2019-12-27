@@ -812,6 +812,7 @@ def _dpres_plevel(np.ndarray plev_np, np.ndarray psfc_np, ptop_scalar, msg=None)
 
     return output_dp.numpy
 
+@carrayify
 def _rcm2points(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.ndarray lat1d_np, np.ndarray lon1d_np, int opt=0, msg=None):
     """_rcm2points(lat2d, lon2d, fi, lat1d, lon1d, msg=None)
 
@@ -1239,6 +1240,92 @@ def _triple2grid(np.ndarray x_np, np.ndarray y_np, np.ndarray data_np, np.ndarra
     # reset the missing values of input 'data' to the original missing value (NaN)
     if replace_data_nans and data.ncomp.has_missing:
         data.numpy[missing_inds_data] = np.nan
+
+    # set the output type and missing values
+    if ncomp_output.type == libncomp.NCOMP_DOUBLE:
+        ncomp_output_msg = ncomp_output.msg.msg_double
+    else:
+        ncomp_output_msg = ncomp_output.msg.msg_float
+
+    # Convert ncomp_output to np.ndarray
+    output = Array.from_ncomp(ncomp_output)
+    output.numpy[output.numpy == ncomp_output_msg] = np.nan
+
+    return output.numpy
+
+
+@carrayify
+def _grid2triple(np.ndarray x_np, np.ndarray y_np, np.ndarray z_np, msg=None):
+    """_grid2triple(x, y, z, msg=None)
+
+    Converts a two-dimensional grid with one-dimensional coordinate variables
+    to an array where each grid value is associated with its coordinates.
+
+    Args:
+
+	x (:class:`numpy.ndarray`):
+            Coordinates associated with the right dimension of the variable `z`.
+            It must be the same dimension size (call it mx) as the right
+            dimension of `z`.
+
+	y (:class:`numpy.ndarray`):
+            Coordinates associated with the left dimension of the variable `z`.
+            It must be the same dimension size (call it ny) as the left
+            dimension of `z`.
+
+	z (:class:`numpy.ndarray`):
+            Two-dimensional array of size ny x mx containing the data values.
+            Missing values may be present in `z`, but they are ignored.
+
+	msg (:obj:`numpy.number`):
+	    A numpy scalar value that represent a missing value in `z`.
+	    This argument allows a user to use a missing value scheme
+	    other than NaN or masked arrays, similar to what NCL allows.
+
+	meta (:obj:`bool`):
+	    Set to False to disable metadata; default is False.
+
+    Returns:
+	:class:`numpy.ndarray`: If any argument is "double" the return type
+        will be "double"; otherwise a "float" is returned.
+
+    Description:
+        The maximum size of the returned array will be 3 x ld where ld <= ny*mx.
+        If no missing values are encountered in z, then ld=ny*mx. If missing
+        values are encountered in z, they are not returned and hence ld will be
+        equal to ny*mx minus the number of missing values found in z. The return
+        array will be double if any of the input arrays are double, and float
+        otherwise.
+
+    """
+    x = Array.from_np(x_np)
+    y = Array.from_np(y_np)
+    z = Array.from_np(z_np)
+
+    replace_z_nans = False
+    if msg is None or np.isnan(msg): # if no missing value specized, assume NaNs
+        missing_inds_z = np.isnan(z.numpy)
+        msg = get_default_fill(z.numpy)
+        replace_z_nans = True
+
+    set_ncomp_msg(&(z.ncomp.msg), msg) # always set missing on z.ncomp
+
+    if replace_z_nans and missing_inds_z.any():
+        z.ncomp.has_missing = 1
+        z.numpy[missing_inds_z] = msg
+
+    # Allocate output ncomp_array (memory associated is allcoated within libncomp)
+    cdef libncomp.ncomp_array* ncomp_output = NULL
+
+    cdef int ier
+    with nogil:
+        ier = libncomp.grid2triple(x.ncomp, y.ncomp, z.ncomp, &ncomp_output)
+    if ier != 0:
+        raise NcompError(f"An error occurred while calling libncomp.grid2triple with error code: {ier}")
+
+    # reset the missing values of input 'z' to the original missing value (NaN)
+    if replace_z_nans and z.ncomp.has_missing:
+        z.numpy[missing_inds_z] = np.nan
 
     # set the output type and missing values
     if ncomp_output.type == libncomp.NCOMP_DOUBLE:

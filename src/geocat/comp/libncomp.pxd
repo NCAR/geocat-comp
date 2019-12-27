@@ -117,3 +117,6 @@ cdef extern from "ncomp/wrapper.h":
     int triple2grid(const ncomp_array * x, const ncomp_array * y, const ncomp_array * data,
                     const ncomp_array * xgrid, const ncomp_array * ygrid, ncomp_array ** output,
                     const ncomp_attributes * options_in) nogil;
+
+    int grid2triple(const ncomp_array * x, const ncomp_array * y, const ncomp_array * z,
+                    ncomp_array ** output) nogil;
