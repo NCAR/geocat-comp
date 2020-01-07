@@ -254,7 +254,10 @@ def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
     elif isinstance(fi_data, np.ndarray):
         fo = _ncomp._linint2(xi, yi, fi_data, xo, yo, icycx, msg)
     else:
-        raise TypeError
+        raise TypeError("linint2: the fi input argument must be a "
+                        "numpy.ndarray, a dask.array.Array, or an "
+                        "xarray.DataArray containing either a numpy.ndarray or"
+                        " a dask.array.Array.")
 
     if meta:
         coords = {k:v if k not in fi.dims[-2:]
@@ -408,7 +411,10 @@ def rcm2rgrid(lat2d, lon2d, fi, lat1d, lon1d, msg=None, meta=False):
     elif isinstance(fi_data, np.ndarray):
         fo = _ncomp._rcm2rgrid(lat2d, lon2d, fi_data, lat1d, lon1d, msg)
     else:
-        raise TypeError
+        raise TypeError("rcm2rgrid: the fi input argument must be a "
+                        "numpy.ndarray, a dask.array.Array, or an "
+                        "xarray.DataArray containing either a numpy.ndarray or"
+                        " a dask.array.Array.")
 
     if meta and isinstance(input, xr.DataArray):
         pass
@@ -549,7 +555,10 @@ def rgrid2rcm(lat1d, lon1d, fi, lat2d, lon2d, msg=None, meta=False):
     elif isinstance(fi_data, np.ndarray):
         fo = _ncomp._rgrid2rcm(lat1d, lon1d, fi_data, lat2d, lon2d, msg)
     else:
-        raise TypeError
+        raise TypeError("rgrid2rcm: the fi input argument must be a "
+                        "numpy.ndarray, a dask.array.Array, or an "
+                        "xarray.DataArray containing either a numpy.ndarray or"
+                        " a dask.array.Array.")
 
     if meta and isinstance(input, xr.DataArray):
         pass
@@ -1103,7 +1112,10 @@ def rcm2points(lat2d, lon2d, fi, lat1dPoints, lon1dPoints, opt=0, msg=None, meta
     if isinstance(fi_data, np.ndarray):
         fo = _ncomp._rcm2points(lat2d, lon2d, fi_data, lat1dPoints, lon1dPoints, opt, msg)
     else:
-        raise TypeError
+        raise TypeError("rcm2points: the fi input argument must be a "
+                        "numpy.ndarray, a dask.array.Array, or an "
+                        "xarray.DataArray containing either a numpy.ndarray or"
+                        " a dask.array.Array.")
 
     if meta and isinstance(input, xr.DataArray):
         pass	 # TODO: Retaining possible metadata might be revised in the future
@@ -1262,7 +1274,9 @@ def triple2grid(x, y, data, xgrid, ygrid, **kwargs):
     if isinstance(data, np.ndarray):
         fo = _ncomp._triple2grid(x, y, data, xgrid, ygrid, options, msg)
     else:
-        raise TypeError
+        raise TypeError("triple2grid: the data input argument must be a "
+                        "numpy.ndarray or an xarray.DataArray containing a "
+                        "numpy.ndarray.")
 
     if meta and isinstance(input, xr.DataArray):
         raise MetaError("ERROR triple2grid: retention of metadata is not yet supported !")
@@ -1347,7 +1361,9 @@ def grid2triple(x, y, z, msg=None, meta=False):
     if isinstance(z, np.ndarray):
         fo = _ncomp._grid2triple(x, y, z, msg)
     else:
-        raise TypeError
+        raise TypeError("grid2triple: the z input argument must be a "
+                        "numpy.ndarray or an xarray.DataArray containing a "
+                        "numpy.ndarray.")
 
     if meta and isinstance(input, xr.DataArray):
         raise MetaError("ERROR grid2triple: retention of metadata is not yet supported !")
