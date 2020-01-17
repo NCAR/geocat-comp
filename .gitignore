@@ -1,4 +1,4 @@
-/src/geocat/comp/_ncomp/ncomp.c
+/src/geocat/comp/_ncomp/*.c
 /build/
 
 
@@ -303,3 +303,5 @@ dmypy.json
 .pyre/
 
 # End of https://www.gitignore.io/api/python,intellij,intellij+all,intellij+iml
+
+.DS_Store
