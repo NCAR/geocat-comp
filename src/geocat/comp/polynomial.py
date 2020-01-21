@@ -508,7 +508,11 @@ def detrend(data: Iterable, deg=1, axis=0, **kwargs):
 
     x = kwargs.get("x", None)
     if x is None:
-        x = np.arange(data_shape[axis], dtype=float)
+        x = np.arange(data_shape[axis], dtype=np.float)
+    elif not isinstance(x, np.ndarray):
+        x = np.asarray(x).astype(np.float)
+
+    x = x.reshape((-1, ))
 
     p = ndpolyfit(x, data, deg, axis, missing_value=missing_value)
 

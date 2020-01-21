@@ -1,5 +1,5 @@
 from unittest import TestCase
-from geocat.comp.polynomial import _ndpolyfit, ndpolyfit, _ndpolyval, ndpolyval
+from geocat.comp.polynomial import _ndpolyfit, ndpolyfit, _ndpolyval, ndpolyval, detrend
 
 import numpy as np
 import xarray as xr
@@ -544,17 +544,50 @@ class test_ndpolyval(TestCase):
 
 class test_detrend(TestCase):
     def test_01(self):
-        x = np.linspace(0, 2, 9, dtype=np.float64) * np.pi
-        print("x: ", x)
+        # Creating synthetic data
+        x = np.linspace(-8*np.pi, 8 * np.pi, 33, dtype=np.float64)
         y0 = 1.0 * x
         y1 = np.sin(x)
-        print("y0: ", y0)
-        print("y1: ", y1)
         y = y0 + y1
 
         p = ndpolyfit(x, y, deg=1)
+        y_trend = ndpolyval(p, x)
 
-        print(p)
+        y_detrended = detrend(y, x=x)
+
+        np.testing.assert_almost_equal(y_detrended + y_trend, y)
+
+    def test_02(self):
+        # Creating synthetic data
+        x = np.linspace(-8*np.pi, 8 * np.pi, 33, dtype=np.float64)
+        y0 = 1.0 * x
+        y1 = np.sin(x)
+        y = y0 + y1
+
+        p = ndpolyfit(np.arange(x.size), y, deg=1)
+        y_trend = ndpolyval(p, np.arange(x.size))
+
+        y_detrended = detrend(y)
+
+        np.testing.assert_almost_equal(y_detrended + y_trend, y)
+
+    def test_03(self):
+        # Creating synthetic data
+        x = np.linspace(-8*np.pi, 8 * np.pi, 33, dtype=np.float64)
+        y0 = 1.0 * x
+        y1 = np.sin(x)
+        y = y0 + y1
+
+        p = ndpolyfit(x, y, deg=1)
+        y_trend = ndpolyval(p, x)
+
+        y_detrended = detrend(y, x=x, return_info=False)
+
+        np.testing.assert_almost_equal(y_detrended + y_trend, y)
+
+        np.testing.assert_equal({}, y_detrended.attrs)
+
+
 
 
 
