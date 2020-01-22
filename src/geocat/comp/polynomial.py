@@ -661,7 +661,7 @@ def detrend(data: Iterable, deg=1, axis=0, **kwargs):
             a multi-dimensional numeric array
 
         deg (:class:`int`, optional):
-            a non-negative integer determining the degree of the polynomial to use for detrending. Degault value is 1.
+            a non-negative integer determining the degree of the polynomial to use for detrending. Default value is 1.
 
         axis (:class:`int`, optional):
             the axis along which the data is detrended. Default value is 0.
