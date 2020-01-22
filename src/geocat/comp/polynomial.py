@@ -177,6 +177,28 @@ def ndpolyfit(x: Iterable, y: Iterable, deg: int, axis: int = 0, **kwargs) -> (x
             covariance:      False
         >>> # Now we got the coefficient we were looking for
 
+        * Fitting polynomial with NaN as missing values: NaN is by default considered a missing value all the time
+
+        >>> import numpy as np
+        >>> from geocat.comp.polynomial import ndpolyfit
+        >>> x = np.arange(10, dtype=np.float)
+        >>> y = 4*x*x + 3*x + 2
+        >>> y[7:] = np.nan
+        >>> print(y)
+        [  2.   9.  24.  47.  78. 117. 164.  nan  nan  nan]
+        >>> p = ndpolyfit(x, y, deg=2)
+        >>> print(p)
+        <xarray.DataArray (dim_0: 3)>
+        array([4., 3., 2.])
+        Dimensions without coordinates: dim_0
+        Attributes:
+            deg:             2
+            provided_rcond:  None
+            full:            False
+            weights:         None
+            covariance:      False
+        >>> # as you can see, despite not specifying NaN as missing value, the coefficients are properly calculated
+
         * Fitting a line to a multi-dimensional array
 
         >>> y_md = np.tile(y.reshape(1, 10, 1, 1), [2, 1, 3, 4])
