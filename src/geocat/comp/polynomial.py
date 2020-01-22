@@ -597,6 +597,62 @@ def _ndpolyval(p: np.ndarray, x: np.ndarray, axis: int = 0, **kwargs) -> np.ndar
 
 
 def detrend(data: Iterable, deg=1, axis=0, **kwargs):
+    """
+    This method, at the minimum, provides all the functionality that is provided by NCL's 'dtrend',
+    'dtrend_quadratic', 'dtrend_quadratic_msg_n', 'dtrend_msg_n', 'dtrend_msg', 'dtrend_n'.
+    However, this function is not limited to quadratic detrending and you could use higher polynomial degree as well.
+
+    Args:
+        data (:class:`array_like`):
+            a multi-dimensional numeric array
+
+        deg (:class:`int`, optional):
+            a non-negative integer determining the degree of the polynomial to use for detrending. Degault value is 1.
+
+        axis (:class:`int`, optional):
+            the axis along which the data is detrended. Default value is 0.
+
+        kwargs (:class:`dict`, optional):
+            providing further arguments to control the behavior of the method. It currently accepts the following parameter:
+
+            return_info (:class:`bool`)
+                If set to true, the fitted polynomial is returned as part of the attributes. Default value is `True`.
+
+            missing_value (:class:`numeric`)
+                A value that must be ignored. Default is NaN.
+
+    Returns:
+          an `xarray.DataArray` containing the detrended data.
+
+    Examples:
+
+        * Detrending a data:
+
+        >>> # Creating synthetic data
+        >>> x = np.linspace(-8*np.pi, 8 * np.pi, 33, dtype=np.float64)
+        >>> y0 = 1.0 * x
+        >>> y1 = np.sin(x)
+        >>> y = y0 + y1
+        >>> p = ndpolyfit(np.arange(x.size), y, deg=1)
+        >>> y_trend = ndpolyval(p, np.arange(x.size))
+        >>> y_detrended = detrend(y)
+        >>> np.testing.assert_almost_equal(y_detrended + y_trend, y)
+
+
+        * Detrending a multi-dimensional data:
+
+        >>> # Creating synthetic data
+        >>> x = np.linspace(-8*np.pi, 8 * np.pi, 33, dtype=np.float64)
+        >>> y0 = 1.0 * x
+        >>> y1 = np.sin(x)
+        >>> y = np.tile((y0 + y1).reshape((1, -1, 1, 1)), (2, 1, 3, 4))
+        >>> p = ndpolyfit(x, y, deg=1, axis=1)
+        >>> y_trend = ndpolyval(p, x, axis=1)
+        >>> y_detrended = detrend(y, x=x, axis=1)
+        >>> np.testing.assert_almost_equal(y_detrended + y_trend, y)
+
+
+    """
     if (int(deg) != deg) or (deg < 0):
         raise ValueError("deg must be non-negative integer value.")
 
