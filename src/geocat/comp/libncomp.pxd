@@ -77,7 +77,7 @@ cdef extern from "ncomp/wrapper.h":
     int rcm2rgrid(const ncomp_array* lat2d, const ncomp_array* lon2d, const ncomp_array* fi,
                   const ncomp_array* lat1d, const ncomp_array* lon1d, ncomp_array* fo) nogil;
 
-    int rgrid2rcm(const ncomp_array* lat1d, const ncomp_array* lon1d, const ncomp_array* fi, 
+    int rgrid2rcm(const ncomp_array* lat1d, const ncomp_array* lon1d, const ncomp_array* fi,
                   const ncomp_array* lat2d, const ncomp_array* lon2d, ncomp_array* fo) nogil;
 
     int eofunc(const ncomp_array * x_in, const int neval_in,
@@ -113,3 +113,10 @@ cdef extern from "ncomp/wrapper.h":
 
     int rcm2points(const ncomp_array* lat2d, const ncomp_array* lon2d, const ncomp_array* fi,
                    const ncomp_array* lat1d, const ncomp_array* lon1d, ncomp_array* fo, int) nogil;
+
+    int triple2grid(const ncomp_array * x, const ncomp_array * y, const ncomp_array * data,
+                    const ncomp_array * xgrid, const ncomp_array * ygrid, ncomp_array ** output,
+                    const ncomp_attributes * options_in) nogil;
+
+    int grid2triple(const ncomp_array * x, const ncomp_array * y, const ncomp_array * z,
+                    ncomp_array ** output) nogil;
