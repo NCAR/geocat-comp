@@ -500,6 +500,37 @@ def ndpolyval(p: Iterable, x: Iterable, axis: int = 0, **kwargs):
     Returns (:class: `xr.DataArray`:
         polynomial evaluated with the provided coordinates.
 
+    Examples:
+
+        * Evaluating a polynomial:
+
+        >>> p = [2, 3] # representing y = 2*x + 3
+        >>> x = np.arange(-5, 6, dtype="float")
+        >>> x
+        array([-5., -4., -3., -2., -1.,  0.,  1.,  2.,  3.,  4.,  5.])
+        >>> from geocat.comp.polynomial import ndpolyval
+        >>> y = ndpolyval(p, x)
+        >>> y.shape
+        (11,)
+        >>> print(y)
+        <xarray.DataArray (dim_0: 11)>
+        array([-7., -5., -3., -1.,  1.,  3.,  5.,  7.,  9., 11., 13.])
+        Dimensions without coordinates: dim_0
+        >>> np.testing.assert_almost_equal(y, 2*x+3)
+
+        * evaluating a multi-dimensional fitted polynomial:
+
+        >>> p = np.tile(np.asarray(p).reshape(1, 2, 1, 1), [3, 1, 4, 5])
+        >>> p.shape
+        (3, 2, 4, 5)
+        >>> p[1, :, 1, 1]
+        array([2, 3])
+        >>> p[1, :, 1, 2]
+        array([2, 3])
+        >>> y = ndpolyval(p, x, axis=1)
+        >>> y.shape
+        (3, 11, 4, 5)
+
     """
     p_ndarr = _to_numpy_ndarray(p)
     axis = _check_axis(axis, p_ndarr.ndim)
