@@ -682,6 +682,8 @@ def detrend(data: Iterable, deg=1, axis=0, **kwargs):
 
         * Detrending a data:
 
+        >>> from geocat.comp.polynomial import ndpolyfit
+        >>> from geocat.comp.polynomial import detrend
         >>> # Creating synthetic data
         >>> x = np.linspace(-8*np.pi, 8 * np.pi, 33, dtype=np.float64)
         >>> y0 = 1.0 * x
