@@ -63,7 +63,6 @@ def _unchuck_ifneeded(data: da.Array, axis: int) -> da.Array:
         raise TypeError("data must be a dask array.")
 
 
-
 def ndpolyfit(x: Iterable, y: Iterable, deg: int, axis: int = 0, **kwargs) -> (xr.DataArray, da.Array):
     """
     An extension to `numpy.polyfit` function to work with multi-dimensional arrays. If `y` is of shape, let's say
@@ -113,6 +112,81 @@ def ndpolyfit(x: Iterable, y: Iterable, deg: int, axis: int = 0, **kwargs) -> (x
 
     Returns:
         an `xarray.DataArray` or `numpy.ndarray` containing the coefficients of the fitted polynomial.
+
+    Examples:
+        * Fitting a line to a one dimensional array:
+
+        >>> import numpy as np
+        >>> from geocat.comp.polynomial import ndpolyfit
+        >>> x = np.arange(10, dtype=np.float)
+        >>> y = 2*x + 3
+        >>> p = ndpolyfit(x, y, deg=1)
+        >>> print(p)
+        <xarray.DataArray (dim_0: 2)>
+        array([2., 3.])
+        Dimensions without coordinates: dim_0
+        Attributes:
+            deg:             1
+            provided_rcond:  None
+            full:            False
+            weights:         None
+            covariance:      False
+
+        * Fitting a second degree polynomial to a one dimensional array:
+
+        >>> y = 4*x*x + 3*x + 2
+        >>> p = ndpolyfit(x, y, deg=2)
+        >>> print(p)
+        <xarray.DataArray (dim_0: 3)>
+        array([4., 3., 2.])
+        Dimensions without coordinates: dim_0
+        Attributes:
+            deg:             2
+            provided_rcond:  None
+            full:            False
+            weights:         None
+            covariance:      False
+
+        * Fitting polynomial with missing values:
+
+        >>> # Let's introduce some missing values:
+        >>> y[7:] = 999
+        >>> p = ndpolyfit(x, y, deg=2)
+        >>> print(p)
+        <xarray.DataArray (dim_0: 3)>
+        array([ 21.15909091, -62.14090909,  20.4       ])
+        Dimensions without coordinates: dim_0
+        Attributes:
+            deg:             2
+            provided_rcond:  None
+            full:            False
+            weights:         None
+            covariance:      False
+        >>> # As you can see, we got a different coefficients
+        >>> # Now let's define 999 as missing value
+        >>> p = ndpolyfit(x, y, deg=2, missing_value=999)
+        >>> print(p)
+        <xarray.DataArray (dim_0: 3)>
+        array([4., 3., 2.])
+        Dimensions without coordinates: dim_0
+        Attributes:
+            deg:             2
+            provided_rcond:  None
+            full:            False
+            weights:         None
+            covariance:      False
+        >>> # Now we got the coefficient we were looking for
+
+        * Fitting a line to a multi-dimensional array
+
+        >>> y_md = np.tile(y.reshape(1, 10, 1, 1), [2, 1, 3, 4])
+        >>> y_md.shape
+        (2, 10, 3, 4)
+        >>> print(y)
+        [  2.   9.  24.  47.  78. 117. 164. 219. 282. 353.]
+        >>> print(y_md[1, :, 1, 1])
+        [  2.   9.  24.  47.  78. 117. 164. 219. 282. 353.]
+        >>> p = ndpolyfit(x, y_md, deg=2, axis=1)
     """
 
     rcond = kwargs.get("rcond", None)
