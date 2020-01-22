@@ -147,7 +147,8 @@ def ndpolyfit(x: Iterable, y: Iterable, deg: int, axis: int = 0, **kwargs) -> (x
             weights:         None
             covariance:      False
 
-        * Fitting polynomial with missing values:
+        * Fitting polynomial with missing values: Ordinarily NaN's are treated as missing values.
+          In this example let's introduce a different value to indicate missing data.
 
         >>> # Let's introduce some missing values:
         >>> y[7:] = 999
