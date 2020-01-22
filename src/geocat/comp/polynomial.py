@@ -63,7 +63,6 @@ def _unchunk_ifneeded(data: da.Array, axis: int) -> da.Array:
         raise TypeError("data must be a dask array.")
 
 
-
 def ndpolyfit(x: Iterable, y: Iterable, deg: int, axis: int = 0, **kwargs) -> (xr.DataArray, da.Array):
     """
     An extension to `numpy.polyfit` function to work with multi-dimensional arrays. If `y` is of shape, let's say
@@ -113,6 +112,104 @@ def ndpolyfit(x: Iterable, y: Iterable, deg: int, axis: int = 0, **kwargs) -> (x
 
     Returns:
         an `xarray.DataArray` or `numpy.ndarray` containing the coefficients of the fitted polynomial.
+
+    Examples:
+        * Fitting a line to a one dimensional array:
+
+        >>> import numpy as np
+        >>> from geocat.comp.polynomial import ndpolyfit
+        >>> x = np.arange(10, dtype=np.float)
+        >>> y = 2*x + 3
+        >>> p = ndpolyfit(x, y, deg=1)
+        >>> print(p)
+        <xarray.DataArray (dim_0: 2)>
+        array([2., 3.])
+        Dimensions without coordinates: dim_0
+        Attributes:
+            deg:             1
+            provided_rcond:  None
+            full:            False
+            weights:         None
+            covariance:      False
+
+        * Fitting a second degree polynomial to a one dimensional array:
+
+        >>> y = 4*x*x + 3*x + 2
+        >>> p = ndpolyfit(x, y, deg=2)
+        >>> print(p)
+        <xarray.DataArray (dim_0: 3)>
+        array([4., 3., 2.])
+        Dimensions without coordinates: dim_0
+        Attributes:
+            deg:             2
+            provided_rcond:  None
+            full:            False
+            weights:         None
+            covariance:      False
+
+        * Fitting polynomial with missing values: Ordinarily NaN's are treated as missing values.
+          In this example let's introduce a different value to indicate missing data.
+
+        >>> # Let's introduce some missing values:
+        >>> y[7:] = 999
+        >>> p = ndpolyfit(x, y, deg=2)
+        >>> print(p)
+        <xarray.DataArray (dim_0: 3)>
+        array([ 21.15909091, -62.14090909,  20.4       ])
+        Dimensions without coordinates: dim_0
+        Attributes:
+            deg:             2
+            provided_rcond:  None
+            full:            False
+            weights:         None
+            covariance:      False
+        >>> # As you can see, we got a different coefficients
+        >>> # Now let's define 999 as missing value
+        >>> p = ndpolyfit(x, y, deg=2, missing_value=999)
+        >>> print(p)
+        <xarray.DataArray (dim_0: 3)>
+        array([4., 3., 2.])
+        Dimensions without coordinates: dim_0
+        Attributes:
+            deg:             2
+            provided_rcond:  None
+            full:            False
+            weights:         None
+            covariance:      False
+        >>> # Now we got the coefficient we were looking for
+
+        * Fitting polynomial with NaN as missing values: NaN is by default considered a missing value all the time
+
+        >>> import numpy as np
+        >>> from geocat.comp.polynomial import ndpolyfit
+        >>> x = np.arange(10, dtype=np.float)
+        >>> y = 4*x*x + 3*x + 2
+        >>> y[7:] = np.nan
+        >>> print(y)
+        [  2.   9.  24.  47.  78. 117. 164.  nan  nan  nan]
+        >>> p = ndpolyfit(x, y, deg=2)
+        >>> print(p)
+        <xarray.DataArray (dim_0: 3)>
+        array([4., 3., 2.])
+        Dimensions without coordinates: dim_0
+        Attributes:
+            deg:             2
+            provided_rcond:  None
+            full:            False
+            weights:         None
+            covariance:      False
+        >>> # as you can see, despite not specifying NaN as missing value, the coefficients are properly calculated
+
+        * Fitting a line to a multi-dimensional array
+
+        >>> y_md = np.tile(y.reshape(1, 10, 1, 1), [2, 1, 3, 4])
+        >>> y_md.shape
+        (2, 10, 3, 4)
+        >>> print(y)
+        [  2.   9.  24.  47.  78. 117. 164. 219. 282. 353.]
+        >>> print(y_md[1, :, 1, 1])
+        [  2.   9.  24.  47.  78. 117. 164. 219. 282. 353.]
+        >>> p = ndpolyfit(x, y_md, deg=2, axis=1)
     """
 
     rcond = kwargs.get("rcond", None)
@@ -399,7 +496,7 @@ def _to_numpy_ndarray(data: Iterable) -> np.ndarray:
     return data
 
 
-def ndpolyval(p: Iterable, x: Iterable = None, axis: int = 0, **kwargs):
+def ndpolyval(p: Iterable, x: Iterable, axis: int = 0, **kwargs):
     """
     Extended version of `numpy.polyval` to support multi-dimensional outputs provided by `geocat.comp.ndpolyfit`.
 
@@ -426,7 +523,37 @@ def ndpolyval(p: Iterable, x: Iterable = None, axis: int = 0, **kwargs):
     Returns (:class: `xr.DataArray`:
         polynomial evaluated with the provided coordinates.
 
-    Example:
+    Examples:
+
+        * Evaluating a polynomial:
+
+        >>> p = [2, 3] # representing y = 2*x + 3
+        >>> x = np.arange(-5, 6, dtype="float")
+        >>> x
+        array([-5., -4., -3., -2., -1.,  0.,  1.,  2.,  3.,  4.,  5.])
+        >>> from geocat.comp.polynomial import ndpolyval
+        >>> y = ndpolyval(p, x)
+        >>> y.shape
+        (11,)
+        >>> print(y)
+        <xarray.DataArray (dim_0: 11)>
+        array([-7., -5., -3., -1.,  1.,  3.,  5.,  7.,  9., 11., 13.])
+        Dimensions without coordinates: dim_0
+        >>> np.testing.assert_almost_equal(y, 2*x+3)
+
+        * evaluating a multi-dimensional fitted polynomial:
+
+        >>> p = np.tile(np.asarray(p).reshape(1, 2, 1, 1), [3, 1, 4, 5])
+        >>> p.shape
+        (3, 2, 4, 5)
+        >>> p[1, :, 1, 1]
+        array([2, 3])
+        >>> p[1, :, 1, 2]
+        array([2, 3])
+        >>> y = ndpolyval(p, x, axis=1)
+        >>> y.shape
+        (3, 11, 4, 5)
+
         * Fitting a first degree polynomial and calculating the residual manually:
 
         >>> from geocat.comp.polynomial import ndpolyfit, ndpolyval
@@ -545,6 +672,98 @@ def _ndpolyval(p: np.ndarray, x: np.ndarray, axis: int = 0, **kwargs) -> np.ndar
     return y
 
 
+def detrend(data: Iterable, deg=1, axis=0, **kwargs):
+    """
+    Estimates and removes the trend of the leftmost dimension from all grid points.
+    This method, at the minimum, provides all the functionality that is provided by NCL's 'dtrend',
+    'dtrend_quadratic', 'dtrend_quadratic_msg_n', 'dtrend_msg_n', 'dtrend_msg', 'dtrend_n'.
+    However, this function is not limited to quadratic detrending and you could use higher polynomial degree as well.
+
+    Args:
+        data (:class:`array_like`):
+            a multi-dimensional numeric array
+
+        deg (:class:`int`, optional):
+            a non-negative integer determining the degree of the polynomial to use for detrending. Default value is 1.
+
+        axis (:class:`int`, optional):
+            the axis along which the data is detrended. Default value is 0.
+
+        kwargs (:class:`dict`, optional):
+            providing further arguments to control the behavior of the method. It currently accepts the following parameter:
+
+            return_info (:class:`bool`)
+                If set to true, the fitted polynomial is returned as part of the attributes. Default value is `True`.
+
+            missing_value (:class:`numeric`)
+                A value that must be ignored. Default is NaN.
+
+    Returns:
+          an `xarray.DataArray` containing the detrended data.
+
+    Examples:
+
+        * Detrending a data:
+
+        >>> from geocat.comp.polynomial import ndpolyfit
+        >>> from geocat.comp.polynomial import detrend
+        >>> # Creating synthetic data
+        >>> x = np.linspace(-8*np.pi, 8 * np.pi, 33, dtype=np.float64)
+        >>> y0 = 1.0 * x
+        >>> y1 = np.sin(x)
+        >>> y = y0 + y1
+        >>> p = ndpolyfit(np.arange(x.size), y, deg=1)
+        >>> y_trend = ndpolyval(p, np.arange(x.size))
+        >>> y_detrended = detrend(y)
+        >>> np.testing.assert_almost_equal(y_detrended + y_trend, y)
+
+
+        * Detrending a multi-dimensional data:
+
+        >>> # Creating synthetic data
+        >>> x = np.linspace(-8*np.pi, 8 * np.pi, 33, dtype=np.float64)
+        >>> y0 = 1.0 * x
+        >>> y1 = np.sin(x)
+        >>> y = np.tile((y0 + y1).reshape((1, -1, 1, 1)), (2, 1, 3, 4))
+        >>> p = ndpolyfit(x, y, deg=1, axis=1)
+        >>> y_trend = ndpolyval(p, x, axis=1)
+        >>> y_detrended = detrend(y, x=x, axis=1)
+        >>> np.testing.assert_almost_equal(y_detrended + y_trend, y)
+
+
+    """
+    if (int(deg) != deg) or (deg < 0):
+        raise ValueError("deg must be non-negative integer value.")
+
+    return_info = bool(kwargs.get("return_info", True))
+
+    missing_value = _get_missing_value(data, kwargs)
+
+    try:
+        data_shape = data.shape \
+            if isinstance(data, (np.ndarray, xr.DataArray, da.Array)) \
+            else np.asarray(data).shape
+    except:
+        raise TypeError("Could not extract the shape of data")
+
+    x = kwargs.get("x", None)
+    if x is None:
+        x = np.arange(data_shape[axis], dtype=np.float)
+    elif not isinstance(x, np.ndarray):
+        x = np.asarray(x).astype(np.float)
+
+    x = x.reshape((-1, ))
+
+    p = ndpolyfit(x, data, deg, axis, missing_value=missing_value)
+
+    data_fitted = ndpolyval(p, x, axis)
+
+    data_detrended = xr.DataArray(data) - data_fitted
+
+    if return_info:
+        data_detrended.attrs["p"] = p
+
+    return data_detrended
 
 
 

@@ -7,7 +7,7 @@ import xarray as xr
 import dask.array as da
 from dask.array.core import map_blocks
 
-from .polynomial import ndpolyfit, ndpolyval
+from .polynomial import ndpolyfit, ndpolyval, detrend
 
 
 class Error(Exception):
