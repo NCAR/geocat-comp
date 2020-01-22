@@ -20,8 +20,8 @@ expected_dp = np.array( [4300., 5000., 5000., 5000., 5000., 5000., 5000., 5000.,
 			 3750., 2500., 2500., 2500., 2250., 1500., 1000., 1000.,
 			 1000., 1000., 750., 500., 750., 500.] )
 
-class Test_rcm2points_float64(ut.TestCase):
-    def test_rcm2points_float64(self):
+class Test_dpres_plevel_float64(ut.TestCase):
+    def test_dpres_plevel_float64(self):
         result_dp = geocat.comp.dpres_plevel(plev, psfc)
         np.testing.assert_array_equal(expected_dp, result_dp.values)
 
