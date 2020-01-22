@@ -69,12 +69,16 @@ cdef extern from "ncomp/util.h":
     ncomp_single_attribute* create_ncomp_single_attribute(char *, void *, int, int, size_t *);
     ncomp_attributes* ncomp_attributes_allocate(int);
 
-
-
 cdef extern from "ncomp/wrapper.h":
     int linint2(const ncomp_array*, const ncomp_array*, const ncomp_array*,
                 const ncomp_array*, const ncomp_array*, ncomp_array*,
                 int, int) nogil;
+
+    int rcm2rgrid(const ncomp_array* lat2d, const ncomp_array* lon2d, const ncomp_array* fi,
+                  const ncomp_array* lat1d, const ncomp_array* lon1d, ncomp_array* fo) nogil;
+
+    int rgrid2rcm(const ncomp_array* lat1d, const ncomp_array* lon1d, const ncomp_array* fi, 
+                  const ncomp_array* lat2d, const ncomp_array* lon2d, ncomp_array* fo) nogil;
 
     int eofunc(const ncomp_array * x_in, const int neval_in,
                const ncomp_attributes * options_in,
@@ -103,3 +107,9 @@ cdef extern from "ncomp/wrapper.h":
     int moc_globe_atl( const ncomp_array *, const ncomp_array *, const ncomp_array *,
                       const ncomp_array *, const ncomp_array *, const ncomp_array *,
                       ncomp_array ** ) nogil;
+
+    int dpres_plevel( const ncomp_array *, const ncomp_array *, const ncomp_array *,
+                      ncomp_array ** ) nogil;
+
+    int rcm2points(const ncomp_array* lat2d, const ncomp_array* lon2d, const ncomp_array* fi,
+                   const ncomp_array* lat1d, const ncomp_array* lon1d, ncomp_array* fo, int) nogil;
