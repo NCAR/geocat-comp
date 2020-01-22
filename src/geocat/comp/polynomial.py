@@ -651,6 +651,7 @@ def _ndpolyval(p: np.ndarray, x: np.ndarray, axis: int = 0, **kwargs) -> np.ndar
 
 def detrend(data: Iterable, deg=1, axis=0, **kwargs):
     """
+    Estimates and removes the trend of the leftmost dimension from all grid points.
     This method, at the minimum, provides all the functionality that is provided by NCL's 'dtrend',
     'dtrend_quadratic', 'dtrend_quadratic_msg_n', 'dtrend_msg_n', 'dtrend_msg', 'dtrend_n'.
     However, this function is not limited to quadratic detrending and you could use higher polynomial degree as well.
