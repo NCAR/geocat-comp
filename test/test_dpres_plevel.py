@@ -25,3 +25,8 @@ class Test_rcm2points_float64(ut.TestCase):
         result_dp = geocat.comp.dpres_plevel(plev, psfc)
         np.testing.assert_array_equal(expected_dp, result_dp.values)
 
+class Test_dpres_plevel_float32(ut.TestCase):
+    def test_dpres_plevel_float32(self):
+        plev_asfloat32 = plev.astype(np.float32)
+        result_dp = geocat.comp.dpres_plevel(plev_asfloat32, psfc)
+        np.testing.assert_array_equal(expected_dp, result_dp.values)
