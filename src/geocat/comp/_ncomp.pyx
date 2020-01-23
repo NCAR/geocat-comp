@@ -1196,7 +1196,8 @@ def _linint2_points(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.nda
         fo_dtype = np.float64
     else:
         fo_dtype = np.float32
-    cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [yo.shape[0], xo.shape[0]]), dtype=fo_dtype)
+
+    cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [yo.shape[0]]), dtype=fo_dtype)
 
     replace_fi_nans = False
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs

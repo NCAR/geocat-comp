@@ -1112,7 +1112,7 @@ def rcm2points(lat2d, lon2d, fi, lat1dPoints, lon1dPoints, opt=0, msg=None, meta
     return fo
 
 
-def linint2_points(fi, xo, yo, icycx, msg=None, meta=False, xi=None, yi=None)
+def linint2_points(fi, xo, yo, icycx, msg=None, meta=False, xi=None, yi=None):
     """Interpolates from a rectilinear grid to an unstructured grid or locations using bilinear interpolation.
 
     Args:
@@ -1231,6 +1231,7 @@ def linint2_points(fi, xo, yo, icycx, msg=None, meta=False, xi=None, yi=None)
                                   " explicitly if fi is not an xarray.DataArray !")
     if xo.shape[0] != yo.shape[0]:
         raise DimensionError("ERROR linint2_points: The xo and yo must be the same size !")
+
     if fi.ndim < 2:
         raise DimensionError("ERROR linint2_points: fi must be at least two dimensions !\n")
 
@@ -1260,5 +1261,43 @@ def linint2_points(fi, xo, yo, icycx, msg=None, meta=False, xi=None, yi=None)
         raise MetaError("ERROR linint2_points: retention of metadata is not yet supported !")
     else:
         fo = xr.DataArray(fo)
+
+    # OERO: Above two if-blocks should be changed with two if-blocks similar to the following (would require corrections
+    # though) when parallelization for differently-shaped input (fi) and output (fo) arrays in this case is resolved:
+
+    # if isinstance(fi_data, da.Array):
+    #     chunks = list(fi.chunks)
+    #
+    #     # ensure rightmost dimensions of input are not chunked
+    #     if chunks[-2:] != [yi.shape, xi.shape]:
+    #         raise ChunkError("linint2_points: the two rightmost dimensions of fi must not be chunked.")
+    #
+    #     # Ensure rightmost dimensions of output are not chunked
+    #     # chunks[-2:] = [yo.shape, xo.shape]
+    #
+    #     # map_blocks maps each chunk of fi_data to a separate invocation of _ncomp._linint2_points. The "chunks"
+    #     # keyword argument should be the chunked dimensionality of the expected output; the number of chunks should
+    #     # match that of fi_data. Additionally, "drop_axis" and "new_axis" in this case indicate that the two rightmost
+    #     # dimensions of the input will be dropped from the output array, and that two new axes will be added instead.
+    #     fo = map_blocks(_ncomp._linint2_points, xi, yi, fi_data, xo, yo, icycx, msg,
+    #                     chunks=chunks, dtype=fi.dtype,
+    #                     drop_axis=[fi.ndim-2, fi.ndim-1],
+    #                     new_axis=[fi.ndim-2, fi.ndim-1])
+    #
+    # elif isinstance(fi_data, np.ndarray):
+    #     fo = _ncomp._linint2_points(xi, yi, fi_data, xo, yo, icycx, msg)
+    #
+    # else:
+    #     raise TypeError
+    #
+    # if meta:
+    #     coords = {k:v if k not in fi.dims[-2:]
+    #               else (xo if k == fi.dims[-1] else yo)
+    #               for (k, v) in fi.coords.items()}
+    #
+    #     fo = xr.DataArray(fo, attrs=fi.attrs, dims=fi.dims,
+    #                           coords=coords)
+    # else:
+    #     fo = xr.DataArray(fo)
 
     return fo
