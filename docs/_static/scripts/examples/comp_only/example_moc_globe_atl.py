@@ -2,6 +2,8 @@
 # coding: utf-8
 """ This example scrit demonstrates how to computes POP MOC field offline from POP netcdf history files.  This routine
 is designed for the CESM4 ocean component.
+
+Example netCDF file used below can be found under https://github.com/NCAR/geocat-datafiles/tree/master/netcdf_files
 """
 
 import numpy as np
@@ -9,7 +11,7 @@ import xarray as xr
 import geocat.comp
 
 # Open a netCDF data file using xarray default engine and load the data into xarrays
-ds = xr.open_dataset("tavg.nc")
+ds = xr.open_dataset("tavg_downsized.nc")
 lat_aux_grid = ds.lat_aux_grid[:].values.astype(np.double)
 w_e = ds.WVEL[:].values.astype(np.double)
 w_i = ds.WISOP[:].values.astype(np.double)
@@ -44,6 +46,6 @@ a_submeso   = np.where(ocean, w_sm[0,:,:,:] * tarea3d, 0.0)
 # Invoke `linint2` from `geocat-comp`
 result = geocat.comp.moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak, msg=None, meta=False)
 
-print(result[0,0,:,:])
+print("moc_globe_atl successfully generated output.")
 
 asd = 6
