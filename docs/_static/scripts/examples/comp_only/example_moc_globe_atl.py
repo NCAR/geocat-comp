@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
-""" This example scrit demonstrates how to computes POP MOC field offline from POP netcdf history files.  This routine
+""" This example script demonstrates how to computes POP MOC field offline from POP netcdf history files.  This routine
 is designed for the CESM4 ocean component.
 
 Example netCDF file used below can be found under https://github.com/NCAR/geocat-datafiles/tree/master/netcdf_files
@@ -47,5 +47,3 @@ a_submeso   = np.where(ocean, w_sm[0,:,:,:] * tarea3d, 0.0)
 result = geocat.comp.moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak, msg=None, meta=False)
 
 print("moc_globe_atl successfully generated output.")
-
-asd = 6
