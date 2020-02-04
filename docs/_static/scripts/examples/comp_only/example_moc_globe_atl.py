@@ -43,7 +43,7 @@ a_wvel   = np.where(ocean, w_e[0,:,:,:] * tarea3d, 0.0)
 a_bolus   = np.where(ocean, w_i[0,:,:,:] * tarea3d, 0.0)
 a_submeso   = np.where(ocean, w_sm[0,:,:,:] * tarea3d, 0.0)
 
-# Invoke `linint2` from `geocat-comp`
+# Invoke `moc_globe_atl` from `geocat-comp`
 result = geocat.comp.moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak, msg=None, meta=False)
 
 print("moc_globe_atl successfully generated output.")
