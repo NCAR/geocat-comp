@@ -853,7 +853,31 @@ def moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak,
 
     Examples:
 
-        # TODO: To be included
+        # Input data can be read from a data set as follows:
+        import xarray as xr
+
+        ds = xr.open_dataset("input.nc")
+
+        lat_aux_grid = ds.lat_aux_grid
+        a_wvel = ds.a_wvel
+        a_bolus = ds.a_bolus
+        a_submeso = ds.a_submeso
+        tlat = ds.tlat
+        rmlak = ds.rmlak
+
+        # (1) Calling with xArray inputs and default arguments (Missing value = np.nan, NO meta information)
+        out_arr = moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak)
+
+        # (2) Calling with Numpy inputs and default arguments (Missing value = np.nan, NO meta information)
+        out_arr = moc_globe_atl(lat_aux_grid.values, a_wvel.values, a_bolus.values, a_submeso.values,
+                                tlat.values, rmlak.values)
+
+        # (3) Calling with xArray inputs and user-defined arguments (Missing value = np.nan, NO meta information)
+        out_arr = moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak, msg=-99.0, meta=True)
+
+        # (4) Calling with Numpy inputs and user-defined arguments (Missing value = np.nan, NO meta information)
+        out_arr = moc_globe_atl(lat_aux_grid.values, a_wvel.values, a_bolus.values, a_submeso.values,
+                                tlat.values, rmlak.values, msg=-99.0, meta=True)
 
     """
 

@@ -12,3 +12,5 @@ Internal NumPy API routines
    :toctree: ./generated/
 
    geocat.comp._ncomp._linint2
+
+   geocat.comp._ncomp._moc_globe_atl
