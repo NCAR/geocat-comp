@@ -35,19 +35,16 @@ class BaseTestClass(metaclass=ABCMeta):
 
     _chunks = {'time': _fi_np.shape[0], 'level': _fi_np.shape[1], 'lat': _fi_np.shape[2], 'lon': _fi_np.shape[3]}
 
-    _ncl_truth = [0.3237105, 0.2887675, 0.1539609, 0.4888571, 0.8951765, 0.5066158, 9.96921e+36, 0.0370131, 0.223796,
-                  0.208128, 0.3619402, 0.76442, 0.4775567, 9.96921e+36, 0.9233359, 0.62587, 0.02650658, 0.2444884,
-                  0.4906232, 0.6120635, 9.96921e+36, 0.6281158, 0.5058253, 0.4808828, 0.6017321, 0.6757824, 0.5290115,
-                  9.96921e+36, 0.1366455, 0.5545933, 0.4618556, 0.4548832, 0.003553235, 0.3870832, 9.96921e+36,
-                  0.1769017, 0.4343624, 0.4336452, 0.3095225, 0.1383722, 0.1336995, 9.96921e+36]
+    _ncl_truth = [0.3237105, 0.2887675, 0.1539609, 0.4888571, 0.8951765, 0.5066158, np.nan, 0.0370131, 0.223796,
+                  0.208128, 0.3619402, 0.76442, 0.4775567, np.nan, 0.9233359, 0.62587, 0.02650658, 0.2444884,
+                  0.4906232, 0.6120635, np.nan, 0.6281158, 0.5058253, 0.4808828, 0.6017321, 0.6757824, 0.5290115,
+                  np.nan, 0.1366455, 0.5545933, 0.4618556, 0.4548832, 0.003553235, 0.3870832, np.nan,
+                  0.1769017, 0.4343624, 0.4336452, 0.3095225, 0.1383722, 0.1336995, np.nan]
 
 
 class Test_linint2points_numpy(ut.TestCase, BaseTestClass):
     def test_linint2points_fi_np(self):
         fo = geocat.comp.linint2_points(self._fi_np, self._xo, self._yo, 0, xi=self._xi, yi=self._yi)
-
-        # print(self._fi_np.shape)
-        # print(fo.shape)
 
         self.assertEqual((self._shape0, self._shape1), fo.shape[:-1])
 
@@ -61,10 +58,12 @@ class Test_linint2points_numpy(ut.TestCase, BaseTestClass):
 
         print(fo_vals)
 
-        print(fo[0,0,0])
+        print(self._xo)
 
-        for e in zip(self._ncl_truth, fo_vals):
-            self.assertAlmostEqual(e[0], e[1], 2)
+        # Use numpy.testing.assert_almost_equal() instead of ut.TestCase.assertAlmostEqual() because the former can
+        # handle NaNs but the latter cannot.
+        # Compare the function-generated fo array to NCL ground-truth up to 5 decimal points
+        np.testing.assert_almost_equal(self._ncl_truth, fo_vals, decimal=5)
 
     def test_linint2points_fi_np_no_xi_yi(self):
         with self.assertRaises(geocat.comp.CoordinateError):
