@@ -1,5 +1,5 @@
 from unittest import TestCase
-from geocat.comp.polynomial import _ndpolyfit, ndpolyfit, _ndpolyval, ndpolyval
+from geocat.comp.polynomial import _ndpolyfit, ndpolyfit, _ndpolyval, ndpolyval, detrend
 
 import numpy as np
 import xarray as xr
@@ -541,6 +541,65 @@ class test_ndpolyval(TestCase):
                 y_expected.data
             )
 
+
+class test_detrend(TestCase):
+    def test_01(self):
+        # Creating synthetic data
+        x = np.linspace(-8*np.pi, 8 * np.pi, 33, dtype=np.float64)
+        y0 = 1.0 * x
+        y1 = np.sin(x)
+        y = y0 + y1
+
+        p = ndpolyfit(x, y, deg=1)
+        y_trend = ndpolyval(p, x)
+
+        y_detrended = detrend(y, x=x)
+
+        np.testing.assert_almost_equal(y_detrended + y_trend, y)
+
+    def test_02(self):
+        # Creating synthetic data
+        x = np.linspace(-8*np.pi, 8 * np.pi, 33, dtype=np.float64)
+        y0 = 1.0 * x
+        y1 = np.sin(x)
+        y = y0 + y1
+
+        p = ndpolyfit(np.arange(x.size), y, deg=1)
+        y_trend = ndpolyval(p, np.arange(x.size))
+
+        y_detrended = detrend(y)
+
+        np.testing.assert_almost_equal(y_detrended + y_trend, y)
+
+    def test_03(self):
+        # Creating synthetic data
+        x = np.linspace(-8*np.pi, 8 * np.pi, 33, dtype=np.float64)
+        y0 = 1.0 * x
+        y1 = np.sin(x)
+        y = y0 + y1
+
+        p = ndpolyfit(x, y, deg=1)
+        y_trend = ndpolyval(p, x)
+
+        y_detrended = detrend(y, x=x, return_info=False)
+
+        np.testing.assert_almost_equal(y_detrended + y_trend, y)
+
+        np.testing.assert_equal({}, y_detrended.attrs)
+
+    def test_04(self):
+        # Creating synthetic data
+        x = np.linspace(-8*np.pi, 8 * np.pi, 33, dtype=np.float64)
+        y0 = 1.0 * x
+        y1 = np.sin(x)
+        y = np.tile((y0 + y1).reshape((1, -1, 1, 1)), (2, 1, 3, 4))
+
+        p = ndpolyfit(x, y, deg=1, axis=1)
+        y_trend = ndpolyval(p, x, axis=1)
+
+        y_detrended = detrend(y, x=x, axis=1)
+
+        np.testing.assert_almost_equal(y_detrended + y_trend, y)
 
 
 
