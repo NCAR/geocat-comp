@@ -766,6 +766,9 @@ def _dpres_plevel(np.ndarray plev_np, np.ndarray psfc_np, ptop_scalar, msg=None)
         weight observations for integrations.
 
     """
+    warnings.warn("dpres_plevel: this function is currently unstable and "
+                  "untested, and its functionality cannot be verified.",
+                  NcompWarning)
     plev = Array.from_np(plev_np)
     psfc = Array.from_np(psfc_np)
     ptop = Array.from_np(np.ndarray([1], buffer=ptop_scalar, dtype=type(ptop_scalar)))
