@@ -1145,8 +1145,9 @@ def _linint2_points(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.nda
         fi (:class:`xarray.DataArray` or :class:`numpy.ndarray`):
             An array of two or more dimensions. The two rightmost
             dimensions (nyi x nxi) are the dimensions to be used in
-            the interpolation. If missing values are present, the
-            value of `msg` must be set appropriately.
+            the interpolation. If user-defined missing values are
+            present (other than NaNs), the value of `msg` must be
+            set appropriately.
 
         xo (:class:`xarray.DataArray` or :class:`numpy.ndarray`):
             A One-dimensional array that specifies the X (longitude)
