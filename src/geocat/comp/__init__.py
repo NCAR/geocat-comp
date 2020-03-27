@@ -1287,7 +1287,7 @@ def linint2_points(fi, xo, yo, icycx, msg=None, meta=False, xi=None, yi=None):
     if isinstance(yo, xr.DataArray):
         yo = yo.values
 
-    fi_data = fi.data
+    fi_data = fi.values
 
     if isinstance(fi_data, np.ndarray):
         fo = _ncomp._linint2_points(xi, yi, fi_data, xo, yo, icycx, msg)
@@ -1299,7 +1299,8 @@ def linint2_points(fi, xo, yo, icycx, msg=None, meta=False, xi=None, yi=None):
     else:
         fo = xr.DataArray(fo)
 
-    # OERO: Above two if-blocks should be changed with two if-blocks similar to the following (would require corrections
+    #todo: Revisit for the parallelization:
+    # Above two if-blocks should be changed with two if-blocks similar to the following (would require corrections
     # though) when parallelization for differently-shaped input (fi) and output (fo) arrays in this case is resolved:
 
     # if isinstance(fi_data, da.Array):

@@ -1207,14 +1207,18 @@ def _linint2_points(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.nda
     replace_fi_nans = False
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
         missing_inds_fi = np.isnan(fi.numpy)
-        msg = get_default_fill(fi.numpy)
+        fi_msg = get_default_fill(fi.numpy)
+        msg = np.nan
         replace_fi_nans = True
+    else:
+        missing_inds_fi = (fi.numpy == msg)
+        fi_msg = msg
 
-    set_ncomp_msg(&(fi.ncomp.msg), msg) # always set missing on fi.ncomp
+    set_ncomp_msg(&(fi.ncomp.msg), fi_msg) # always set missing on fi.ncomp
 
-    if replace_fi_nans and missing_inds_fi.any():
+    if missing_inds_fi.any():
         fi.ncomp.has_missing = 1
-        fi.numpy[missing_inds_fi] = msg
+        fi.numpy[missing_inds_fi] = fi_msg
 
     fo = Array.from_np(fo_np)
 
@@ -1235,7 +1239,7 @@ def _linint2_points(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.nda
     else:
         fo_msg = fo.ncomp.msg.msg_float
 
-    fo.numpy[fo.numpy == fo_msg] = np.nan
+    fo.numpy[fo.numpy == fo_msg] = msg
 
     return fo.numpy
 
