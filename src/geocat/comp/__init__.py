@@ -304,7 +304,9 @@ def rcm2rgrid(lat2d, lon2d, fi, lat1d, lon1d, msg=None, meta=False):
             other than NaN or masked arrays, similar to what NCL allows.
 
         meta (:obj:`bool`):
-            Set to False to disable metadata; default is True.
+            Set to False to disable metadata since it is not supported
+            for the current version; default is True. It will be resolved
+            in a future version.
 
     Returns:
         :class:`numpy.ndarray`: The interpolated grid. A multi-dimensional array
@@ -361,6 +363,8 @@ def rcm2rgrid(lat2d, lon2d, fi, lat1d, lon1d, msg=None, meta=False):
 
 
     """
+
+    # todo: Revisit for handling of "meta" argument
 
     # Basic sanity checks
     if lat2d.shape[0] != lon2d.shape[0] or lat2d.shape[1] != lon2d.shape[1]:
@@ -457,7 +461,9 @@ def rgrid2rcm(lat1d, lon1d, fi, lat2d, lon2d, msg=None, meta=False):
             other than NaN or masked arrays, similar to what NCL allows.
 
         meta (:obj:`bool`):
-            Set to False to disable metadata; default is True.
+            Set to False to disable metadata since it is not supported
+            for the current version; default is True. It will be resolved
+            in a future version.
 
     Returns:
         :class:`numpy.ndarray`: The interpolated grid. A multi-dimensional array of the
@@ -504,6 +510,8 @@ def rgrid2rcm(lat1d, lon1d, fi, lat2d, lon2d, msg=None, meta=False):
 
 
     """
+
+    # todo: Revisit for handling of "meta" argument
 
     # Basic sanity checks
     if lat2d.shape[0] != lon2d.shape[0] or lat2d.shape[1] != lon2d.shape[1]:
@@ -834,7 +842,9 @@ def moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak,
           other than NaN or masked arrays, similar to what NCL allows.
 
         meta (:obj:`bool`):
-          Set to False to disable metadata; default is True.
+          Set to False to disable metadata since it is not supported
+            for the current version; default is True. It will be resolved
+            in a future version.
 
         Returns:
             :class:`xarray.DataArray`: A multi-dimensional array of size [moc_comp] x
@@ -878,6 +888,8 @@ def moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak,
                                 tlat.values, rmlak.values, msg=-99.0, meta=True)
 
     """
+
+    # todo: Revisit for handling of "meta" argument
 
     # Ensure input arrays are numpy.ndarrays
     if isinstance(lat_aux_grid, xr.DataArray):
@@ -940,7 +952,9 @@ def dpres_plevel(plev, psfc, ptop=None, msg=None, meta=False):
             other than NaN or masked arrays, similar to what NCL allows.
 
         meta (:obj:`bool`):
-            Set to False to disable metadata; default is False.
+            Set to False to disable metadata since it is not supported
+            for the current version; default is True. It will be resolved
+            in a future version.
 
     Returns:
         :class:`numpy.ndarray`: If psfc is a scalar the return variable will be a
@@ -983,6 +997,8 @@ def dpres_plevel(plev, psfc, ptop=None, msg=None, meta=False):
             # Call the function
             result_dp = geocat.comp.dpres_plevel(plev, psfc, ptop)
     """
+
+    # todo: Revisit for handling of "meta" argument
 
     if isinstance(psfc, np.ndarray):
         if psfc.ndim > 3:
@@ -1057,7 +1073,9 @@ def rcm2points(lat2d, lon2d, fi, lat1dPoints, lon1dPoints, opt=0, msg=None, meta
 	    other than NaN or masked arrays, similar to what NCL allows.
 
 	meta (:obj:`bool`):
-	    Set to False to disable metadata; default is False.
+	    Set to False to disable metadata since it is not supported
+        for the current version; default is True. It will be resolved
+        in a future version.
 
     Returns:
 	:class:`numpy.ndarray`: The interpolated grid. A multi-dimensional array
@@ -1099,6 +1117,8 @@ def rcm2points(lat2d, lon2d, fi, lat1dPoints, lon1dPoints, opt=0, msg=None, meta
 
 	    ht_points = geocat.comp.rcm2points(lat2D_curv, lon2D_curv, ht_curv, newlat1D_points, newlon1D_points)
     """
+
+    # todo: Revisit for handling of "meta" argument
 
     # Basic sanity checks
     if lat2d.shape[0] != lon2d.shape[0] or lat2d.shape[1] != lon2d.shape[1]:
@@ -1183,7 +1203,9 @@ def linint2_points(fi, xo, yo, icycx, msg=None, meta=False, xi=None, yi=None):
             other than NaN or masked arrays, similar to what NCL allows.
 
         meta (:obj:`bool`):
-            Set to True for metadata; default is False.
+            Set to False to disable metadata since it is not supported
+            for the current version; default is True. It will be resolved
+            in a future version.
 
         xi (:class:`numpy.ndarray`):
             A strictly monotonically increasing array that specifies
@@ -1259,6 +1281,8 @@ def linint2_points(fi, xo, yo, icycx, msg=None, meta=False, xi=None, yi=None):
             fo = geocat.comp.linint2_points(fi, xo, yo, 0)
 
     """
+
+    # todo: Revisit for handling of "meta" argument
 
     # Basic sanity checks
     if not isinstance(fi, xr.DataArray):
@@ -1528,7 +1552,9 @@ def grid2triple(x, y, z, msg=None, meta=False):
 	    other than NaN or masked arrays, similar to what NCL allows.
 
 	meta (:obj:`bool`):
-	    Set to False to disable metadata; default is False.
+	    Set to False to disable metadata since it is not supported
+        for the current version; default is True. It will be resolved
+        in a future version.
 
     Returns:
 	:class:`numpy.ndarray`: If any argument is "double" the return type
@@ -1562,6 +1588,8 @@ def grid2triple(x, y, z, msg=None, meta=False):
 
 	    output = geocat.comp.grid2triple(x, y, z)
     """
+
+    # todo: Revisit for handling of "meta" argument
 
     # Basic sanity checks
     if z.ndim != 2 :
