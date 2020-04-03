@@ -774,6 +774,7 @@ def _dpres_plevel(np.ndarray plev_np, np.ndarray psfc_np, ptop_scalar, msg=None)
     ptop = Array.from_np(np.ndarray([1], buffer=ptop_scalar, dtype=type(ptop_scalar)))
 
     replace_psfc_nans = False
+
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
         missing_inds_psfc = np.isnan(psfc.numpy)
         msg = get_default_fill(psfc.numpy)
@@ -883,6 +884,7 @@ def _rcm2points(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.n
     cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat1d.shape[0]]), dtype=fo_dtype) # or lon1d.shape[0]
 
     replace_fi_nans = False
+
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
         missing_inds_fi = np.isnan(fi.numpy)
         msg = get_default_fill(fi.numpy)
@@ -997,6 +999,7 @@ def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.nd
     cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat1d.shape[0], lon1d.shape[0]]), dtype=fo_dtype)
 
     replace_fi_nans = False
+
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
         missing_inds_fi = np.isnan(fi.numpy)
         msg = get_default_fill(fi.numpy)
@@ -1096,6 +1099,7 @@ def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.nd
     cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat2d.shape[0], lon2d.shape[0]]), dtype=fo_dtype)
 
     replace_fi_nans = False
+
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
         missing_inds_fi = np.isnan(fi.numpy)
         msg = get_default_fill(fi.numpy)
@@ -1207,18 +1211,16 @@ def _linint2_points(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.nda
     replace_fi_nans = False
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
         missing_inds_fi = np.isnan(fi.numpy)
-        fi_msg = get_default_fill(fi.numpy)
-        msg = np.nan
+        msg = get_default_fill(fi.numpy)
         replace_fi_nans = True
     else:
         missing_inds_fi = (fi.numpy == msg)
-        fi_msg = msg
 
-    set_ncomp_msg(&(fi.ncomp.msg), fi_msg) # always set missing on fi.ncomp
+    set_ncomp_msg(&(fi.ncomp.msg), msg) # always set missing on fi.ncomp
 
     if missing_inds_fi.any():
         fi.ncomp.has_missing = 1
-        fi.numpy[missing_inds_fi] = fi_msg
+        fi.numpy[missing_inds_fi] = msg
 
     fo = Array.from_np(fo_np)
 
@@ -1239,7 +1241,7 @@ def _linint2_points(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.nda
     else:
         fo_msg = fo.ncomp.msg.msg_float
 
-    fo.numpy[fo.numpy == fo_msg] = msg
+    fo.numpy[fo.numpy == fo_msg] = np.nan
 
     return fo.numpy
 
@@ -1327,6 +1329,7 @@ def _triple2grid(np.ndarray x_np, np.ndarray y_np, np.ndarray data_np, np.ndarra
     cdef libncomp.ncomp_attributes* attrs = dict_to_ncomp_attributes(opt)
 
     replace_data_nans = False
+
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
         missing_inds_data = np.isnan(data.numpy)
         msg = get_default_fill(data.numpy)
@@ -1336,7 +1339,7 @@ def _triple2grid(np.ndarray x_np, np.ndarray y_np, np.ndarray data_np, np.ndarra
 
     set_ncomp_msg(&(data.ncomp.msg), msg) # always set missing on data.ncomp
 
-    if replace_data_nans and missing_inds_data.any():
+    if missing_inds_data.any():
         data.ncomp.has_missing = 1
         data.numpy[missing_inds_data] = msg
 
@@ -1415,14 +1418,17 @@ def _grid2triple(np.ndarray x_np, np.ndarray y_np, np.ndarray z_np, msg=None):
     z = Array.from_np(z_np)
 
     replace_z_nans = False
+
     if msg is None or np.isnan(msg): # if no missing value specized, assume NaNs
         missing_inds_z = np.isnan(z.numpy)
         msg = get_default_fill(z.numpy)
         replace_z_nans = True
+    else:
+        missing_inds_z = (z.numpy == msg)
 
     set_ncomp_msg(&(z.ncomp.msg), msg) # always set missing on z.ncomp
 
-    if replace_z_nans and missing_inds_z.any():
+    if missing_inds_z.any():
         z.ncomp.has_missing = 1
         z.numpy[missing_inds_z] = msg
 

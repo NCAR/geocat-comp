@@ -49,14 +49,13 @@ class BaseTestClass(metaclass=ABCMeta):
                   np.nan, 0.1366455, 0.5545933, 0.4618556, 0.4548832, 0.003553235, 0.3870832, np.nan,
                   0.1769017, 0.4343624, 0.4336452, 0.3095225, 0.1383722, 0.1336995, np.nan])
 
-    _ncl_truth_msg_nan = np.array([np.nan, 0.2771198, 0.1539609, 0.4888571, 0.8951765, 0.5066158, np.nan, 0.0370131, 0.223796,
-                         0.208128, 0.3619402, 0.76442, 0.4775567, np.nan, 0.9233359, 0.62587, 0.02650658, 0.2444884,
-                         0.4906232, 0.6120635, np.nan, 0.6281158, 0.5141395, np.nan, 0.6420152, 0.6757824, 0.5290115,
-                         np.nan, 0.1366455, 0.5545933, 0.4618556, 0.4548832, 0.003553235, 0.3870832, np.nan,
-                         0.1769017, 0.4343624, 0.4336452, 0.3665726, np.nan, 0.1281724, np.nan])
+    groundtruth_msg_nan = np.array([np.nan, 0.2771198, 0.1539609, 0.4888571, 0.8951765, 0.5066158, np.nan, 0.0370131, 0.223796,
+                                    0.208128, 0.3619402, 0.76442, 0.4775567, np.nan, 0.9233359, 0.62587, 0.02650658, 0.2444884,
+                                    0.4906232, 0.6120635, np.nan, 0.6281158, 0.5141395, np.nan, 0.6420152, 0.6757824, 0.5290115,
+                                    np.nan, 0.1366455, 0.5545933, 0.4618556, 0.4548832, 0.003553235, 0.3870832, np.nan,
+                                    0.1769017, 0.4343624, 0.4336452, 0.3665726, np.nan, 0.1281724, np.nan])
 
-    _ncl_truth_msg_99 = _ncl_truth_msg_nan.copy()
-    _ncl_truth_msg_99[np.isnan(_ncl_truth_msg_99)] = np.float64(-99)
+    groundtruth_msg_99 = groundtruth_msg_nan.copy()
 
 
 class Test_linint2points_numpy(ut.TestCase, BaseTestClass):
@@ -142,7 +141,7 @@ class Test_linint2points_float64(ut.TestCase, BaseTestClass):
         # Use numpy.testing.assert_almost_equal() instead of ut.TestCase.assertAlmostEqual() because the former can
         # handle NaNs but the latter cannot.
         # Compare the function-generated fo array to NCL ground-truth up to 5 decimal points
-        np.testing.assert_almost_equal(self._ncl_truth_msg_nan, fo_vals, decimal=5)
+        np.testing.assert_almost_equal(self.groundtruth_msg_nan, fo_vals, decimal=5)
 
     def test_linint2points_msg_99(self):
         # fi_msg_99 = xr.DataArray(self._fi_np_msg_nan, dims=['time', 'level', 'lat', 'lon'], coords={'lat': self._yi, 'lon': self._xi}).chunk(self._chunks)
@@ -161,7 +160,7 @@ class Test_linint2points_float64(ut.TestCase, BaseTestClass):
         # Use numpy.testing.assert_almost_equal() instead of ut.TestCase.assertAlmostEqual() because the former can
         # handle NaNs but the latter cannot.
         # Compare the function-generated fo array to NCL ground-truth up to 5 decimal points
-        np.testing.assert_almost_equal(self._ncl_truth_msg_99, fo_vals, decimal=5)
+        np.testing.assert_almost_equal(self.groundtruth_msg_99, fo_vals, decimal=5)
 
         #todo: Revisit for the parallelization:
         # Below test cases (would require corrections though)
