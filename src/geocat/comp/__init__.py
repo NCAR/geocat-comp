@@ -111,7 +111,9 @@ def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
             other than NaN or masked arrays, similar to what NCL allows.
 
         meta (:obj:`bool`):
-            Set to False to disable metadata; default is True.
+            If set to True and the input array is an Xarray, the metadata
+            from the input array will be copied to the output array;
+            default is False.
 
         xi (:class:`numpy.ndarray`):
             An array that specifies the X coordinates of the fi array.
@@ -304,9 +306,10 @@ def rcm2rgrid(lat2d, lon2d, fi, lat1d, lon1d, msg=None, meta=False):
             other than NaN or masked arrays, similar to what NCL allows.
 
         meta (:obj:`bool`):
-            Set to False to disable metadata since it is not supported
-            for the current version; default is True. It will be resolved
-            in a future version.
+            If set to True and the input array is an Xarray, the metadata
+            from the input array will be copied to the output array;
+            default is False.
+            Warning: this option is not currently supported.
 
     Returns:
         :class:`numpy.ndarray`: The interpolated grid. A multi-dimensional array
@@ -461,9 +464,10 @@ def rgrid2rcm(lat1d, lon1d, fi, lat2d, lon2d, msg=None, meta=False):
             other than NaN or masked arrays, similar to what NCL allows.
 
         meta (:obj:`bool`):
-            Set to False to disable metadata since it is not supported
-            for the current version; default is True. It will be resolved
-            in a future version.
+            If set to True and the input array is an Xarray, the metadata
+            from the input array will be copied to the output array;
+            default is False.
+            Warning: this option is not currently supported.
 
     Returns:
         :class:`numpy.ndarray`: The interpolated grid. A multi-dimensional array of the
@@ -597,12 +601,10 @@ def eofunc(data: Iterable, neval, **kwargs) -> xr.DataArray:
             - ''time_dim``: an integer defining the time dimension. it must be between ``0`` and ``data.ndim - 1`` or it
                             could be ``-1`` indicating the last dimension. The default value is -1.
             - ``missing_value``: a value defining the missing value. The default is ``np.nan``.
-            - ``meta``: if set to ``True`` (or a value that evaluates to ``True``) the properties or attributes
-                        associated to the input data are also transferred to the output data. This is equivalent
-                        to the ``_Wrap`` version of the functions in ``NCL``. This only works if the input data is
-                        of type ``xarray.DataArray``.
-
+            - ``meta``:  If set to True and the input array is an Xarray, the metadata from the input array will be
+                         copied to the output array; default is False.
     """
+
     # Parsing Options
     options = {}
     if "jopt" in kwargs:
@@ -695,10 +697,8 @@ def eofunc_ts(data: Iterable, evec, **kwargs) -> xr.DataArray:
             - ''time_dim``: an integer defining the time dimension. it must be between ``0`` and ``data.ndim - 1`` or it
                             could be ``-1`` indicating the last dimension. The default value is -1.
             - ``missing_value``: defines the missing_value. The default is ``np.nan``.
-            - ``meta``: if set to ``True`` (or a value that evaluates to ``True``) the properties or attributes
-                        associated to the input data are also transferred to the output data. This is equivalent
-                        to the ``_Wrap`` version of the functions in ``NCL``. This only works if the input data is
-                        of type ``xarray.DataArray``.
+            - ``meta``: If set to True and the input array is an Xarray, the metadata from the input array will be
+                        copied to the output array; default is False.
 
     Returns: A two-dimensional array dimensioned by the number of eigenvalues selected in `eofunc` by the size of the
              time dimension of data. Will contain the following attribute:
@@ -842,9 +842,10 @@ def moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak,
           other than NaN or masked arrays, similar to what NCL allows.
 
         meta (:obj:`bool`):
-          Set to False to disable metadata since it is not supported
-            for the current version; default is True. It will be resolved
-            in a future version.
+            If set to True and the input array is an Xarray, the metadata
+            from the input array will be copied to the output array;
+            default is False.
+            Warning: this option is not currently supported.
 
         Returns:
             :class:`xarray.DataArray`: A multi-dimensional array of size [moc_comp] x
@@ -952,9 +953,10 @@ def dpres_plevel(plev, psfc, ptop=None, msg=None, meta=False):
             other than NaN or masked arrays, similar to what NCL allows.
 
         meta (:obj:`bool`):
-            Set to False to disable metadata since it is not supported
-            for the current version; default is True. It will be resolved
-            in a future version.
+            If set to True and the input array is an Xarray, the metadata
+            from the input array will be copied to the output array;
+            default is False.
+            Warning: this option is not currently supported.
 
     Returns:
         :class:`numpy.ndarray`: If psfc is a scalar the return variable will be a
@@ -1073,9 +1075,10 @@ def rcm2points(lat2d, lon2d, fi, lat1dPoints, lon1dPoints, opt=0, msg=None, meta
 	    other than NaN or masked arrays, similar to what NCL allows.
 
 	meta (:obj:`bool`):
-	    Set to False to disable metadata since it is not supported
-        for the current version; default is True. It will be resolved
-        in a future version.
+        If set to True and the input array is an Xarray, the metadata
+        from the input array will be copied to the output array;
+        default is False.
+        Warning: this option is not currently supported.
 
     Returns:
 	:class:`numpy.ndarray`: The interpolated grid. A multi-dimensional array
@@ -1203,9 +1206,10 @@ def linint2_points(fi, xo, yo, icycx, msg=None, meta=False, xi=None, yi=None):
             other than NaN or masked arrays, similar to what NCL allows.
 
         meta (:obj:`bool`):
-            Set to False to disable metadata since it is not supported
-            for the current version; default is True. It will be resolved
-            in a future version.
+            If set to True and the input array is an Xarray, the metadata
+            from the input array will be copied to the output array;
+            default is False.
+            Warning: this option is not currently supported.
 
         xi (:class:`numpy.ndarray`):
             A strictly monotonically increasing array that specifies
@@ -1418,7 +1422,10 @@ def triple2grid(x, y, data, xgrid, ygrid, **kwargs):
                           a missing value in `data`. This argument allows a user to
                           use a missing value scheme other than NaN or masked arrays,
                           similar to what NCL allows.
-            - ``meta`` (:obj:`bool`): Set to False to disable metadata; default is False.
+            - ``meta`` (:obj:`bool`): If set to True and the input array is an Xarray,
+                          the metadata from the input array will be copied to the
+                          output array; default is False.
+                          Warning: this option is not currently supported.
 
     Returns:
 	:class:`numpy.ndarray`: The return array will be K x N x M, where K
@@ -1463,6 +1470,8 @@ def triple2grid(x, y, data, xgrid, ygrid, **kwargs):
 
 	    output = geocat.comp.triple2grid(x, y, data, xgrid, ygrid)
     """
+
+    # todo: Revisit for handling of "meta" argument
 
     # Basic sanity checks
     if x.shape[0] != y.shape[0] or x.shape[0] != data.shape[data.ndim-1]:
@@ -1552,9 +1561,10 @@ def grid2triple(x, y, z, msg=None, meta=False):
 	    other than NaN or masked arrays, similar to what NCL allows.
 
 	meta (:obj:`bool`):
-	    Set to False to disable metadata since it is not supported
-        for the current version; default is True. It will be resolved
-        in a future version.
+        If set to True and the input array is an Xarray, the metadata
+        from the input array will be copied to the output array;
+        default is False.
+        Warning: this option is not currently supported.
 
     Returns:
 	:class:`numpy.ndarray`: If any argument is "double" the return type
