@@ -775,7 +775,7 @@ def _dpres_plevel(np.ndarray plev_np, np.ndarray psfc_np, ptop_scalar, msg=None)
 
     replace_psfc_nans = False
 
-    if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
+    if msg is None or np.isnan(msg): # if no missing value specipsfced, assume NaNs
         missing_inds_psfc = np.isnan(psfc.numpy)
         msg = get_default_fill(psfc.numpy)
         replace_psfc_nans = True
@@ -784,7 +784,7 @@ def _dpres_plevel(np.ndarray plev_np, np.ndarray psfc_np, ptop_scalar, msg=None)
 
     set_ncomp_msg(&(psfc.ncomp.msg), msg) # always set missing on psfc.ncomp
 
-    if replace_psfc_nans and missing_inds_psfc.any():
+    if missing_inds_psfc.any():
         psfc.ncomp.has_missing = 1
         psfc.numpy[missing_inds_psfc] = msg
 
@@ -889,10 +889,12 @@ def _rcm2points(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.n
         missing_inds_fi = np.isnan(fi.numpy)
         msg = get_default_fill(fi.numpy)
         replace_fi_nans = True
+    else:
+        missing_inds_fi = (fi.numpy == msg)
 
     set_ncomp_msg(&(fi.ncomp.msg), msg) # always set missing on fi.ncomp
 
-    if replace_fi_nans and missing_inds_fi.any():
+    if missing_inds_fi.any():
         fi.ncomp.has_missing = 1
         fi.numpy[missing_inds_fi] = msg
 
@@ -1004,10 +1006,12 @@ def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.nd
         missing_inds_fi = np.isnan(fi.numpy)
         msg = get_default_fill(fi.numpy)
         replace_fi_nans = True
+    else:
+        missing_inds_fi = (fi.numpy == msg)
 
     set_ncomp_msg(&(fi.ncomp.msg), msg) # always set missing on fi.ncomp
 
-    if replace_fi_nans and missing_inds_fi.any():
+    if missing_inds_fi.any():
         fi.ncomp.has_missing = 1
         fi.numpy[missing_inds_fi] = msg
 
@@ -1104,10 +1108,12 @@ def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.nd
         missing_inds_fi = np.isnan(fi.numpy)
         msg = get_default_fill(fi.numpy)
         replace_fi_nans = True
+    else:
+        missing_inds_fi = (fi.numpy == msg)
 
     set_ncomp_msg(&(fi.ncomp.msg), msg) # always set missing on fi.ncomp
 
-    if replace_fi_nans and missing_inds_fi.any():
+    if missing_inds_fi.any():
         fi.ncomp.has_missing = 1
         fi.numpy[missing_inds_fi] = msg
 
@@ -1209,6 +1215,7 @@ def _linint2_points(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.nda
     cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [yo.shape[0]]), dtype=fo_dtype)
 
     replace_fi_nans = False
+
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
         missing_inds_fi = np.isnan(fi.numpy)
         msg = get_default_fill(fi.numpy)
