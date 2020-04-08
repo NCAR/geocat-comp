@@ -29,6 +29,8 @@ GeoCAT-comp routines
 
    geocat.comp.rcm2rgrid
 
+   geocat.comp.linint2_points
+
    geocat.comp.rgrid2rcm
 
    geocat.comp.triple2grid

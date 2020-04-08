@@ -774,6 +774,7 @@ def _dpres_plevel(np.ndarray plev_np, np.ndarray psfc_np, ptop_scalar, msg=None)
     ptop = Array.from_np(np.ndarray([1], buffer=ptop_scalar, dtype=type(ptop_scalar)))
 
     replace_psfc_nans = False
+
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
         missing_inds_psfc = np.isnan(psfc.numpy)
         msg = get_default_fill(psfc.numpy)
@@ -883,6 +884,7 @@ def _rcm2points(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.n
     cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat1d.shape[0]]), dtype=fo_dtype) # or lon1d.shape[0]
 
     replace_fi_nans = False
+
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
         missing_inds_fi = np.isnan(fi.numpy)
         msg = get_default_fill(fi.numpy)
@@ -997,6 +999,7 @@ def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.nd
     cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat1d.shape[0], lon1d.shape[0]]), dtype=fo_dtype)
 
     replace_fi_nans = False
+
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
         missing_inds_fi = np.isnan(fi.numpy)
         msg = get_default_fill(fi.numpy)
@@ -1096,6 +1099,7 @@ def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.nd
     cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat2d.shape[0], lon2d.shape[0]]), dtype=fo_dtype)
 
     replace_fi_nans = False
+
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
         missing_inds_fi = np.isnan(fi.numpy)
         msg = get_default_fill(fi.numpy)
@@ -1134,6 +1138,113 @@ def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.nd
 
 
 @carrayify
+def _linint2_points(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.ndarray xo_np, np.ndarray yo_np, int icycx, msg=None):
+    """_linint2_points(xi, yi, fi, xo, yo, icycx, msg=None)
+
+    Interpolates from a rectilinear grid to an unstructured grid
+    or locations using bilinear interpolation.
+
+    Args:
+
+        fi (:class:`xarray.DataArray` or :class:`numpy.ndarray`):
+            An array of two or more dimensions. The two rightmost
+            dimensions (nyi x nxi) are the dimensions to be used in
+            the interpolation. If user-defined missing values are
+            present (other than NaNs), the value of `msg` must be
+            set appropriately.
+
+        xo (:class:`xarray.DataArray` or :class:`numpy.ndarray`):
+            A One-dimensional array that specifies the X (longitude)
+            coordinates of the unstructured grid.
+
+        yo (:class:`xarray.DataArray` or :class:`numpy.ndarray`):
+            A One-dimensional array that specifies the Y (latitude)
+            coordinates of the unstructured grid. It must be the same
+            length as `xo`.
+
+        icycx (:obj:`bool`):
+            An option to indicate whether the rightmost dimension of fi
+            is cyclic. This should be set to True only if you have
+            global data, but your longitude values don't quite wrap all
+            the way around the globe. For example, if your longitude
+            values go from, say, -179.75 to 179.75, or 0.5 to 359.5,
+            then you would set this to True.
+
+        msg (:obj:`numpy.number`):
+            A numpy scalar value that represent a missing value in fi.
+            This argument allows a user to use a missing value scheme
+            other than NaN or masked arrays, similar to what NCL allows.
+
+        meta (:obj:`bool`):
+            Set to True for metadata; default is False.
+
+        xi (:class:`numpy.ndarray`):
+            A strictly monotonically increasing array that specifies
+            the X [longitude] coordinates of the `fi` array.
+
+        yi (:class:`numpy.ndarray`):
+            A strictly monotonically increasing array that specifies
+            the Y [latitude] coordinates of the `fi` array.
+
+    Returns:
+	:class:`numpy.ndarray`: The returned value will have the same
+        dimensions as `fi`, except for the rightmost dimension which will
+        have the same dimension size as the length of `yo` and `xo`. The
+        return type will be double if fi is double, and float otherwise.
+
+    """
+
+    xi = Array.from_np(xi_np)
+    yi = Array.from_np(yi_np)
+    fi = Array.from_np(fi_np)
+    xo = Array.from_np(xo_np)
+    yo = Array.from_np(yo_np)
+
+    cdef long i
+    if fi.type == libncomp.NCOMP_DOUBLE:
+        fo_dtype = np.float64
+    else:
+        fo_dtype = np.float32
+
+    cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [yo.shape[0]]), dtype=fo_dtype)
+
+    replace_fi_nans = False
+    if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
+        missing_inds_fi = np.isnan(fi.numpy)
+        msg = get_default_fill(fi.numpy)
+        replace_fi_nans = True
+    else:
+        missing_inds_fi = (fi.numpy == msg)
+
+    set_ncomp_msg(&(fi.ncomp.msg), msg) # always set missing on fi.ncomp
+
+    if missing_inds_fi.any():
+        fi.ncomp.has_missing = 1
+        fi.numpy[missing_inds_fi] = msg
+
+    fo = Array.from_np(fo_np)
+
+    cdef int ier
+    with nogil:
+        ier = libncomp.linint2points(xi.ncomp, yi.ncomp, fi.ncomp,
+                                     xo.ncomp, yo.ncomp, fo.ncomp,
+                                     icycx)
+    if ier:
+        warnings.warn("linint2_points: {}: xi, yi, xo, and yo must be monotonically increasing".format(ier),
+                      NcompWarning)
+
+    if replace_fi_nans and fi.ncomp.has_missing:
+        fi.numpy[missing_inds_fi] = np.nan
+
+    if fo.type == libncomp.NCOMP_DOUBLE:
+        fo_msg = fo.ncomp.msg.msg_double
+    else:
+        fo_msg = fo.ncomp.msg.msg_float
+
+    fo.numpy[fo.numpy == fo_msg] = np.nan
+
+    return fo.numpy
+
 def _triple2grid(np.ndarray x_np, np.ndarray y_np, np.ndarray data_np, np.ndarray xgrid_np, np.ndarray ygrid_np,
                  opt={}, msg=None):
     """_triple2grid(x, y, data, xgrid, ygrid, opt, msg=None)
@@ -1218,6 +1329,7 @@ def _triple2grid(np.ndarray x_np, np.ndarray y_np, np.ndarray data_np, np.ndarra
     cdef libncomp.ncomp_attributes* attrs = dict_to_ncomp_attributes(opt)
 
     replace_data_nans = False
+
     if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
         missing_inds_data = np.isnan(data.numpy)
         msg = get_default_fill(data.numpy)
@@ -1227,7 +1339,7 @@ def _triple2grid(np.ndarray x_np, np.ndarray y_np, np.ndarray data_np, np.ndarra
 
     set_ncomp_msg(&(data.ncomp.msg), msg) # always set missing on data.ncomp
 
-    if replace_data_nans and missing_inds_data.any():
+    if missing_inds_data.any():
         data.ncomp.has_missing = 1
         data.numpy[missing_inds_data] = msg
 
@@ -1306,14 +1418,17 @@ def _grid2triple(np.ndarray x_np, np.ndarray y_np, np.ndarray z_np, msg=None):
     z = Array.from_np(z_np)
 
     replace_z_nans = False
+
     if msg is None or np.isnan(msg): # if no missing value specized, assume NaNs
         missing_inds_z = np.isnan(z.numpy)
         msg = get_default_fill(z.numpy)
         replace_z_nans = True
+    else:
+        missing_inds_z = (z.numpy == msg)
 
     set_ncomp_msg(&(z.ncomp.msg), msg) # always set missing on z.ncomp
 
-    if replace_z_nans and missing_inds_z.any():
+    if missing_inds_z.any():
         z.ncomp.has_missing = 1
         z.numpy[missing_inds_z] = msg
 
