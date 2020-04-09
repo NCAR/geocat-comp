@@ -1,6 +1,6 @@
 # cython: language_level=3, boundscheck=False, embedsignature=True
 from ._ncomp cimport libncomp
-from . cimport _ncomp
+from .cimport _ncomp
 
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
@@ -11,11 +11,14 @@ cimport numpy as np
 import functools
 import warnings
 
+
 class NcompWarning(Warning):
     pass
 
+
 class NcompError(Exception):
     pass
+
 
 def carrayify(f):
     """
@@ -31,7 +34,6 @@ def carrayify(f):
         return f(*new_args, **kwargs)
     return wrapper
 
-
 cdef class Array:
     def __init__(self):
         raise NotImplementedError("_ncomp.Array must be instantiated using the from_np or from_ncomp methods.")
@@ -41,14 +43,14 @@ cdef class Array:
         cdef Array a = Array.__new__(Array)
         a.numpy = nparr
         a.ndim = nparr.ndim
-        a.shape = <size_t*>nparr.shape
+        a.shape = <size_t*> nparr.shape
         a.type = nparr.dtype.num
         a.addr = <void*> (<unsigned long> nparr.__array_interface__['data'][0])
         a.ncomp = np_to_ncomp_array(nparr)
         return a
 
     @staticmethod
-    cdef Array from_ncomp(libncomp.ncomp_array* ncarr):
+    cdef Array from_ncomp(libncomp.ncomp_array*ncarr):
         cdef Array a = Array.__new__(Array)
         a.ncomp = ncarr
         a.ndim = ncarr.ndim
@@ -62,55 +64,51 @@ cdef class Array:
         if self.ncomp is not NULL:
             libncomp.ncomp_array_free(self.ncomp, 1)
 
-
 dtype_default_fill = {
-             "DEFAULT_FILL":       libncomp.DEFAULT_FILL_DOUBLE,
-             np.dtype(np.int8):    np.int8(libncomp.DEFAULT_FILL_INT8),
-             np.dtype(np.uint8):   np.uint8(libncomp.DEFAULT_FILL_UINT8),
-             np.dtype(np.int16):   np.int16(libncomp.DEFAULT_FILL_INT16),
-             np.dtype(np.uint16):  np.uint16(libncomp.DEFAULT_FILL_UINT16),
-             np.dtype(np.int32):   np.int32(libncomp.DEFAULT_FILL_INT32),
-             np.dtype(np.uint32):  np.uint32(libncomp.DEFAULT_FILL_UINT32),
-             np.dtype(np.int64):   np.int64(libncomp.DEFAULT_FILL_INT64),
-             np.dtype(np.uint64):  np.uint64(libncomp.DEFAULT_FILL_UINT64),
-             np.dtype(np.float32): np.float32(libncomp.DEFAULT_FILL_FLOAT),
-             np.dtype(np.float64): np.float64(libncomp.DEFAULT_FILL_DOUBLE),
-            }
+    "DEFAULT_FILL": libncomp.DEFAULT_FILL_DOUBLE,
+    np.dtype(np.int8): np.int8(libncomp.DEFAULT_FILL_INT8),
+    np.dtype(np.uint8): np.uint8(libncomp.DEFAULT_FILL_UINT8),
+    np.dtype(np.int16): np.int16(libncomp.DEFAULT_FILL_INT16),
+    np.dtype(np.uint16): np.uint16(libncomp.DEFAULT_FILL_UINT16),
+    np.dtype(np.int32): np.int32(libncomp.DEFAULT_FILL_INT32),
+    np.dtype(np.uint32): np.uint32(libncomp.DEFAULT_FILL_UINT32),
+    np.dtype(np.int64): np.int64(libncomp.DEFAULT_FILL_INT64),
+    np.dtype(np.uint64): np.uint64(libncomp.DEFAULT_FILL_UINT64),
+    np.dtype(np.float32): np.float32(libncomp.DEFAULT_FILL_FLOAT),
+    np.dtype(np.float64): np.float64(libncomp.DEFAULT_FILL_DOUBLE),
+}
 
+dtype_to_ncomp = {np.dtype(np.bool): libncomp.NCOMP_BOOL,
+                  np.dtype(np.int8): libncomp.NCOMP_BYTE,
+                  np.dtype(np.uint8): libncomp.NCOMP_UBYTE,
+                  np.dtype(np.int16): libncomp.NCOMP_SHORT,
+                  np.dtype(np.uint16): libncomp.NCOMP_USHORT,
+                  np.dtype(np.int32): libncomp.NCOMP_INT,
+                  np.dtype(np.uint32): libncomp.NCOMP_UINT,
+                  np.dtype(np.int64): libncomp.NCOMP_LONG,
+                  np.dtype(np.uint64): libncomp.NCOMP_ULONG,
+                  np.dtype(np.longlong): libncomp.NCOMP_LONGLONG,
+                  np.dtype(np.ulonglong): libncomp.NCOMP_ULONGLONG,
+                  np.dtype(np.float32): libncomp.NCOMP_FLOAT,
+                  np.dtype(np.float64): libncomp.NCOMP_DOUBLE,
+                  np.dtype(np.float128): libncomp.NCOMP_LONGDOUBLE,
+                  }
 
-dtype_to_ncomp = {np.dtype(np.bool):       libncomp.NCOMP_BOOL,
-                  np.dtype(np.int8):       libncomp.NCOMP_BYTE,
-                  np.dtype(np.uint8):      libncomp.NCOMP_UBYTE,
-                  np.dtype(np.int16):      libncomp.NCOMP_SHORT,
-                  np.dtype(np.uint16):     libncomp.NCOMP_USHORT,
-                  np.dtype(np.int32):      libncomp.NCOMP_INT,
-                  np.dtype(np.uint32):     libncomp.NCOMP_UINT,
-                  np.dtype(np.int64):      libncomp.NCOMP_LONG,
-                  np.dtype(np.uint64):     libncomp.NCOMP_ULONG,
-                  np.dtype(np.longlong):   libncomp.NCOMP_LONGLONG,
-                  np.dtype(np.ulonglong):  libncomp.NCOMP_ULONGLONG,
-                  np.dtype(np.float32):    libncomp.NCOMP_FLOAT,
-                  np.dtype(np.float64):    libncomp.NCOMP_DOUBLE,
-                  np.dtype(np.float128):   libncomp.NCOMP_LONGDOUBLE,
-                 }
-
-
-ncomp_to_dtype = {libncomp.NCOMP_BOOL:         np.bool,
-                  libncomp.NCOMP_BYTE:         np.int8,
-                  libncomp.NCOMP_UBYTE:        np.uint8,
-                  libncomp.NCOMP_SHORT:        np.int16,
-                  libncomp.NCOMP_USHORT:       np.uint16,
-                  libncomp.NCOMP_INT:          np.int32,
-                  libncomp.NCOMP_UINT:         np.uint32,
-                  libncomp.NCOMP_LONG:         np.int64,
-                  libncomp.NCOMP_ULONG:        np.uint64,
-                  libncomp.NCOMP_LONGLONG:     np.longlong,
-                  libncomp.NCOMP_ULONGLONG:    np.ulonglong,
-                  libncomp.NCOMP_FLOAT:        np.float32,
-                  libncomp.NCOMP_DOUBLE:       np.float64,
-                  libncomp.NCOMP_LONGDOUBLE:   np.float128,
-                 }
-
+ncomp_to_dtype = {libncomp.NCOMP_BOOL: np.bool,
+                  libncomp.NCOMP_BYTE: np.int8,
+                  libncomp.NCOMP_UBYTE: np.uint8,
+                  libncomp.NCOMP_SHORT: np.int16,
+                  libncomp.NCOMP_USHORT: np.uint16,
+                  libncomp.NCOMP_INT: np.int32,
+                  libncomp.NCOMP_UINT: np.uint32,
+                  libncomp.NCOMP_LONG: np.int64,
+                  libncomp.NCOMP_ULONG: np.uint64,
+                  libncomp.NCOMP_LONGLONG: np.longlong,
+                  libncomp.NCOMP_ULONGLONG: np.ulonglong,
+                  libncomp.NCOMP_FLOAT: np.float32,
+                  libncomp.NCOMP_DOUBLE: np.float64,
+                  libncomp.NCOMP_LONGDOUBLE: np.float128,
+                  }
 
 def get_default_fill(arr):
     if isinstance(arr, type(np.dtype)):
@@ -123,22 +121,20 @@ def get_default_fill(arr):
     except KeyError:
         return dtype_default_fill['DEFAULT_FILL']
 
-
 def get_ncomp_type(arr):
     try:
         return dtype_to_ncomp[arr.dtype]
     except KeyError:
         raise KeyError("dtype('{}') is not a valid NCOMP type".format(arr.dtype)) from None
 
-
-cdef libncomp.ncomp_array* np_to_ncomp_array(np.ndarray nparr):
-    cdef void* addr = <void*> (<unsigned long> nparr.__array_interface__['data'][0])
+cdef libncomp.ncomp_array*np_to_ncomp_array(np.ndarray nparr):
+    cdef void*addr = <void*> (<unsigned long> nparr.__array_interface__['data'][0])
     cdef int ndim = nparr.ndim
-    cdef size_t* shape = <size_t*> nparr.shape
+    cdef size_t*shape = <size_t*> nparr.shape
     cdef int np_type = nparr.dtype.num
     return <libncomp.ncomp_array*> libncomp.ncomp_array_alloc(addr, np_type, ndim, shape)
 
-cdef np.ndarray ncomp_to_np_array(libncomp.ncomp_array* ncarr):
+cdef np.ndarray ncomp_to_np_array(libncomp.ncomp_array*ncarr):
     np.import_array()
     nparr = np.PyArray_SimpleNewFromData(ncarr.ndim, <np.npy_intp *> ncarr.shape, ncarr.type, ncarr.addr)
     cdef extern from "numpy/arrayobject.h":
@@ -146,7 +142,7 @@ cdef np.ndarray ncomp_to_np_array(libncomp.ncomp_array* ncarr):
     PyArray_ENABLEFLAGS(nparr, np.NPY_OWNDATA)
     return nparr
 
-cdef set_ncomp_msg(libncomp.ncomp_missing* ncomp_msg, num):
+cdef set_ncomp_msg(libncomp.ncomp_missing*ncomp_msg, num):
     ncomp_type = num.dtype.num
     if ncomp_type == libncomp.NCOMP_FLOAT:
         ncomp_msg.msg_float = ncomp_to_dtype[ncomp_type](num)
@@ -178,7 +174,8 @@ cdef set_ncomp_msg(libncomp.ncomp_missing* ncomp_msg, num):
         ncomp_msg.msg_longdouble = ncomp_to_dtype[ncomp_type](num)
 
 @carrayify
-def _linint2(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.ndarray xo_np, np.ndarray yo_np, int icycx, msg=None):
+def _linint2(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.ndarray xo_np, np.ndarray yo_np, int icycx,
+             msg=None):
     """_linint2(xi, yi, fi, xo, yo, icycx, msg=None)
 
     Interpolates a regular grid to a rectilinear one using bi-linear
@@ -296,17 +293,18 @@ def _linint2(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.ndarray xo
         fo_dtype = np.float64
     else:
         fo_dtype = np.float32
-    cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [yo.shape[0], xo.shape[0]]), dtype=fo_dtype)
+    cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [yo.shape[0], xo.shape[0]]),
+                                     dtype=fo_dtype)
 
     missing_inds_fi = None
 
-    if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
+    if msg is None or np.isnan(msg):  # if no missing value specified, assume NaNs
         missing_inds_fi = np.isnan(fi.numpy)
         msg = get_default_fill(fi.numpy)
     else:
         missing_inds_fi = (fi.numpy == msg)
 
-    set_ncomp_msg(&(fi.ncomp.msg), msg) # always set missing on fi.ncomp
+    set_ncomp_msg(&(fi.ncomp.msg), msg)  # always set missing on fi.ncomp
 
     if missing_inds_fi.any():
         fi.ncomp.has_missing = 1
@@ -314,15 +312,15 @@ def _linint2(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.ndarray xo
 
     fo = Array.from_np(fo_np)
 
-#   release global interpreter lock
+    #   release global interpreter lock
     cdef int ier
     with nogil:
         ier = libncomp.linint2(
             xi.ncomp, yi.ncomp, fi.ncomp,
             xo.ncomp, yo.ncomp, fo.ncomp,
             icycx, iopt)
-#   re-acquire interpreter lock
-#   check errors ier
+    #   re-acquire interpreter lock
+    #   check errors ier
     if ier:
         warnings.warn("linint2: {}: xi, yi, xo, and yo must be monotonically increasing".format(ier),
                       NcompWarning)
@@ -339,7 +337,7 @@ def _linint2(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.ndarray xo
 
     return fo.numpy
 
-cdef adjust_for_missing_values(np.ndarray np_input, libncomp.ncomp_array* ncomp_input, dict kwargs):
+cdef adjust_for_missing_values(np.ndarray np_input, libncomp.ncomp_array*ncomp_input, dict kwargs):
     missing_value = kwargs.get("missing_value", np.nan)
 
     missing_mask = None
@@ -458,10 +456,10 @@ def _eofunc(np.ndarray np_input, int neval, opt={}, **kwargs):
     missing_mask = adjust_for_missing_values(input.numpy, input.ncomp, kwargs)
 
     # convert opt dict to ncomp_attributes struct
-    cdef libncomp.ncomp_attributes* attrs = dict_to_ncomp_attributes(opt)
+    cdef libncomp.ncomp_attributes*attrs = dict_to_ncomp_attributes(opt)
 
     # allocate output ncomp_array and ncomp_attributes
-    cdef libncomp.ncomp_array* ncomp_output = NULL
+    cdef libncomp.ncomp_array*ncomp_output = NULL
     cdef libncomp.ncomp_attributes attrs_output
 
     cdef int ier
@@ -476,8 +474,8 @@ def _eofunc(np.ndarray np_input, int neval, opt={}, **kwargs):
 
     # making sure that output missing values is NaN
     output_missing_value = output.ncomp.msg.msg_double \
-            if output.ncomp.type == libncomp.NCOMP_DOUBLE \
-            else output.ncomp.msg.msg_float
+        if output.ncomp.type == libncomp.NCOMP_DOUBLE \
+        else output.ncomp.msg.msg_float
 
     output.numpy[output.numpy == output_missing_value] = np.nan
 
@@ -496,10 +494,10 @@ def _eofunc_n(np.ndarray np_input, int neval, int t_dim, opt={}, **kwargs):
     missing_mask = adjust_for_missing_values(input.numpy, input.ncomp, kwargs)
 
     # convert opt dict to ncomp_attributes struct
-    cdef libncomp.ncomp_attributes* attrs = dict_to_ncomp_attributes(opt)
+    cdef libncomp.ncomp_attributes*attrs = dict_to_ncomp_attributes(opt)
 
     # allocate output ncomp_array and ncomp_attributes
-    cdef libncomp.ncomp_array* ncomp_output = NULL
+    cdef libncomp.ncomp_array*ncomp_output = NULL
     cdef libncomp.ncomp_attributes attrs_output
 
     cdef int ier
@@ -514,8 +512,8 @@ def _eofunc_n(np.ndarray np_input, int neval, int t_dim, opt={}, **kwargs):
 
     # making sure that output missing values is NaN
     output_missing_value = output.ncomp.msg.msg_double \
-            if output.ncomp.type == libncomp.NCOMP_DOUBLE \
-            else output.ncomp.msg.msg_float
+        if output.ncomp.type == libncomp.NCOMP_DOUBLE \
+        else output.ncomp.msg.msg_float
 
     output.numpy[output.numpy == output_missing_value] = np.nan
 
@@ -535,10 +533,10 @@ def _eofunc_ts(np.ndarray np_data, np.ndarray  np_evec, opt={}, **kwargs):
     missing_mask_evec = adjust_for_missing_values(evec.numpy, evec.ncomp, kwargs)
 
     # convert opt dict to ncomp_attributes struct
-    cdef libncomp.ncomp_attributes* attrs = dict_to_ncomp_attributes(opt)
+    cdef libncomp.ncomp_attributes*attrs = dict_to_ncomp_attributes(opt)
 
     # allocate output ncomp_array and ncomp_attributes
-    cdef libncomp.ncomp_array* ncomp_output = NULL
+    cdef libncomp.ncomp_array*ncomp_output = NULL
     cdef libncomp.ncomp_attributes attrs_output
 
     cdef int ier
@@ -553,8 +551,8 @@ def _eofunc_ts(np.ndarray np_data, np.ndarray  np_evec, opt={}, **kwargs):
 
     # making sure that output missing values is NaN
     output_missing_value = output.ncomp.msg.msg_double \
-            if output.ncomp.type == libncomp.NCOMP_DOUBLE \
-            else output.ncomp.msg.msg_float
+        if output.ncomp.type == libncomp.NCOMP_DOUBLE \
+        else output.ncomp.msg.msg_float
 
     output.numpy[output.numpy == output_missing_value] = np.nan
 
@@ -575,10 +573,10 @@ def _eofunc_ts_n(np.ndarray np_data, np.ndarray  np_evec, int t_dim, opt={}, **k
     missing_mask_evec = adjust_for_missing_values(evec.numpy, evec.ncomp, kwargs)
 
     # convert opt dict to ncomp_attributes struct
-    cdef libncomp.ncomp_attributes* attrs = dict_to_ncomp_attributes(opt)
+    cdef libncomp.ncomp_attributes*attrs = dict_to_ncomp_attributes(opt)
 
     # allocate output ncomp_array and ncomp_attributes
-    cdef libncomp.ncomp_array* ncomp_output = NULL
+    cdef libncomp.ncomp_array*ncomp_output = NULL
     cdef libncomp.ncomp_attributes attrs_output
 
     cdef int ier
@@ -593,8 +591,8 @@ def _eofunc_ts_n(np.ndarray np_data, np.ndarray  np_evec, int t_dim, opt={}, **k
 
     # making sure that output missing values is NaN
     output_missing_value = output.ncomp.msg.msg_double \
-            if output.ncomp.type == libncomp.NCOMP_DOUBLE \
-            else output.ncomp.msg.msg_float
+        if output.ncomp.type == libncomp.NCOMP_DOUBLE \
+        else output.ncomp.msg.msg_float
 
     output.numpy[output.numpy == output_missing_value] = np.nan
 
@@ -607,17 +605,17 @@ def _eofunc_ts_n(np.ndarray np_data, np.ndarray  np_evec, int t_dim, opt={}, **k
 
     return (output.numpy, np_attrs_dict)
 
-cdef libncomp.ncomp_single_attribute* np_to_ncomp_single_attribute(char* name, np.ndarray nparr):
+cdef libncomp.ncomp_single_attribute*np_to_ncomp_single_attribute(char*name, np.ndarray nparr):
     cdef long long_addr = nparr.__array_interface__['data'][0]
-    cdef void* addr = <void*> long_addr
+    cdef void*addr = <void*> long_addr
     cdef int ndim = nparr.ndim
-    cdef size_t* shape = <size_t*> nparr.shape
+    cdef size_t*shape = <size_t*> nparr.shape
     cdef int np_type = nparr.dtype.num
     return <libncomp.ncomp_single_attribute*> libncomp.create_ncomp_single_attribute(name, addr, np_type, ndim, shape)
 
-cdef libncomp.ncomp_attributes* dict_to_ncomp_attributes(d):
+cdef libncomp.ncomp_attributes*dict_to_ncomp_attributes(d):
     nAttribute = len(d)
-    cdef libncomp.ncomp_attributes* out_attrs = libncomp.ncomp_attributes_allocate(nAttribute)
+    cdef libncomp.ncomp_attributes*out_attrs = libncomp.ncomp_attributes_allocate(nAttribute)
     for i, k in enumerate(d):
         v = d[k]
         out_attrs.attribute_array[i] = np_to_ncomp_single_attribute(k, v)
@@ -625,15 +623,15 @@ cdef libncomp.ncomp_attributes* dict_to_ncomp_attributes(d):
 
 cdef ncomp_attributes_to_dict(libncomp.ncomp_attributes attrs):
     d = {}
-    cdef libncomp.ncomp_single_attribute* attr
+    cdef libncomp.ncomp_single_attribute*attr
     for i in range(attrs.nAttribute):
         attr = (attrs.attribute_array)[i]
         d[attr.name] = ncomp_to_np_array(attr.value)
     return d
 
-
 @carrayify
-def _moc_globe_atl(np.ndarray lat_aux_grid_np, np.ndarray a_wvel_np, np.ndarray a_bolus_np, np.ndarray a_submeso_np, np.ndarray tlat_np, np.ndarray rmlak_np, msg=None):
+def _moc_globe_atl(np.ndarray lat_aux_grid_np, np.ndarray a_wvel_np, np.ndarray a_bolus_np, np.ndarray a_submeso_np,
+                   np.ndarray tlat_np, np.ndarray rmlak_np, msg=None):
     """Facilitates calculating the meridional overturning circulation for the globe and Atlantic.
     Args:
     lat_aux_grid (:class:`numpy.ndarray`):
@@ -674,36 +672,36 @@ def _moc_globe_atl(np.ndarray lat_aux_grid_np, np.ndarray a_wvel_np, np.ndarray 
 
     # Convert np_input to ncomp_array
     lat_aux_grid = Array.from_np(lat_aux_grid_np)
-    a_wvel       = Array.from_np(a_wvel_np)
-    a_bolus      = Array.from_np(a_bolus_np)
-    a_submeso    = Array.from_np(a_submeso_np)
-    tlat         = Array.from_np(tlat_np)
-    rmlak        = Array.from_np(rmlak_np)
+    a_wvel = Array.from_np(a_wvel_np)
+    a_bolus = Array.from_np(a_bolus_np)
+    a_submeso = Array.from_np(a_submeso_np)
+    tlat = Array.from_np(tlat_np)
+    rmlak = Array.from_np(rmlak_np)
 
     # Handle missing values
     missing_inds_a_wvel = None
 
-    if msg is None or np.isnan(msg):    # if no missing value specified, assume NaNs
+    if msg is None or np.isnan(msg):  # if no missing value specified, assume NaNs
         missing_inds_a_wvel = np.isnan(a_wvel.numpy)
         msg = get_default_fill(a_wvel.numpy)
     else:
         missing_inds_a_wvel = (a_wvel.numpy == msg)
 
     #set_ncomp_msg(&ncomp_a_wvel.msg, msg)    # always set missing on ncomp_a_wvel
-    set_ncomp_msg(&(a_wvel.ncomp.msg), msg)    # always set missing on ncomp_a_wvel
+    set_ncomp_msg(&(a_wvel.ncomp.msg), msg)  # always set missing on ncomp_a_wvel
 
     if missing_inds_a_wvel.any():
         a_wvel.ncomp.has_missing = 1
         a_wvel.numpy[missing_inds_a_wvel] = msg
 
     # Allocate output ncomp_array
-    cdef libncomp.ncomp_array* ncomp_output = NULL
+    cdef libncomp.ncomp_array*ncomp_output = NULL
 
     cdef int ier
     with nogil:
         ier = libncomp.moc_globe_atl(lat_aux_grid.ncomp, a_wvel.ncomp, a_bolus.ncomp,
-                                  a_submeso.ncomp, tlat.ncomp, rmlak.ncomp,
-                                  &ncomp_output)
+                                     a_submeso.ncomp, tlat.ncomp, rmlak.ncomp,
+                                     &ncomp_output)
 
     # Check errors ier
     if ier:
@@ -729,30 +727,30 @@ def _dpres_plevel(np.ndarray plev_np, np.ndarray psfc_np, ptop_scalar, msg=None)
 
     Calculates the pressure layer thicknesses of a constant pressure level coordinate system.
 
- 	plev (:class:`numpy.ndarray`):
- 	    A one dimensional array containing the constant pressure levels. May be
+    plev (:class:`numpy.ndarray`):
+        A one dimensional array containing the constant pressure levels. May be
             in ascending or descending order. Must have the same units as `psfc`.
 
- 	psfc (:class:`numpy.ndarray`):
+    psfc (:class:`numpy.ndarray`):
             A scalar or an array of up to three dimensions containing the surface
             pressure data in Pa or hPa (mb). The rightmost dimensions must be latitude
             and longitude. Must have the same units as `plev`.
 
- 	ptop (:class:`numpy.number`):
+    ptop (:class:`numpy.number`):
             A scalar specifying the top of the column. ptop should be <= min(plev).
             Must have the same units as `plev`.
 
- 	meta (:obj:`bool`):
- 	    Set to False to disable metadata; default is False.
+    meta (:obj:`bool`):
+        Set to False to disable metadata; default is False.
 
-     Returns:
- 	:class:`numpy.ndarray`: If psfc is a scalar the return variable will be a
+    Returns:
+        :class:`numpy.ndarray`: If psfc is a scalar the return variable will be a
         one-dimensional array the same size as `plev`; if `psfc` is two-dimensional
         [e.g. (lat,lon)] or three-dimensional [e.g. (time,lat,lon)] then the return
         array will have an additional level dimension: (lev,lat,lon) or (time,lev,lat,lon).
         The returned type will be double if psfc is double, float otherwise.
 
-     Description:
+    Description:
         Calculates the layer pressure thickness of a constant pressure level system. It
         is analogous to `dpres_hybrid_ccm` for hybrid coordinates. At each grid point the
         sum of the pressure thicknesses equates to [psfc-ptop]. At each grid point, the
@@ -775,21 +773,21 @@ def _dpres_plevel(np.ndarray plev_np, np.ndarray psfc_np, ptop_scalar, msg=None)
 
     replace_psfc_nans = False
 
-    if msg is None or np.isnan(msg): # if no missing value specipsfced, assume NaNs
+    if msg is None or np.isnan(msg):  # if no missing value specipsfced, assume NaNs
         missing_inds_psfc = np.isnan(psfc.numpy)
         msg = get_default_fill(psfc.numpy)
         replace_psfc_nans = True
     else:
         missing_inds_psfc = (psfc.numpy == msg)
 
-    set_ncomp_msg(&(psfc.ncomp.msg), msg) # always set missing on psfc.ncomp
+    set_ncomp_msg(&(psfc.ncomp.msg), msg)  # always set missing on psfc.ncomp
 
     if missing_inds_psfc.any():
         psfc.ncomp.has_missing = 1
         psfc.numpy[missing_inds_psfc] = msg
 
     # Allocate output ncomp_array (memory associated is allcoated within libncomp)
-    cdef libncomp.ncomp_array* ncomp_output_dp = NULL
+    cdef libncomp.ncomp_array*ncomp_output_dp = NULL
 
     # release global interpreter lock
     cdef int ier
@@ -817,61 +815,62 @@ def _dpres_plevel(np.ndarray plev_np, np.ndarray psfc_np, ptop_scalar, msg=None)
     return output_dp.numpy
 
 @carrayify
-def _rcm2points(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.ndarray lat1d_np, np.ndarray lon1d_np, int opt=0, msg=None):
+def _rcm2points(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.ndarray lat1d_np, np.ndarray lon1d_np,
+                int opt=0, msg=None):
     """_rcm2points(lat2d, lon2d, fi, lat1d, lon1d, msg=None)
 
     Interpolates data on a curvilinear grid (i.e. RCM, WRF, NARR) to an unstructured grid.
 
     Args:
-	lat2d (:class:`numpy.ndarray`):
-	    A two-dimensional array that specifies the latitudes locations
-	    of fi. The latitude order must be south-to-north.
+    lat2d (:class:`numpy.ndarray`):
+        A two-dimensional array that specifies the latitudes locations
+        of fi. The latitude order must be south-to-north.
 
-	lon2d (:class:`numpy.ndarray`):
-	    A two-dimensional array that specifies the longitude locations
-	    of fi. The latitude order must be west-to-east.
+    lon2d (:class:`numpy.ndarray`):
+        A two-dimensional array that specifies the longitude locations
+        of fi. The latitude order must be west-to-east.
 
-	fi (:class:`numpy.ndarray`):
-	    A multi-dimensional array to be interpolated. The rightmost two
-	    dimensions (latitude, longitude) are the dimensions to be interpolated.
+    fi (:class:`numpy.ndarray`):
+        A multi-dimensional array to be interpolated. The rightmost two
+        dimensions (latitude, longitude) are the dimensions to be interpolated.
 
-	lat1dPoints (:class:`numpy.ndarray`):
-	    A one-dimensional array that specifies the latitude coordinates of
-	    the output locations.
+    lat1dPoints (:class:`numpy.ndarray`):
+        A one-dimensional array that specifies the latitude coordinates of
+        the output locations.
 
-	lon1dPoints (:class:`numpy.ndarray`):
-	    A one-dimensional array that specifies the longitude coordinates of
-	    the output locations.
+    lon1dPoints (:class:`numpy.ndarray`):
+        A one-dimensional array that specifies the longitude coordinates of
+        the output locations.
 
-	opt (:obj:`numpy.number`):
-	    opt=0 or 1 means use an inverse distance weight interpolation.
-	    opt=2 means use a bilinear interpolation.
+    opt (:obj:`numpy.number`):
+        opt=0 or 1 means use an inverse distance weight interpolation.
+        opt=2 means use a bilinear interpolation.
 
-	msg (:obj:`numpy.number`):
-	    A numpy scalar value that represent a missing value in fi.
-	    This argument allows a user to use a missing value scheme
-	    other than NaN or masked arrays, similar to what NCL allows.
+    msg (:obj:`numpy.number`):
+        A numpy scalar value that represent a missing value in fi.
+        This argument allows a user to use a missing value scheme
+        other than NaN or masked arrays, similar to what NCL allows.
 
     Returns:
-	:class:`numpy.ndarray`: The interpolated grid. A multi-dimensional array
-	of the same size as fi except that the rightmost dimension sizes have been
-	replaced by the number of coordinate pairs (lat1dPoints, lon1dPoints).
-	Double if fi is double, otherwise float.
+        :class:`numpy.ndarray`: The interpolated grid. A multi-dimensional array
+        of the same size as fi except that the rightmost dimension sizes have been
+        replaced by the number of coordinate pairs (lat1dPoints, lon1dPoints).
+        Double if fi is double, otherwise float.
 
     Description:
-	Interpolates data on a curvilinear grid, such as those used by the RCM (Regional Climate Model),
-	WRF (Weather Research and Forecasting) and NARR (North American Regional Reanalysis)
-	models/datasets to an unstructured grid. All of these have latitudes that are oriented south-to-north.
+        Interpolates data on a curvilinear grid, such as those used by the RCM (Regional Climate Model),
+        WRF (Weather Research and Forecasting) and NARR (North American Regional Reanalysis)
+        models/datasets to an unstructured grid. All of these have latitudes that are oriented south-to-north.
 
-	A inverse distance squared algorithm is used to perform the interpolation.
+        A inverse distance squared algorithm is used to perform the interpolation.
 
-	Missing values are allowed and no extrapolation is performed.
+        Missing values are allowed and no extrapolation is performed.
 
 
     """
     lat2d = Array.from_np(lat2d_np)
     lon2d = Array.from_np(lon2d_np)
-    fi	  = Array.from_np(fi_np)
+    fi = Array.from_np(fi_np)
     lat1d = Array.from_np(lat1d_np)
     lon1d = Array.from_np(lon1d_np)
 
@@ -881,18 +880,19 @@ def _rcm2points(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.n
         fo_dtype = np.float64
     else:
         fo_dtype = np.float32
-    cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat1d.shape[0]]), dtype=fo_dtype) # or lon1d.shape[0]
+    cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat1d.shape[0]]),
+                                     dtype=fo_dtype)  # or lon1d.shape[0]
 
     replace_fi_nans = False
 
-    if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
+    if msg is None or np.isnan(msg):  # if no missing value specified, assume NaNs
         missing_inds_fi = np.isnan(fi.numpy)
         msg = get_default_fill(fi.numpy)
         replace_fi_nans = True
     else:
         missing_inds_fi = (fi.numpy == msg)
 
-    set_ncomp_msg(&(fi.ncomp.msg), msg) # always set missing on fi.ncomp
+    set_ncomp_msg(&(fi.ncomp.msg), msg)  # always set missing on fi.ncomp
 
     if missing_inds_fi.any():
         fi.ncomp.has_missing = 1
@@ -923,7 +923,8 @@ def _rcm2points(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.n
     return fo.numpy
 
 @carrayify
-def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.ndarray lat1d_np, np.ndarray lon1d_np, msg=None):
+def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.ndarray lat1d_np, np.ndarray lon1d_np,
+               msg=None):
     """_rcm2rgrid(lat2d, lon2d, fi, lat1d, lon1d, msg=None)
 
     Interpolates data on a curvilinear grid (i.e. RCM, WRF, NARR) to a rectilinear grid.
@@ -931,26 +932,26 @@ def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.nd
     Args:
 
         lat2d (:class:`numpy.ndarray`):
-	    A two-dimensional array that specifies the latitudes locations
-	    of fi. Because this array is two-dimensional it is not an associated
-	    coordinate variable of `fi`. The latitude order must be south-to-north.
+        A two-dimensional array that specifies the latitudes locations
+        of fi. Because this array is two-dimensional it is not an associated
+        coordinate variable of `fi`. The latitude order must be south-to-north.
 
         lon2d (:class:`numpy.ndarray`):
-	    A two-dimensional array that specifies the longitude locations
-	    of fi. Because this array is two-dimensional it is not an associated
-	    coordinate variable of `fi`. The latitude order must be west-to-east.
+        A two-dimensional array that specifies the longitude locations
+        of fi. Because this array is two-dimensional it is not an associated
+        coordinate variable of `fi`. The latitude order must be west-to-east.
 
         fi (:class:`numpy.ndarray`):
-	    A multi-dimensional array to be interpolated. The rightmost two
-	    dimensions (latitude, longitude) are the dimensions to be interpolated.
+        A multi-dimensional array to be interpolated. The rightmost two
+        dimensions (latitude, longitude) are the dimensions to be interpolated.
 
         lat1d (:class:`numpy.ndarray`):
-	    A one-dimensional array that specifies the latitude coordinates of
-	    the regular grid. Must be monotonically increasing.
+        A one-dimensional array that specifies the latitude coordinates of
+        the regular grid. Must be monotonically increasing.
 
         lon1d (:class:`numpy.ndarray`):
-	    A one-dimensional array that specifies the longitude coordinates of
-	    the regular grid. Must be monotonically increasing.
+        A one-dimensional array that specifies the longitude coordinates of
+        the regular grid. Must be monotonically increasing.
 
         msg (:obj:`numpy.number`):
             A numpy scalar value that represent a missing value in fi.
@@ -959,36 +960,36 @@ def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.nd
 
     Returns:
         :class:`numpy.ndarray`: The interpolated grid. A multi-dimensional array
-	of the same size as fi except that the rightmost dimension sizes have been
-	replaced by the sizes of lat1d and lon1d respectively.
-	Double if fi is double, otherwise float.
+        of the same size as fi except that the rightmost dimension sizes have been
+        replaced by the sizes of lat1d and lon1d respectively.
+        Double if fi is double, otherwise float.
 
     Description:
         Interpolates RCM (Regional Climate Model), WRF (Weather Research and Forecasting) and
-    	NARR (North American Regional Reanalysis) grids to a rectilinear grid. Actually, this
-	function will interpolate most grids that use curvilinear latitude/longitude grids.
-	No extrapolation is performed beyond the range of the input coordinates. Missing values
-	are allowed but ignored.
+        NARR (North American Regional Reanalysis) grids to a rectilinear grid. Actually, this
+        function will interpolate most grids that use curvilinear latitude/longitude grids.
+        No extrapolation is performed beyond the range of the input coordinates. Missing values
+        are allowed but ignored.
 
-	The weighting method used is simple inverse distance squared. Missing values are allowed
-	but ignored.
+        The weighting method used is simple inverse distance squared. Missing values are allowed
+        but ignored.
 
-	The code searches the input curvilinear grid latitudes and longitudes for the four
-	grid points that surround a specified output grid coordinate. Because one or more of
-	these input points could contain missing values, fewer than four points
-	could be used in the interpolation.
+        The code searches the input curvilinear grid latitudes and longitudes for the four
+        grid points that surround a specified output grid coordinate. Because one or more of
+        these input points could contain missing values, fewer than four points
+        could be used in the interpolation.
 
-	Curvilinear grids which have two-dimensional latitude and longitude coordinate axes present
-	some issues because the coordinates are not necessarily monotonically increasing. The simple
-	search algorithm used by rcm2rgrid is not capable of handling all cases. The result is that,
-	sometimes, there are small gaps in the interpolated grids. Any interior points not
-	interpolated in the initial interpolation pass will be filled using linear interpolation.
+        Curvilinear grids which have two-dimensional latitude and longitude coordinate axes present
+        some issues because the coordinates are not necessarily monotonically increasing. The simple
+        search algorithm used by rcm2rgrid is not capable of handling all cases. The result is that,
+        sometimes, there are small gaps in the interpolated grids. Any interior points not
+        interpolated in the initial interpolation pass will be filled using linear interpolation.
         In some cases, edge points may not be filled.
     """
 
     lat2d = Array.from_np(lat2d_np)
     lon2d = Array.from_np(lon2d_np)
-    fi	  = Array.from_np(fi_np)
+    fi = Array.from_np(fi_np)
     lat1d = Array.from_np(lat1d_np)
     lon1d = Array.from_np(lon1d_np)
 
@@ -998,18 +999,19 @@ def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.nd
         fo_dtype = np.float64
     else:
         fo_dtype = np.float32
-    cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat1d.shape[0], lon1d.shape[0]]), dtype=fo_dtype)
+    cdef np.ndarray fo_np = np.zeros(
+        tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat1d.shape[0], lon1d.shape[0]]), dtype=fo_dtype)
 
     replace_fi_nans = False
 
-    if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
+    if msg is None or np.isnan(msg):  # if no missing value specified, assume NaNs
         missing_inds_fi = np.isnan(fi.numpy)
         msg = get_default_fill(fi.numpy)
         replace_fi_nans = True
     else:
         missing_inds_fi = (fi.numpy == msg)
 
-    set_ncomp_msg(&(fi.ncomp.msg), msg) # always set missing on fi.ncomp
+    set_ncomp_msg(&(fi.ncomp.msg), msg)  # always set missing on fi.ncomp
 
     if missing_inds_fi.any():
         fi.ncomp.has_missing = 1
@@ -1017,13 +1019,13 @@ def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.nd
 
     fo = Array.from_np(fo_np)
 
-#   release global interpreter lock
+    #   release global interpreter lock
     cdef int ier
     with nogil:
         ier = libncomp.rcm2rgrid(lat2d.ncomp, lon2d.ncomp, fi.ncomp,
                                  lat1d.ncomp, lon1d.ncomp, fo.ncomp)
 
-#   re-acquire interpreter lock
+    #   re-acquire interpreter lock
     # Check errors ier
     if ier != 0:
         raise NcompError(f"An error occurred while calling libncomp.rcm2rgrid with error code: {ier}")
@@ -1040,7 +1042,8 @@ def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.nd
     return fo.numpy
 
 @carrayify
-def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.ndarray lat2d_np, np.ndarray lon2d_np, msg=None):
+def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.ndarray lat2d_np, np.ndarray lon2d_np,
+               msg=None):
     """_rgrid2rcm(lat1d, lon1d, fi, lat2d, lon2d, msg=None)
 
     Interpolates data on a rectilinear lat/lon grid to a curvilinear grid like those used by the RCM, WRF and NARR models/datasets.
@@ -1048,26 +1051,26 @@ def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.nd
     Args:
 
         lat1d (:class:`numpy.ndarray`):
-	    A one-dimensional array that specifies the latitude coordinates of
-	    the regular grid. Must be monotonically increasing.
+        A one-dimensional array that specifies the latitude coordinates of
+        the regular grid. Must be monotonically increasing.
 
         lon1d (:class:`numpy.ndarray`):
-	    A one-dimensional array that specifies the longitude coordinates of
-	    the regular grid. Must be monotonically increasing.
+        A one-dimensional array that specifies the longitude coordinates of
+        the regular grid. Must be monotonically increasing.
 
         fi (:class:`numpy.ndarray`):
-	    A multi-dimensional array to be interpolated. The rightmost two
-	    dimensions (latitude, longitude) are the dimensions to be interpolated.
+        A multi-dimensional array to be interpolated. The rightmost two
+        dimensions (latitude, longitude) are the dimensions to be interpolated.
 
         lat2d (:class:`numpy.ndarray`):
-	    A two-dimensional array that specifies the latitude locations of `fi`.
-	    Because this array is two-dimensional, it is not an associated
-	    coordinate variable of `fi`.
+        A two-dimensional array that specifies the latitude locations of `fi`.
+        Because this array is two-dimensional, it is not an associated
+        coordinate variable of `fi`.
 
         lon2d (:class:`numpy.ndarray`):
-	    A two-dimensional array that specifies the longitude locations of `fi`.
-	    Because this array is two-dimensional, it is not an associated
-	    coordinate variable of `fi`.
+        A two-dimensional array that specifies the longitude locations of `fi`.
+        Because this array is two-dimensional, it is not an associated
+        coordinate variable of `fi`.
 
         msg (:obj:`numpy.number`):
             A numpy scalar value that represent a missing value in fi.
@@ -1076,21 +1079,21 @@ def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.nd
 
     Returns:
         :class:`numpy.ndarray`: The interpolated grid. A multi-dimensional array of the
-	same size as `fi` except that the rightmost dimension sizes have been replaced
-	by the sizes of `lat2d` and `lon2d` respectively. Double if `fi` is double,
-	otherwise float.
+        same size as `fi` except that the rightmost dimension sizes have been replaced
+        by the sizes of `lat2d` and `lon2d` respectively. Double if `fi` is double,
+        otherwise float.
 
     Description:
         Interpolates data on a rectilinear lat/lon grid to a curvilinear grid, such as those
-	used by the RCM (Regional Climate Model), WRF (Weather Research and Forecasting) and
-	NARR (North American Regional Reanalysis) models/datasets. No extrapolation is
-	performed beyond the range of the input coordinates. The method used is simple inverse
-	distance weighting. Missing values are allowed but ignored.
+        used by the RCM (Regional Climate Model), WRF (Weather Research and Forecasting) and
+        NARR (North American Regional Reanalysis) models/datasets. No extrapolation is
+        performed beyond the range of the input coordinates. The method used is simple inverse
+        distance weighting. Missing values are allowed but ignored.
 
     """
     lat1d = Array.from_np(lat1d_np)
     lon1d = Array.from_np(lon1d_np)
-    fi    = Array.from_np(fi_np)
+    fi = Array.from_np(fi_np)
     lat2d = Array.from_np(lat2d_np)
     lon2d = Array.from_np(lon2d_np)
 
@@ -1100,18 +1103,19 @@ def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.nd
         fo_dtype = np.float64
     else:
         fo_dtype = np.float32
-    cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat2d.shape[0], lon2d.shape[0]]), dtype=fo_dtype)
+    cdef np.ndarray fo_np = np.zeros(
+        tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat2d.shape[0], lon2d.shape[0]]), dtype=fo_dtype)
 
     replace_fi_nans = False
 
-    if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
+    if msg is None or np.isnan(msg):  # if no missing value specified, assume NaNs
         missing_inds_fi = np.isnan(fi.numpy)
         msg = get_default_fill(fi.numpy)
         replace_fi_nans = True
     else:
         missing_inds_fi = (fi.numpy == msg)
 
-    set_ncomp_msg(&(fi.ncomp.msg), msg) # always set missing on fi.ncomp
+    set_ncomp_msg(&(fi.ncomp.msg), msg)  # always set missing on fi.ncomp
 
     if missing_inds_fi.any():
         fi.ncomp.has_missing = 1
@@ -1119,13 +1123,13 @@ def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.nd
 
     fo = Array.from_np(fo_np)
 
-#   release global interpreter lock
+    #   release global interpreter lock
     cdef int ier
     with nogil:
         ier = libncomp.rgrid2rcm(lat1d.ncomp, lon1d.ncomp, fi.ncomp,
                                  lat2d.ncomp, lon2d.ncomp, fo.ncomp)
 
-#   re-acquire interpreter lock
+    #   re-acquire interpreter lock
     # Check errors ier
     if ier != 0:
         raise NcompError(f"An error occurred while calling libncomp.rgrid2rcm with error code: {ier}")
@@ -1142,9 +1146,9 @@ def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.nd
 
     return fo.numpy
 
-
 @carrayify
-def _linint2_points(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.ndarray xo_np, np.ndarray yo_np, int icycx, msg=None):
+def _linint2_points(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.ndarray xo_np, np.ndarray yo_np, int icycx,
+                    msg=None):
     """_linint2_points(xi, yi, fi, xo, yo, icycx, msg=None)
 
     Interpolates from a rectilinear grid to an unstructured grid
@@ -1193,7 +1197,7 @@ def _linint2_points(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.nda
             the Y [latitude] coordinates of the `fi` array.
 
     Returns:
-	:class:`numpy.ndarray`: The returned value will have the same
+    :class:`numpy.ndarray`: The returned value will have the same
         dimensions as `fi`, except for the rightmost dimension which will
         have the same dimension size as the length of `yo` and `xo`. The
         return type will be double if fi is double, and float otherwise.
@@ -1216,14 +1220,14 @@ def _linint2_points(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.nda
 
     replace_fi_nans = False
 
-    if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
+    if msg is None or np.isnan(msg):  # if no missing value specified, assume NaNs
         missing_inds_fi = np.isnan(fi.numpy)
         msg = get_default_fill(fi.numpy)
         replace_fi_nans = True
     else:
         missing_inds_fi = (fi.numpy == msg)
 
-    set_ncomp_msg(&(fi.ncomp.msg), msg) # always set missing on fi.ncomp
+    set_ncomp_msg(&(fi.ncomp.msg), msg)  # always set missing on fi.ncomp
 
     if missing_inds_fi.any():
         fi.ncomp.has_missing = 1
@@ -1260,28 +1264,28 @@ def _triple2grid(np.ndarray x_np, np.ndarray y_np, np.ndarray data_np, np.ndarra
 
     Args:
 
-	x (:class:`numpy.ndarray`):
+    x (:class:`numpy.ndarray`):
             One-dimensional arrays of the same length containing the coordinates
             associated with the data values. For geophysical variables, x
             correspond to longitude.
 
-	y (:class:`numpy.ndarray`):
+    y (:class:`numpy.ndarray`):
             One-dimensional arrays of the same length containing the coordinates
             associated with the data values. For geophysical variables, y
             correspond to latitude.
 
-	data (:class:`numpy.ndarray`):
+    data (:class:`numpy.ndarray`):
             A multi-dimensional array, whose rightmost dimension is the same
             length as `x` and `y`, containing the values associated with the `x`
             and `y` coordinates. Missing values, may be present but will be ignored.
 
-	xgrid (:class:`numpy.ndarray`):
+    xgrid (:class:`numpy.ndarray`):
             A one-dimensional array of length M containing the `x` coordinates
             associated with the returned two-dimensional grid. For geophysical
             variables, these are longitudes. The coordinates' values must be
             monotonically increasing.
 
-	ygrid (:class:`numpy.ndarray`):
+    ygrid (:class:`numpy.ndarray`):
             A one-dimensional array of length N containing the `y` coordinates
             associated with the returned two-dimensional grid. For geophysical
             variables, these are latitudes. The coordinates' values must be
@@ -1311,7 +1315,7 @@ def _triple2grid(np.ndarray x_np, np.ndarray y_np, np.ndarray data_np, np.ndarra
             - ``meta`` (:obj:`bool`): Set to False to disable metadata; default is False.
 
     Returns:
-	:class:`numpy.ndarray`: The return array will be K x N x M, where K
+    :class:`numpy.ndarray`: The return array will be K x N x M, where K
         represents the leftmost dimensions of data. It will be of type double if
         any of the input is double, and float otherwise.
 
@@ -1333,30 +1337,30 @@ def _triple2grid(np.ndarray x_np, np.ndarray y_np, np.ndarray data_np, np.ndarra
     ygrid = Array.from_np(ygrid_np)
 
     # convert opt dict to ncomp_attributes struct
-    cdef libncomp.ncomp_attributes* attrs = dict_to_ncomp_attributes(opt)
+    cdef libncomp.ncomp_attributes*attrs = dict_to_ncomp_attributes(opt)
 
     replace_data_nans = False
 
-    if msg is None or np.isnan(msg): # if no missing value specified, assume NaNs
+    if msg is None or np.isnan(msg):  # if no missing value specified, assume NaNs
         missing_inds_data = np.isnan(data.numpy)
         msg = get_default_fill(data.numpy)
         replace_data_nans = True
     else:
         missing_inds_data = (data.numpy == msg)
 
-    set_ncomp_msg(&(data.ncomp.msg), msg) # always set missing on data.ncomp
+    set_ncomp_msg(&(data.ncomp.msg), msg)  # always set missing on data.ncomp
 
     if missing_inds_data.any():
         data.ncomp.has_missing = 1
         data.numpy[missing_inds_data] = msg
 
     # Allocate output ncomp_array (memory associated is allcoated within libncomp)
-    cdef libncomp.ncomp_array* ncomp_output = NULL
+    cdef libncomp.ncomp_array*ncomp_output = NULL
 
     cdef int ier
     with nogil:
         ier = libncomp.triple2grid(x.ncomp, y.ncomp, data.ncomp, xgrid.ncomp, ygrid.ncomp, &ncomp_output, attrs)
-    if ier != 0:     # Check errors ier
+    if ier != 0:  # Check errors ier
         raise NcompError(f"An error occurred while calling libncomp.triple2grid with error code: {ier}")
 
     # reset the missing values of input 'data' to the original missing value (NaN)
@@ -1375,7 +1379,6 @@ def _triple2grid(np.ndarray x_np, np.ndarray y_np, np.ndarray data_np, np.ndarra
 
     return output.numpy
 
-
 @carrayify
 def _grid2triple(np.ndarray x_np, np.ndarray y_np, np.ndarray z_np, msg=None):
     """_grid2triple(x, y, z, msg=None)
@@ -1385,30 +1388,30 @@ def _grid2triple(np.ndarray x_np, np.ndarray y_np, np.ndarray z_np, msg=None):
 
     Args:
 
-	x (:class:`numpy.ndarray`):
+    x (:class:`numpy.ndarray`):
             Coordinates associated with the right dimension of the variable `z`.
             It must be the same dimension size (call it mx) as the right
             dimension of `z`.
 
-	y (:class:`numpy.ndarray`):
+    y (:class:`numpy.ndarray`):
             Coordinates associated with the left dimension of the variable `z`.
             It must be the same dimension size (call it ny) as the left
             dimension of `z`.
 
-	z (:class:`numpy.ndarray`):
+    z (:class:`numpy.ndarray`):
             Two-dimensional array of size ny x mx containing the data values.
             Missing values may be present in `z`, but they are ignored.
 
-	msg (:obj:`numpy.number`):
-	    A numpy scalar value that represent a missing value in `z`.
-	    This argument allows a user to use a missing value scheme
-	    other than NaN or masked arrays, similar to what NCL allows.
+    msg (:obj:`numpy.number`):
+        A numpy scalar value that represent a missing value in `z`.
+        This argument allows a user to use a missing value scheme
+        other than NaN or masked arrays, similar to what NCL allows.
 
-	meta (:obj:`bool`):
-	    Set to False to disable metadata; default is False.
+    meta (:obj:`bool`):
+        Set to False to disable metadata; default is False.
 
     Returns:
-	:class:`numpy.ndarray`: If any argument is "double" the return type
+    :class:`numpy.ndarray`: If any argument is "double" the return type
         will be "double"; otherwise a "float" is returned.
 
     Description:
@@ -1426,21 +1429,21 @@ def _grid2triple(np.ndarray x_np, np.ndarray y_np, np.ndarray z_np, msg=None):
 
     replace_z_nans = False
 
-    if msg is None or np.isnan(msg): # if no missing value specized, assume NaNs
+    if msg is None or np.isnan(msg):  # if no missing value specized, assume NaNs
         missing_inds_z = np.isnan(z.numpy)
         msg = get_default_fill(z.numpy)
         replace_z_nans = True
     else:
         missing_inds_z = (z.numpy == msg)
 
-    set_ncomp_msg(&(z.ncomp.msg), msg) # always set missing on z.ncomp
+    set_ncomp_msg(&(z.ncomp.msg), msg)  # always set missing on z.ncomp
 
     if missing_inds_z.any():
         z.ncomp.has_missing = 1
         z.numpy[missing_inds_z] = msg
 
     # Allocate output ncomp_array (memory associated is allcoated within libncomp)
-    cdef libncomp.ncomp_array* ncomp_output = NULL
+    cdef libncomp.ncomp_array*ncomp_output = NULL
 
     cdef int ier
     with nogil:
