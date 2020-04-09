@@ -1411,7 +1411,7 @@ def _grid2triple(np.ndarray x_np, np.ndarray y_np, np.ndarray z_np, msg=None):
         Set to False to disable metadata; default is False.
 
     Returns:
-    :class:`numpy.ndarray`: If any argument is "double" the return type
+        :class:`numpy.ndarray`: If any argument is "double" the return type
         will be "double"; otherwise a "float" is returned.
 
     Description:
