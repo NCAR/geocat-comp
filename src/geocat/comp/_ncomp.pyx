@@ -64,51 +64,23 @@ cdef class Array:
         if self.ncomp is not NULL:
             libncomp.ncomp_array_free(self.ncomp, 1)
 
-dtype_default_fill = {
-    "DEFAULT_FILL": libncomp.DEFAULT_FILL_DOUBLE,
-    np.dtype(np.int8): np.int8(libncomp.DEFAULT_FILL_INT8),
-    np.dtype(np.uint8): np.uint8(libncomp.DEFAULT_FILL_UINT8),
-    np.dtype(np.int16): np.int16(libncomp.DEFAULT_FILL_INT16),
-    np.dtype(np.uint16): np.uint16(libncomp.DEFAULT_FILL_UINT16),
-    np.dtype(np.int32): np.int32(libncomp.DEFAULT_FILL_INT32),
-    np.dtype(np.uint32): np.uint32(libncomp.DEFAULT_FILL_UINT32),
-    np.dtype(np.int64): np.int64(libncomp.DEFAULT_FILL_INT64),
-    np.dtype(np.uint64): np.uint64(libncomp.DEFAULT_FILL_UINT64),
-    np.dtype(np.float32): np.float32(libncomp.DEFAULT_FILL_FLOAT),
-    np.dtype(np.float64): np.float64(libncomp.DEFAULT_FILL_DOUBLE),
-}
+dtype_default_fill = {"DEFAULT_FILL": libncomp.DEFAULT_FILL_DOUBLE, np.dtype(np.int8): np.int8(libncomp.DEFAULT_FILL_INT8),
+                      np.dtype(np.uint8): np.uint8(libncomp.DEFAULT_FILL_UINT8), np.dtype(np.int16): np.int16(libncomp.DEFAULT_FILL_INT16),
+                      np.dtype(np.uint16): np.uint16(libncomp.DEFAULT_FILL_UINT16), np.dtype(np.int32): np.int32(libncomp.DEFAULT_FILL_INT32),
+                      np.dtype(np.uint32): np.uint32(libncomp.DEFAULT_FILL_UINT32), np.dtype(np.int64): np.int64(libncomp.DEFAULT_FILL_INT64),
+                      np.dtype(np.uint64): np.uint64(libncomp.DEFAULT_FILL_UINT64), np.dtype(np.float32): np.float32(libncomp.DEFAULT_FILL_FLOAT),
+                      np.dtype(np.float64): np.float64(libncomp.DEFAULT_FILL_DOUBLE), }
 
-dtype_to_ncomp = {np.dtype(np.bool): libncomp.NCOMP_BOOL,
-                  np.dtype(np.int8): libncomp.NCOMP_BYTE,
-                  np.dtype(np.uint8): libncomp.NCOMP_UBYTE,
-                  np.dtype(np.int16): libncomp.NCOMP_SHORT,
-                  np.dtype(np.uint16): libncomp.NCOMP_USHORT,
-                  np.dtype(np.int32): libncomp.NCOMP_INT,
-                  np.dtype(np.uint32): libncomp.NCOMP_UINT,
-                  np.dtype(np.int64): libncomp.NCOMP_LONG,
-                  np.dtype(np.uint64): libncomp.NCOMP_ULONG,
-                  np.dtype(np.longlong): libncomp.NCOMP_LONGLONG,
-                  np.dtype(np.ulonglong): libncomp.NCOMP_ULONGLONG,
-                  np.dtype(np.float32): libncomp.NCOMP_FLOAT,
-                  np.dtype(np.float64): libncomp.NCOMP_DOUBLE,
-                  np.dtype(np.float128): libncomp.NCOMP_LONGDOUBLE,
-                  }
+dtype_to_ncomp = {np.dtype(np.bool): libncomp.NCOMP_BOOL, np.dtype(np.int8): libncomp.NCOMP_BYTE, np.dtype(np.uint8): libncomp.NCOMP_UBYTE,
+                  np.dtype(np.int16): libncomp.NCOMP_SHORT, np.dtype(np.uint16): libncomp.NCOMP_USHORT, np.dtype(np.int32): libncomp.NCOMP_INT,
+                  np.dtype(np.uint32): libncomp.NCOMP_UINT, np.dtype(np.int64): libncomp.NCOMP_LONG, np.dtype(np.uint64): libncomp.NCOMP_ULONG,
+                  np.dtype(np.longlong): libncomp.NCOMP_LONGLONG, np.dtype(np.ulonglong): libncomp.NCOMP_ULONGLONG, np.dtype(np.float32): libncomp.NCOMP_FLOAT,
+                  np.dtype(np.float64): libncomp.NCOMP_DOUBLE, np.dtype(np.float128): libncomp.NCOMP_LONGDOUBLE, }
 
-ncomp_to_dtype = {libncomp.NCOMP_BOOL: np.bool,
-                  libncomp.NCOMP_BYTE: np.int8,
-                  libncomp.NCOMP_UBYTE: np.uint8,
-                  libncomp.NCOMP_SHORT: np.int16,
-                  libncomp.NCOMP_USHORT: np.uint16,
-                  libncomp.NCOMP_INT: np.int32,
-                  libncomp.NCOMP_UINT: np.uint32,
-                  libncomp.NCOMP_LONG: np.int64,
-                  libncomp.NCOMP_ULONG: np.uint64,
-                  libncomp.NCOMP_LONGLONG: np.longlong,
-                  libncomp.NCOMP_ULONGLONG: np.ulonglong,
-                  libncomp.NCOMP_FLOAT: np.float32,
-                  libncomp.NCOMP_DOUBLE: np.float64,
-                  libncomp.NCOMP_LONGDOUBLE: np.float128,
-                  }
+ncomp_to_dtype = {libncomp.NCOMP_BOOL: np.bool, libncomp.NCOMP_BYTE: np.int8, libncomp.NCOMP_UBYTE: np.uint8, libncomp.NCOMP_SHORT: np.int16,
+                  libncomp.NCOMP_USHORT: np.uint16, libncomp.NCOMP_INT: np.int32, libncomp.NCOMP_UINT: np.uint32, libncomp.NCOMP_LONG: np.int64,
+                  libncomp.NCOMP_ULONG: np.uint64, libncomp.NCOMP_LONGLONG: np.longlong, libncomp.NCOMP_ULONGLONG: np.ulonglong,
+                  libncomp.NCOMP_FLOAT: np.float32, libncomp.NCOMP_DOUBLE: np.float64, libncomp.NCOMP_LONGDOUBLE: np.float128, }
 
 def get_default_fill(arr):
     if isinstance(arr, type(np.dtype)):
@@ -174,8 +146,7 @@ cdef set_ncomp_msg(libncomp.ncomp_missing*ncomp_msg, num):
         ncomp_msg.msg_longdouble = ncomp_to_dtype[ncomp_type](num)
 
 @carrayify
-def _linint2(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.ndarray xo_np, np.ndarray yo_np, int icycx,
-             msg=None):
+def _linint2(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.ndarray xo_np, np.ndarray yo_np, int icycx, msg=None):
     """_linint2(xi, yi, fi, xo, yo, icycx, msg=None)
 
     Interpolates a regular grid to a rectilinear one using bi-linear
@@ -293,8 +264,7 @@ def _linint2(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.ndarray xo
         fo_dtype = np.float64
     else:
         fo_dtype = np.float32
-    cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [yo.shape[0], xo.shape[0]]),
-                                     dtype=fo_dtype)
+    cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [yo.shape[0], xo.shape[0]]), dtype=fo_dtype)
 
     missing_inds_fi = None
 
@@ -315,15 +285,11 @@ def _linint2(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.ndarray xo
     #   release global interpreter lock
     cdef int ier
     with nogil:
-        ier = libncomp.linint2(
-            xi.ncomp, yi.ncomp, fi.ncomp,
-            xo.ncomp, yo.ncomp, fo.ncomp,
-            icycx, iopt)
+        ier = libncomp.linint2(xi.ncomp, yi.ncomp, fi.ncomp, xo.ncomp, yo.ncomp, fo.ncomp, icycx, iopt)
     #   re-acquire interpreter lock
     #   check errors ier
     if ier:
-        warnings.warn("linint2: {}: xi, yi, xo, and yo must be monotonically increasing".format(ier),
-                      NcompWarning)
+        warnings.warn("linint2: {}: xi, yi, xo, and yo must be monotonically increasing".format(ier), NcompWarning)
 
     if missing_inds_fi is not None and missing_inds_fi.any():
         fi.numpy[missing_inds_fi] = np.nan
@@ -349,20 +315,17 @@ cdef adjust_for_missing_values(np.ndarray np_input, libncomp.ncomp_array*ncomp_i
     else:
         # print(f"Using provided Missing value: {missing_value}")
         if np.isnan(np_input).any():
-            raise ValueError(
-                "The missing value is set to a non-NaN value but the data still contains some NaN. "
-                "Either change all the NaN numbers to your provided missing_value or "
-                "change all the missing values to NaN and do not specify the missing_values or specify it as NaN"
-            )
+            raise ValueError("The missing value is set to a non-NaN value but the data still contains some NaN. "
+                             "Either change all the NaN numbers to your provided missing_value or "
+                             "change all the missing values to NaN and do not specify the missing_values or specify it as NaN")
         if isinstance(missing_value, np.number):
             if missing_value.dtype != np_input.dtype:
                 missing_value = missing_value.astype(np_input.dtype)
         else:
-            missing_value = np.asarray([missing_value])[0].astype(np_input.dtype)
-            # alternatively we could do:
-            # missing_value = np.float128(missing_value).astype(np_input.dtype)
-            # however, that's assuming the cating issing_calue to float128 doesn't change anything
-            # prefer the asarray lines, because we let numpy to choose the proper type.
+            missing_value = np.asarray([missing_value])[0].astype(
+                np_input.dtype)  # alternatively we could do:  # missing_value = np.float128(missing_value).astype(np_input.dtype)  # however,
+            # that's assuming the cating issing_calue to float128 doesn't change anything  # prefer the asarray lines, because we let numpy to choose the  #
+            # proper type.
 
         missing_mask = (np_input == missing_value)
 
@@ -371,10 +334,8 @@ cdef adjust_for_missing_values(np.ndarray np_input, libncomp.ncomp_array*ncomp_i
         if isinstance(missing_value, np.number):
             set_ncomp_msg(&ncomp_input.msg, missing_value)
             if np_input.dtype != missing_value.dtype:
-                raise TypeError(
-                    "This should never be raised at this point. "
-                    "By now the missing_value should have the proper type"
-                )
+                raise TypeError("This should never be raised at this point. "
+                                "By now the missing_value should have the proper type")
         else:
             set_ncomp_msg(&ncomp_input.msg, np.float128(missing_value).astype(np_input.dtype))
 
@@ -415,7 +376,7 @@ def _eofunc(np.ndarray np_input, int neval, opt={}, **kwargs):
         - "anomalies"   : If True, anomalies have already been calculated by
                         user, and this interface shouldn't remove them.
         - "transpose"   : If True, call transpose routine no matter what
-                      : If False, don't call transpose routine no matter what
+                        : If False, don't call transpose routine no matter what
         - "oldtranspose": If True, call Dennis' old transpose routine.
         - "debug"       : turn on debug
 
@@ -473,9 +434,7 @@ def _eofunc(np.ndarray np_input, int neval, opt={}, **kwargs):
     output = Array.from_ncomp(ncomp_output)
 
     # making sure that output missing values is NaN
-    output_missing_value = output.ncomp.msg.msg_double \
-        if output.ncomp.type == libncomp.NCOMP_DOUBLE \
-        else output.ncomp.msg.msg_float
+    output_missing_value = output.ncomp.msg.msg_double if output.ncomp.type == libncomp.NCOMP_DOUBLE else output.ncomp.msg.msg_float
 
     output.numpy[output.numpy == output_missing_value] = np.nan
 
@@ -511,9 +470,7 @@ def _eofunc_n(np.ndarray np_input, int neval, int t_dim, opt={}, **kwargs):
     output = Array.from_ncomp(ncomp_output)
 
     # making sure that output missing values is NaN
-    output_missing_value = output.ncomp.msg.msg_double \
-        if output.ncomp.type == libncomp.NCOMP_DOUBLE \
-        else output.ncomp.msg.msg_float
+    output_missing_value = output.ncomp.msg.msg_double if output.ncomp.type == libncomp.NCOMP_DOUBLE else output.ncomp.msg.msg_float
 
     output.numpy[output.numpy == output_missing_value] = np.nan
 
@@ -550,9 +507,7 @@ def _eofunc_ts(np.ndarray np_data, np.ndarray  np_evec, opt={}, **kwargs):
     output = Array.from_ncomp(ncomp_output)
 
     # making sure that output missing values is NaN
-    output_missing_value = output.ncomp.msg.msg_double \
-        if output.ncomp.type == libncomp.NCOMP_DOUBLE \
-        else output.ncomp.msg.msg_float
+    output_missing_value = output.ncomp.msg.msg_double if output.ncomp.type == libncomp.NCOMP_DOUBLE else output.ncomp.msg.msg_float
 
     output.numpy[output.numpy == output_missing_value] = np.nan
 
@@ -590,9 +545,7 @@ def _eofunc_ts_n(np.ndarray np_data, np.ndarray  np_evec, int t_dim, opt={}, **k
     output = Array.from_ncomp(ncomp_output)
 
     # making sure that output missing values is NaN
-    output_missing_value = output.ncomp.msg.msg_double \
-        if output.ncomp.type == libncomp.NCOMP_DOUBLE \
-        else output.ncomp.msg.msg_float
+    output_missing_value = output.ncomp.msg.msg_double if output.ncomp.type == libncomp.NCOMP_DOUBLE else output.ncomp.msg.msg_float
 
     output.numpy[output.numpy == output_missing_value] = np.nan
 
@@ -630,8 +583,8 @@ cdef ncomp_attributes_to_dict(libncomp.ncomp_attributes attrs):
     return d
 
 @carrayify
-def _moc_globe_atl(np.ndarray lat_aux_grid_np, np.ndarray a_wvel_np, np.ndarray a_bolus_np, np.ndarray a_submeso_np,
-                   np.ndarray tlat_np, np.ndarray rmlak_np, msg=None):
+def _moc_globe_atl(np.ndarray lat_aux_grid_np, np.ndarray a_wvel_np, np.ndarray a_bolus_np, np.ndarray a_submeso_np, np.ndarray tlat_np, np.ndarray rmlak_np,
+                   msg=None):
     """Facilitates calculating the meridional overturning circulation for the globe and Atlantic.
     Args:
     lat_aux_grid (:class:`numpy.ndarray`):
@@ -699,9 +652,7 @@ def _moc_globe_atl(np.ndarray lat_aux_grid_np, np.ndarray a_wvel_np, np.ndarray 
 
     cdef int ier
     with nogil:
-        ier = libncomp.moc_globe_atl(lat_aux_grid.ncomp, a_wvel.ncomp, a_bolus.ncomp,
-                                     a_submeso.ncomp, tlat.ncomp, rmlak.ncomp,
-                                     &ncomp_output)
+        ier = libncomp.moc_globe_atl(lat_aux_grid.ncomp, a_wvel.ncomp, a_bolus.ncomp, a_submeso.ncomp, tlat.ncomp, rmlak.ncomp, &ncomp_output)
 
     # Check errors ier
     if ier:
@@ -718,7 +669,6 @@ def _moc_globe_atl(np.ndarray lat_aux_grid_np, np.ndarray a_wvel_np, np.ndarray 
 
     # TODO: May need to revisit for output missing value
     # output.numpy[output.numpy == output_missing_value] = np.nan
-
     return output.numpy
 
 @carrayify
@@ -765,8 +715,7 @@ def _dpres_plevel(np.ndarray plev_np, np.ndarray psfc_np, ptop_scalar, msg=None)
 
     """
     warnings.warn("dpres_plevel: this function is currently unstable and "
-                  "untested, and its functionality cannot be verified.",
-                  NcompWarning)
+                  "untested, and its functionality cannot be verified.", NcompWarning)
     plev = Array.from_np(plev_np)
     psfc = Array.from_np(psfc_np)
     ptop = Array.from_np(np.ndarray([1], buffer=ptop_scalar, dtype=type(ptop_scalar)))
@@ -792,8 +741,7 @@ def _dpres_plevel(np.ndarray plev_np, np.ndarray psfc_np, ptop_scalar, msg=None)
     # release global interpreter lock
     cdef int ier
     with nogil:
-        ier = libncomp.dpres_plevel(plev.ncomp, psfc.ncomp, ptop.ncomp,
-                                    &ncomp_output_dp)
+        ier = libncomp.dpres_plevel(plev.ncomp, psfc.ncomp, ptop.ncomp, &ncomp_output_dp)
     # Check errors ier
     if ier != 0:
         raise NcompError(f"An error occurred while calling libncomp.dpres_plevel with error code: {ier}")
@@ -815,8 +763,7 @@ def _dpres_plevel(np.ndarray plev_np, np.ndarray psfc_np, ptop_scalar, msg=None)
     return output_dp.numpy
 
 @carrayify
-def _rcm2points(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.ndarray lat1d_np, np.ndarray lon1d_np,
-                int opt=0, msg=None):
+def _rcm2points(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.ndarray lat1d_np, np.ndarray lon1d_np, int opt=0, msg=None):
     """_rcm2points(lat2d, lon2d, fi, lat1d, lon1d, msg=None)
 
     Interpolates data on a curvilinear grid (i.e. RCM, WRF, NARR) to an unstructured grid.
@@ -880,8 +827,7 @@ def _rcm2points(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.n
         fo_dtype = np.float64
     else:
         fo_dtype = np.float32
-    cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat1d.shape[0]]),
-                                     dtype=fo_dtype)  # or lon1d.shape[0]
+    cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat1d.shape[0]]), dtype=fo_dtype)  # or lon1d.shape[0]
 
     replace_fi_nans = False
 
@@ -903,8 +849,7 @@ def _rcm2points(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.n
     #	release global interpreter lock
     cdef int ier
     with nogil:
-        ier = libncomp.rcm2points(lat2d.ncomp, lon2d.ncomp, fi.ncomp,
-                                  lat1d.ncomp, lon1d.ncomp, fo.ncomp, opt)
+        ier = libncomp.rcm2points(lat2d.ncomp, lon2d.ncomp, fi.ncomp, lat1d.ncomp, lon1d.ncomp, fo.ncomp, opt)
 
     #	re-acquire interpreter lock
     # Check errors ier
@@ -923,8 +868,7 @@ def _rcm2points(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.n
     return fo.numpy
 
 @carrayify
-def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.ndarray lat1d_np, np.ndarray lon1d_np,
-               msg=None):
+def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.ndarray lat1d_np, np.ndarray lon1d_np, msg=None):
     """_rcm2rgrid(lat2d, lon2d, fi, lat1d, lon1d, msg=None)
 
     Interpolates data on a curvilinear grid (i.e. RCM, WRF, NARR) to a rectilinear grid.
@@ -999,8 +943,7 @@ def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.nd
         fo_dtype = np.float64
     else:
         fo_dtype = np.float32
-    cdef np.ndarray fo_np = np.zeros(
-        tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat1d.shape[0], lon1d.shape[0]]), dtype=fo_dtype)
+    cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat1d.shape[0], lon1d.shape[0]]), dtype=fo_dtype)
 
     replace_fi_nans = False
 
@@ -1022,8 +965,7 @@ def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.nd
     #   release global interpreter lock
     cdef int ier
     with nogil:
-        ier = libncomp.rcm2rgrid(lat2d.ncomp, lon2d.ncomp, fi.ncomp,
-                                 lat1d.ncomp, lon1d.ncomp, fo.ncomp)
+        ier = libncomp.rcm2rgrid(lat2d.ncomp, lon2d.ncomp, fi.ncomp, lat1d.ncomp, lon1d.ncomp, fo.ncomp)
 
     #   re-acquire interpreter lock
     # Check errors ier
@@ -1042,8 +984,7 @@ def _rcm2rgrid(np.ndarray lat2d_np, np.ndarray lon2d_np, np.ndarray fi_np, np.nd
     return fo.numpy
 
 @carrayify
-def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.ndarray lat2d_np, np.ndarray lon2d_np,
-               msg=None):
+def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.ndarray lat2d_np, np.ndarray lon2d_np, msg=None):
     """_rgrid2rcm(lat1d, lon1d, fi, lat2d, lon2d, msg=None)
 
     Interpolates data on a rectilinear lat/lon grid to a curvilinear grid like those used by the RCM, WRF and NARR models/datasets.
@@ -1103,8 +1044,7 @@ def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.nd
         fo_dtype = np.float64
     else:
         fo_dtype = np.float32
-    cdef np.ndarray fo_np = np.zeros(
-        tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat2d.shape[0], lon2d.shape[0]]), dtype=fo_dtype)
+    cdef np.ndarray fo_np = np.zeros(tuple([fi.shape[i] for i in range(fi.ndim - 2)] + [lat2d.shape[0], lon2d.shape[0]]), dtype=fo_dtype)
 
     replace_fi_nans = False
 
@@ -1126,8 +1066,7 @@ def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.nd
     #   release global interpreter lock
     cdef int ier
     with nogil:
-        ier = libncomp.rgrid2rcm(lat1d.ncomp, lon1d.ncomp, fi.ncomp,
-                                 lat2d.ncomp, lon2d.ncomp, fo.ncomp)
+        ier = libncomp.rgrid2rcm(lat1d.ncomp, lon1d.ncomp, fi.ncomp, lat2d.ncomp, lon2d.ncomp, fo.ncomp)
 
     #   re-acquire interpreter lock
     # Check errors ier
@@ -1147,8 +1086,7 @@ def _rgrid2rcm(np.ndarray lat1d_np, np.ndarray lon1d_np, np.ndarray fi_np, np.nd
     return fo.numpy
 
 @carrayify
-def _linint2_points(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.ndarray xo_np, np.ndarray yo_np, int icycx,
-                    msg=None):
+def _linint2_points(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.ndarray xo_np, np.ndarray yo_np, int icycx, msg=None):
     """_linint2_points(xi, yi, fi, xo, yo, icycx, msg=None)
 
     Interpolates from a rectilinear grid to an unstructured grid
@@ -1237,12 +1175,9 @@ def _linint2_points(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.nda
 
     cdef int ier
     with nogil:
-        ier = libncomp.linint2points(xi.ncomp, yi.ncomp, fi.ncomp,
-                                     xo.ncomp, yo.ncomp, fo.ncomp,
-                                     icycx)
+        ier = libncomp.linint2points(xi.ncomp, yi.ncomp, fi.ncomp, xo.ncomp, yo.ncomp, fo.ncomp, icycx)
     if ier:
-        warnings.warn("linint2_points: {}: xi, yi, xo, and yo must be monotonically increasing".format(ier),
-                      NcompWarning)
+        warnings.warn("linint2_points: {}: xi, yi, xo, and yo must be monotonically increasing".format(ier), NcompWarning)
 
     if replace_fi_nans and fi.ncomp.has_missing:
         fi.numpy[missing_inds_fi] = np.nan
@@ -1256,8 +1191,7 @@ def _linint2_points(np.ndarray xi_np, np.ndarray yi_np, np.ndarray fi_np, np.nda
 
     return fo.numpy
 
-def _triple2grid(np.ndarray x_np, np.ndarray y_np, np.ndarray data_np, np.ndarray xgrid_np, np.ndarray ygrid_np,
-                 opt={}, msg=None):
+def _triple2grid(np.ndarray x_np, np.ndarray y_np, np.ndarray data_np, np.ndarray xgrid_np, np.ndarray ygrid_np, opt={}, msg=None):
     """_triple2grid(x, y, data, xgrid, ygrid, opt, msg=None)
 
     Places unstructured (randomly-spaced) data onto the nearest locations of a rectilinear grid.

@@ -26,20 +26,24 @@ class CoordinateError(Error):
     an argument without a required coordinate array being passed separately."""
     pass
 
+
 class DimensionError(Error):
-     """Exception raised when the arguments of GeoCAT-comp functions argument
-     has a mismatch of the necessary dimensionality."""
-     pass
+    """Exception raised when the arguments of GeoCAT-comp functions argument
+    has a mismatch of the necessary dimensionality."""
+    pass
+
 
 class AttributeError(Error):
-     """Exception raised when the arguments of GeoCAT-comp functions argument
-     has a mismatch of attributes with other arguments."""
-     pass
+    """Exception raised when the arguments of GeoCAT-comp functions argument
+    has a mismatch of attributes with other arguments."""
+    pass
+
 
 class MetaError(Error):
-     """Exception raised when the support for the retention of metadata is not
-     supported."""
-     pass
+    """Exception raised when the support for the retention of metadata is not
+    supported."""
+    pass
+
 
 def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
     """Interpolates a regular grid to a rectilinear one using bi-linear
@@ -249,10 +253,8 @@ def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
         # this case indicate that the two rightmost dimensions of the input
         # will be dropped from the output array, and that two new axes will be
         # added instead.
-        fo = map_blocks(_ncomp._linint2, xi, yi, fi_data, xo, yo, icycx, msg,
-                        chunks=chunks, dtype=fi.dtype,
-                        drop_axis=[fi.ndim-2, fi.ndim-1],
-                        new_axis=[fi.ndim-2, fi.ndim-1])
+        fo = map_blocks(_ncomp._linint2, xi, yi, fi_data, xo, yo, icycx, msg, chunks=chunks, dtype=fi.dtype, drop_axis=[fi.ndim - 2, fi.ndim - 1],
+                        new_axis=[fi.ndim - 2, fi.ndim - 1])
     elif isinstance(fi_data, np.ndarray):
         fo = _ncomp._linint2(xi, yi, fi_data, xo, yo, icycx, msg)
     else:
@@ -262,16 +264,14 @@ def linint2(fi, xo, yo, icycx, msg=None, meta=True, xi=None, yi=None):
                         " a dask.array.Array.")
 
     if meta:
-        coords = {k:v if k not in fi.dims[-2:]
-                  else (xo if k == fi.dims[-1] else yo)
-                  for (k, v) in fi.coords.items()}
+        coords = {k: v if k not in fi.dims[-2:] else (xo if k == fi.dims[-1] else yo) for (k, v) in fi.coords.items()}
 
-        fo = xr.DataArray(fo, attrs=fi.attrs, dims=fi.dims,
-                              coords=coords)
+        fo = xr.DataArray(fo, attrs=fi.attrs, dims=fi.dims, coords=coords)
     else:
         fo = xr.DataArray(fo)
 
     return fo
+
 
 def rcm2rgrid(lat2d, lon2d, fi, lat1d, lon1d, msg=None, meta=False):
     """Interpolates data on a curvilinear grid (i.e. RCM, WRF, NARR) to a rectilinear grid.
@@ -279,26 +279,26 @@ def rcm2rgrid(lat2d, lon2d, fi, lat1d, lon1d, msg=None, meta=False):
     Args:
 
         lat2d (:class:`numpy.ndarray`):
-	    A two-dimensional array that specifies the latitudes locations
-	    of fi. Because this array is two-dimensional it is not an associated
-	    coordinate variable of `fi`. The latitude order must be south-to-north.
+        A two-dimensional array that specifies the latitudes locations
+        of fi. Because this array is two-dimensional it is not an associated
+        coordinate variable of `fi`. The latitude order must be south-to-north.
 
         lon2d (:class:`numpy.ndarray`):
-	    A two-dimensional array that specifies the longitude locations
-	    of fi. Because this array is two-dimensional it is not an associated
-	    coordinate variable of `fi`. The latitude order must be west-to-east.
+        A two-dimensional array that specifies the longitude locations
+        of fi. Because this array is two-dimensional it is not an associated
+        coordinate variable of `fi`. The latitude order must be west-to-east.
 
         fi (:class:`numpy.ndarray`):
-	    A multi-dimensional array to be interpolated. The rightmost two
-	    dimensions (latitude, longitude) are the dimensions to be interpolated.
+        A multi-dimensional array to be interpolated. The rightmost two
+        dimensions (latitude, longitude) are the dimensions to be interpolated.
 
         lat1d (:class:`numpy.ndarray`):
-	    A one-dimensional array that specifies the latitude coordinates of
-	    the regular grid. Must be monotonically increasing.
+        A one-dimensional array that specifies the latitude coordinates of
+        the regular grid. Must be monotonically increasing.
 
         lon1d (:class:`numpy.ndarray`):
-	    A one-dimensional array that specifies the longitude coordinates of
-	    the regular grid. Must be monotonically increasing.
+        A one-dimensional array that specifies the longitude coordinates of
+        the regular grid. Must be monotonically increasing.
 
         msg (:obj:`numpy.number`):
             A numpy scalar value that represent a missing value in fi.
@@ -313,30 +313,30 @@ def rcm2rgrid(lat2d, lon2d, fi, lat1d, lon1d, msg=None, meta=False):
 
     Returns:
         :class:`numpy.ndarray`: The interpolated grid. A multi-dimensional array
-	of the same size as fi except that the rightmost dimension sizes have been
-	replaced by the sizes of lat1d and lon1d respectively.
-	Double if fi is double, otherwise float.
+    of the same size as fi except that the rightmost dimension sizes have been
+    replaced by the sizes of lat1d and lon1d respectively.
+    Double if fi is double, otherwise float.
 
     Description:
         Interpolates RCM (Regional Climate Model), WRF (Weather Research and Forecasting) and
         NARR (North American Regional Reanalysis) grids to a rectilinear grid. Actually, this
-	function will interpolate most grids that use curvilinear latitude/longitude grids.
-	No extrapolation is performed beyond the range of the input coordinates. Missing values
-	are allowed but ignored.
+    function will interpolate most grids that use curvilinear latitude/longitude grids.
+    No extrapolation is performed beyond the range of the input coordinates. Missing values
+    are allowed but ignored.
 
-	The weighting method used is simple inverse distance squared. Missing values are allowed
-	but ignored.
+    The weighting method used is simple inverse distance squared. Missing values are allowed
+    but ignored.
 
-	The code searches the input curvilinear grid latitudes and longitudes for the four
-	grid points that surround a specified output grid coordinate. Because one or more of
-	these input points could contain missing values, fewer than four points
-	could be used in the interpolation.
+    The code searches the input curvilinear grid latitudes and longitudes for the four
+    grid points that surround a specified output grid coordinate. Because one or more of
+    these input points could contain missing values, fewer than four points
+    could be used in the interpolation.
 
-	Curvilinear grids which have two-dimensional latitude and longitude coordinate axes present
-	some issues because the coordinates are not necessarily monotonically increasing. The simple
-	search algorithm used by rcm2rgrid is not capable of handling all cases. The result is that,
-	sometimes, there are small gaps in the interpolated grids. Any interior points not
-	interpolated in the initial interpolation pass will be filled using linear interpolation.
+    Curvilinear grids which have two-dimensional latitude and longitude coordinate axes present
+    some issues because the coordinates are not necessarily monotonically increasing. The simple
+    search algorithm used by rcm2rgrid is not capable of handling all cases. The result is that,
+    sometimes, there are small gaps in the interpolated grids. Any interior points not
+    interpolated in the initial interpolation pass will be filled using linear interpolation.
         In some cases, edge points may not be filled.
 
     Examples:
@@ -368,7 +368,6 @@ def rcm2rgrid(lat2d, lon2d, fi, lat1d, lon1d, msg=None, meta=False):
     """
 
     # todo: Revisit for handling of "meta" argument
-
     # Basic sanity checks
     if lat2d.shape[0] != lon2d.shape[0] or lat2d.shape[1] != lon2d.shape[1]:
         raise DimensionError("ERROR rcm2rgrid: The input lat/lon grids must be the same size !")
@@ -411,10 +410,8 @@ def rcm2rgrid(lat2d, lon2d, fi, lat1d, lon1d, msg=None, meta=False):
         # ensure rightmost dimensions of output are not chunked
         chunks[-2:] = (lon1d.shape, lat1d.shape)
 
-        fo = map_blocks(_ncomp._rcm2rgrid, lat2d, lon2d, fi_data, lat1d, lon1d, msg,
-                        chunks=chunks, dtype=fi.dtype,
-                        drop_axis=[fi.ndim-2, fi.ndim-1],
-                        new_axis=[fi.ndim-2, fi.ndim-1])
+        fo = map_blocks(_ncomp._rcm2rgrid, lat2d, lon2d, fi_data, lat1d, lon1d, msg, chunks=chunks, dtype=fi.dtype, drop_axis=[fi.ndim - 2, fi.ndim - 1],
+                        new_axis=[fi.ndim - 2, fi.ndim - 1])
     elif isinstance(fi_data, np.ndarray):
         fo = _ncomp._rcm2rgrid(lat2d, lon2d, fi_data, lat1d, lon1d, msg)
     else:
@@ -430,6 +427,7 @@ def rcm2rgrid(lat2d, lon2d, fi, lat1d, lon1d, msg=None, meta=False):
 
     return fo
 
+
 def rgrid2rcm(lat1d, lon1d, fi, lat2d, lon2d, msg=None, meta=False):
     """Interpolates data on a rectilinear lat/lon grid to a curvilinear grid like
        those used by the RCM, WRF and NARR models/datasets.
@@ -437,26 +435,26 @@ def rgrid2rcm(lat1d, lon1d, fi, lat2d, lon2d, msg=None, meta=False):
     Args:
 
         lat1d (:class:`numpy.ndarray`):
-	    A one-dimensional array that specifies the latitude coordinates of
-	    the regular grid. Must be monotonically increasing.
+        A one-dimensional array that specifies the latitude coordinates of
+        the regular grid. Must be monotonically increasing.
 
         lon1d (:class:`numpy.ndarray`):
-	    A one-dimensional array that specifies the longitude coordinates of
-	    the regular grid. Must be monotonically increasing.
+        A one-dimensional array that specifies the longitude coordinates of
+        the regular grid. Must be monotonically increasing.
 
         fi (:class:`numpy.ndarray`):
-	    A multi-dimensional array to be interpolated. The rightmost two
-	    dimensions (latitude, longitude) are the dimensions to be interpolated.
+        A multi-dimensional array to be interpolated. The rightmost two
+        dimensions (latitude, longitude) are the dimensions to be interpolated.
 
         lat2d (:class:`numpy.ndarray`):
-	    A two-dimensional array that specifies the latitude locations
-	    of fi. Because this array is two-dimensional it is not an associated
-	    coordinate variable of `fi`.
+        A two-dimensional array that specifies the latitude locations
+        of fi. Because this array is two-dimensional it is not an associated
+        coordinate variable of `fi`.
 
         lon2d (:class:`numpy.ndarray`):
-	    A two-dimensional array that specifies the longitude locations
-	    of fi. Because this array is two-dimensional it is not an associated
-	    coordinate variable of `fi`.
+        A two-dimensional array that specifies the longitude locations
+        of fi. Because this array is two-dimensional it is not an associated
+        coordinate variable of `fi`.
 
         msg (:obj:`numpy.number`):
             A numpy scalar value that represent a missing value in fi.
@@ -471,16 +469,16 @@ def rgrid2rcm(lat1d, lon1d, fi, lat2d, lon2d, msg=None, meta=False):
 
     Returns:
         :class:`numpy.ndarray`: The interpolated grid. A multi-dimensional array of the
-	same size as `fi` except that the rightmost dimension sizes have been replaced
-	by the sizes of `lat2d` and `lon2d` respectively. Double if `fi` is double,
-	otherwise float.
+    same size as `fi` except that the rightmost dimension sizes have been replaced
+    by the sizes of `lat2d` and `lon2d` respectively. Double if `fi` is double,
+    otherwise float.
 
     Description:
         Interpolates data on a rectilinear lat/lon grid to a curvilinear grid, such as those
-	used by the RCM (Regional Climate Model), WRF (Weather Research and Forecasting) and
-	NARR (North American Regional Reanalysis) models/datasets. No extrapolation is
-	performed beyond the range of the input coordinates. The method used is simple inverse
-	distance weighting. Missing values are allowed but ignored.
+    used by the RCM (Regional Climate Model), WRF (Weather Research and Forecasting) and
+    NARR (North American Regional Reanalysis) models/datasets. No extrapolation is
+    performed beyond the range of the input coordinates. The method used is simple inverse
+    distance weighting. Missing values are allowed but ignored.
 
     Examples:
 
@@ -516,7 +514,6 @@ def rgrid2rcm(lat1d, lon1d, fi, lat2d, lon2d, msg=None, meta=False):
     """
 
     # todo: Revisit for handling of "meta" argument
-
     # Basic sanity checks
     if lat2d.shape[0] != lon2d.shape[0] or lat2d.shape[1] != lon2d.shape[1]:
         raise DimensionError("ERROR rgrid2rcm: The output lat2D/lon2D grids must be the same size !")
@@ -559,10 +556,8 @@ def rgrid2rcm(lat1d, lon1d, fi, lat2d, lon2d, msg=None, meta=False):
         # ensure rightmost dimensions of output are not chunked
         chunks[-2:] = (lon2d.shape, lat2d.shape)
 
-        fo = map_blocks(_ncomp._rgrid2rcm, lat1d, lon1d, fi_data, lat2d, lon2d, msg,
-                        chunks=chunks, dtype=fi.dtype,
-                        drop_axis=[fi.ndim-2, fi.ndim-1],
-                        new_axis=[fi.ndim-2, fi.ndim-1])
+        fo = map_blocks(_ncomp._rgrid2rcm, lat1d, lon1d, fi_data, lat2d, lon2d, msg, chunks=chunks, dtype=fi.dtype, drop_axis=[fi.ndim - 2, fi.ndim - 1],
+                        new_axis=[fi.ndim - 2, fi.ndim - 1])
     elif isinstance(fi_data, np.ndarray):
         fo = _ncomp._rgrid2rcm(lat1d, lon1d, fi_data, lat2d, lon2d, msg)
     else:
@@ -577,6 +572,7 @@ def rgrid2rcm(lat1d, lon1d, fi, lat2d, lon2d, msg=None, meta=False):
         fo = xr.DataArray(fo)
 
     return fo
+
 
 def eofunc(data: Iterable, neval, **kwargs) -> xr.DataArray:
     """
@@ -640,7 +636,7 @@ def eofunc(data: Iterable, neval, **kwargs) -> xr.DataArray:
 
     if (time_dim >= np_data.ndim) or (time_dim < -np_data.ndim):
         raise ValueError(f"dimension out of bound. The input data has {np_data.ndim} dimension."
-                         f" hence, time_dim must be between {-np_data.ndim} and {np_data.ndim - 1 }")
+                         f" hence, time_dim must be between {-np_data.ndim} and {np_data.ndim - 1}")
 
     if time_dim < 0:
         time_dim = np_data.ndim + time_dim
@@ -674,12 +670,7 @@ def eofunc(data: Iterable, neval, **kwargs) -> xr.DataArray:
         dims = ["evn"] + [f"dim_{i}" for i in range(np_data.ndim) if i != time_dim]
         coords = {}
 
-    return xr.DataArray(
-        response[0],
-        attrs=attrs,
-        dims=dims,
-        coords=coords
-    )
+    return xr.DataArray(response[0], attrs=attrs, dims=dims, coords=coords)
 
 
 def eofunc_ts(data: Iterable, evec, **kwargs) -> xr.DataArray:
@@ -776,7 +767,7 @@ def eofunc_ts(data: Iterable, evec, **kwargs) -> xr.DataArray:
 
     if (time_dim >= np_data.ndim) or (time_dim < -np_data.ndim):
         raise ValueError(f"dimension out of bound. The input data has {np_data.ndim} dimension."
-                             f" hence, time_dim must be between {-np_data.ndim} and {np_data.ndim - 1 }")
+                         f" hence, time_dim must be between {-np_data.ndim} and {np_data.ndim - 1}")
     if time_dim < 0:
         time_dim = np_data.ndim + time_dim
 
@@ -803,16 +794,10 @@ def eofunc_ts(data: Iterable, evec, **kwargs) -> xr.DataArray:
     else:
         coords = {}
 
-    return xr.DataArray(
-        response[0],
-        attrs=attrs,
-        dims=dims,
-        coords=coords
-    )
+    return xr.DataArray(response[0], attrs=attrs, dims=dims, coords=coords)
 
 
-def moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak,
-                  msg=None, meta=False):
+def moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak, msg=None, meta=False):
     """Facilitates calculating the meridional overturning circulation for the
     globe and Atlantic.
 
@@ -891,7 +876,6 @@ def moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak,
     """
 
     # todo: Revisit for handling of "meta" argument
-
     # Ensure input arrays are numpy.ndarrays
     if isinstance(lat_aux_grid, xr.DataArray):
         lat_aux_grid = lat_aux_grid.values
@@ -917,10 +901,8 @@ def moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak,
     else:
         msg = np.float32(msg)
 
-
     # Call ncomp function
-    out_arr = _ncomp._moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso,
-                                    tlat, rmlak, msg)
+    out_arr = _ncomp._moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak, msg)
 
     if meta and isinstance(input, xr.DataArray):
         raise MetaError("ERROR moc_globe_atl: retention of metadata is not yet supported !")
@@ -928,6 +910,7 @@ def moc_globe_atl(lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak,
         out_arr = xr.DataArray(out_arr)
 
     return out_arr
+
 
 def dpres_plevel(plev, psfc, ptop=None, msg=None, meta=False):
     """Calculates the pressure layer thicknesses of a constant pressure level coordinate system.
@@ -1001,10 +984,10 @@ def dpres_plevel(plev, psfc, ptop=None, msg=None, meta=False):
     """
 
     # todo: Revisit for handling of "meta" argument
-
     if isinstance(psfc, np.ndarray):
         if psfc.ndim > 3:
-            raise DimensionError("ERROR dpres_plevel: The 'psfc' array must be a scalar or be a 2 or 3 dimensional array with right most dimensions lat x lon !")
+            raise DimensionError(
+                "ERROR dpres_plevel: The 'psfc' array must be a scalar or be a 2 or 3 dimensional array with right most dimensions lat x lon !")
     if plev.ndim != 1:
         raise DimensionError("ERROR dpres_plevel: The 'plev' array must be 1 dimensional array !")
     if isinstance(ptop, np.ndarray):
@@ -1018,7 +1001,7 @@ def dpres_plevel(plev, psfc, ptop=None, msg=None, meta=False):
 
     if isinstance(psfc, xr.DataArray):
         psfc = psfc.values
-    elif np.size(psfc)==1: # if it is a scalar, then construct a ndarray
+    elif np.size(psfc) == 1:  # if it is a scalar, then construct a ndarray
         psfc = np.asarray(psfc)
         psfc = np.ndarray([1], buffer=psfc, dtype=psfc.dtype)
 
@@ -1034,95 +1017,95 @@ def dpres_plevel(plev, psfc, ptop=None, msg=None, meta=False):
     if meta and isinstance(input, xr.DataArray):
         raise MetaError("ERROR dpres_plevel: retention of metadata is not yet supported !")
 
-        pass     # TODO: Retaining possible metadata might be revised in the future
+        pass  # TODO: Retaining possible metadata might be revised in the future
     else:
         result_dp = xr.DataArray(result_dp)
 
     return result_dp
+
 
 def rcm2points(lat2d, lon2d, fi, lat1dPoints, lon1dPoints, opt=0, msg=None, meta=False):
     """Interpolates data on a curvilinear grid (i.e. RCM, WRF, NARR) to an unstructured grid.
 
     Args:
 
-	lat2d (:class:`numpy.ndarray`):
-	    A two-dimensional array that specifies the latitudes locations
-	    of fi. The latitude order must be south-to-north.
+    lat2d (:class:`numpy.ndarray`):
+        A two-dimensional array that specifies the latitudes locations
+        of fi. The latitude order must be south-to-north.
 
-	lon2d (:class:`numpy.ndarray`):
-	    A two-dimensional array that specifies the longitude locations
-	    of fi. The latitude order must be west-to-east.
+    lon2d (:class:`numpy.ndarray`):
+        A two-dimensional array that specifies the longitude locations
+        of fi. The latitude order must be west-to-east.
 
-	fi (:class:`numpy.ndarray`):
-	    A multi-dimensional array to be interpolated. The rightmost two
-	    dimensions (latitude, longitude) are the dimensions to be interpolated.
+    fi (:class:`numpy.ndarray`):
+        A multi-dimensional array to be interpolated. The rightmost two
+        dimensions (latitude, longitude) are the dimensions to be interpolated.
 
-	lat1dPoints (:class:`numpy.ndarray`):
-	    A one-dimensional array that specifies the latitude coordinates of
-	    the output locations.
+    lat1dPoints (:class:`numpy.ndarray`):
+        A one-dimensional array that specifies the latitude coordinates of
+        the output locations.
 
-	lon1dPoints (:class:`numpy.ndarray`):
-	    A one-dimensional array that specifies the longitude coordinates of
-	    the output locations.
+    lon1dPoints (:class:`numpy.ndarray`):
+        A one-dimensional array that specifies the longitude coordinates of
+        the output locations.
 
-	opt (:obj:`numpy.number`):
-	    opt=0 or 1 means use an inverse distance weight interpolation.
-	    opt=2 means use a bilinear interpolation.
+    opt (:obj:`numpy.number`):
+        opt=0 or 1 means use an inverse distance weight interpolation.
+        opt=2 means use a bilinear interpolation.
 
-	msg (:obj:`numpy.number`):
-	    A numpy scalar value that represent a missing value in fi.
-	    This argument allows a user to use a missing value scheme
-	    other than NaN or masked arrays, similar to what NCL allows.
+    msg (:obj:`numpy.number`):
+        A numpy scalar value that represent a missing value in fi.
+        This argument allows a user to use a missing value scheme
+        other than NaN or masked arrays, similar to what NCL allows.
 
-	meta (:obj:`bool`):
+    meta (:obj:`bool`):
         If set to True and the input array is an Xarray, the metadata
         from the input array will be copied to the output array;
         default is False.
         Warning: this option is not currently supported.
 
     Returns:
-	:class:`numpy.ndarray`: The interpolated grid. A multi-dimensional array
-	of the same size as fi except that the rightmost dimension sizes have been
-	replaced by the number of coordinate pairs (lat1dPoints, lon1dPoints).
-	Double if fi is double, otherwise float.
+    :class:`numpy.ndarray`: The interpolated grid. A multi-dimensional array
+    of the same size as fi except that the rightmost dimension sizes have been
+    replaced by the number of coordinate pairs (lat1dPoints, lon1dPoints).
+    Double if fi is double, otherwise float.
 
     Description:
-	Interpolates data on a curvilinear grid, such as those used by the RCM (Regional Climate Model),
-	WRF (Weather Research and Forecasting) and NARR (North American Regional Reanalysis)
-	models/datasets to an unstructured grid. All of these have latitudes that are oriented south-to-north.
+    Interpolates data on a curvilinear grid, such as those used by the RCM (Regional Climate Model),
+    WRF (Weather Research and Forecasting) and NARR (North American Regional Reanalysis)
+    models/datasets to an unstructured grid. All of these have latitudes that are oriented south-to-north.
 
-	A inverse distance squared algorithm is used to perform the interpolation.
+    A inverse distance squared algorithm is used to perform the interpolation.
 
-	Missing values are allowed and no extrapolation is performed.
+    Missing values are allowed and no extrapolation is performed.
 
     Examples:
 
-	Example 1: Using rcm2points with :class:`xarray.DataArray` input
+    Example 1: Using rcm2points with :class:`xarray.DataArray` input
 
-	.. code-block:: python
+    .. code-block:: python
 
-	    import numpy as np
-	    import xarray as xr
-	    import geocat.comp
+        import numpy as np
+        import xarray as xr
+        import geocat.comp
 
-	    # Open a netCDF data file using xarray default engine and load the data stream
-	    ds = xr.open_dataset("./ruc.nc")
+        # Open a netCDF data file using xarray default engine and load the data stream
+        ds = xr.open_dataset("./ruc.nc")
 
-	    # [INPUT] Grid & data info on the source curvilinear
-	    ht_curv=ds.DIST_236_CBL[:]
-	    lat2D_curv=ds.gridlat_236[:]
-	    lon2D_curv=ds.gridlon_236[:]
+        # [INPUT] Grid & data info on the source curvilinear
+        ht_curv=ds.DIST_236_CBL[:]
+        lat2D_curv=ds.gridlat_236[:]
+        lon2D_curv=ds.gridlon_236[:]
 
-	    # [OUTPUT] Grid on destination points grid (or read the 1D lat and lon from
-	    #	       an other .nc file.
-	    newlat1D_points=np.linspace(lat2D_curv.min(), lat2D_curv.max(), 100)
-	    newlon1D_points=np.linspace(lon2D_curv.min(), lon2D_curv.max(), 100)
+        # [OUTPUT] Grid on destination points grid (or read the 1D lat and lon from
+        #	       an other .nc file.
+        newlat1D_points=np.linspace(lat2D_curv.min(), lat2D_curv.max(), 100)
+        newlon1D_points=np.linspace(lon2D_curv.min(), lon2D_curv.max(), 100)
 
-	    ht_points = geocat.comp.rcm2points(lat2D_curv, lon2D_curv, ht_curv, newlat1D_points, newlon1D_points)
+        ht_points = geocat.comp.rcm2points(lat2D_curv, lon2D_curv, ht_curv, newlat1D_points, newlon1D_points)
     """
 
     # todo: Revisit for handling of "meta" argument
-
     # Basic sanity checks
     if lat2d.shape[0] != lon2d.shape[0] or lat2d.shape[1] != lon2d.shape[1]:
         raise DimensionError("ERROR rcm2points: The input lat/lon grids must be the same size !")
@@ -1138,7 +1121,7 @@ def rcm2points(lat2d, lon2d, fi, lat1dPoints, lon1dPoints, opt=0, msg=None, meta
 
     if fi.shape[fi.ndim - 2] != lat2d.shape[0] or fi.shape[fi.ndim - 1] != lon2d.shape[1]:
         raise DimensionError("ERROR rcm2points: The rightmost dimensions of fi must be (nlat2d x nlon2d),"
-			     "where nlat2d and nlon2d are the size of the lat2d/lon2d arrays !")
+                             "where nlat2d and nlon2d are the size of the lat2d/lon2d arrays !")
 
     if isinstance(lat2d, xr.DataArray):
         lat2d = lat2d.values
@@ -1220,7 +1203,7 @@ def linint2_points(fi, xo, yo, icycx, msg=None, meta=False, xi=None, yi=None):
             the Y [latitude] coordinates of the `fi` array.
 
     Returns:
-	:class:`numpy.ndarray`: The returned value will have the same
+    :class:`numpy.ndarray`: The returned value will have the same
         dimensions as `fi`, except for the rightmost dimension which will
         have the same dimension size as the length of `yo` and `xo`. The
         return type will be double if fi is double, and float otherwise.
@@ -1287,7 +1270,6 @@ def linint2_points(fi, xo, yo, icycx, msg=None, meta=False, xi=None, yi=None):
     """
 
     # todo: Revisit for handling of "meta" argument
-
     # Basic sanity checks
     if not isinstance(fi, xr.DataArray):
         fi = xr.DataArray(fi)
@@ -1327,10 +1309,9 @@ def linint2_points(fi, xo, yo, icycx, msg=None, meta=False, xi=None, yi=None):
     else:
         fo = xr.DataArray(fo)
 
-    #todo: Revisit for the parallelization:
+    # todo: Revisit for the parallelization:
     # Above two if-blocks should be changed with two if-blocks similar to the following (would require corrections
     # though) when parallelization for differently-shaped input (fi) and output (fo) arrays in this case is resolved:
-
     # if isinstance(fi_data, da.Array):
     #     chunks = list(fi.chunks)
     #
@@ -1365,7 +1346,6 @@ def linint2_points(fi, xo, yo, icycx, msg=None, meta=False, xi=None, yi=None):
     #                           coords=coords)
     # else:
     #     fo = xr.DataArray(fo)
-
     return fo
 
 
@@ -1374,28 +1354,28 @@ def triple2grid(x, y, data, xgrid, ygrid, **kwargs):
 
     Args:
 
-	x (:class:`numpy.ndarray`):
+    x (:class:`numpy.ndarray`):
             One-dimensional arrays of the same length containing the coordinates
             associated with the data values. For geophysical variables, x
             correspond to longitude.
 
-	y (:class:`numpy.ndarray`):
+    y (:class:`numpy.ndarray`):
             One-dimensional arrays of the same length containing the coordinates
             associated with the data values. For geophysical variables, y
             correspond to latitude.
 
-	data (:class:`numpy.ndarray`):
+    data (:class:`numpy.ndarray`):
             A multi-dimensional array, whose rightmost dimension is the same
             length as `x` and `y`, containing the values associated with the `x`
             and `y` coordinates. Missing values, may be present but will be ignored.
 
-	xgrid (:class:`numpy.ndarray`):
+    xgrid (:class:`numpy.ndarray`):
             A one-dimensional array of length M containing the `x` coordinates
             associated with the returned two-dimensional grid. For geophysical
             variables, these are longitudes. The coordinates' values must be
             monotonically increasing.
 
-	ygrid (:class:`numpy.ndarray`):
+    ygrid (:class:`numpy.ndarray`):
             A one-dimensional array of length N containing the `y` coordinates
             associated with the returned two-dimensional grid. For geophysical
             variables, these are latitudes. The coordinates' values must be
@@ -1428,7 +1408,7 @@ def triple2grid(x, y, data, xgrid, ygrid, **kwargs):
                           Warning: this option is not currently supported.
 
     Returns:
-	:class:`numpy.ndarray`: The return array will be K x N x M, where K
+    :class:`numpy.ndarray`: The return array will be K x N x M, where K
         represents the leftmost dimensions of data. It will be of type double if
         any of the input is double, and float otherwise.
 
@@ -1444,37 +1424,36 @@ def triple2grid(x, y, data, xgrid, ygrid, **kwargs):
 
     Examples:
 
-	Example 1: Using triple2grid with :class:`xarray.DataArray` input
+    Example 1: Using triple2grid with :class:`xarray.DataArray` input
 
-	.. code-block:: python
+    .. code-block:: python
 
-	    import numpy as np
-	    import xarray as xr
-	    import geocat.comp
+        import numpy as np
+        import xarray as xr
+        import geocat.comp
 
-	    # Open a netCDF data file using xarray default engine and load the data stream
-	    ds = xr.open_dataset("./ruc.nc")
+        # Open a netCDF data file using xarray default engine and load the data stream
+        ds = xr.open_dataset("./ruc.nc")
 
-	    # [INPUT] Grid & data info on the source curvilinear
-	    data = ds.DIST_236_CBL[:]
-	    x = ds.gridlat_236[:]
-	    y = ds.gridlon_236[:]
-	    xgrid = ds.gridlat_236[:]
-	    ygrid = ds.gridlon_236[:]
+        # [INPUT] Grid & data info on the source curvilinear
+        data = ds.DIST_236_CBL[:]
+        x = ds.gridlat_236[:]
+        y = ds.gridlon_236[:]
+        xgrid = ds.gridlat_236[:]
+        ygrid = ds.gridlon_236[:]
 
 
-	    # [OUTPUT] Grid on destination points grid (or read the 1D lat and lon from
-	    #	       an other .nc file.
-	    newlat1D_points=np.linspace(lat2D_curv.min(), lat2D_curv.max(), 100)
-	    newlon1D_points=np.linspace(lon2D_curv.min(), lon2D_curv.max(), 100)
+        # [OUTPUT] Grid on destination points grid (or read the 1D lat and lon from
+        #	       an other .nc file.
+        newlat1D_points=np.linspace(lat2D_curv.min(), lat2D_curv.max(), 100)
+        newlon1D_points=np.linspace(lon2D_curv.min(), lon2D_curv.max(), 100)
 
-	    output = geocat.comp.triple2grid(x, y, data, xgrid, ygrid)
+        output = geocat.comp.triple2grid(x, y, data, xgrid, ygrid)
     """
 
     # todo: Revisit for handling of "meta" argument
-
     # Basic sanity checks
-    if x.shape[0] != y.shape[0] or x.shape[0] != data.shape[data.ndim-1]:
+    if x.shape[0] != y.shape[0] or x.shape[0] != data.shape[data.ndim - 1]:
         raise DimensionError("ERROR triple2grid: The The length of `x` and `y` must be the same as the rightmost dimension of `data` !")
     if x.ndim > 1 or y.ndim > 1:
         raise DimensionError("ERROR triple2grid: `x` and `y` arguments must be one-dimensional array !\n")
@@ -1541,33 +1520,33 @@ def grid2triple(x, y, z, msg=None, meta=False):
 
     Args:
 
-	x (:class:`numpy.ndarray`):
+    x (:class:`numpy.ndarray`):
             Coordinates associated with the right dimension of the variable `z`.
             It must be the same dimension size (call it mx) as the right
             dimension of `z`.
 
-	y (:class:`numpy.ndarray`):
+    y (:class:`numpy.ndarray`):
             Coordinates associated with the left dimension of the variable `z`.
             It must be the same dimension size (call it ny) as the left
             dimension of `z`.
 
-	z (:class:`numpy.ndarray`):
+    z (:class:`numpy.ndarray`):
             Two-dimensional array of size ny x mx containing the data values.
             Missing values may be present in `z`, but they are ignored.
 
-	msg (:obj:`numpy.number`):
-	    A numpy scalar value that represent a missing value in `z`.
-	    This argument allows a user to use a missing value scheme
-	    other than NaN or masked arrays, similar to what NCL allows.
+    msg (:obj:`numpy.number`):
+        A numpy scalar value that represent a missing value in `z`.
+        This argument allows a user to use a missing value scheme
+        other than NaN or masked arrays, similar to what NCL allows.
 
-	meta (:obj:`bool`):
+    meta (:obj:`bool`):
         If set to True and the input array is an Xarray, the metadata
         from the input array will be copied to the output array;
         default is False.
         Warning: this option is not currently supported.
 
     Returns:
-	:class:`numpy.ndarray`: If any argument is "double" the return type
+    :class:`numpy.ndarray`: If any argument is "double" the return type
         will be "double"; otherwise a "float" is returned.
 
     Description:
@@ -1580,29 +1559,28 @@ def grid2triple(x, y, z, msg=None, meta=False):
 
     Examples:
 
-	Example 1: Using grid2triple with :class:`xarray.DataArray` input
+    Example 1: Using grid2triple with :class:`xarray.DataArray` input
 
-	.. code-block:: python
+    .. code-block:: python
 
-	    import numpy as np
-	    import xarray as xr
-	    import geocat.comp
+        import numpy as np
+        import xarray as xr
+        import geocat.comp
 
-	    # Open a netCDF data file using xarray default engine and load the data stream
-	    ds = xr.open_dataset("./NETCDF_FILE.nc")
+        # Open a netCDF data file using xarray default engine and load the data stream
+        ds = xr.open_dataset("./NETCDF_FILE.nc")
 
-	    # [INPUT] Grid & data info on the source curvilinear
-	    z=ds.DIST_236_CBL[:]
-	    x=ds.gridlat_236[:]
-	    y=ds.gridlon_236[:]
+        # [INPUT] Grid & data info on the source curvilinear
+        z=ds.DIST_236_CBL[:]
+        x=ds.gridlat_236[:]
+        y=ds.gridlon_236[:]
 
-	    output = geocat.comp.grid2triple(x, y, z)
+        output = geocat.comp.grid2triple(x, y, z)
     """
 
     # todo: Revisit for handling of "meta" argument
-
     # Basic sanity checks
-    if z.ndim != 2 :
+    if z.ndim != 2:
         raise DimensionError("ERROR grid2triple: `z` must be two dimensions !\n")
 
     if isinstance(x, xr.DataArray):
