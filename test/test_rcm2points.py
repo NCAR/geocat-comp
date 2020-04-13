@@ -8,7 +8,6 @@ import unittest as ut
 
 
 # create and fill the input 2D grid (lat2D, lon2D)
-
 lat2d = np.asarray([1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3]).reshape((3, 3))
 lon2d = np.asarray([1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3]).reshape((3, 3))
 
@@ -31,7 +30,7 @@ fi_nan[1, 1, 1] = np.nan
 fi_msg = fi_nan
 fi_msg[np.isnan(fi_msg)] = -99
 
-# output grid for this function
+#  create and fill the output grid indices (lat, lon)
 lat = np.asarray([1, 2, 3])
 lon = np.asarray([1, 2, 3])
 
