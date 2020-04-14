@@ -17,7 +17,7 @@ fi = np.asarray(
      1.754721, 1.177423, 0.381366, 2.015617, 0.4975608, 2.169137, 0.3293635, 0.6676366, 2.691788, 2.510986, 1.027274, 1.351906]).reshape((3, 3, 3))
 
 # nan input
-fi_nan = fi
+fi_nan = fi.copy()
 fi_nan[0, 1, 1] = np.nan
 fi_nan[2, 1, 1] = np.nan
 fi_nan[1, 0, 1] = np.nan
@@ -27,7 +27,7 @@ fi_nan[1, 1, 2] = np.nan
 fi_nan[1, 1, 1] = np.nan
 
 # msg input
-fi_msg = fi_nan
+fi_msg = fi_nan.copy()
 fi_msg[np.isnan(fi_msg)] = -99
 
 #  create and fill the output grid indices (lat, lon)
@@ -36,6 +36,7 @@ lon = np.asarray([1, 2, 3])
 
 
 # these two interpolations provide the same result, consider refactoring to just one of the two cases.
+# the result is the same because the interpolated point is halfway between the two surrounding points, this will not often be the case in use.
 def tests(fi):
     fo0 = geocat.comp.rcm2points(lat2d, lon2d, fi, lat, lon, 0)  # inverse distance weighting
     fo2 = geocat.comp.rcm2points(lat2d, lon2d, fi, lat, lon, 2)  # bilinear interpolation
@@ -69,11 +70,11 @@ class Test_rcm2points_float64(ut.TestCase):
     This unit test covers the nominal, nan, and msg cases of 64 bit float input for rcm2points
     """
 
+    def test_rcm2points_float64(self):
+        assertions(expected_results, tests(fi.astype(np.float64)))
+
     def test_rcm2points_float64_nan(self):
         assertions(expected_results_nan, tests(fi_nan.astype(np.float64)))
-
-    def test_rcm2points_float64(self):
-        assertions(expected_results, tests(fi.np.astype(np.float64)))
 
     def test_rcm2points_float64_msg(self):
         assertions(expected_results_msg, tests(fi_msg.astype(np.float64)))
@@ -85,11 +86,11 @@ class Test_rcm2points_float32(ut.TestCase):
     This unit test covers the nominal, nan, and msg cases of 32 bit float input for rcm2points
     """
 
+    def test_rcm2points_float32(self):
+        assertions(expected_results, tests(fi.astype(np.float32)))
+
     def test_rcm2points_float32_nan(self):
         assertions(expected_results_nan, tests(fi_nan.astype(np.float32)))
-
-    def test_rcm2points_float32(self):
-        assertions(expected_results, tests(fi.np.astype(np.float32)))
 
     def test_rcm2points_float32_msg(self):
         assertions(expected_results_msg, tests(fi_msg.astype(np.float32)))
