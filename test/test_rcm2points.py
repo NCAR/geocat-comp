@@ -8,8 +8,8 @@ import unittest as ut
 
 
 # create and fill the input 2D grid (lat2D, lon2D)
-lat2d = np.asarray([1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3]).reshape((3, 3))
-lon2d = np.asarray([1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3]).reshape((3, 3))
+lat2d = np.asarray([1, 2, 5, 1, 2, 5, 1, 2, 5]).reshape((3, 3))
+lon2d = np.asarray([1, 1, 1, 2, 2, 2, 5, 5, 5]).reshape((3, 3))
 
 # nominal input
 fi = np.asarray(
@@ -35,8 +35,7 @@ lat = np.asarray([1, 2, 3])
 lon = np.asarray([1, 2, 3])
 
 
-# these two interpolations provide the same result, consider refactoring to just one of the two cases.
-# the result is the same because the interpolated point is halfway between the two surrounding points, this will not often be the case in use.
+# these two interpolations do not provide the same result, so both should be tested
 def tests(fi):
     fo0 = geocat.comp.rcm2points(lat2d, lon2d, fi, lat, lon, 0)  # inverse distance weighting
     fo2 = geocat.comp.rcm2points(lat2d, lon2d, fi, lat, lon, 2)  # bilinear interpolation
@@ -44,21 +43,21 @@ def tests(fi):
 
 
 def assertions(expected_results, results):
-    np.testing.assert_array_equal(expected_results[0], results[0])
-    np.testing.assert_array_equal(expected_results[1], results[1])
+    np.testing.assert_array_almost_equal(expected_results[0], results[0])
+    np.testing.assert_array_almost_equal(expected_results[1], results[1])
 
 
 # expected output
-fo0_expected = np.asarray([1.948043, 1.786732, 0.6411167, 0.3673298, -0.9549527, 1.492616, 1.7391, 0.6348206, 2.115912]).reshape((3, 3))
-fo2_expected = np.asarray([1.948043, 1.786732, 0.6411167, 0.3673298, -0.9549527, 1.492616, 1.7391, 0.6348206, 2.115912]).reshape((3, 3))
+fo0_expected = np.asarray([1.870327, 1.353965, 1.588746, -0.1676207, 1.01385, 0.7974159, 2.015617, 0.6676366, 1.249507]).reshape((3, 3))
+fo2_expected = np.asarray([1.870327, 1.353965, 1.588746, -0.1676207, 1.01385, 0.7974159, 2.015617, 0.6676366, 1.249507]).reshape((3, 3))
 expected_results = [fo0_expected, fo2_expected]
 
-fo0_expected_nan = np.asarray([1.95103, 1.878375, 0.6331819, 0.02682439, 1.067587, 1.613317, 1.744488, 0.6278715, 2.132033]).reshape((3, 3))
-fo2_expected_nan = np.asarray([1.95103, 1.878375, 0.6331819, 0.02682439, 1.067587, 1.613317, 1.744488, 0.6278715, 2.132033]).reshape((3, 3))
+fo0_expected_nan = np.asarray([1.870327, 1.486811, 1.679019, -0.1676207, 0.381366, 0.9261006, 2.015617, 1.757489, 1.473235]).reshape((3, 3))
+fo2_expected_nan = np.asarray([1.870327, 1.851139, 1.679019, -0.1676207, 0.3791102, 0.9261006, 2.015617, 0.9372569, 1.473235]).reshape((3, 3))
 expected_results_nan = [fo0_expected_nan, fo2_expected_nan]
 
-fo0_expected_msg = np.asarray([1.95103, 1.878375, 0.6331819, 0.02682439, 1.067587, 1.613317, 1.744488, 0.6278715, 2.132033]).reshape((3, 3))
-fo2_expected_msg = np.asarray([1.95103, 1.878375, 0.6331819, 0.02682439, 1.067587, 1.613317, 1.744488, 0.6278715, 2.132033]).reshape((3, 3))
+fo0_expected_msg = np.asarray([1.870327, 1.486811, 1.679019, -0.1676207, 0.381366, 0.9261006, 2.015617, 1.757489, 1.473235]).reshape((3, 3))
+fo2_expected_msg = np.asarray([1.870327, 1.851139, 1.679019, -0.1676207, 0.3791102, 0.9261006, 2.015617, 0.9372569, 1.473235]).reshape((3, 3))
 expected_results_msg = [fo0_expected_msg, fo2_expected_msg]
 
 
