@@ -6,6 +6,36 @@ import sys
 import time
 import unittest as ut
 
+
+# create and fill the input 2D grid (lat2D, lon2D)
+lat2d = np.asarray([1, 2, 5, 1, 2, 5, 1, 2, 5]).reshape((3, 3))
+lon2d = np.asarray([1, 1, 1, 2, 2, 2, 5, 5, 5]).reshape((3, 3))
+
+# nominal input
+fi = np.asarray(
+    [1.870327, 1.872924, 2.946794, 1.98253, 1.353965, 0.8730035, 0.1410671, 1.877125, 1.931963, -0.1676207, 1.917912, 1.735453, -1.82497, 1.01385, 1.053591,
+     1.754721, 1.177423, 0.381366, 2.015617, 0.4975608, 2.169137, 0.3293635, 0.6676366, 2.691788, 2.510986, 1.027274, 1.351906]).reshape((3, 3, 3))
+
+# nan input
+fi_nan = fi.copy()
+fi_nan[0, 1, 1] = np.nan
+fi_nan[2, 1, 1] = np.nan
+fi_nan[1, 0, 1] = np.nan
+fi_nan[1, 2, 1] = np.nan
+fi_nan[1, 1, 0] = np.nan
+fi_nan[1, 1, 2] = np.nan
+fi_nan[1, 1, 1] = np.nan
+
+# msg input
+fi_msg = fi_nan.copy()
+fi_msg[np.isnan(fi_msg)] = -99
+
+#  create and fill the output grid indices (lat, lon)
+lat = np.asarray([1, 2, 5])
+lon = np.asarray([1, 2, 5])
+
+# DEPRECIATE BELOW
+"""
 # Size of the grids
 n = 6
 m = 6
@@ -70,3 +100,4 @@ class Test_rcm2rgrid_float32(ut.TestCase):
         fi_np_copy[:, 0, 0] = np.nan
         fo = geocat.comp.rcm2rgrid(lat2D, lon2D, fi_np_copy, lat1D, lon1D)
         np.testing.assert_array_equal(fi_np_copy[:, 1:, 1:], fo[:, 2::2, 2::2].values)
+"""
