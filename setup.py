@@ -7,12 +7,12 @@ except ImportError:
 
 #import distutils.sysconfig
 
-with open("geocat/comp/version.py") as f:
+with open("src/geocat/comp/version.py") as f:
     exec(f.read())
 
 setup(
     name="geocat.comp",
-    package_dir={'geocat': 'geocat', 'geocat.comp': 'geocat/comp'},
+    package_dir={'': 'src', 'geocat': 'src/geocat', 'geocat.comp': 'src/geocat/comp'},
     namespace_packages=['geocat'],
     packages=["geocat", "geocat.comp"],
     version=__version__, 
