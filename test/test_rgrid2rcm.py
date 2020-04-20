@@ -4,6 +4,7 @@ import geocat.comp
 
 import sys
 import time
+import pytest as pt
 import unittest as ut
 
 
@@ -32,13 +33,13 @@ msg64 = fi_msg[1, 1, 1].astype(np.float64)
 msg32 = fi_msg[1, 1, 1].astype(np.float32)
 
 
-@ut.skip("Not a test.")
+@pt.mark.skip(reason="Not a test.")
 def tests(fi, msg=None):
     fo = geocat.comp.rgrid2rcm(lat, lon, fi, lat2d, lon2d, msg=msg)
     return [fo]
 
 
-@ut.skip("Not a test.")
+@pt.mark.skip(reason="Not a test.")
 def assertions(expected_results, results):
     np.testing.assert_array_almost_equal(expected_results[0], results[0])
 
