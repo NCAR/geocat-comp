@@ -34,10 +34,7 @@ msg32 = fi_msg[1, 1, 1].astype(np.float32)
 
 # these two interpolations do not provide the same result, so both should be tested
 def tests(fi, msg=None):
-    if msg is None:
-        fo = geocat.comp.rcm2rgrid(lat2d, lon2d, fi, lat, lon)
-    else:
-        fo = geocat.comp.rcm2rgrid(lat2d, lon2d, fi, lat, lon, msg=msg)
+    fo = geocat.comp.rcm2rgrid(lat2d, lon2d, fi, lat, lon, msg=msg)
     return [fo]
 
 
