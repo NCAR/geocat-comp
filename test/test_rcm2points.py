@@ -32,7 +32,6 @@ msg64 = fi_msg[1, 1, 1].astype(np.float64)
 msg32 = fi_msg[1, 1, 1].astype(np.float32)
 
 
-# these two interpolations do not provide the same result, so both should be tested
 def tests(fi, msg=None):
     fo0 = geocat.comp.rcm2points(lat2d, lon2d, fi, lat, lon, opt=0, msg=msg)  # inverse distance weighting
     fo2 = geocat.comp.rcm2points(lat2d, lon2d, fi, lat, lon, opt=2, msg=msg)  # bilinear interpolation
