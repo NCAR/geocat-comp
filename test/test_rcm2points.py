@@ -28,11 +28,17 @@ lon = np.asarray([1, 2, 3])
 lat2d = np.asarray([1, 2, 5, 1, 2, 5, 1, 2, 5]).reshape((3, 3))
 lon2d = np.asarray([1, 1, 1, 2, 2, 2, 5, 5, 5]).reshape((3, 3))
 
+msg99 = np.asarray(-99)
+
 
 # these two interpolations do not provide the same result, so both should be tested
-def tests(fi):
-    fo0 = geocat.comp.rcm2points(lat2d, lon2d, fi, lat, lon, 0)  # inverse distance weighting
-    fo2 = geocat.comp.rcm2points(lat2d, lon2d, fi, lat, lon, 2)  # bilinear interpolation
+def tests(fi, msg=None):
+    if msg is None:
+        fo0 = geocat.comp.rcm2points(lat2d, lon2d, fi, lat, lon, opt=0)  # inverse distance weighting
+        fo2 = geocat.comp.rcm2points(lat2d, lon2d, fi, lat, lon, opt=2)  # bilinear interpolation
+    else:
+        fo0 = geocat.comp.rcm2points(lat2d, lon2d, fi, lat, lon, opt=0, msg=msg)  # inverse distance weighting
+        fo2 = geocat.comp.rcm2points(lat2d, lon2d, fi, lat, lon, opt=2, msg=msg)  # bilinear interpolation
     return [fo0, fo2]
 
 
@@ -70,7 +76,7 @@ class Test_rcm2points_float64(ut.TestCase):
         assertions(expected_results_nan, tests(fi_nan.astype(np.float64)))
 
     def test_rcm2points_float64_msg(self):
-        assertions(expected_results_msg, tests(fi_msg.astype(np.float64)))
+        assertions(expected_results_msg, tests(fi_msg.astype(np.float64), msg=msg99))
 
 
 class Test_rcm2points_float32(ut.TestCase):
@@ -86,4 +92,4 @@ class Test_rcm2points_float32(ut.TestCase):
         assertions(expected_results_nan, tests(fi_nan.astype(np.float32)))
 
     def test_rcm2points_float32_msg(self):
-        assertions(expected_results_msg, tests(fi_msg.astype(np.float32)))
+        assertions(expected_results_msg, tests(fi_msg.astype(np.float32), msg=msg99))
