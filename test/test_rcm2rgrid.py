@@ -28,7 +28,8 @@ lon = np.asarray([1, 2, 5])
 lat2d = np.asarray([1, 2, 5, 1, 2, 5, 1, 2, 5]).reshape((3, 3))
 lon2d = np.asarray([1, 1, 1, 2, 2, 2, 5, 5, 5]).reshape((3, 3))
 
-msg99 = np.asarray(-99)
+msg64 = fi_msg[1, 1, 1].astype(np.float64)
+msg32 = fi_msg[1, 1, 1].astype(np.float32)
 
 
 # these two interpolations do not provide the same result, so both should be tested
@@ -75,7 +76,7 @@ class Test_rcm2rgrid_float64(ut.TestCase):
         assertions(expected_results_nan, tests(fi_nan.astype(np.float64)))
 
     def test_rcm2rgrid_float64_msg(self):
-        assertions(expected_results_msg, tests(fi_msg.astype(np.float64), msg=msg99))
+        assertions(expected_results_msg, tests(fi_msg.astype(np.float64), msg=msg64))
 
 
 class Test_rcm2rgrid_float32(ut.TestCase):
@@ -91,4 +92,4 @@ class Test_rcm2rgrid_float32(ut.TestCase):
         assertions(expected_results_nan, tests(fi_nan.astype(np.float32)))
 
     def test_rcm2rgrid_float32_msg(self):
-        assertions(expected_results_msg, tests(fi_msg.astype(np.float32), msg=msg99))
+        assertions(expected_results_msg, tests(fi_msg.astype(np.float32), msg=msg32))

@@ -28,7 +28,8 @@ lon = np.asarray([1, 2, 3])
 lat2d = np.asarray([1, 2, 5, 1, 2, 5, 1, 2, 5]).reshape((3, 3))
 lon2d = np.asarray([1, 1, 1, 2, 2, 2, 5, 5, 5]).reshape((3, 3))
 
-msg99 = np.asarray(-99)
+msg64 = fi_msg[1, 1, 1].astype(np.float64)
+msg32 = fi_msg[1, 1, 1].astype(np.float32)
 
 
 # these two interpolations do not provide the same result, so both should be tested
@@ -52,12 +53,12 @@ fo0_expected = np.asarray([1.870327, 1.353965, 1.588746, -0.1676207, 1.01385, 0.
 fo2_expected = np.asarray([1.870327, 1.353965, 1.588746, -0.1676207, 1.01385, 0.7974159, 2.015617, 0.6676366, 1.249507]).reshape((3, 3))
 expected_results = [fo0_expected, fo2_expected]
 
-fo0_expected_nan = np.asarray([1.870327, 1.486811, 1.679019, -0.1676207, 0.381366, 0.9261006, 2.015617, 1.757489, 1.473235]).reshape((3, 3))
-fo2_expected_nan = np.asarray([1.870327, 1.851139, 1.679019, -0.1676207, 0.3791102, 0.9261006, 2.015617, 0.9372569, 1.473235]).reshape((3, 3))
+fo0_expected_nan = np.asarray([1.870327, 1.486811, 1.679019, -0.1676207, 0.9685476, 0.7141976, 2.015617, 1.757489, 1.473235]).reshape((3, 3))
+fo2_expected_nan = np.asarray([1.870327, 1.851139, 1.679019, -0.1676207, 0.2114156, 0.7141976, 2.015617, 0.9372569, 1.473235]).reshape((3, 3))
 expected_results_nan = [fo0_expected_nan, fo2_expected_nan]
 
-fo0_expected_msg = np.asarray([1.870327, 1.486811, 1.679019, -0.1676207, 0.381366, 0.9261006, 2.015617, 1.757489, 1.473235]).reshape((3, 3))
-fo2_expected_msg = np.asarray([1.870327, 1.851139, 1.679019, -0.1676207, 0.3791102, 0.9261006, 2.015617, 0.9372569, 1.473235]).reshape((3, 3))
+fo0_expected_msg = np.asarray([1.870327, 1.486811, 1.679019, -0.1676207, 0.9685476, 0.7141976, 2.015617, 1.757489, 1.473235]).reshape((3, 3))
+fo2_expected_msg = np.asarray([1.870327, 1.851139, 1.679019, -0.1676207, 0.2114156, 0.7141976, 2.015617, 0.9372569, 1.473235]).reshape((3, 3))
 expected_results_msg = [fo0_expected_msg, fo2_expected_msg]
 
 
@@ -76,7 +77,7 @@ class Test_rcm2points_float64(ut.TestCase):
         assertions(expected_results_nan, tests(fi_nan.astype(np.float64)))
 
     def test_rcm2points_float64_msg(self):
-        assertions(expected_results_msg, tests(fi_msg.astype(np.float64), msg=msg99))
+        assertions(expected_results_msg, tests(fi_msg.astype(np.float64), msg=msg64))
 
 
 class Test_rcm2points_float32(ut.TestCase):
@@ -92,4 +93,4 @@ class Test_rcm2points_float32(ut.TestCase):
         assertions(expected_results_nan, tests(fi_nan.astype(np.float32)))
 
     def test_rcm2points_float32_msg(self):
-        assertions(expected_results_msg, tests(fi_msg.astype(np.float32), msg=msg99))
+        assertions(expected_results_msg, tests(fi_msg.astype(np.float32), msg=msg32))

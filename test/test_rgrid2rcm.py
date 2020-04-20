@@ -28,7 +28,8 @@ lon = np.asarray([1, 2, 5])
 lat2d = np.asarray([1, 2, 5, 1, 2, 5, 1, 2, 5]).reshape((3, 3))
 lon2d = np.asarray([1, 1, 1, 2, 2, 2, 5, 5, 5]).reshape((3, 3))
 
-msg99 = np.asarray(-99)
+msg64 = fi_msg[1, 1, 1].astype(np.float64)
+msg32 = fi_msg[1, 1, 1].astype(np.float32)
 
 
 # these two interpolations do not provide the same result, so both should be tested
@@ -36,7 +37,7 @@ def tests(fi, msg=None):
     if msg is None:
         fo = geocat.comp.rgrid2rcm(lat, lon, fi, lat2d, lon2d)
     else:
-        fo = geocat.comp.rgrid2rcm(lat, lon, fi, lat2d, lon2d)
+        fo = geocat.comp.rgrid2rcm(lat, lon, fi, lat2d, lon2d, msg=msg)
     return [fo]
 
 
@@ -50,13 +51,13 @@ fo_expected = np.asarray(
 expected_results = [fo_expected]
 
 fo_expected_nan = np.array(
-    [1.870327, 1.98253, 0.1410671, 1.872924, 1.875024, 1.877125, 2.946794, 0.8730035, 1.931963, -0.1676207, -1.82497, 1.754721, 1.917912, 1.547667, 1.177423,
-     1.735453, 1.053591, 0.381366, 2.015617, 0.3293635, 2.510986, 0.4975608, 0.7624173, 1.027274, 2.169137, 2.691788, 1.351906]).reshape((3, 3, 3))
+    [1.870327, 1.98253, 0.1410671, 1.872924, 1.486321, 1.877125, 2.946794, 0.8730035, 1.931963, -0.1676207, -1.82497, 1.754721, 1.917912, 0.9684872, 1.177423,
+     1.735453, 1.053591, 0.381366, 2.015617, 0.3293635, 2.510986, 0.4975608, 1.7583, 1.027274, 2.169137, 2.691788, 1.351906]).reshape((3, 3, 3))
 expected_results_nan = [fo_expected_nan]
 
 fo_expected_msg = np.array(
-    [1.870327, 1.98253, 0.1410671, 1.872924, 1.875024, 1.877125, 2.946794, 0.8730035, 1.931963, -0.1676207, -1.82497, 1.754721, 1.917912, 1.547667, 1.177423,
-     1.735453, 1.053591, 0.381366, 2.015617, 0.3293635, 2.510986, 0.4975608, 0.7624173, 1.027274, 2.169137, 2.691788, 1.351906]).reshape((3, 3, 3))
+    [1.870327, 1.98253, 0.1410671, 1.872924, 1.486321, 1.877125, 2.946794, 0.8730035, 1.931963, -0.1676207, -1.82497, 1.754721, 1.917912, 0.9684872, 1.177423,
+     1.735453, 1.053591, 0.381366, 2.015617, 0.3293635, 2.510986, 0.4975608, 1.7583, 1.027274, 2.169137, 2.691788, 1.351906]).reshape((3, 3, 3))
 expected_results_msg = [fo_expected_msg]
 
 
@@ -75,7 +76,7 @@ class Test_rgrid2rcm_float64(ut.TestCase):
         assertions(expected_results_nan, tests(fi_nan.astype(np.float64)))
 
     def test_rgrid2rcm_float64_msg(self):
-        assertions(expected_results_msg, tests(fi_msg.astype(np.float64), msg=msg99))
+        assertions(expected_results_msg, tests(fi_msg.astype(np.float64), msg=msg64))
 
 
 class Test_rgrid2rcm_float32(ut.TestCase):
@@ -91,7 +92,7 @@ class Test_rgrid2rcm_float32(ut.TestCase):
         assertions(expected_results_nan, tests(fi_nan.astype(np.float32)))
 
     def test_rgrid2rcm_float32_msg(self):
-        assertions(expected_results_msg, tests(fi_msg.astype(np.float32), msg=msg99))
+        assertions(expected_results_msg, tests(fi_msg.astype(np.float32), msg=msg32))
 
 
 # Depriciate the below
