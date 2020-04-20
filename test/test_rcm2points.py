@@ -4,6 +4,7 @@ import geocat.comp
 
 import sys
 import time
+import pytest as pt
 import unittest as ut
 
 
@@ -32,12 +33,14 @@ msg64 = fi_msg[1, 1, 1].astype(np.float64)
 msg32 = fi_msg[1, 1, 1].astype(np.float32)
 
 
+@ut.skip("Not a test.")
 def tests(fi, msg=None):
     fo0 = geocat.comp.rcm2points(lat2d, lon2d, fi, lat, lon, opt=0, msg=msg)  # inverse distance weighting
     fo2 = geocat.comp.rcm2points(lat2d, lon2d, fi, lat, lon, opt=2, msg=msg)  # bilinear interpolation
     return [fo0, fo2]
 
 
+@ut.skip("Not a test.")
 def assertions(expected_results, results):
     np.testing.assert_array_almost_equal(expected_results[0], results[0])
     np.testing.assert_array_almost_equal(expected_results[1], results[1])

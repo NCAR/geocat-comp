@@ -4,6 +4,7 @@ import geocat.comp
 
 import sys
 import time
+import pytest as pt
 import unittest as ut
 
 
@@ -32,11 +33,13 @@ msg64 = fi_msg[1, 1, 1].astype(np.float64)
 msg32 = fi_msg[1, 1, 1].astype(np.float32)
 
 
+@pt.mark.skip(reason="This is a helper function and not a test.")
 def tests(fi, msg=None):
     fo = geocat.comp.rcm2rgrid(lat2d, lon2d, fi, lat, lon, msg=msg)
     return [fo]
 
 
+@pt.mark.skip(reason="This is a helper function and not a test.")
 def assertions(expected_results, results):
     np.testing.assert_array_almost_equal(expected_results[0], results[0])
 
