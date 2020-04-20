@@ -1,0 +1,31 @@
+
+
+def month_to_season(xMon, season):
+    """ This function takes an xarray dataset containing monthly data spanning years and
+        returns a dataset with one sample per year, for a specified three-month season.
+
+        Time stamps are centered on the season, e.g. seasons='DJF' returns January timestamps.
+
+        If a calculated season's timestamp falls outside the original range of monthly values, then the calculated mean
+        is dropped.  For example, if the monthly data's time range is [Jan-2000, Dec-2003] and the season is "DJF", the
+        seasonal mean computed from the single month of Dec-2003 is dropped.
+    """
+    startDate = xMon.time[0]
+    endDate = xMon.time[-1]
+    seasons_pd = {'DJF': ('QS-DEC', 1), 'JFM': ('QS-JAN', 2), 'FMA': ('QS-FEB', 3), 'MAM': ('QS-MAR', 4),
+                  'AMJ': ('QS-APR', 5), 'MJJ': ('QS-MAY', 6), 'JJA': ('QS-JUN', 7), 'JAS': ('QS-JUL', 8),
+                  'ASO': ('QS-AUG', 9), 'SON': ('QS-SEP', 10), 'OND': ('QS-OCT', 11), 'NDJ': ('QS-NOV', 12)}
+    try:
+        (season_pd, season_sel) = seasons_pd[season]
+    except KeyError:
+        raise ValueError("contributed: month_to_season: bad season: SEASON = " + season)
+
+    # Compute the three-month means, moving time labels ahead to the middle month.
+    month_offset = 'MS'
+    xSeasons = xMon.resample(time=season_pd, loffset=month_offset).mean()
+
+    # Filter just the desired season, and trim to the desired time range.
+    xSea = xSeasons.sel(time=xSeasons.time.dt.month == season_sel)
+    xSea = xSea.sel(time=slice(startDate, endDate))
+    return xSea
+
