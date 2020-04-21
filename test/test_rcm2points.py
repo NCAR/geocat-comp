@@ -44,7 +44,7 @@ fo_msg_opt2_expected = np.asarray([1.870327, 1.851139, 1.679019, -0.1676207, 0.2
 
 
 # run tests
-class Test_rcm2points_float64(ut.TestCase):
+class Test_rcm2points(ut.TestCase):
     """
     Test_rcm2points_float64
     This unit test covers the nominal, nan, and msg cases of 64 bit float input for rcm2points
@@ -67,13 +67,6 @@ class Test_rcm2points_float64(ut.TestCase):
 
     def test_rcm2points_float64_msg_opt2(self):
         nt.assert_array_almost_equal(fo_msg_opt2_expected, gc.rcm2points(lat2d, lon2d, fi_msg.astype(np.float64), lat, lon, opt=2, msg=msg64))
-
-
-class Test_rcm2points_float32(ut.TestCase):
-    """
-    Test_rcm2points_float32
-    This unit test covers the nominal, nan, and msg cases of 32 bit float input for rcm2points
-    """
 
     def test_rcm2points_float32_nom_opt0(self):
         nt.assert_array_almost_equal(fo_nom_opt0_expected, gc.rcm2points(lat2d, lon2d, fi_nom.astype(np.float32), lat, lon, opt=0))
