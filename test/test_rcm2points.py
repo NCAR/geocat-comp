@@ -46,8 +46,8 @@ fo_msg_opt2_expected = np.asarray([1.870327, 1.851139, 1.679019, -0.1676207, 0.2
 # run tests
 class Test_rcm2points(ut.TestCase):
     """
-    Test_rcm2points_float64
-    This unit test covers the nominal, nan, and msg cases of 64 bit float input for rcm2points
+    Test_rcm2points
+    This unit test covers the nominal, nan, and msg cases of 64 and 32 bit float input for rcm2points
     """
 
     def test_rcm2points_float64_nom_opt0(self):
