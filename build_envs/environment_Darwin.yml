@@ -12,3 +12,4 @@ dependencies:
   - distributed
   - pytest
   - ncomp
+  - netcdf4

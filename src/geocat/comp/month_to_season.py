@@ -4,12 +4,16 @@ def month_to_season(xMon, season):
     """ This function takes an xarray dataset containing monthly data spanning years and
         returns a dataset with one sample per year, for a specified three-month season.
 
-        Time stamps are centered on the season, e.g. seasons='DJF' returns January timestamps.
+        This function requires the number of months to be a multiple of 12, i.e. full years must be provided.
+
+        Time stamps are centered on the season. For example, seasons='DJF' returns January timestamps.
 
         If a calculated season's timestamp falls outside the original range of monthly values, then the calculated mean
         is dropped.  For example, if the monthly data's time range is [Jan-2000, Dec-2003] and the season is "DJF", the
         seasonal mean computed from the single month of Dec-2003 is dropped.
     """
+    mod_check(xMon.time.size, 12)
+
     startDate = xMon.time[0]
     endDate = xMon.time[-1]
     seasons_pd = {'DJF': ('QS-DEC', 1), 'JFM': ('QS-JAN', 2), 'FMA': ('QS-FEB', 3), 'MAM': ('QS-MAR', 4),
@@ -29,3 +33,7 @@ def month_to_season(xMon, season):
     xSea = xSea.sel(time=slice(startDate, endDate))
     return xSea
 
+
+def mod_check(value, mod):
+    if value % mod != 0:
+        raise ValueError(f'Expected a multiple of {mod} values')
