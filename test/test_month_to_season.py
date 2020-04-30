@@ -5,7 +5,8 @@ import pandas as pd
 import xarray as xr
 from geocat.comp.month_to_season import month_to_season
 
-def get_fake_dataset(start_month, nmonths, nlats, nlons, var_name):
+
+def get_fake_dataset(start_month, nmonths, nlats, nlons):
     """ Returns a very simple xarray dataset for testing.
         Data values are equal to "month of year" for monthly time steps.
     """
@@ -15,56 +16,54 @@ def get_fake_dataset(start_month, nmonths, nlats, nlons, var_name):
     lons = np.linspace(start=-180, stop=180, num=nlons, dtype='float32')
 
     # Create data variable. Construct a 3D array with time as the first dimension.
-    month_values = np.expand_dims(np.arange(start=1, stop=nmonths+1), axis=(1, 2))
+    month_values = np.expand_dims(np.arange(start=1, stop=nmonths + 1), axis=(1, 2))
     var_values = np.tile(month_values, (1, nlats, nlons))
 
     ds = xr.Dataset(
         {
-            var_name: (('time', 'lat', 'lon'), var_values.astype('float32')),
+            'MY_VAR': (('time', 'lat', 'lon'), var_values.astype('float32')),
         },
         {'time': months, 'lat': lats, 'lon': lons},
     )
     return ds
 
 
-var_name = 'tmin'
-
 
 class Test_month_to_season(unittest.TestCase):
+
     def setUp(self):
         # Create a dataset with one set of values.
-        self.ds1 = get_fake_dataset(start_month='2000-01', nmonths=12, nlats=1, nlons=1, var_name=var_name)
+        self.ds1 = get_fake_dataset(start_month='2000-01', nmonths=12, nlats=1, nlons=1)
 
         # Create a more complex dataset just to verify that get_fake_dataset() is generally working.
-        self.ds2 = get_fake_dataset(start_month='2001-01', nmonths=12, nlats=10, nlons=10, var_name=var_name)
+        self.ds2 = get_fake_dataset(start_month='2001-01', nmonths=12, nlats=10, nlons=10)
 
         # Create a dataset that combines the two previous datasets, just to show future unit test writers.
         self.ds3 = xr.concat([self.ds1, self.ds2], dim='time')
 
+        # Create a dataset with the wrong number of months.
+        self.partial_dataset = get_fake_dataset(start_month='2000-01', nmonths=13, nlats=1, nlons=1)
+
     def test_m2s_returns_middle_month_value(self):
         season_ds = month_to_season(self.ds1, 'JFM')
-        season_value_array = season_ds[var_name].data
+        season_value_array = season_ds['MY_VAR'].data
         self.assertEqual(season_value_array[0, 0, 0], 2.0)
 
         season_ds = month_to_season(self.ds1, 'JJA')
-        season_value_array = season_ds[var_name].data
+        season_value_array = season_ds['MY_VAR'].data
         self.assertEqual(season_value_array[0, 0, 0], 7.0)
-
 
     def test_bad_season_returns_exception(self):
         with self.assertRaises(ValueError):
             season_ds = month_to_season(self.ds1, 'XXX')
 
     def test_partial_years_returns_exception(self):
-        partial_year_nmonths = 13
-        bad_dataset = get_fake_dataset(start_month='2000-01', nmonths=partial_year_nmonths,
-                                       nlats=1, nlons=1, var_name=var_name)
         with self.assertRaises(ValueError):
-            season_ds = month_to_season(bad_dataset, 'JFM')
+            season_ds = month_to_season(self.partial_dataset, 'JFM')
 
     def test_final_season_returns_2month_average(self):
         season_ds = month_to_season(self.ds1, 'NDJ')
-        season_value_array = season_ds[var_name].data
+        season_value_array = season_ds['MY_VAR'].data
         self.assertEqual(season_value_array[0, 0, 0], 11.5)
 
 
