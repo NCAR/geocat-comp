@@ -20,13 +20,12 @@ def get_fake_dataset(start_month, nmonths, nlats, nlons):
     var_values = np.tile(month_values, (1, nlats, nlons))
 
     ds = xr.Dataset(
-        {
-            'MY_VAR': (('time', 'lat', 'lon'), var_values.astype('float32')),
+        data_vars={
+            'my_var': (('time', 'lat', 'lon'), var_values.astype('float32')),
         },
-        {'time': months, 'lat': lats, 'lon': lons},
+        coords={'time': months, 'lat': lats, 'lon': lons},
     )
     return ds
-
 
 
 class Test_month_to_season(unittest.TestCase):
@@ -36,21 +35,31 @@ class Test_month_to_season(unittest.TestCase):
         self.ds1 = get_fake_dataset(start_month='2000-01', nmonths=12, nlats=1, nlons=1)
 
         # Create a more complex dataset just to verify that get_fake_dataset() is generally working.
-        self.ds2 = get_fake_dataset(start_month='2001-01', nmonths=12, nlats=10, nlons=10)
+        self.ds2 = get_fake_dataset(start_month='2001-01', nmonths=12, nlats=1, nlons=1)
 
-        # Create a dataset that combines the two previous datasets, just to show future unit test writers.
+        # Create a dataset that combines the two previous datasets, for two years of data.
         self.ds3 = xr.concat([self.ds1, self.ds2], dim='time')
 
         # Create a dataset with the wrong number of months.
-        self.partial_dataset = get_fake_dataset(start_month='2000-01', nmonths=13, nlats=1, nlons=1)
+        self.partial_year_dataset = get_fake_dataset(start_month='2000-01', nmonths=13, nlats=1, nlons=1)
+
+        # Create a more complex dataset just to verify that get_fake_dataset() is generally working.
+        self.complex_dataset = get_fake_dataset(start_month='2001-01', nmonths=12, nlats=10, nlons=10)
+
+        # Check all possible season choices for some tests.
+        self.all_seasons = ['DJF', 'JFM', 'FMA', 'MAM', 'AMJ', 'MJJ', 'JJA', 'JAS', 'ASO', 'SON', 'OND', 'NDJ']
 
     def test_m2s_returns_middle_month_value(self):
         season_ds = month_to_season(self.ds1, 'JFM')
-        season_value_array = season_ds['MY_VAR'].data
+        season_value_array = season_ds['my_var'].data
+
+        # Should return the average of [1.0, 2.0, 3.0]
         self.assertEqual(season_value_array[0, 0, 0], 2.0)
 
         season_ds = month_to_season(self.ds1, 'JJA')
-        season_value_array = season_ds['MY_VAR'].data
+        season_value_array = season_ds['my_var'].data
+
+        # Should return the average of [6.0, 7.0, 8.0]
         self.assertEqual(season_value_array[0, 0, 0], 7.0)
 
     def test_bad_season_returns_exception(self):
@@ -59,12 +68,19 @@ class Test_month_to_season(unittest.TestCase):
 
     def test_partial_years_returns_exception(self):
         with self.assertRaises(ValueError):
-            season_ds = month_to_season(self.partial_dataset, 'JFM')
+            season_ds = month_to_season(self.partial_year_dataset, 'JFM')
 
     def test_final_season_returns_2month_average(self):
         season_ds = month_to_season(self.ds1, 'NDJ')
-        season_value_array = season_ds['MY_VAR'].data
+        season_value_array = season_ds['my_var'].data
         self.assertEqual(season_value_array[0, 0, 0], 11.5)
+
+    def test_each_season_returns_one_point_per_year(self):
+        nyears_of_data = self.ds3.sizes['time'] / 12
+        for season in self.all_seasons:
+            season_ds = month_to_season(self.ds3, season)
+            season_value_array = season_ds['my_var'].data
+            self.assertEqual(season_value_array.size, nyears_of_data)
 
 
 if __name__ == '__main__':
