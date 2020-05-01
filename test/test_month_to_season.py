@@ -31,10 +31,10 @@ def get_fake_dataset(start_month, nmonths, nlats, nlons):
 class Test_month_to_season(unittest.TestCase):
 
     def setUp(self):
-        # Create a dataset with one set of values.
+        # Create a dataset for the year 2000.
         self.ds1 = get_fake_dataset(start_month='2000-01', nmonths=12, nlats=1, nlons=1)
 
-        # Create a more complex dataset just to verify that get_fake_dataset() is generally working.
+        # Create another dataset for the year 2001.
         self.ds2 = get_fake_dataset(start_month='2001-01', nmonths=12, nlats=1, nlons=1)
 
         # Create a dataset that combines the two previous datasets, for two years of data.
@@ -53,13 +53,13 @@ class Test_month_to_season(unittest.TestCase):
         season_ds = month_to_season(self.ds1, 'JFM')
         season_value_array = season_ds['my_var'].data
 
-        # Should return the average of [1.0, 2.0, 3.0]
+        # Should equal the average of [1.0, 2.0, 3.0]
         self.assertEqual(season_value_array[0, 0, 0], 2.0)
 
         season_ds = month_to_season(self.ds1, 'JJA')
         season_value_array = season_ds['my_var'].data
 
-        # Should return the average of [6.0, 7.0, 8.0]
+        # Should equal the average of [6.0, 7.0, 8.0]
         self.assertEqual(season_value_array[0, 0, 0], 7.0)
 
     def test_bad_season_returns_exception(self):
