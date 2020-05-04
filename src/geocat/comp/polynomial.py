@@ -10,13 +10,15 @@ def _get_missing_value(data: xr.DataArray, args: dict) -> Any:
     Attempts to extract `missing_value` or `_FillValue` from either `data` or `dict`. If not found, returns `np.nan`
 
     Args:
-        data (:class: `xr.DataArray`):
+
+        data (:class:`xarray.DataArray`):
             Data which may contain `missing_value` or `_FillValue` attributes.
-        args (:class: `dict`):
+
+        args (:class:`dict`):
             Dictionary which may contain `missing_value` key.
 
     Returns:
-        missing_value (`Any`):
+        missing_value (:class:`Any`):
             The `missing_value` representation.
     """
     if "missing_value" in args:
@@ -39,15 +41,15 @@ def _unchunk_ifneeded(data: da.Array, axis: int) -> da.Array:
     Returns `data` unchunked along `axis`.
 
     Args:
-        data (:class: da.Array`):
+        data (:class:`dask.array.Array`):
             Data which may be chunked along `axis`.
 
-        axis (:class: `int`):
+        axis (:class:`int`):
             Axis number which specifies the axis to unchunk.
 
     Returns:
-        data (:class: `da.Array`):
-            A `da.Array` which is not chunked along the specified axis.
+        data (:class:`dask.array.Array`):
+            A dask array which is not chunked along the specified axis.
 
     """
     if isinstance(data, da.Array):
@@ -247,7 +249,7 @@ def ndpolyfit(x: Iterable, y: Iterable, deg: int, axis: int = 0, **kwargs) -> (x
 
 
 def _ndpolyfit(x: np.ndarray, y: np.ndarray, axis: int = 0, deg: int = 1, rcond=None, full=False, w=None, cov=False, missing_value=np.nan,
-        xarray_output=True) -> (np.ndarray, xr.DataArray):
+               xarray_output=True) -> (np.ndarray, xr.DataArray):
     """
     An extension to `numpy.polyfit` function to work with multi-dimensional numpy input. If `y` is of shape, let's say
     `(s0, s1, s2, s3)`, the `axis=1`, and `deg=1`, then the output would be `(s0, 2, s2, s3)`. So, the function fits
