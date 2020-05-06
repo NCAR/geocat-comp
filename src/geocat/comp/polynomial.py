@@ -10,10 +10,8 @@ def _get_missing_value(data: xr.DataArray, args: dict) -> Any:
     Attempts to extract `missing_value` or `_FillValue` from either `data` or `dict`. If not found, returns `np.nan`
 
     Args:
-
         data (:class:`xarray.DataArray`):
             Data which may contain `missing_value` or `_FillValue` attributes.
-
         args (:class:`dict`):
             Dictionary which may contain `missing_value` key.
 
@@ -43,7 +41,6 @@ def _unchunk_ifneeded(data: da.Array, axis: int) -> da.Array:
     Args:
         data (:class:`dask.array.Array`):
             Data which may be chunked along `axis`.
-
         axis (:class:`int`):
             Axis number which specifies the axis to unchunk.
 
@@ -65,11 +62,7 @@ def _unchunk_ifneeded(data: da.Array, axis: int) -> da.Array:
 
 def ndpolyfit(x: Iterable, y: Iterable, deg: int, axis: int = 0, **kwargs) -> (xr.DataArray, da.Array):
     """
-    An extension to `numpy.polyfit` function to work with multi-dimensional arrays. If `y` is of shape, let's say
-    `(s0, s1, s2, s3)`, the `axis=1`, and `deg=1`, then the output would be `(s0, 2, s2, s3)`. So, the function fits
-    a first degree polynomial (because `deg=1`) along the second dimension (because `axis=1`) for every other dimension.
-    The other change from `numpy.polyfit` is that this method also handles the missing values. Also, this version, has
-    support for Dask array and chunked Dask arrays.
+    An extension to `numpy.polyfit` function to support multi-dimensional arrays, Dask arrays, and missing values.
 
     Args:
 
@@ -80,7 +73,7 @@ def ndpolyfit(x: Iterable, y: Iterable, deg: int, axis: int = 0, **kwargs) -> (x
         y (:class:`array_like`)
             y-coordinate, an Iterable containing the data. It could be list, `numpy.ndarray`, `xr.DataArray`, Dask array.
             or any Iterable convertible to `numpy.ndarray`. In case of Dask Array, The data could be chunked. It is
-            recommended no to chunk along the `axis` provided.
+            recommended not to chunk along the `axis` provided.
 
         axis (:class:`int`):
             the axis to fit the polynomial to. Default is 0.
@@ -88,30 +81,31 @@ def ndpolyfit(x: Iterable, y: Iterable, deg: int, axis: int = 0, **kwargs) -> (x
         deg (:class:`int`):
             degree of the fitting polynomial
 
-        kwargs (:class:`dict`, optional):
+        kwargs (:class:`dict`, `optional`):
             Extra parameter controlling the method behavior:
 
-            rcond (:class:`float`, optional):
+            rcond (:class:`float`, `optional`):
                 Relative condition number of the fit. Refer to `numpy.polyfit` for further details.
 
-            full (:class:`bool`, optional):
+            full (:class:`bool`, `optional`):
                 Switch determining nature of return value. Refer to `numpy.polyfit` for further details.
 
-            w (:class:`array_like`, optional):
+            w (:class:`array_like`, `optional`):
                 Weights applied to the y-coordinates of the sample points. Refer to `numpy.polyfit` for further details.
 
-            cov (:class:`bool`, optional):
+            cov (:class:`bool`, `optional`):
                 Determines whether to return the covariance matrix. Refer to `numpy.polyfit` for further details.
 
-            missing_value (:class:`number` or :class:`np.nan`, optional):
+            missing_value (:class:`number` or :class:`np.nan`, `optional`):
                 The value to be treated as missing. Default is `np.nan`
 
-            meta (:class:`bool`, optional):
+            meta (:class:`bool`, `optional`):
                 If set to `True` and the input, i.e. `y`, is of type `xr.DataArray`, the attributes associated to the
                 input are transferred to the output.
 
     Returns:
-        an `xarray.DataArray` or `numpy.ndarray` containing the coefficients of the fitted polynomial.
+        coefficients (`xarray.DataArray` or `numpy.ndarray`):
+        an array containing the coefficients of the fitted polynomial.
 
     Examples:
         * Fitting a line to a one dimensional array:
