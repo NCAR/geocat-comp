@@ -9,15 +9,18 @@ def _get_missing_value(data: xr.DataArray, args: dict) -> Any:
     """
     Attempts to extract `missing_value` or `_FillValue` from either `data` or `dict`. If not found, returns `np.nan`
 
-    Args:
-        data (:class:`xarray.DataArray`):
-            Data which may contain `missing_value` or `_FillValue` attributes.
-        args (:class:`dict`):
-            Dictionary which may contain `missing_value` key.
+    Parameters
+    ----------
+    data : :class:`xarray.DataArray`
+        Data which may contain `missing_value` or `_FillValue` attributes.
+    args : :class:`dict`
+        Dictionary which may contain `missing_value` key.
 
-    Returns:
-        missing_value (:class:`Any`):
-            The `missing_value` representation.
+    Returns
+    -------
+    missing_value : :class:`Any`
+        The `missing_value` representation.
+
     """
     if "missing_value" in args:
         missing_value = args["missing_value"]
@@ -38,14 +41,16 @@ def _unchunk_ifneeded(data: da.Array, axis: int) -> da.Array:
     """
     Returns `data` unchunked along `axis`.
 
-    Args:
-        data (:class:`dask.array.Array`):
-            Data which may be chunked along `axis`.
-        axis (:class:`int`):
-            Axis number which specifies the axis to unchunk.
+    Parameters
+    ----------
+    data : :class:`dask.array.Array`
+        Data which may be chunked along `axis`.
+    axis : :class:`int`
+        Axis number which specifies the axis to unchunk.
 
-    Returns:
-        data (:class:`dask.array.Array`):
+    Returns
+    -------
+        data : :class:`dask.array.Array`
             A dask array which is not chunked along the specified axis.
 
     """
@@ -64,50 +69,53 @@ def ndpolyfit(x: Iterable, y: Iterable, deg: int, axis: int = 0, **kwargs) -> (x
     """
     An extension to `numpy.polyfit` function to support multi-dimensional arrays, Dask arrays, and missing values.
 
-    Args:
+    Parameters
+    ----------
 
-        x (:class:`array_like`):
-            X-coordinate, an iterable object of shape `(M,)`, `(M, 1)`, or `(1, M)` where `M = y.shape(axis)`. It cannot
-            have `nan` or missing values.
+    x : :class:`array_like`
+        X-coordinate, an iterable object of shape `(M,)`, `(M, 1)`, or `(1, M)` where `M = y.shape(axis)`. It cannot
+        have `nan` or missing values.
 
-        y (:class:`array_like`)
-            Y-coordinate, an iterable containing the data. It could be list, `numpy.ndarray`, `xr.DataArray`, Dask array.
-            or any Iterable convertible to `numpy.ndarray`. In case of Dask Array, The data could be chunked. It is
-            recommended not to chunk along the `axis` provided.
+    y : :class:`array_like`:
+        Y-coordinate, an iterable containing the data. It could be list, `numpy.ndarray`, `xr.DataArray`, Dask array.
+        or any Iterable convertible to `numpy.ndarray`. In case of Dask Array, The data could be chunked. It is
+        recommended not to chunk along the `axis` provided.
 
-        axis (:class:`int`):
-            Axis to fit the polynomial to. Default is 0.
+    axis : :class:`int`
+        Axis to fit the polynomial to. Default is 0.
 
-        deg (:class:`int`):
-            Degree of the fitting polynomial
+    deg : :class:`int`
+        Degree of the fitting polynomial
 
-        kwargs (:class:`dict`, `optional`):
-            Extra parameter controlling the method behavior:
+    kwargs : :class:`dict`, `optional`
+        Extra parameter controlling the method behavior:
 
-            rcond (:class:`float`, `optional`):
-                Relative condition number of the fit. Refer to `numpy.polyfit` for further details.
+        rcond : :class:`float`, `optional`
+            Relative condition number of the fit. Refer to `numpy.polyfit` for further details.
 
-            full (:class:`bool`, `optional`):
-                Switch determining nature of return value. Refer to `numpy.polyfit` for further details.
+        full : :class:`bool`, `optional`
+            Switch determining nature of return value. Refer to `numpy.polyfit` for further details.
 
-            w (:class:`array_like`, `optional`):
-                Weights applied to the y-coordinates of the sample points. Refer to `numpy.polyfit` for further details.
+        w : :class:`array_like`, `optional`
+            Weights applied to the y-coordinates of the sample points. Refer to `numpy.polyfit` for further details.
 
-            cov (:class:`bool`, `optional`):
-                Determines whether to return the covariance matrix. Refer to `numpy.polyfit` for further details.
+        cov : :class:`bool`, `optional`
+            Determines whether to return the covariance matrix. Refer to `numpy.polyfit` for further details.
 
-            missing_value (:class:`number` or :class:`np.nan`, `optional`):
-                The value to be treated as missing. Default is `np.nan`
+        missing_value : :class:`number` or :class:`np.nan`, `optional`
+            The value to be treated as missing. Default is `np.nan`
 
-            meta (:class:`bool`, `optional`):
-                If set to `True` and the input, i.e. `y`, is of type `xr.DataArray`, the attributes associated to the
-                input are transferred to the output.
+        meta : :class:`bool`, `optional`
+            If set to `True` and the input, i.e. `y`, is of type `xr.DataArray`, the attributes associated to the
+            input are transferred to the output.
 
-    Returns:
-        coefficients (:class:`xarray.DataArray` or :class:`numpy.ndarray`):
-            An array containing the coefficients of the fitted polynomial.
+    Returns
+    -------
+    coefficients : :class:`xarray.DataArray` or :class:`numpy.ndarray`
+        An array containing the coefficients of the fitted polynomial.
 
-    Examples:
+    Examples
+    --------
         * Fitting a line to a one dimensional array:
 
         >>> import numpy as np
@@ -248,46 +256,48 @@ def _ndpolyfit(x: np.ndarray, y: np.ndarray, axis: int = 0, deg: int = 1, rcond=
     """
     An extension to `numpy.polyfit` function to support multi-dimensional arrays, Dask arrays, and missing values.
 
-    Args:
+    Parameters
+    ----------
 
-        x (:class:`array_like`):
-            X-coordinate, an iterable object of shape `(M,)`, `(M, 1)`, or `(1, M)` where `M = y.shape(axis)`. It cannot
-            have `nan` or missing values.
+    x : :class:`array_like`
+        X-coordinate, an iterable object of shape `(M,)`, `(M, 1)`, or `(1, M)` where `M = y.shape(axis)`.
+        It cannot have `nan` or missing values.
 
-        y (:class:`array_like`)
-            Y-coordinate, an iterable containing the data. It could be list, `numpy.ndarray`, `xr.DataArray`, Dask array.
-            or any Iterable convertible to `numpy.ndarray`. In case of Dask Array, The data could be chunked. It is
-            recommended not to chunk along the `axis` provided.
+    y : :class:`array_like`
+        Y-coordinate, an iterable containing the data. It could be list, `numpy.ndarray`, `xr.DataArray`, Dask array.
+        or any Iterable convertible to `numpy.ndarray`. In case of Dask Array, The data could be chunked. It is
+        recommended not to chunk along the `axis` provided.
 
-        axis (:class:`int`):
-            Axis to fit the polynomial to. Default is 0.
+    axis : :class:`int`
+        Axis to fit the polynomial to. Default is 0.
 
-        deg (:class:`int`):
-            Degree of the fitting polynomial
+    deg : :class:`int`
+        Degree of the fitting polynomial
 
-        rcond (:class:`float`, `optional`):
-            Relative condition number of the fit. Refer to `numpy.polyfit` for further details.
+    rcond : :class:`float`, `optional`
+        Relative condition number of the fit. Refer to `numpy.polyfit` for further details.
 
-        full (:class:`bool`, `optional`):
-            Switch determining nature of return value. Refer to `numpy.polyfit` for further details.
+    full : :class:`bool`, `optional`
+        Switch determining nature of return value. Refer to `numpy.polyfit` for further details.
 
-        w (:class:`array_like`, `optional`):
-            Weights applied to the y-coordinates of the sample points. Refer to `numpy.polyfit` for further details.
+    w : :class:`array_like`, `optional`
+        Weights applied to the y-coordinates of the sample points. Refer to `numpy.polyfit` for further details.
 
-        cov (:class:`bool`, `optional`):
-            Determines whether to return the covariance matrix. Refer to `numpy.polyfit` for further details.
+    cov : :class:`bool`, `optional`
+        Determines whether to return the covariance matrix. Refer to `numpy.polyfit` for further details.
 
-        missing_value (:class:`number` or :class:`np.nan`, `optional`):
-            The value to be treated as missing. Default is `np.nan`
+    missing_value : :class:`number` or :class:`np.nan`, `optional`
+        The value to be treated as missing. Default is `np.nan`
 
-        xarray_output (:class:`bool`, `optional`):
-            Determines the type of the output. If set to `True` the output would be of type `xr.DataArray`
-            and the some extra information are attached to the output as attributes. Otherwise, the output
-            would be of type `np.ndarray` containing only the coefficients of the fitted polynomial.
+    xarray_output : :class:`bool`, `optional`
+        Determines the type of the output. If set to `True` the output would be of type `xr.DataArray`
+        and the some extra information are attached to the output as attributes. Otherwise, the output
+        would be of type `np.ndarray` containing only the coefficients of the fitted polynomial.
 
-    Returns:
-        coefficients (:class:`xarray.DataArray` or :class:`numpy.ndarray`):
-            An array containing the coefficients of the fitted polynomial.
+    Returns
+    -------
+    coefficients : :class:`xarray.DataArray` or :class:`numpy.ndarray`
+        An array containing the coefficients of the fitted polynomial.
 
     """
 
@@ -387,15 +397,17 @@ def _rearrange_axis(data: np.ndarray, axis: int = 0) -> tuple:
     rearranges the `numpy.ndarray` as a two-dimensional array of size (n, -1), where n is the number of elements of
     the dimension defined by `axis`.
 
-    Args:
-        data (:class:`numpy.ndarray`):
-            An array to be rearranged
-        axis (:class:`int`):
-            The axis that all other dimensions are rearranged around it. default is 0.
+    Parameters
+    ----------
+    data : :class:`numpy.ndarray`
+        An array to be rearranged
+    axis : :class:`int`
+        The axis that all other dimensions are rearranged around it. default is 0.
 
-    Returns:
-        tuple (data :class:`numpy.ndarray`, shape :class:`tuple`):
-            A tuple, where the first element contains the reshaped data, and the second is a tuple with all dimensions except the one specified by the axis.
+    Returns
+    -------
+    tuple (data :class:`numpy.ndarray`, shape :class:`tuple`):
+        A tuple, where the first element contains the reshaped data, and the second is a tuple with all dimensions except the one specified by the axis.
 
     """
     if not isinstance(data, np.ndarray):
@@ -443,25 +455,28 @@ def ndpolyval(p: Iterable, x: Iterable, axis: int = 0, **kwargs):
     dimension `(M, )`, `(M, 1)`, `(1, M)` or, in this example, of dimension `(s0, M, s2)`. When `x` is not the vector,
     it must have the same dimension as of `p` except for the dimension that is defined by `axis`.
 
-    Args:
+    Parameters
+    ----------
 
-        p (:class:`Iterable`):
-            Polynomial coeficients.
+    p : :class:`Iterable`
+        Polynomial coeficients.
 
-        x (:class:`Iterable`):
-            Coordinates where polynomial must be evaluated.
+    x : :class:`Iterable`
+        Coordinates where polynomial must be evaluated.
 
-        axis (:class:`int`):
-            The axis along which to evaluate the polynomial.
+    axis : :class:`int`
+        The axis along which to evaluate the polynomial.
 
-        **kwargs:
-            Currently not used.
+    **kwargs:
+        Currently not used.
 
-    Returns:
-        output (:class:`xr.DataArray`):
-            Polynomial evaluated with the provided coordinates.
+    Returns
+    -------
+    output : :class:`xr.DataArray`
+        Polynomial evaluated with the provided coordinates.
 
-    Examples:
+    Examples
+    --------
 
         * Evaluating a polynomial:
 
@@ -600,30 +615,33 @@ def detrend(data: Iterable, deg=1, axis=0, **kwargs):
     'dtrend_quadratic', 'dtrend_quadratic_msg_n', 'dtrend_msg_n', 'dtrend_msg', 'dtrend_n'.
     However, this function is not limited to quadratic detrending and you could use higher polynomial degree as well.
 
-    Args:
-        data (:class:`array_like`):
-            a multi-dimensional numeric array
+    Parameters
+    ----------
+    data : :class:`array_like`
+        a multi-dimensional numeric array
 
-        deg (:class:`int`, optional):
-            a non-negative integer determining the degree of the polynomial to use for detrending. Default value is 1.
+    deg : :class:`int`, optional
+        a non-negative integer determining the degree of the polynomial to use for detrending. Default value is 1.
 
-        axis (:class:`int`, optional):
-            the axis along which the data is detrended. Default value is 0.
+    axis : :class:`int`, optional
+        the axis along which the data is detrended. Default value is 0.
 
-        kwargs (:class:`dict`, optional):
-            providing further arguments to control the behavior of the method. It currently accepts the following parameter:
+    kwargs : :class:`dict`, optional
+        providing further arguments to control the behavior of the method. It currently accepts the following parameter:
 
-            return_info (:class:`bool`)
-                If set to true, the fitted polynomial is returned as part of the attributes. Default value is `True`.
+        return_info (:class:`bool`)
+            If set to true, the fitted polynomial is returned as part of the attributes. Default value is `True`.
 
-            missing_value (:class:`numeric`)
-                A value that must be ignored. Default is NaN.
+        missing_value (:class:`numeric`)
+            A value that must be ignored. Default is NaN.
 
-    Returns:
-        detrended_data (:class:`xarray.DataArray`):
-            Array containing the detrended data.
+    Returns
+    -------
+    detrended_data : :class:`xarray.DataArray`
+        Array containing the detrended data.
 
-    Examples:
+    Examples
+    --------
 
         * Detrending a data:
 
