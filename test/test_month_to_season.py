@@ -43,6 +43,10 @@ class Test_month_to_season(unittest.TestCase):
         # Create a dataset with the wrong number of months.
         self.partial_year_dataset = get_fake_dataset(start_month='2000-01', nmonths=13, nlats=1, nlons=1)
 
+        # Create a dataset with a custom time coordinate.
+        custom_time_dataset = get_fake_dataset(start_month='2000-01', nmonths=12, nlats=1, nlons=1)
+        self.custom_time_dataset = custom_time_dataset.rename_dims({'time': 'my_time'})
+
         # Create a more complex dataset just to verify that get_fake_dataset() is generally working.
         self.complex_dataset = get_fake_dataset(start_month='2001-01', nmonths=12, nlats=10, nlons=10)
 
@@ -81,6 +85,13 @@ class Test_month_to_season(unittest.TestCase):
             season_ds = month_to_season(self.ds3, season)
             season_value_array = season_ds['my_var'].data
             self.assertEqual(season_value_array.size, nyears_of_data)
+
+    def test_custom_time_coordinate(self):
+        season_ds = month_to_season(self.custom_time_dataset, 'JFM', time_coord_name='my_time')
+        season_value_array = season_ds['my_var'].data
+
+        # Should equal the average of [1.0, 2.0, 3.0]
+        self.assertEqual(season_value_array[0, 0, 0], 2.0)
 
 
 if __name__ == '__main__':

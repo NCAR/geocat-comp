@@ -26,11 +26,11 @@ def month_to_season(xMon, season, time_coord_name='time'):
 
     # Compute the three-month means, moving time labels ahead to the middle month.
     month_offset = 'MS'
-    xSeasons = xMon.resample(time=season_pd, loffset=month_offset).mean()
+    xSeasons = xMon.resample({time_coord_name: season_pd}, loffset=month_offset).mean()
 
     # Filter just the desired season, and trim to the desired time range.
-    xSea = xSeasons.sel(time=xSeasons.time.dt.month == season_sel)
-    xSea = xSea.sel(time=slice(startDate, endDate))
+    xSea = xSeasons.sel({time_coord_name: xSeasons.time.dt.month == season_sel})
+    xSea = xSea.sel({time_coord_name: slice(startDate, endDate)})
     return xSea
 
 
