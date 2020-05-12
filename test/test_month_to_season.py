@@ -45,7 +45,7 @@ class Test_month_to_season(unittest.TestCase):
 
         # Create a dataset with a custom time coordinate.
         custom_time_dataset = get_fake_dataset(start_month='2000-01', nmonths=12, nlats=1, nlons=1)
-        self.custom_time_dataset = custom_time_dataset.rename_dims({'time': 'my_time'})
+        self.custom_time_dataset = custom_time_dataset.rename({'time': 'my_time'})
 
         # Create a more complex dataset just to verify that get_fake_dataset() is generally working.
         self.complex_dataset = get_fake_dataset(start_month='2001-01', nmonths=12, nlats=10, nlons=10)

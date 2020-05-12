@@ -29,7 +29,7 @@ def month_to_season(xMon, season, time_coord_name='time'):
     xSeasons = xMon.resample({time_coord_name: season_pd}, loffset=month_offset).mean()
 
     # Filter just the desired season, and trim to the desired time range.
-    xSea = xSeasons.sel({time_coord_name: xSeasons.time.dt.month == season_sel})
+    xSea = xSeasons.sel({time_coord_name: xSeasons[time_coord_name].dt.month == season_sel})
     xSea = xSea.sel({time_coord_name: slice(startDate, endDate)})
     return xSea
 
