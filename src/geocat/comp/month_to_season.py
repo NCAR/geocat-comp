@@ -22,7 +22,7 @@ def month_to_season(xMon, season, time_coord_name='time'):
     try:
         (season_pd, season_sel) = seasons_pd[season]
     except KeyError:
-        raise ValueError(f"contributed: month_to_season: bad season: SEASON = {season}. Valid seasons include: {list(seasons_pd.keys())}")
+        raise KeyError(f"contributed: month_to_season: bad season: SEASON = {season}. Valid seasons include: {list(seasons_pd.keys())}")
 
     # Compute the three-month means, moving time labels ahead to the middle month.
     month_offset = 'MS'
