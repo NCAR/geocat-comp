@@ -67,7 +67,7 @@ class Test_month_to_season(unittest.TestCase):
         self.assertEqual(season_value_array[0, 0, 0], 7.0)
 
     def test_bad_season_returns_exception(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(KeyError):
             season_ds = month_to_season(self.ds1, 'XXX')
 
     def test_partial_years_returns_exception(self):
