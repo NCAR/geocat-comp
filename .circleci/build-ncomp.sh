@@ -7,12 +7,12 @@ conda config --set always_yes true --set changeps1 false --set quiet true
 conda config --add channels conda-forge
 conda list -f python -e >> /usr/local/conda-meta/pinned
 conda install git
-git clone ${NCOMP_GIT_REPO}
-cd ncomp
-git checkout ${CIRCLE_BRANCH} || echo "No ${CIRCLE_BRANCH} on ncomp"
-conda env create -f .circleci/environment-dev-$(uname).yml --name ${NCOMP_ENV_NAME} --quiet
+git clone ${LIBNCOMP_GIT_REPO}
+cd libncomp
+git checkout ${CIRCLE_BRANCH} || echo "No ${CIRCLE_BRANCH} on libncomp"
+conda env create -f .circleci/environment-dev-$(uname).yml --name ${LIBNCOMP_ENV_NAME} --quiet
 conda env list
-source activate ${NCOMP_ENV_NAME}
+source activate ${LIBNCOMP_ENV_NAME}
 autoreconf --install
 ./configure --prefix=${CONDA_PREFIX}
 make install
