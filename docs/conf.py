@@ -52,10 +52,10 @@ extensions = [
 #mathjax_path = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
 
 intersphinx_mapping = {
+                       'dask': ('https://docs.dask.org/en/latest/',None),
                        'python': ('http://docs.python.org/3/', None),
                        'numpy': ('http://docs.scipy.org/doc/numpy/', None),
-                       'scipy' :
-                       ('https://docs.scipy.org/doc/scipy/reference/', None),
+                       'scipy' : ('https://docs.scipy.org/doc/scipy/reference/', None),
                        'xarray': ('http://xarray.pydata.org/en/stable/', None),
                        }
 
