@@ -1,0 +1,18 @@
+# This is the main workflow for branches and pull requests.
+name: main
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+on: [ push, pull_request ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  autopep8:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: autopep8
+        uses: peter-evans/autopep8@v1
+        with:
+          args: --recursive --in-place --aggressive --aggressive .
