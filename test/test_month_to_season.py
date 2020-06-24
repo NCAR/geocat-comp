@@ -11,12 +11,22 @@ def get_fake_dataset(start_month, nmonths, nlats, nlons):
         Data values are equal to "month of year" for monthly time steps.
     """
     # Create coordinates
-    months = pd.date_range(start=pd.to_datetime(start_month), periods=nmonths, freq='MS')
+    months = pd.date_range(
+        start=pd.to_datetime(start_month),
+        periods=nmonths,
+        freq='MS')
     lats = np.linspace(start=-90, stop=90, num=nlats, dtype='float32')
     lons = np.linspace(start=-180, stop=180, num=nlons, dtype='float32')
 
-    # Create data variable. Construct a 3D array with time as the first dimension.
-    month_values = np.expand_dims(np.arange(start=1, stop=nmonths + 1), axis=(1, 2))
+    # Create data variable. Construct a 3D array with time as the first
+    # dimension.
+    month_values = np.expand_dims(
+        np.arange(
+            start=1,
+            stop=nmonths + 1),
+        axis=(
+            1,
+            2))
     var_values = np.tile(month_values, (1, nlats, nlons))
 
     ds = xr.Dataset(
@@ -32,26 +42,46 @@ class Test_month_to_season(unittest.TestCase):
 
     def setUp(self):
         # Create a dataset for the year 2000.
-        self.ds1 = get_fake_dataset(start_month='2000-01', nmonths=12, nlats=1, nlons=1)
+        self.ds1 = get_fake_dataset(
+            start_month='2000-01', nmonths=12, nlats=1, nlons=1)
 
         # Create another dataset for the year 2001.
-        self.ds2 = get_fake_dataset(start_month='2001-01', nmonths=12, nlats=1, nlons=1)
+        self.ds2 = get_fake_dataset(
+            start_month='2001-01', nmonths=12, nlats=1, nlons=1)
 
-        # Create a dataset that combines the two previous datasets, for two years of data.
+        # Create a dataset that combines the two previous datasets, for two
+        # years of data.
         self.ds3 = xr.concat([self.ds1, self.ds2], dim='time')
 
         # Create a dataset with the wrong number of months.
-        self.partial_year_dataset = get_fake_dataset(start_month='2000-01', nmonths=13, nlats=1, nlons=1)
+        self.partial_year_dataset = get_fake_dataset(
+            start_month='2000-01', nmonths=13, nlats=1, nlons=1)
 
         # Create a dataset with a custom time coordinate.
-        custom_time_dataset = get_fake_dataset(start_month='2000-01', nmonths=12, nlats=1, nlons=1)
-        self.custom_time_dataset = custom_time_dataset.rename({'time': 'my_time'})
+        custom_time_dataset = get_fake_dataset(
+            start_month='2000-01', nmonths=12, nlats=1, nlons=1)
+        self.custom_time_dataset = custom_time_dataset.rename(
+            {'time': 'my_time'})
 
-        # Create a more complex dataset just to verify that get_fake_dataset() is generally working.
-        self.complex_dataset = get_fake_dataset(start_month='2001-01', nmonths=12, nlats=10, nlons=10)
+        # Create a more complex dataset just to verify that get_fake_dataset()
+        # is generally working.
+        self.complex_dataset = get_fake_dataset(
+            start_month='2001-01', nmonths=12, nlats=10, nlons=10)
 
         # Check all possible season choices for some tests.
-        self.all_seasons = ['DJF', 'JFM', 'FMA', 'MAM', 'AMJ', 'MJJ', 'JJA', 'JAS', 'ASO', 'SON', 'OND', 'NDJ']
+        self.all_seasons = [
+            'DJF',
+            'JFM',
+            'FMA',
+            'MAM',
+            'AMJ',
+            'MJJ',
+            'JJA',
+            'JAS',
+            'ASO',
+            'SON',
+            'OND',
+            'NDJ']
 
     def test_m2s_returns_middle_month_value(self):
         season_ds = month_to_season(self.ds1, 'JFM')
@@ -87,7 +117,10 @@ class Test_month_to_season(unittest.TestCase):
             self.assertEqual(season_value_array.size, nyears_of_data)
 
     def test_custom_time_coordinate(self):
-        season_ds = month_to_season(self.custom_time_dataset, 'JFM', time_coord_name='my_time')
+        season_ds = month_to_season(
+            self.custom_time_dataset,
+            'JFM',
+            time_coord_name='my_time')
         season_value_array = season_ds['my_var'].data
 
         # Should equal the average of [1.0, 2.0, 3.0]
