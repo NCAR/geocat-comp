@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout
       - name: autopep8
-        uses: hhatto/autopep8@v1
+        uses: hhatto/autopep8
         with:
           args: --recursive --in-place --aggressive --aggressive .
