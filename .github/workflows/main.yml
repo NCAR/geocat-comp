@@ -13,6 +13,6 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
       - name: autopep8
-        uses: hhatto/autopep8@v1.5.3
+        uses: peter-evans/autopep8@v1.2.0
         with:
           args: --recursive --in-place --aggressive --aggressive .
