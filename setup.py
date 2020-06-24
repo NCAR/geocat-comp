@@ -12,13 +12,16 @@ with open("src/geocat/comp/version.py") as f:
 
 setup(
     name="geocat.comp",
-    package_dir={'': 'src', 'geocat': 'src/geocat', 'geocat.comp': 'src/geocat/comp'},
+    package_dir={
+        '': 'src',
+        'geocat': 'src/geocat',
+        'geocat.comp': 'src/geocat/comp'},
     namespace_packages=['geocat'],
-    packages=["geocat", "geocat.comp"],
-    version=__version__, 
+    packages=[
+        "geocat",
+        "geocat.comp"],
+    version=__version__,
     install_requires=[
-        'numpy', 
-        'xarray', 
-        'dask[complete]'
-    ]
-)
+        'numpy',
+        'xarray',
+        'dask[complete]'])
