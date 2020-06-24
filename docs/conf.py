@@ -12,6 +12,7 @@
 #
 # -- Project information -----------------------------------------------------
 
+import geocat.comp
 import sys
 import os
 
@@ -20,10 +21,12 @@ try:
 except ImportError:
     from mock import Mock as MagicMock
 
+
 class Mock(MagicMock):
     @classmethod
     def __getattr__(cls, name):
         return MagicMock()
+
 
 MOCK_MODULES = ["xarray", "dask", "dask.array", "dask.array.core"]
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
@@ -52,12 +55,12 @@ extensions = [
 #mathjax_path = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
 
 intersphinx_mapping = {
-                       'python': ('http://docs.python.org/3/', None),
-                       'numpy': ('http://docs.scipy.org/doc/numpy/', None),
-                       'scipy' :
-                       ('https://docs.scipy.org/doc/scipy/reference/', None),
-                       'xarray': ('http://xarray.pydata.org/en/stable/', None),
-                       }
+    'dask': ('https://docs.dask.org/en/latest/', None),
+    'python': ('http://docs.python.org/3/', None),
+    'numpy': ('http://docs.scipy.org/doc/numpy/', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
+    'xarray': ('http://xarray.pydata.org/en/stable/', None),
+}
 
 napoleon_use_admonition_for_examples = True
 napoleon_include_special_with_doc = True
@@ -89,7 +92,6 @@ author = u'Kevin Hallock'
 #
 # The short X.Y version.
 
-import geocat.comp
 version = geocat.comp.__version__
 # The full version, including alpha/beta/rc tags.
 release = geocat.comp.__version__
@@ -247,4 +249,3 @@ html_static_path = ['_static']
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'geocat-compdoc'
-

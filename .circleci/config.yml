@@ -4,16 +4,16 @@ workflows:
   version: 2
   default:
     jobs:
-      - "build-ncomp"
+      - "build-libncomp"
       - "python-3.6":
           requires:
-            - "build-ncomp"
+            - "build-libncomp"
       - "python-3.7":
           requires:
-            - "build-ncomp"
+            - "build-libncomp"
       - "python-3.8":
           requires:
-            - "build-ncomp"
+            - "build-libncomp"
 
 default-job: &default-job
   docker:
@@ -30,21 +30,21 @@ default-job: &default-job
         command: ./.circleci/${TEST_SCRIPT}
 
 jobs:
-  "build-ncomp":
+  "build-libncomp":
     docker:
       - image: conda/miniconda3:latest
     environment:
-      NCOMP_ENV_NAME: "build-ncomp"
-      NCOMP_GIT_REPO: "https://github.com/NCAR/ncomp.git"
+      LIBNCOMP_ENV_NAME: "build-libncomp"
+      LIBNCOMP_GIT_REPO: "https://github.com/NCAR/libncomp.git"
     steps:
       - checkout
       - run:
-          name: Build NComp
-          command: ./.circleci/build-ncomp.sh
+          name: Build libNComp
+          command: ./.circleci/build-libncomp.sh
       - save_cache:
           key: deps-{{ .Environment.CIRCLE_PROJECT_REPONAME }}-{{ .Environment.CIRCLE_WORKFLOW_JOB_ID }}
           paths:
-            - /usr/local/envs/build-ncomp
+            - /usr/local/envs/build-libncomp
             - /usr/local/pkgs
 
   "python-3.6":
@@ -52,7 +52,7 @@ jobs:
     environment:
       PYTHON: "3.6"
       ENV_NAME: "geocat-comp-dev"
-      NCOMP_ENV_NAME: "build-ncomp"
+      LIBNCOMP_ENV_NAME: "build-libncomp"
       TEST_SCRIPT: "run-checks.sh"
 
   "python-3.7":
@@ -60,7 +60,7 @@ jobs:
     environment:
       PYTHON: "3.7"
       ENV_NAME: "geocat-comp-dev"
-      NCOMP_ENV_NAME: "build-ncomp"
+      LIBNCOMP_ENV_NAME: "build-libncomp"
       TEST_SCRIPT: "run-checks.sh"
 
   "python-3.8":
@@ -68,5 +68,5 @@ jobs:
     environment:
       PYTHON: "3.8"
       ENV_NAME: "geocat-comp-dev"
-      NCOMP_ENV_NAME: "build-ncomp"
+      LIBNCOMP_ENV_NAME: "build-libncomp"
       TEST_SCRIPT: "run-checks.sh"

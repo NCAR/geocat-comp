@@ -13,6 +13,7 @@ try:
 except ImportError:
     pass
 
+
 class Error(Exception):
     """Base class for exceptions in this module."""
     pass
@@ -29,17 +30,20 @@ class CoordinateError(Error):
     an argument without a required coordinate array being passed separately."""
     pass
 
+
 class DimensionError(Error):
-     """Exception raised when the arguments of GeoCAT-comp functions argument
-     has a mismatch of the necessary dimensionality."""
-     pass
+    """Exception raised when the arguments of GeoCAT-comp functions argument
+    has a mismatch of the necessary dimensionality."""
+    pass
+
 
 class AttributeError(Error):
-     """Exception raised when the arguments of GeoCAT-comp functions argument
-     has a mismatch of attributes with other arguments."""
-     pass
+    """Exception raised when the arguments of GeoCAT-comp functions argument
+    has a mismatch of attributes with other arguments."""
+    pass
+
 
 class MetaError(Error):
-     """Exception raised when the support for the retention of metadata is not
-     supported."""
-     pass
+    """Exception raised when the support for the retention of metadata is not
+    supported."""
+    pass
