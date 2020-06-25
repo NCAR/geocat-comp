@@ -17,16 +17,16 @@ import sys
 import os
 
 try:
-  from unittest.mock import MagicMock
+    from unittest.mock import MagicMock
 except ImportError:
-  from mock import Mock as MagicMock
+    from mock import Mock as MagicMock
 
 
 class Mock(MagicMock):
 
-  @classmethod
-  def __getattr__(cls, name):
-    return MagicMock()
+    @classmethod
+    def __getattr__(cls, name):
+        return MagicMock()
 
 
 MOCK_MODULES = ["xarray", "dask", "dask.array", "dask.array.core"]
@@ -146,11 +146,11 @@ todo_include_todos = False
 
 on_rtd = os.environ.get('READTHEDOCS') == 'True'
 if on_rtd:
-  html_theme = 'default'
+    html_theme = 'default'
 else:
-  import sphinx_rtd_theme
-  html_theme = 'sphinx_rtd_theme'
-  html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+    import sphinx_rtd_theme
+    html_theme = 'sphinx_rtd_theme'
+    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 #html_theme = 'alabaster'
 
 # Theme options are theme-specific and customize the look and feel of a theme
