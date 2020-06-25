@@ -29,14 +29,17 @@ newsst = geocat.comp.linint2(sst, newlon, newlat, False)
 projection = ccrs.PlateCarree()
 axes_class = (GeoAxes, dict(map_projection=projection))
 fig = plt.figure(figsize=(10, 8))
-axgr = AxesGrid(fig, 111, axes_class=axes_class,
-                nrows_ncols=(2, 1),
-                axes_pad=0.7,
-                cbar_location='right',
-                cbar_mode='single',
-                cbar_pad=0.5,
-                cbar_size='3%',
-                label_mode='')  # note the empty label_mode
+axgr = AxesGrid(
+    fig,
+    111,
+    axes_class=axes_class,
+    nrows_ncols=(2, 1),
+    axes_pad=0.7,
+    cbar_location='right',
+    cbar_mode='single',
+    cbar_pad=0.5,
+    cbar_size='3%',
+    label_mode='')  # note the empty label_mode
 
 plot_options = dict(
     transform=projection,
@@ -49,27 +52,24 @@ plot_options = dict(
     xtitle='')
 
 for i, ax in enumerate(axgr):
-    ax.coastlines()
-    ax.set_xticks(np.linspace(-180, 180, 13), crs=projection)
-    ax.set_yticks(np.linspace(-60, 60, 5), crs=projection)
-    lon_formatter = LongitudeFormatter(zero_direction_label=True)
-    lat_formatter = LatitudeFormatter()
-    ax.xaxis.set_major_formatter(lon_formatter)
-    ax.yaxis.set_major_formatter(lat_formatter)
+  ax.coastlines()
+  ax.set_xticks(np.linspace(-180, 180, 13), crs=projection)
+  ax.set_yticks(np.linspace(-60, 60, 5), crs=projection)
+  lon_formatter = LongitudeFormatter(zero_direction_label=True)
+  lat_formatter = LatitudeFormatter()
+  ax.xaxis.set_major_formatter(lon_formatter)
+  ax.yaxis.set_major_formatter(lat_formatter)
 
-    # Plot contours for both the subplots
-    if(i == 0):
-        sst.plot.contourf(ax=ax, **plot_options)
-        ax.set_title('Original Grid', fontsize=14, fontweight='bold')
-    else:
-        p = newsst.plot.contourf(ax=ax, **plot_options)
-        ax.set_title(
-            'Regrid (to coarse) - linint2',
-            fontsize=14,
-            fontweight='bold')
+  # Plot contours for both the subplots
+  if (i == 0):
+    sst.plot.contourf(ax=ax, **plot_options)
+    ax.set_title('Original Grid', fontsize=14, fontweight='bold')
+  else:
+    p = newsst.plot.contourf(ax=ax, **plot_options)
+    ax.set_title('Regrid (to coarse) - linint2', fontsize=14, fontweight='bold')
 
-    ax.xaxis.label.set_visible(False)
-    ax.yaxis.label.set_visible(False)
+  ax.xaxis.label.set_visible(False)
+  ax.yaxis.label.set_visible(False)
 
 # Add color bar and label details (title, size, etc.)
 cax = axgr.cbar_axes[0]

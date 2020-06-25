@@ -23,7 +23,7 @@ kmt = ds.KMT[:]
 tlat = ds.TLAT[:].values.astype(np.double)
 
 # Read important parameters from input data
-nyaux = lat_aux_grid.shape[0]            # 395
+nyaux = lat_aux_grid.shape[0]  # 395
 km = np.max(kmt.values).astype(np.int)
 ny = tarea.shape[0]
 nx = tarea.shape[1]
@@ -36,18 +36,7 @@ rmlak[1, :, :] = np.where(np.logical_and(rmask >= 6, rmask <= 11), 1, 0)
 
 # Generate a_wvel, a_bolus, and a_submeso
 k3d = np.repeat(
-    np.repeat(
-        np.arange(
-            0,
-            km,
-            1).reshape(
-                km,
-                1),
-        ny,
-        axis=1)[
-        :,
-        :,
-        np.newaxis],
+    np.repeat(np.arange(0, km, 1).reshape(km, 1), ny, axis=1)[:, :, np.newaxis],
     nx,
     axis=2)
 kmt3d = np.repeat(kmt.values[np.newaxis, :, :], km, axis=0)
@@ -60,13 +49,6 @@ a_submeso = np.where(ocean, w_sm[0, :, :, :] * tarea3d, 0.0)
 
 # Invoke `moc_globe_atl` from `geocat-comp`
 result = geocat.comp.moc_globe_atl(
-    lat_aux_grid,
-    a_wvel,
-    a_bolus,
-    a_submeso,
-    tlat,
-    rmlak,
-    msg=None,
-    meta=False)
+    lat_aux_grid, a_wvel, a_bolus, a_submeso, tlat, rmlak, msg=None, meta=False)
 
 print("moc_globe_atl successfully generated output.")

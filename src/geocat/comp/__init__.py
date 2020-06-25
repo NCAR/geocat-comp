@@ -9,41 +9,41 @@ from dask.array.core import map_blocks
 from .polynomial import ndpolyfit, ndpolyval, detrend
 
 try:
-    from geocat.ncomp import *
+  from geocat.ncomp import *
 except ImportError:
-    pass
+  pass
 
 
 class Error(Exception):
-    """Base class for exceptions in this module."""
-    pass
+  """Base class for exceptions in this module."""
+  pass
 
 
 class ChunkError(Error):
-    """Exception raised when a Dask array is chunked in a way that is
+  """Exception raised when a Dask array is chunked in a way that is
     incompatible with an _ncomp function."""
-    pass
+  pass
 
 
 class CoordinateError(Error):
-    """Exception raised when a GeoCAT-comp function is passed a NumPy array as
+  """Exception raised when a GeoCAT-comp function is passed a NumPy array as
     an argument without a required coordinate array being passed separately."""
-    pass
+  pass
 
 
 class DimensionError(Error):
-    """Exception raised when the arguments of GeoCAT-comp functions argument
+  """Exception raised when the arguments of GeoCAT-comp functions argument
     has a mismatch of the necessary dimensionality."""
-    pass
+  pass
 
 
 class AttributeError(Error):
-    """Exception raised when the arguments of GeoCAT-comp functions argument
+  """Exception raised when the arguments of GeoCAT-comp functions argument
     has a mismatch of attributes with other arguments."""
-    pass
+  pass
 
 
 class MetaError(Error):
-    """Exception raised when the support for the retention of metadata is not
+  """Exception raised when the support for the retention of metadata is not
     supported."""
-    pass
+  pass
