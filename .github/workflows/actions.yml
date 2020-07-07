@@ -1,4 +1,4 @@
-name: main
+name: actions
 on: push
 jobs:
   yapf_formatting:
@@ -6,14 +6,13 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          ref: ${{ github.head_ref }}
-      - name: run yapf
+      - name: yapf
         run: |
           pip3 install yapf
           python3 -m yapf --in-place --recursive --style google .
+      - name: push
+        run: |
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'noreply@github.com'
-          git commit -am "Automated formatting"
+          git commit --allow-empty -am "yapf google style formatting, pushed by github action"
           git push
