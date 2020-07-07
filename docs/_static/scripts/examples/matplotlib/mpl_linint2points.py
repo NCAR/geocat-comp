@@ -67,17 +67,16 @@ fig = plt.figure(figsize=(10, 8))
 # Generate Axes grid using a Cartopy projection
 projection = ccrs.PlateCarree()
 axes_class = (GeoAxes, dict(map_projection=projection))
-axgr = AxesGrid(
-    fig,
-    111,
-    axes_class=axes_class,
-    nrows_ncols=(2, 1),
-    axes_pad=0.7,
-    cbar_location='right',
-    cbar_mode='single',
-    cbar_pad=0.5,
-    cbar_size='3%',
-    label_mode='')
+axgr = AxesGrid(fig,
+                111,
+                axes_class=axes_class,
+                nrows_ncols=(2, 1),
+                axes_pad=0.7,
+                cbar_location='right',
+                cbar_mode='single',
+                cbar_pad=0.5,
+                cbar_size='3%',
+                label_mode='')
 
 # Create a dictionary for common plotting options for both subplots
 common_options = dict(vmin=-30, vmax=30, cmap=cm.jet)
@@ -86,47 +85,44 @@ common_options = dict(vmin=-30, vmax=30, cmap=cm.jet)
 # within the figure
 for i, ax in enumerate(axgr):
 
-  # Plot original grid and linint2_points interpolations within the subplots
-  if (i == 0):
-    p = sst.plot.contourf(
-        ax=ax,
-        **common_options,
-        transform=projection,
-        levels=16,
-        extend='neither',
-        add_colorbar=False,
-        add_labels=False)
-    ax.set_title(
-        'Sea Surface Temperature - Original Grid',
-        fontsize=14,
-        fontweight='bold',
-        y=1.04)
-  else:
-    ax.scatter(newlon, newlat, c=newsst, **common_options, s=25)
-    ax.set_title(
-        'linint2_points - Bilinear interpolation for 3000 random locations',
-        fontsize=14,
-        fontweight='bold',
-        y=1.04)
+    # Plot original grid and linint2_points interpolations within the subplots
+    if (i == 0):
+        p = sst.plot.contourf(ax=ax,
+                              **common_options,
+                              transform=projection,
+                              levels=16,
+                              extend='neither',
+                              add_colorbar=False,
+                              add_labels=False)
+        ax.set_title('Sea Surface Temperature - Original Grid',
+                     fontsize=14,
+                     fontweight='bold',
+                     y=1.04)
+    else:
+        ax.scatter(newlon, newlat, c=newsst, **common_options, s=25)
+        ax.set_title(
+            'linint2_points - Bilinear interpolation for 3000 random locations',
+            fontsize=14,
+            fontweight='bold',
+            y=1.04)
 
-  # Add coastlines to the subplots
-  ax.coastlines()
+    # Add coastlines to the subplots
+    ax.coastlines()
 
-  # Use geocat.viz.util convenience function to add minor and major tick
-  # lines
-  gvutil.add_major_minor_ticks(ax)
+    # Use geocat.viz.util convenience function to add minor and major tick
+    # lines
+    gvutil.add_major_minor_ticks(ax)
 
-  # Use geocat.viz.util convenience function to set axes limits & tick
-  # values without calling several matplotlib functions
-  gvutil.set_axes_limits_and_ticks(
-      ax,
-      ylim=(-60, 60),
-      xticks=np.linspace(-180, 180, 13),
-      yticks=np.linspace(-60, 60, 5))
+    # Use geocat.viz.util convenience function to set axes limits & tick
+    # values without calling several matplotlib functions
+    gvutil.set_axes_limits_and_ticks(ax,
+                                     ylim=(-60, 60),
+                                     xticks=np.linspace(-180, 180, 13),
+                                     yticks=np.linspace(-60, 60, 5))
 
-  # Use geocat.viz.util convenience function to make plots look like NCL
-  # plots by using latitude, longitude tick labels
-  gvutil.add_lat_lon_ticklabels(ax, zero_direction_label=True)
+    # Use geocat.viz.util convenience function to make plots look like NCL
+    # plots by using latitude, longitude tick labels
+    gvutil.add_lat_lon_ticklabels(ax, zero_direction_label=True)
 
 # Add color bar and label details (title, size, etc.)
 cax = axgr.cbar_axes[0]
