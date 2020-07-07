@@ -29,7 +29,9 @@ newsst = geocat.comp.linint2(sst, newlon, newlat, False)
 projection = ccrs.PlateCarree()
 axes_class = (GeoAxes, dict(map_projection=projection))
 fig = plt.figure(figsize=(10, 8))
-axgr = AxesGrid(fig, 111, axes_class=axes_class,
+axgr = AxesGrid(fig,
+                111,
+                axes_class=axes_class,
                 nrows_ncols=(2, 1),
                 axes_pad=0.7,
                 cbar_location='right',
@@ -38,15 +40,14 @@ axgr = AxesGrid(fig, 111, axes_class=axes_class,
                 cbar_size='3%',
                 label_mode='')  # note the empty label_mode
 
-plot_options = dict(
-    transform=projection,
-    cmap=cm.jet,
-    vmin=-30,
-    vmax=30,
-    levels=16,
-    extend='neither',
-    add_colorbar=False,
-    xtitle='')
+plot_options = dict(transform=projection,
+                    cmap=cm.jet,
+                    vmin=-30,
+                    vmax=30,
+                    levels=16,
+                    extend='neither',
+                    add_colorbar=False,
+                    xtitle='')
 
 for i, ax in enumerate(axgr):
     ax.coastlines()
@@ -58,15 +59,14 @@ for i, ax in enumerate(axgr):
     ax.yaxis.set_major_formatter(lat_formatter)
 
     # Plot contours for both the subplots
-    if(i == 0):
+    if (i == 0):
         sst.plot.contourf(ax=ax, **plot_options)
         ax.set_title('Original Grid', fontsize=14, fontweight='bold')
     else:
         p = newsst.plot.contourf(ax=ax, **plot_options)
-        ax.set_title(
-            'Regrid (to coarse) - linint2',
-            fontsize=14,
-            fontweight='bold')
+        ax.set_title('Regrid (to coarse) - linint2',
+                     fontsize=14,
+                     fontweight='bold')
 
     ax.xaxis.label.set_visible(False)
     ax.yaxis.label.set_visible(False)

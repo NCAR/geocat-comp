@@ -1,5 +1,3 @@
-
-
 def month_to_season(xMon, season, time_coord_name='time'):
     """ This function takes an xarray dataset containing monthly data spanning years and
         returns a dataset with one sample per year, for a specified three-month season.
@@ -17,53 +15,32 @@ def month_to_season(xMon, season, time_coord_name='time'):
     startDate = xMon[time_coord_name][0]
     endDate = xMon[time_coord_name][-1]
     seasons_pd = {
-        'DJF': (
-            'QS-DEC',
-            1),
-        'JFM': (
-            'QS-JAN',
-            2),
-        'FMA': (
-            'QS-FEB',
-            3),
-        'MAM': (
-            'QS-MAR',
-            4),
-        'AMJ': (
-            'QS-APR',
-            5),
-        'MJJ': (
-            'QS-MAY',
-            6),
-        'JJA': (
-            'QS-JUN',
-            7),
-        'JAS': (
-            'QS-JUL',
-            8),
-        'ASO': (
-            'QS-AUG',
-            9),
-        'SON': (
-            'QS-SEP',
-            10),
-        'OND': (
-            'QS-OCT',
-            11),
-        'NDJ': (
-            'QS-NOV',
-            12)}
+        'DJF': ('QS-DEC', 1),
+        'JFM': ('QS-JAN', 2),
+        'FMA': ('QS-FEB', 3),
+        'MAM': ('QS-MAR', 4),
+        'AMJ': ('QS-APR', 5),
+        'MJJ': ('QS-MAY', 6),
+        'JJA': ('QS-JUN', 7),
+        'JAS': ('QS-JUL', 8),
+        'ASO': ('QS-AUG', 9),
+        'SON': ('QS-SEP', 10),
+        'OND': ('QS-OCT', 11),
+        'NDJ': ('QS-NOV', 12)
+    }
     try:
         (season_pd, season_sel) = seasons_pd[season]
     except KeyError:
         raise KeyError(
-            f"contributed: month_to_season: bad season: SEASON = {season}. Valid seasons include: {list(seasons_pd.keys())}")
+            f"contributed: month_to_season: bad season: SEASON = {season}. Valid seasons include: {list(seasons_pd.keys())}"
+        )
 
     # Compute the three-month means, moving time labels ahead to the middle
     # month.
     month_offset = 'MS'
-    xSeasons = xMon.resample(
-        {time_coord_name: season_pd}, loffset=month_offset).mean()
+    xSeasons = xMon.resample({
+        time_coord_name: season_pd
+    }, loffset=month_offset).mean()
 
     # Filter just the desired season, and trim to the desired time range.
     xSea = xSeasons.sel(

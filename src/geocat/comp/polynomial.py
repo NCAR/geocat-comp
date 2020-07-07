@@ -69,8 +69,7 @@ def ndpolyfit(x: Iterable,
               y: Iterable,
               deg: int,
               axis: int = 0,
-              **kwargs) -> (xr.DataArray,
-                            da.Array):
+              **kwargs) -> (xr.DataArray, da.Array):
     """
     An extension to `numpy.polyfit` function to support multi-dimensional arrays, Dask arrays, and missing values.
 
@@ -236,8 +235,8 @@ def ndpolyfit(x: Iterable,
     if isinstance(y, np.ndarray):
         return _ndpolyfit(x, y, axis, deg, rcond, full, w, cov, missing_value)
     if isinstance(y, xr.DataArray):
-        output = _ndpolyfit(x, y.data, axis, deg, rcond,
-                            full, w, cov, missing_value)
+        output = _ndpolyfit(x, y.data, axis, deg, rcond, full, w, cov,
+                            missing_value)
         attrs = output.attrs
 
         if meta:
@@ -248,39 +247,20 @@ def ndpolyfit(x: Iterable,
                     for i in range(y.ndim)]
             coords = {k: v for k, v in y.coords.items() if k != y.dims[axis]}
             coords["poly_coef"] = list(range(int(deg) + 1))
-            output = xr.DataArray(
-                output.data,
-                attrs=attrs,
-                dims=dims,
-                coords=coords)
+            output = xr.DataArray(output.data,
+                                  attrs=attrs,
+                                  dims=dims,
+                                  coords=coords)
         return output
     if isinstance(y, da.Array):
         y = _unchunk_ifneeded(y, axis)
 
-        return y.map_blocks(
-            lambda b: _ndpolyfit(
-                x,
-                b,
-                axis,
-                deg,
-                rcond,
-                full,
-                w,
-                cov,
-                missing_value,
-                False),
-            dtype=np.float64).compute()
+        return y.map_blocks(lambda b: _ndpolyfit(x, b, axis, deg, rcond, full,
+                                                 w, cov, missing_value, False),
+                            dtype=np.float64).compute()
     else:
-        return _ndpolyfit(
-            np.asarray(y),
-            x,
-            axis,
-            deg,
-            rcond,
-            full,
-            w,
-            cov,
-            missing_value)
+        return _ndpolyfit(np.asarray(y), x, axis, deg, rcond, full, w, cov,
+                          missing_value)
 
 
 def _ndpolyfit(x: np.ndarray,
@@ -292,8 +272,7 @@ def _ndpolyfit(x: np.ndarray,
                w=None,
                cov=False,
                missing_value=np.nan,
-               xarray_output=True) -> (np.ndarray,
-                                       xr.DataArray):
+               xarray_output=True) -> (np.ndarray, xr.DataArray):
     """
     An extension to `numpy.polyfit` function to support multi-dimensional arrays, Dask arrays, and missing values.
 
@@ -353,12 +332,14 @@ def _ndpolyfit(x: np.ndarray,
 
     if x.size != y.shape[axis]:
         raise ValueError(
-            "X must have the same number of elements as the y-dimension defined by axis")
+            "X must have the same number of elements as the y-dimension defined by axis"
+        )
 
-    if x.shape not in (
-            (y.shape[axis],), (y.shape[axis], 1), (1, y.shape[axis])):
+    if x.shape not in ((y.shape[axis],), (y.shape[axis], 1), (1,
+                                                              y.shape[axis])):
         raise ValueError(
-            "x must be of size (M,), (M, 1), or (1, M); where M = y.shape[axis]")
+            "x must be of size (M,), (M, 1), or (1, M); where M = y.shape[axis]"
+        )
 
     x = x.reshape(y.shape[axis])
 
@@ -399,44 +380,36 @@ def _ndpolyfit(x: np.ndarray,
 
         for c in range(y_rearranged.shape[1]):
             idx = np.logical_not(mask[:, c])
-            tmp_results.append(np.polyfit(
-                x[idx], y_rearranged[idx, c], deg=deg, rcond=rcond, full=full, w=w, cov=cov))
+            tmp_results.append(
+                np.polyfit(x[idx],
+                           y_rearranged[idx, c],
+                           deg=deg,
+                           rcond=rcond,
+                           full=full,
+                           w=w,
+                           cov=cov))
 
-        polyfit_output = tmp_results[0].reshape(
-            (-1,
-             1)) if isinstance(
-            tmp_results[0],
-            np.ndarray) else tmp_results[0][0].reshape(
-            (-1,
-             1))
+        polyfit_output = tmp_results[0].reshape((-1, 1)) if isinstance(
+            tmp_results[0], np.ndarray) else tmp_results[0][0].reshape((-1, 1))
         for i in range(1, y_rearranged.shape[1]):
             polyfit_output = np.concatenate(
-                (polyfit_output,
-                 (tmp_results[c].reshape(
-                     (-1,
-                      1)) if isinstance(
-                     tmp_results[c],
-                     np.ndarray) else tmp_results[c][0].reshape(
-                     (-1,
-                      1)))),
+                (polyfit_output, (tmp_results[c].reshape((-1, 1)) if isinstance(
+                    tmp_results[c], np.ndarray) else tmp_results[c][0].reshape(
+                        (-1, 1)))),
                 axis=1)
 
     else:
-        polyfit_output = np.polyfit(
-            x,
-            y_rearranged,
-            deg=deg,
-            rcond=rcond,
-            full=full,
-            w=w,
-            cov=cov)
+        polyfit_output = np.polyfit(x,
+                                    y_rearranged,
+                                    deg=deg,
+                                    rcond=rcond,
+                                    full=full,
+                                    w=w,
+                                    cov=cov)
 
-    p = _reverse_rearrange_axis(
-        (polyfit_output if isinstance(
-            polyfit_output,
-            np.ndarray) else polyfit_output[0]),
-        axis,
-        trailing_shape)
+    p = _reverse_rearrange_axis((polyfit_output if isinstance(
+        polyfit_output, np.ndarray) else polyfit_output[0]), axis,
+                                trailing_shape)
 
     if bool(xarray_output):
         attrs = {
@@ -444,7 +417,8 @@ def _ndpolyfit(x: np.ndarray,
             "provided_rcond": rcond,
             "full": full,
             "weights": w,
-            "covariance": cov}
+            "covariance": cov
+        }
 
         if not has_missing:
             if full:  # full == True
@@ -505,21 +479,16 @@ def _rearrange_axis(data: np.ndarray, axis: int = 0) -> tuple:
     return data, trailing_shape
 
 
-def _reverse_rearrange_axis(
-        data: np.ndarray,
-        axis,
-        trailing_shape: tuple) -> np.ndarray:
+def _reverse_rearrange_axis(data: np.ndarray, axis,
+                            trailing_shape: tuple) -> np.ndarray:
     return np.moveaxis(data.reshape((data.shape[0], *trailing_shape)), 0, axis)
 
 
 def isvector(input: Iterable) -> bool:
     if isinstance(input, np.ndarray):
-        return (
-            input.size != 1) and (
-            (input.ndim == 1) or (
-                (input.ndim == 2) and (
-                    np.any(
-                        input.shape == 1))))
+        return (input.size != 1) and ((input.ndim == 1) or
+                                      ((input.ndim == 2) and
+                                       (np.any(input.shape == 1))))
     else:
         return isvector(np.asarray(input))
 
@@ -657,11 +626,7 @@ def ndpolyval(p: Iterable, x: Iterable, axis: int = 0, **kwargs):
         x_chunks[axis] = p_ndarr.shape[axis]
         p_dask = da.from_array(p_ndarr, chunks=x_chunks)
         y = da.map_blocks(
-            lambda p_blocks,
-            x_blocks: _ndpolyval(
-                p_blocks,
-                x_blocks,
-                axis),
+            lambda p_blocks, x_blocks: _ndpolyval(p_blocks, x_blocks, axis),
             p_dask,
             x,
             dtype=np.float64).compute()
@@ -675,11 +640,10 @@ def ndpolyval(p: Iterable, x: Iterable, axis: int = 0, **kwargs):
     return output
 
 
-def _ndpolyval(
-        p: np.ndarray,
-        x: np.ndarray,
-        axis: int = 0,
-        **kwargs) -> np.ndarray:
+def _ndpolyval(p: np.ndarray,
+               x: np.ndarray,
+               axis: int = 0,
+               **kwargs) -> np.ndarray:
     if not isinstance(p, np.ndarray):
         raise TypeError("This function accepts only numpy.ndarray as p.")
 
@@ -695,8 +659,9 @@ def _ndpolyval(
     if isvector(x):
         x_original_size = x.size
         other_dims = np.asarray(p.shape)[np.arange(p.ndim) != axis]
-        x = np.moveaxis(np.tile(x.reshape((-1,)), np.prod(other_dims)
-                                ).reshape((*other_dims, x_original_size)), -1, axis)
+        x = np.moveaxis(
+            np.tile(x.reshape((-1,)), np.prod(other_dims)).reshape(
+                (*other_dims, x_original_size)), -1, axis)
 
     else:
         if not (np.all(x.shape[:axis] == p.shape[:axis]) and np.all(
@@ -784,7 +749,8 @@ def detrend(data: Iterable, deg=1, axis=0, **kwargs):
 
     try:
         data_shape = data.shape if isinstance(
-            data, (np.ndarray, xr.DataArray, da.Array)) else np.asarray(data).shape
+            data,
+            (np.ndarray, xr.DataArray, da.Array)) else np.asarray(data).shape
     except BaseException:
         raise TypeError("Could not extract the shape of data")
 
