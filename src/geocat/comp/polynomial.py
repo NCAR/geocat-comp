@@ -1,8 +1,8 @@
 from typing import Iterable, Any
 
+import dask.array as da
 import numpy as np
 import xarray as xr
-import dask.array as da
 
 
 def _get_missing_value(data: xr.DataArray, args: dict) -> Any:
@@ -333,13 +333,13 @@ def _ndpolyfit(x: np.ndarray,
     if x.size != y.shape[axis]:
         raise ValueError(
             "X must have the same number of elements as the y-dimension defined by axis"
-        )
+            )
 
     if x.shape not in ((y.shape[axis],), (y.shape[axis], 1), (1,
                                                               y.shape[axis])):
         raise ValueError(
             "x must be of size (M,), (M, 1), or (1, M); where M = y.shape[axis]"
-        )
+            )
 
     x = x.reshape(y.shape[axis])
 
@@ -395,7 +395,7 @@ def _ndpolyfit(x: np.ndarray,
             polyfit_output = np.concatenate(
                 (polyfit_output, (tmp_results[c].reshape((-1, 1)) if isinstance(
                     tmp_results[c], np.ndarray) else tmp_results[c][0].reshape(
-                        (-1, 1)))),
+                    (-1, 1)))),
                 axis=1)
 
     else:
@@ -418,7 +418,7 @@ def _ndpolyfit(x: np.ndarray,
             "full": full,
             "weights": w,
             "covariance": cov
-        }
+            }
 
         if not has_missing:
             if full:  # full == True
