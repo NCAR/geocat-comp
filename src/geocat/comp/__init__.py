@@ -8,6 +8,6 @@ from .version import __version__
 
 # bring all functions from geocat.ncomp into the geocat.comp namespace
 try:
-    from geocat.ncomp import *  # bring all functions from geocat.ncomp into the geocat.comp namespace
+    from geocat.ncomp import *
 except ImportError:
     pass
