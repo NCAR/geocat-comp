@@ -76,7 +76,7 @@ separate `environment_*.yml` files because Linux and macOS use different C
 compilers, although the following commands should work on both Linux and macOS::
 
     conda env create -f build_envs/environment_$(uname).yml
-    conda activate geocat_build
+    conda activate geocat_comp_build
 
 
 Installing GeoCAT-comp
