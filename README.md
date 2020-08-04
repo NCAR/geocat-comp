@@ -27,4 +27,4 @@ Please see our documentation for [installation and build instructions](https://g
 Xarray interface vs NumPy interface
 ===================================
 
-GeoCAT-comp provides a high-level Xarray interface under the `geocat.comp` namespace. However, a stripped-down NumPy interface is used under the hood to bridge the gap between NumPy arrays and the C data structures used by `NComp`. These functions are accessible under the `geocat.comp._ncomp` namespace, but are minimally documented and are intended primarily for internal use.
+GeoCAT-comp provides a high-level Xarray interface under the `geocat.comp` namespace. However, a stripped-down NumPy interface is used under the hood to bridge the gap between NumPy arrays and the C data structures used by `libncomp`. These functions are accessible under the `geocat.comp._ncomp` namespace, but are minimally documented and are intended primarily for internal use.
