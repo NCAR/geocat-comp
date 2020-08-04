@@ -1,18 +1,19 @@
-# GeoCAT-comp
-
 The term "GeoCAT-comp" stands for both the whole computational component of the [GeoCAT](https://ncar.github.io/GeoCAT) 
 project and a single Github repository as described here. As the computational component of 
 [GeoCAT](https://ncar.github.io/GeoCAT), GeoCAT-comp wraps NCL's non-WRF Fortran routines into Python.
 
 Many of the computational functions under GeoCAT-comp are implemented in Fortran 
 (or possibly C). However, others can be implemented in a pure Python fashion. To facilitate 
-contribution, the whole GeoCAT-comp computational component is split into three Github epositories with respect to being 
-pure-Python, Python with Cython wrappers for compiled codes, and compiled language (C and Fortran) 
+contribution, the whole GeoCAT-comp computational component is split into three Github repositories with respect to 
+being pure-Python, Python with Cython wrappers for compiled codes, and compiled language (C and Fortran) 
 implementations. Such implementation layers are handled within GeoCAT-comp (this repository), 
 [GeoCAT-ncomp](https://github.com/NCAR/geocat-ncomp), and [libncomp](https://github.com/NCAR/libncomp) 
 repositories, respectively (GeoCAT-ncomp and libncomp repos are documented on their own).
 
-This repo, GeoCAT-comp, does not explicitly contain or require any compiled code, making it more 
+
+# GeoCAT-comp
+
+GeoCAT-comp repo does not explicitly contain or require any compiled code, making it more 
 accessible to the general Python community at large. However, 
 if [GeoCAT-ncomp](https://github.com/NCAR/geocat-ncomp) is installed, then all functions contained in 
 the “geocat.ncomp” module are imported into the “geocat.comp” namespace. Thus, GeoCAT-comp repo serves 
