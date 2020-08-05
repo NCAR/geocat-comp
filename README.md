@@ -1,6 +1,8 @@
 The term "GeoCAT-comp" stands for both the whole computational component of the [GeoCAT](https://ncar.github.io/GeoCAT) 
 project and a single Github repository as described here. As the computational component of 
-[GeoCAT](https://ncar.github.io/GeoCAT), GeoCAT-comp wraps NCL's non-WRF Fortran routines into Python.
+[GeoCAT](https://ncar.github.io/GeoCAT), GeoCAT-comp provides implementations of computational functions for operating 
+on Geosciences data. Many of these functions originated in NCL are pivoted into Python with the help of GeoCAT-comp; 
+however, developers are welcome to come up with novel computational functions for Geoscience data.
 
 Many of the computational functions under GeoCAT-comp are implemented in Fortran 
 (or possibly C). However, others can be implemented in a pure Python fashion. To facilitate 
