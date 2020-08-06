@@ -7,7 +7,7 @@ following contribution guidelines:
 
 1. Create a new function as a Python file in `$GEOCATCOMP/src/geocat/comp/`.
 
-2. For implementation guideline (such as XArray and Dask usage), please refer to:
+2. For implementation guideline (such as Xarray and Dask usage), please refer to:
     - Previously implemented functionality as examples, 
     e.g. [polynomial.py](https://github.com/NCAR/geocat-comp/blob/develop/src/geocat/comp/polynomial.py) or others.
     - [GeoCAT Contributor's Guide](https://geocat.ucar.edu/pages/contributing.html) for further information.
