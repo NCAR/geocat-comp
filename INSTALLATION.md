@@ -86,12 +86,7 @@ with running the following command from the root-directory:
 
     pip install .
 
-If you are using a conda environment as described above, this command should
-work as-is. However, if you have chosen to use a different Python binary and
-have installed dependencies elsewhere, you may need to set certain environment
-variables (CFLAGS, CPPFLAGS, or LDFLAGS) in order for the setup.py script to
-find all of the necessary dependency packages.  Due to the potentially
-complicated nature of the build process, we strongly recommend using Conda to
+For compatibility purposes, we strongly recommend using Conda to
 configure your build environment.
 
 
