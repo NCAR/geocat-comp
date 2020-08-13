@@ -1,8 +1,8 @@
 from typing import Iterable, Any
 
+import dask.array as da
 import numpy as np
 import xarray as xr
-import dask.array as da
 
 
 def _get_missing_value(data: xr.DataArray, args: dict) -> Any:
