@@ -87,7 +87,7 @@ with running the following command from the root-directory:
     pip install .
 
 For compatibility purposes, we strongly recommend using Conda to
-configure your build environment.
+configure your build environment as described above.
 
 
 ### Testing a GeoCAT-comp build
