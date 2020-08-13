@@ -1,5 +1,9 @@
 name: actions
-on: push
+on: 
+  push:
+    branches-ignore:
+      - master
+      - develop
 jobs:
   yapf_formatting:
     runs-on: ubuntu-latest
