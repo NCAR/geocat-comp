@@ -93,6 +93,7 @@ configure your build environment as described above.
 ### Testing a GeoCAT-comp build
 
 A GeoCAT-comp build can be tested from the root directory of the source code
-repository using the following command:
+repository using the following command (Explicit installation of the  
+[pytest](https://docs.pytest.org/en/stable/) package may be required):
 
     pytest test
