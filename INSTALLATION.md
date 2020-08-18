@@ -78,7 +78,6 @@ compilers, although the following commands should work on both Linux and macOS:
     conda env create -f build_envs/environment_$(uname).yml
     conda activate geocat_comp_build
 
-
 ### Installing GeoCAT-comp
  
 Once the dependencies listed above are installed, you can install GeoCAT-comp
