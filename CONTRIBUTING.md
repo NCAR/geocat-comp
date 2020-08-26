@@ -9,7 +9,7 @@ following contribution guidelines:
 
 2. For implementation guideline (such as Xarray and Dask usage), please refer to:
     - Previously implemented functionality as examples, 
-    e.g. [polynomial.py](https://github.com/NCAR/geocat-comp/blob/develop/src/geocat/comp/polynomial.py) or others.
+    e.g. [polynomial.py](https://github.com/NCAR/geocat-comp/blob/master/src/geocat/comp/polynomial.py) or others.
     - [GeoCAT Contributor's Guide](https://geocat.ucar.edu/pages/contributing.html) for further information.
 
 # Adding unit tests
@@ -42,4 +42,4 @@ see: [unittest documentation](https://docs.python.org/3/library/unittest.html).
     test class implemented for the purpose mentioned above.
     - Assertions are used for testing various cases such as array comparison.
     - Please see previously implemented test cases for reference of the recommended testing approach, 
-    e.g. [test_polynomial.py](https://github.com/NCAR/geocat-comp/blob/develop/test/test_polynomial.py) 
+    e.g. [test_polynomial.py](https://github.com/NCAR/geocat-comp/blob/master/test/test_polynomial.py) 

@@ -42,12 +42,13 @@ code (Cython, C, C++, Fortran) at GeoCAT-comp level.
 # Installation and build instructions
 
 Please see our documentation for 
-[installation and build instructions](https://github.com/NCAR/geocat-comp/INSTALLATION.md).
+[installation and build instructions](https://github.com/NCAR/geocat-comp/blob/master/INSTALLATION.md).
 
 
 # Xarray interface vs NumPy interface
 
-GeoCAT-comp provides a high-level Xarray interface under the `geocat.comp` namespace. However, 
-a stripped-down NumPy interface is used under the hood to bridge the gap between NumPy arrays and 
-the C data structures used by `libncomp`. These functions are accessible under the `geocat.comp._ncomp` namespace, 
-but are minimally documented and are intended primarily for internal use.
+GeoCAT-comp provides a high-level [Xarray](http://xarray.pydata.org/en/stable/) interface under the 
+`geocat.comp` namespace. However, a stripped-down NumPy interface is used under the hood to bridge 
+the gap between NumPy arrays and the C data structures used by `libncomp`. These functions are 
+accessible under the `geocat.comp._ncomp` namespace, but are minimally documented and are 
+intended primarily for internal use.
