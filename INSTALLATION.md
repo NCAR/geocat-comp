@@ -56,10 +56,10 @@ installed.
 
 - Python 3.6+
 - numpy
-- xarray
-- dask
-- distributed
-- pytest
+- [xarray](http://xarray.pydata.org/en/stable/)
+- [dask](https://dask.org/)
+- [distributed](https://distributed.readthedocs.io/en/latest/)
+- [pytest](https://docs.pytest.org/en/stable/)
 - [GeoCAT-ncomp](http://github.com/NCAR/geocat-ncomp/)
     
 Note: [GeoCAT-ncomp](http://github.com/NCAR/geocat-ncomp/) dependency will install further 
