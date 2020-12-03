@@ -70,7 +70,7 @@ def relhum(t, w, p):
     rh = (w * (p - 0.378 * es) / (0.622 * es)) * 100
 
     # if any value is below 0.0001, set to 0.0001
-    rh = np.clip(t, 0.0001, None)
+    rh = np.clip(rh, 0.0001, None)
 
     return rh
 
