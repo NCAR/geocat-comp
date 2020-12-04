@@ -74,4 +74,4 @@ def relhum(t, w, p):
 
     return rh
 
-print(relhum(18+273.15, 6/1000, 1000*100))
+print(relhum(18+273.15, 6/1000, 1000*100.0))
