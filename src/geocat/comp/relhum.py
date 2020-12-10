@@ -73,3 +73,9 @@ def relhum(t, w, p):
     rh = np.clip(rh, 0.0001, None)
 
     return rh
+<<<<<<< HEAD
+=======
+
+
+print(relhum(18 + 273.15, 6 / 1000, 1000 * 100.0))
+>>>>>>> dfeeb086c9e4694451c05e338a6bc87a4538e3b4
