@@ -64,7 +64,7 @@ def relhum(t, w, p):
     it = int(t - mintemp)
     t2 = mintemp + it
 
-    es = (t2 + 1 - t) * table[it] + (t - t2) * table[it+1]
+    es = (t2 + 1 - t) * table[it] + (t - t2) * table[it + 1]
     es = es * 0.1
 
     rh = (w * (p - 0.378 * es) / (0.622 * es)) * 100
@@ -73,9 +73,3 @@ def relhum(t, w, p):
     rh = np.clip(rh, 0.0001, None)
 
     return rh
-<<<<<<< HEAD
-=======
-
-
-print(relhum(18 + 273.15, 6 / 1000, 1000 * 100.0))
->>>>>>> dfeeb086c9e4694451c05e338a6bc87a4538e3b4
