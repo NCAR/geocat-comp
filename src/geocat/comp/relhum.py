@@ -61,10 +61,10 @@ def relhum(t, w, p):
     # replace values of t above and below max and min values for temperature
     t = np.clip(t, mintemp, maxtemp)
 
-    it = int(t - mintemp)
+    it = (t - mintemp).astype(int)
     t2 = mintemp + it
 
-    es = (t2 + 1 - t) * table[it] + (t - t2) * table[it + 1]
+    es = (t2 + 1 - t) * table[it] + (t - t2) * table[it+1]
     es = es * 0.1
 
     rh = (w * (p - 0.378 * es) / (0.622 * es)) * 100
