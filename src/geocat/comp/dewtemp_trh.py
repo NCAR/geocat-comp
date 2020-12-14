@@ -3,7 +3,8 @@ import math
 
 
 def dewtemp_trh(tk, rh):
-    """ This function calculates the dew point temperature given temperature and relative humidity.
+    """ This function calculates the dew point temperature given temperature and relative humidity
+        using equations from John Dutton's "Ceaseless Wind" (pp 273-274)
 
         Parameters
         ----------
