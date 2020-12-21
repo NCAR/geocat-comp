@@ -1,22 +1,67 @@
 import numpy as np
 
 
-def relhum(t, w, p):
+def relhum(temperature, mixing_ratio, pressure):
+    """ This function calculates the relative humidity given temperature, mixing ratio, and pressure
+
+            Parameters
+            ----------
+            temperature : numpy.ndarray or float
+                Temperature in K
+            mixing_ratio : numpy.ndarray or float
+                Mixing ratio in kg/kg. Must have the same dimensions as temperature
+            pressure : numpy.ndarray or float
+                Pressure in Pa. Must have the same dimensions as temperature
+
+            Returns
+            -------
+            relative_humidity : numpy.ndarray or float
+                Relative humidity. Must have the same dimensions as temperature
+        """
+
+    # make sure the input arrays are of the same size
+    if np.shape(temperature) != np.shape(mixing_ratio) or np.shape(temperature) != np.shape(pressure):
+        raise ValueError(
+            f"dewtemp_trh: dimensions of temperature, {np.shape(temperature)}, and mixing ratio, "
+            f"{np.shape(mixing_ratio)}, and pressure, {np.shape(pressure)} do not match")
+    else:
+        # store original shape
+        shape = np.shape(temperature)
+
+    # Convert inputs to np arrays
+    temperature = np.asarray(temperature)
+    mixing_ratio = np.asarray(mixing_ratio)
+    pressure = np.asarray(pressure)
+
+    # make an empty space for output array
+    relative_humidity = np.zeros(np.size(temperature))
+
+    # fill in output array
+    for i in range(np.size(temperature)):
+        relative_humidity[i] = _relhum_tdd(np.ravel(temperature)[i], np.ravel(mixing_ratio)[i], np.ravel(pressure)[i])
+
+    # reshape output array to match the input dimensions
+    relative_humidity = np.reshape(relative_humidity, shape)
+
+    return relative_humidity
+
+
+def _relhum_tdd(t, w, p):
     """ This function calculates the relative humidity given temperature, mixing ratio, and pressure
 
         Parameters
         ----------
-        t : numpy.ndarray
+        t : float
             Temperature in K
-        w : numpy.ndarray
-            Mixing ratio in kg/kg. Must be the same size and shape as t
-        p : numpy.ndarray
-            Pressure in Pa. Must be the same size and shape as t
+        w : float
+            Mixing ratio in kg/kg.
+        p : float
+            Pressure in Pa.
 
         Returns
         -------
-        rh : numpy.ndarray
-            Relative humidity. Same size as input variable t.
+        rh : float
+            Relative humidity.
 
 
     """

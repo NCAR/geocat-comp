@@ -8,15 +8,15 @@ def dewtemp_trh(temperature, relative_humidity):
 
             Parameters
             ----------
-            temperature : numpy.ndarray or list
+            temperature : numpy.ndarray, list, or float
                 Temperature in K
-            relative_humidity : numpy.ndarray or list
+            relative_humidity : numpy.ndarray, list, or float
                 Relative humidity. Must be the same dimensions as temperature
 
 
             Returns
             -------
-            tdk : numpy.ndarray or list
+            tdk : numpy.ndarray
                 Relative humidity. Same size as input variable tk
     """
 
@@ -25,23 +25,13 @@ def dewtemp_trh(temperature, relative_humidity):
         raise ValueError(
             f"dewtemp_trh: dimensions of temperature, {np.shape(temperature)}, and relative_humidity, "
             f"{np.shape(relative_humidity)}, do not match")
-
-    # check if temperature input as np array or python list
-    np_type_tmp = False
-    if isinstance(temperature, np.ndarray):
-        np_type_tmp = True
     else:
-        temperature = np.asarray(temperature)
+        # store original shape
+        shape = np.shape(temperature)
 
-    # check if relative_humidity input as np array or python list
-    np_type_rh = False
-    if isinstance(relative_humidity, np.ndarray):
-        np_type_rh = True
-    else:
-        relative_humidity = np.asarray(relative_humidity)
-
-    # store original shape
-    shape = np.shape(temperature)
+    # convert inputs to np arrays
+    temperature = np.asarray(temperature)
+    relative_humidity = np.asarray(relative_humidity)
 
     # make an empty space for output array
     tdk = np.zeros(np.size(temperature))
@@ -52,10 +42,6 @@ def dewtemp_trh(temperature, relative_humidity):
 
     # reshape output array to match the input dimensions
     tdk = np.reshape(tdk, shape)
-
-    # convert back to original input type
-    if np_type_tmp is False or np_type_rh is False:
-        tdk = tdk.tolist()
 
     return tdk
 
