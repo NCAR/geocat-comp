@@ -38,7 +38,9 @@ def dewtemp_trh(temperature, relative_humidity):
 
     # fill in output array
     for i in range(np.size(temperature)):
-        tdk[i] = _dewtemp(np.ravel(temperature)[i], np.ravel(relative_humidity)[i])
+        tdk[i] = _dewtemp(
+            np.ravel(temperature)[i],
+            np.ravel(relative_humidity)[i])
 
     # reshape output array to match the input dimensions
     tdk = np.reshape(tdk, shape)
