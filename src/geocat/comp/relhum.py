@@ -20,10 +20,12 @@ def relhum(temperature, mixing_ratio, pressure):
         """
 
     # make sure the input arrays are of the same size
-    if np.shape(temperature) != np.shape(mixing_ratio) or np.shape(temperature) != np.shape(pressure):
+    if np.shape(temperature) != np.shape(mixing_ratio) or np.shape(
+            temperature) != np.shape(pressure):
         raise ValueError(
             f"dewtemp_trh: dimensions of temperature, {np.shape(temperature)}, and mixing ratio, "
-            f"{np.shape(mixing_ratio)}, and pressure, {np.shape(pressure)} do not match")
+            f"{np.shape(mixing_ratio)}, and pressure, {np.shape(pressure)} do not match"
+        )
     else:
         # store original shape
         shape = np.shape(temperature)
@@ -38,7 +40,10 @@ def relhum(temperature, mixing_ratio, pressure):
 
     # fill in output array
     for i in range(np.size(temperature)):
-        relative_humidity[i] = _relhum_tdd(np.ravel(temperature)[i], np.ravel(mixing_ratio)[i], np.ravel(pressure)[i])
+        relative_humidity[i] = _relhum_tdd(
+            np.ravel(temperature)[i],
+            np.ravel(mixing_ratio)[i],
+            np.ravel(pressure)[i])
 
     # reshape output array to match the input dimensions
     relative_humidity = np.reshape(relative_humidity, shape)
