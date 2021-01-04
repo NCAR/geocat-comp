@@ -153,4 +153,44 @@ def _relhum_ice(t, w, p):
 
     return rh
 
+def _relhum_water(t, w, p):
+    """ Calculates relative humidity with respect to water, given temperature, mixing ratio, and pressure.
 
+        Definition of mixing ratio if,
+        es  - is the saturation mixing ratio
+        ep  - is the ratio of the molecular weights of water vapor to dry air
+        p   - is the atmospheric pressure
+        rh  - is the relative humidity (given as a percent)
+
+        rh =  100*  q / ( (ep*es)/(p-es) )
+
+        Parameters
+        ----------
+        t : float
+            Temperature in K
+        w : float
+            Mixing ratio in kg/kg.
+        p : float
+            Pressure in Pa.
+
+        Returns
+        -------
+        rh : float
+            Relative humidity.
+    """
+
+    # Define data variables
+
+    t0 = 273.15
+    ep = 0.622
+    onemep = 0.378
+    es0 = 6.1128
+    a = 17.269
+    b = 35.86
+
+    est = es0*exp((a * (t-t0)) / ((t-t0)-b))
+    qst = (ep*est) / ((p*0.01) - onemep*est)
+
+    rh = 100 * (w/qst)
+
+    return rh
