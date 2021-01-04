@@ -1,4 +1,5 @@
 import numpy as np
+from math import exp
 
 
 def relhum(temperature, mixing_ratio, pressure):
@@ -112,3 +113,44 @@ def _relhum_tdd(t, w, p):
     rh = np.clip(rh, 0.0001, None)
 
     return rh
+
+def _relhum_ice(t, w, p):
+    """ Calculates relative humidity with respect to ice, given temperature, mixing ratio, and pressure.
+
+        "Improved Magnus' Form Approx. of Saturation Vapor pressure"
+        Oleg A. Alduchov and Robert E. Eskridge
+        http://www.osti.gov/scitech/servlets/purl/548871/
+        https://doi.org/10.2172/548871
+
+        Parameters
+        ----------
+        t : float
+            Temperature in K
+        w : float
+            Mixing ratio in kg/kg.
+        p : float
+            Pressure in Pa.
+
+        Returns
+        -------
+        rh : float
+            Relative humidity.
+    """
+
+    # Define data variables
+
+    t0 = 273.15
+    ep = 0.622
+    onemep = 0.378
+    es0 = 6.1128
+    a = 22.571
+    b = 273.71
+
+    est = es0*exp((a * (t-t0)) / ((t-t0)+b))
+    qst = (ep*est) / ((p*0.01) - onemep*est)
+
+    rh = 100 * (w/qst)
+
+    return rh
+
+
