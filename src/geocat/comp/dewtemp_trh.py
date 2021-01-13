@@ -1,5 +1,4 @@
 import numpy as np
-import math
 
 
 def dewtemp_trh(temperature, relative_humidity):
@@ -69,6 +68,6 @@ def _dewtemp(tk, rh):
     gcx = gc / (1000 * 4.186)  # [cal/{g-k}]
 
     lhv = (597.3 - 0.57 * (tk - 273)) / gcx
-    tdk = tk * lhv / (lhv - tk * math.log(rh * 0.01))
+    tdk = tk * lhv / (lhv - tk * np.log(rh * 0.01))
 
     return tdk
