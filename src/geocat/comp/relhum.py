@@ -29,6 +29,10 @@ def relhum(temperature, mixing_ratio, pressure):
         raise ValueError(
             f"dewtemp_trh: dimensions of temperature, {np.shape(temperature)}, and mixing ratio, ")
 
+    # check if single value input, and skip dask if appropriate
+    if np.size(temperature) == 1:
+        return _relhum_tdd(temperature, mixing_ratio, pressure)
+
     # ''' Start of boilerplate
     if not isinstance(temperature, xr.DataArray):
         temperature = xr.DataArray(temperature)
