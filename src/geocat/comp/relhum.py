@@ -1,5 +1,8 @@
 import numpy as np
 from math import exp
+import xarray as xr
+import dask.array as da
+from dask.array.core import map_blocks
 
 
 def relhum(temperature, mixing_ratio, pressure):
@@ -25,24 +28,22 @@ def relhum(temperature, mixing_ratio, pressure):
         raise ValueError(
             f"dewtemp_trh: dimensions of temperature, {np.shape(temperature)}, and mixing ratio, "
             f"{np.shape(mixing_ratio)}, and pressure, {np.shape(pressure)} do not match")
-    else:
-        # store original shape
-        shape = np.shape(temperature)
 
-    # Convert inputs to np arrays
-    temperature = np.asarray(temperature)
-    mixing_ratio = np.asarray(mixing_ratio)
-    pressure = np.asarray(pressure)
+    # ''' Start of boilerplate
+    if not isinstance(temperature, xr.DataArray):
+        temperature = xr.DataArray(temperature)
+        temperature = da.from_array(temperature, chunks="auto")
 
-    # make an empty space for output array
-    relative_humidity = np.zeros(np.size(temperature))
+    if not isinstance(mixing_ratio, xr.DataArray):
+        mixing_ratio = xr.DataArray(mixing_ratio)
+        mixing_ratio = da.from_array(mixing_ratio, chunks="auto")
 
-    # fill in output array
-    for i in range(np.size(temperature)):
-        relative_humidity[i] = _relhum_tdd(np.ravel(temperature)[i], np.ravel(mixing_ratio)[i], np.ravel(pressure)[i])
+    if not isinstance(pressure, xr.DataArray):
+        pressure = xr.DataArray(pressure)
+        pressure = da.from_array(pressure, chunks="auto")
 
-    # reshape output array to match the input dimensions
-    relative_humidity = np.reshape(relative_humidity, shape)
+    relative_humidity = map_blocks(_relhum_tdd, temperature, mixing_ratio, pressure)
+    relative_humidity = relative_humidity.compute()
 
     return relative_humidity
 
@@ -114,6 +115,7 @@ def _relhum_tdd(t, w, p):
 
     return rh
 
+
 def _relhum_ice(t, w, p):
     """ Calculates relative humidity with respect to ice, given temperature, mixing ratio, and pressure.
 
@@ -146,12 +148,13 @@ def _relhum_ice(t, w, p):
     a = 22.571
     b = 273.71
 
-    est = es0*exp((a * (t-t0)) / ((t-t0)+b))
-    qst = (ep*est) / ((p*0.01) - onemep*est)
+    est = es0 * exp((a * (t - t0)) / ((t - t0) + b))
+    qst = (ep * est) / ((p * 0.01) - onemep * est)
 
-    rh = 100 * (w/qst)
+    rh = 100 * (w / qst)
 
     return rh
+
 
 def _relhum_water(t, w, p):
     """ Calculates relative humidity with respect to water, given temperature, mixing ratio, and pressure.
@@ -188,9 +191,9 @@ def _relhum_water(t, w, p):
     a = 17.269
     b = 35.86
 
-    est = es0*exp((a * (t-t0)) / ((t-t0)-b))
-    qst = (ep*est) / ((p*0.01) - onemep*est)
+    est = es0 * exp((a * (t - t0)) / ((t - t0) - b))
+    qst = (ep * est) / ((p * 0.01) - onemep * est)
 
-    rh = 100 * (w/qst)
+    rh = 100 * (w / qst)
 
     return rh
