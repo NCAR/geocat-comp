@@ -24,10 +24,10 @@ def relhum(temperature, mixing_ratio, pressure):
         """
 
     # make sure the input arrays are of the same size
-    if np.shape(temperature) != np.shape(mixing_ratio) or np.shape(temperature) != np.shape(pressure):
+    if np.shape(temperature) != np.shape(mixing_ratio) or np.shape(
+            temperature) != np.shape(pressure):
         raise ValueError(
-            f"dewtemp_trh: dimensions of temperature, {np.shape(temperature)}, and mixing ratio, "
-            f"{np.shape(mixing_ratio)}, and pressure, {np.shape(pressure)} do not match")
+            f"dewtemp_trh: dimensions of temperature, {np.shape(temperature)}, and mixing ratio, ")
 
     # ''' Start of boilerplate
     if not isinstance(temperature, xr.DataArray):
