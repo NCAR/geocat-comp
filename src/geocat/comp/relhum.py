@@ -27,7 +27,8 @@ def relhum(temperature, mixing_ratio, pressure):
     if np.shape(temperature) != np.shape(mixing_ratio) or np.shape(
             temperature) != np.shape(pressure):
         raise ValueError(
-            f"dewtemp_trh: dimensions of temperature, {np.shape(temperature)}, and mixing ratio, ")
+            f"dewtemp_trh: dimensions of temperature, {np.shape(temperature)}, and mixing ratio, "
+        )
 
     # check if single value input, and skip dask if appropriate
     if np.size(temperature) == 1:
@@ -46,7 +47,8 @@ def relhum(temperature, mixing_ratio, pressure):
         pressure = xr.DataArray(pressure)
         pressure = da.from_array(pressure, chunks="auto")
 
-    relative_humidity = map_blocks(_relhum_tdd, temperature, mixing_ratio, pressure)
+    relative_humidity = map_blocks(_relhum_tdd, temperature, mixing_ratio,
+                                   pressure)
     relative_humidity = relative_humidity.compute()
 
     return relative_humidity
