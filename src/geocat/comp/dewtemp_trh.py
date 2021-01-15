@@ -28,6 +28,10 @@ def dewtemp_trh(temperature, relative_humidity):
             f"dewtemp_trh: dimensions of temperature, {np.shape(temperature)}, and relative_humidity, "
             f"{np.shape(relative_humidity)}, do not match")
 
+    # see if single value input and skip dask if appropriate
+    if np.size(temperature) == 1:
+        return _dewtemp(temperature, relative_humidity)
+
     # ''' Start of boilerplate
     if not isinstance(temperature, xr.DataArray):
         temperature = xr.DataArray(temperature)
