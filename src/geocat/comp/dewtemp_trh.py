@@ -1,4 +1,7 @@
 import numpy as np
+import xarray as xr
+import dask.array as da
+from dask.array.core import map_blocks
 
 
 def dewtemp_trh(temperature, relative_humidity):
@@ -7,15 +10,15 @@ def dewtemp_trh(temperature, relative_humidity):
 
             Parameters
             ----------
-            temperature : numpy.ndarray, list, or float
+            temperature : numpy.ndarray, xr.DataArray, list, or float
                 Temperature in K
-            relative_humidity : numpy.ndarray, list, or float
+            relative_humidity : numpy.ndarray, xr.DataArray, list, or float
                 Relative humidity. Must be the same dimensions as temperature
 
 
             Returns
             -------
-            tdk : numpy.ndarray
+            tdk : numpy.ndarray, xr.DataArray, list, or float
                 Relative humidity. Same size as input variable tk
     """
 
@@ -24,26 +27,20 @@ def dewtemp_trh(temperature, relative_humidity):
         raise ValueError(
             f"dewtemp_trh: dimensions of temperature, {np.shape(temperature)}, and relative_humidity, "
             f"{np.shape(relative_humidity)}, do not match")
-    else:
-        # store original shape
-        shape = np.shape(temperature)
 
-    # convert inputs to np arrays
-    temperature = np.asarray(temperature)
-    relative_humidity = np.asarray(relative_humidity)
+    # ''' Start of boilerplate
+    if not isinstance(temperature, xr.DataArray):
+        temperature = xr.DataArray(temperature)
+        temperature = da.from_array(temperature, chunks="auto")
 
-    # make an empty space for output array
-    tdk = np.zeros(np.size(temperature))
+    if not isinstance(relative_humidity, xr.DataArray):
+        relative_humidity = xr.DataArray(relative_humidity)
+        relative_humidity = da.from_array(relative_humidity, chunks="auto")
 
-    # fill in output array
-    for i in range(np.size(temperature)):
-        tdk[i] = _dewtemp(
-            np.ravel(temperature)[i],
-            np.ravel(relative_humidity)[i])
+    tdk = map_blocks(_dewtemp, temperature, relative_humidity)
+    tdk = tdk.compute()
 
-    # reshape output array to match the input dimensions
-    tdk = np.reshape(tdk, shape)
-
+    # tdk = _dewtemp(temperature, relative_humidity)
     return tdk
 
 
@@ -53,15 +50,15 @@ def _dewtemp(tk, rh):
 
         Parameters
         ----------
-        tk : float
+        tk : numpy.ndarray, xr.DataArray, list, or float
             Temperature in K
-        rh : float
+        rh : numpy.ndarray, xr.DataArray, list, or float
             Relative humidity
 
 
         Returns
         -------
-        tdk : float
+        tdk : numpy.ndarray, xr.DataArray, list, or float
             Relative humidity
 
     """
