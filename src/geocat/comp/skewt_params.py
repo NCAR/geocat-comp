@@ -16,6 +16,7 @@ import geocat.datafiles as gdf
 # Read in data:
 
 # Open a CSV data file using xarray default engine and load the data into xarrays
+<<<<<<< HEAD
 da = pd.read_csv(gdf.get('ascii_files/sounding.testdata'), delimiter='\\s+', header=None)
 
 # Extract the data
@@ -121,6 +122,24 @@ def get_skewt_vars(ds_name, p, tc, tdc, tac, pres_pos = 1, envT_loc = 5):
     
     return joined
 
+=======
+ds = pd.read_csv(gdf.get('ascii_files/sounding.testdata'),
+                 delimiter='\\s+',
+                 header=None)
+
+# Extract the data
+p = ds[1].values * units.hPa  # Pressure [mb/hPa]
+# p = np.atleast_1d(p)
+# print(p[2])
+
+tc = (ds[5].values + 2) * units.degC  # Temperature [C]
+# print(tc[11])
+
+tdc = (ds[9].values + 2) * units.degC  # Dew pt temp  [C]
+ta = mpcalc.parcel_profile(p, tc[0], tdc[0])  # Parcel profile
+tac = (ta.magnitude - 273.15) * units.degC  # Parcel temp in C
+print("The parcel temp at 500mb is", tac[11])
+>>>>>>> 400d2fb8fc2ceb6ac9511bff084808cec3b47ee8
 ##############################################################################
 # Plot:
 
@@ -191,6 +210,7 @@ w = np.array([0.001, 0.002, 0.003, 0.005, 0.008, 0.012, 0.020]).reshape(-1, 1)
 # Choose the range of pressures that the mixing ratio lines are drawn over
 p_levs = units.hPa * np.linspace(1000, 400, 7)
 
+<<<<<<< HEAD
 # Plot mixing ratio lines
 skew.plot_mixing_lines(w,
                         p_levs,
@@ -203,6 +223,16 @@ gvutil.set_axes_limits_and_ticks(
     ax=ax,
     xlim=[-32, 38],
     yticks=[1000, 850, 700, 500, 400, 300, 250, 200, 150, 100])
+=======
+# CAPE and CIN
+cape = mpcalc.cape_cin(p, tc, tdc, ta)
+# print(cape[0].magnitude)
+
+# Precipitable Water
+precp = mpcalc.precipitable_water(p, tdc)
+precp = precp / 10  # Convert mm to cm
+# print(precp.magnitude)
+>>>>>>> 400d2fb8fc2ceb6ac9511bff084808cec3b47ee8
 
 # Use geocat.viz utility function to change the look of ticks and ticklabels
 gvutil.add_major_minor_ticks(ax=ax,
@@ -213,6 +243,7 @@ gvutil.add_major_minor_ticks(ax=ax,
 # on the left and bottom edges
 ax.tick_params('both', which='both', top=False, right=False)
 
+<<<<<<< HEAD
 # Use geocat.viz utility functions to add a main title
 gvutil.set_titles_and_labels(ax=ax,
                               maintitle="Raob; [Wind Reports]",
@@ -231,8 +262,24 @@ plt.grid(True,
 
 # Create subtitle var for plotting
 title_var = get_skewt_vars(da, p, tc, tdc, tac, )
+=======
+# Shox/Stability
+# Calculate parcel temp when raised dry adiabatically from surface to lcl
+dl = mpcalc.dry_lapse(p[2], tac[0], p[0])
+dl = (dl.magnitude - 273.15) * units.degC  # Change units to C
+# print((dl))
+
+# Calculate parcel temp when raised moist adiabatically from lcl to 500mb
+ml = mpcalc.moist_lapse(p[11], dl, p[2])
+# print(ml)
+>>>>>>> 400d2fb8fc2ceb6ac9511bff084808cec3b47ee8
 
 # Add subtitle to plot
 fig.text(.30, .89, title_var , size=12)
 
+<<<<<<< HEAD
 plt.show()
+=======
+shox = ttop - ml
+print("The calculated value for Showalter index is", shox)
+>>>>>>> 400d2fb8fc2ceb6ac9511bff084808cec3b47ee8
