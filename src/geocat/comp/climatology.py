@@ -32,6 +32,30 @@ def _validate_freq(freq):
         )
 
 
+def _setup_clim_anom_input(dset, freq, time_coord_name):
+    _validate_freq(freq)
+
+    if time_coord_name:
+        time = dset[time_coord_name]
+    else:
+        time = dset.cf["time"]
+        time_coord_name = time.name
+
+    if not _contains_datetime_like_objects(time):
+        # TODO: Do we want to support encoded time values in the future?
+        raise ValueError(
+            f"The {time_coord_name} coordinate should be either `np.datetime64` or `cftime.datetime`"
+        )
+
+    time_invariant_vars = _find_time_invariant_vars(dset, time_coord_name)
+    if time_invariant_vars:
+        data = dset.drop(time_invariant_vars)
+    else:
+        data = dset
+
+    return data, time_invariant_vars
+
+
 def climatology(
         dset: typing.Union[xr.DataArray, xr.Dataset],
         freq: str,
@@ -58,27 +82,8 @@ def climatology(
     computed_dset : xr.Dataset, xr.DataArray
        The computed climatology data
     """
-    _validate_freq(freq)
-
-    if time_coord_name:
-        time = dset[time_coord_name].copy()
-    else:
-        time = dset.cf["time"].copy()
-        time_coord_name = time.name
-
-    if not _contains_datetime_like_objects(time):
-        # TODO: Do we want to support encoded time values in the future?
-        raise ValueError(
-            f"The {time_coord_name} coordinate should be either `np.datetime64` or `cftime.datetime`"
-        )
-
-    time_invariant_vars = _find_time_invariant_vars(dset, time_coord_name)
-
-    if time_invariant_vars:
-        data = dset.drop(time_invariant_vars)
-    else:
-        data = dset
-
+    data, time_invariant_vars = _setup_clim_anom_input(dset, freq,
+                                                       time_coord_name)
     time_dot_freq = ".".join([time_coord_name, freq])
     grouped = data.groupby(time_dot_freq)
     # TODO: Compute weighted climatologies when `time_bounds` are available
@@ -87,3 +92,5 @@ def climatology(
         return xr.concat([dset[time_invariant_vars], clim], dim=time_coord_name)
     else:
         return clim
+
+

@@ -18,5 +18,5 @@ setup(
     namespace_packages=["geocat"],
     packages=["geocat", "geocat.comp"],
     version=__version__,
-    install_requires=["numpy", "xarray", "dask[complete]", "cf-xarray>=0.3.1"],
+    install_requires=["numpy", "xarray", "dask[complete]", "cf_xarray>=0.3.1"],
 )
