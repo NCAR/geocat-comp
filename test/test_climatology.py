@@ -23,3 +23,10 @@ def test_climatology_encoded_time():
 def test_climatology_setup(dataset, freq):
     computed_dset = geocat.comp.climatology(dataset, freq)
     assert type(dataset) == type(computed_dset)
+
+
+@pytest.mark.parametrize("dataset", [dset_a, dset_b, dset_c["Tair"]])
+@pytest.mark.parametrize("freq", ["day", "month", "year", "season"])
+def test_anomaly_setup(dataset, freq):
+    computed_dset = geocat.comp.anomaly(dataset, freq)
+    assert type(dataset) == type(computed_dset)

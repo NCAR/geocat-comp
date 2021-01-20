@@ -46,14 +46,14 @@ def _setup_clim_anom_input(dset, freq, time_coord_name):
         raise ValueError(
             f"The {time_coord_name} coordinate should be either `np.datetime64` or `cftime.datetime`"
         )
-
     time_invariant_vars = _find_time_invariant_vars(dset, time_coord_name)
     if time_invariant_vars:
-        data = dset.drop(time_invariant_vars)
+        data = dset.drop_vars(time_invariant_vars)
     else:
         data = dset
+    time_dot_freq = ".".join([time_coord_name, freq])
 
-    return data, time_invariant_vars
+    return data, time_invariant_vars, time_coord_name, time_dot_freq
 
 
 def climatology(
@@ -61,6 +61,9 @@ def climatology(
         freq: str,
         time_coord_name: str = None) -> typing.Union[xr.DataArray, xr.Dataset]:
     """
+
+    Compute climatologies for a specified time frequency
+
     Parameters
     ----------
     dset : xr.Dataset, xr.DataArray
@@ -82,9 +85,9 @@ def climatology(
     computed_dset : xr.Dataset, xr.DataArray
        The computed climatology data
     """
-    data, time_invariant_vars = _setup_clim_anom_input(dset, freq,
-                                                       time_coord_name)
-    time_dot_freq = ".".join([time_coord_name, freq])
+    data, time_invariant_vars, time_coord_name, time_dot_freq = _setup_clim_anom_input(
+        dset, freq, time_coord_name)
+
     grouped = data.groupby(time_dot_freq)
     # TODO: Compute weighted climatologies when `time_bounds` are available
     clim = grouped.mean(time_coord_name)
@@ -94,3 +97,40 @@ def climatology(
         return clim
 
 
+def anomaly(
+        dset: typing.Union[xr.DataArray, xr.Dataset],
+        freq: str,
+        time_coord_name: str = None) -> typing.Union[xr.DataArray, xr.Dataset]:
+    """
+    Compute anomalies for a specified time frequency
+
+    Parameters
+    ----------
+    dset : xr.Dataset, xr.DataArray
+        The data on which to operate
+
+    freq : str
+        Anomaly frequency alias. Accepted alias:
+
+            - 'day': for daily anomalies
+            - 'month': for monthly anomalies
+            - 'year': for annual anomalies
+            - 'season': for seasonal anomalies
+
+    time_coord_name: str, Optional
+         Name for time coordinate to use
+
+    Returns
+    -------
+    computed_dset : xr.Dataset, xr.DataArray
+       The computed anomaly data
+    """
+    data, time_invariant_vars, time_coord_name, time_dot_freq = _setup_clim_anom_input(
+        dset, freq, time_coord_name)
+
+    clim = climatology(data, freq, time_coord_name)
+    anom = data.groupby(time_dot_freq) - clim
+    if time_invariant_vars:
+        return xr.merge([dset[time_invariant_vars], anom])
+    else:
+        return anom
