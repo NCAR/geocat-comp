@@ -10,3 +10,4 @@ dependencies:
   - distributed
   - pytest
   - geocat-ncomp
+  - cf_xarray >= 0.3.1
