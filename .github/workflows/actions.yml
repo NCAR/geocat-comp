@@ -2,8 +2,7 @@ name: actions
 on: 
   push:
     branches-ignore:
-      - master
-      - develop
+      - main
 jobs:
   yapf_formatting:
     runs-on: ubuntu-latest
