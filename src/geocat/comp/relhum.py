@@ -8,12 +8,19 @@ from dask.array.core import map_blocks
 def relhum(temperature, mixing_ratio, pressure):
     """ This function calculates the relative humidity given temperature, mixing ratio, and pressure
 
+        "Improved Magnus' Form Approx. of Saturation Vapor pressure"
+        Oleg A. Alduchov and Robert E. Eskridge
+        http://www.osti.gov/scitech/servlets/purl/548871/
+        https://doi.org/10.2172/548871
+
             Args:
 
                 temperature (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
                     Temperature in Kelvin
+
                 mixing_ratio (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
                     Mixing ratio in kg/kg. Must have the same dimensions as temperature
+
                 pressure (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
                     Pressure in Pa. Must have the same dimensions as temperature
 
@@ -55,23 +62,28 @@ def relhum(temperature, mixing_ratio, pressure):
 
 
 def _relhum_tdd(t, w, p):
-    """ This function calculates the relative humidity given temperature, mixing ratio, and pressure
+    """ Calculates relative humidity with respect to ice, given temperature, mixing ratio, and pressure.
 
-        Parameters
-        ----------
-        t : float
-            Temperature in K
-        w : float
-            Mixing ratio in kg/kg.
-        p : float
-            Pressure in Pa.
+        "Improved Magnus' Form Approx. of Saturation Vapor pressure"
+        Oleg A. Alduchov and Robert E. Eskridge
+        http://www.osti.gov/scitech/servlets/purl/548871/
+        https://doi.org/10.2172/548871
 
-        Returns
-        -------
-        rh : float
-            Relative humidity.
+       Args:
 
+            t (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+                Temperature in Kelvin
 
+            w (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+                Mixing ratio in kg/kg. Must have the same dimensions as temperature
+
+            p (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+                Pressure in Pa. Must have the same dimensions as temperature
+
+        Returns:
+
+            rh (:class:`numpy.ndarray`):
+                Relative humidity. Will have the same dimensions as temperature
     """
 
     table = np.asarray([
@@ -130,19 +142,21 @@ def _relhum_ice(t, w, p):
         http://www.osti.gov/scitech/servlets/purl/548871/
         https://doi.org/10.2172/548871
 
-        Parameters
-        ----------
-        t : float
-            Temperature in K
-        w : float
-            Mixing ratio in kg/kg.
-        p : float
-            Pressure in Pa.
+       Args:
 
-        Returns
-        -------
-        rh : float
-            Relative humidity.
+            t (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+                Temperature in Kelvin
+
+            w (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+                Mixing ratio in kg/kg. Must have the same dimensions as temperature
+
+            p (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+                Pressure in Pa. Must have the same dimensions as temperature
+
+        Returns:
+
+            rh (:class:`numpy.ndarray`):
+                Relative humidity. Will have the same dimensions as temperature
     """
 
     # Define data variables
@@ -173,19 +187,21 @@ def _relhum_water(t, w, p):
 
         rh =  100*  q / ( (ep*es)/(p-es) )
 
-        Parameters
-        ----------
-        t : float
-            Temperature in K
-        w : float
-            Mixing ratio in kg/kg.
-        p : float
-            Pressure in Pa.
+       Args:
 
-        Returns
-        -------
-        rh : float
-            Relative humidity.
+            t (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+                Temperature in Kelvin
+
+            w (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+                Mixing ratio in kg/kg. Must have the same dimensions as temperature
+
+            p (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+                Pressure in Pa. Must have the same dimensions as temperature
+
+        Returns:
+
+            rh (:class:`numpy.ndarray`):
+                Relative humidity. Will have the same dimensions as temperature
     """
 
     # Define data variables
