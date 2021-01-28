@@ -8,19 +8,19 @@ from dask.array.core import map_blocks
 def relhum(temperature, mixing_ratio, pressure):
     """ This function calculates the relative humidity given temperature, mixing ratio, and pressure
 
-            Parameters
-            ----------
-            temperature : numpy.ndarray or float
-                Temperature in K
-            mixing_ratio : numpy.ndarray or float
-                Mixing ratio in kg/kg. Must have the same dimensions as temperature
-            pressure : numpy.ndarray or float
-                Pressure in Pa. Must have the same dimensions as temperature
+            Args:
 
-            Returns
-            -------
-            relative_humidity : numpy.ndarray or float
-                Relative humidity. Must have the same dimensions as temperature
+                temperature (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+                    Temperature in Kelvin
+                mixing_ratio (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+                    Mixing ratio in kg/kg. Must have the same dimensions as temperature
+                pressure (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+                    Pressure in Pa. Must have the same dimensions as temperature
+
+            Returns:
+
+                relative_humidity (:class:`numpy.ndarray`):
+                    Relative humidity. Will have the same dimensions as temperature
         """
 
     # make sure the input arrays are of the same size
