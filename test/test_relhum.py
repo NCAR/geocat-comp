@@ -13,7 +13,7 @@ rh_gt_2 = [
 ]
 
 
-class Ttest_relhum(unittest.TestCase):
+class Test_relhum(unittest.TestCase):
 
     def test_single_run(self):
         p = 1000. * 100
