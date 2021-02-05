@@ -10,7 +10,6 @@ build:
   noarch: python
   number: 0
   skip: True  # [py<3.5]
-  script: python -m pip install . --no-deps -vv
 
 requirements:
   host:
