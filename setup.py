@@ -8,9 +8,9 @@ setup(
     name="geocat.comp",
     version=version,
     package_dir={
-      '': 'src',
-      'geocat': 'src/geocat',
-      'geocat.comp': 'src/geocat/comp'
+        '': 'src',
+        'geocat': 'src/geocat',
+        'geocat.comp': 'src/geocat/comp'
     },
     namespace_packages=['geocat'],
     packages=["geocat", "geocat.comp"],
