@@ -27,6 +27,6 @@ jobs:
       - name: build_test
         run: |
           conda env create --file build_envs/environment_$(uname).yml
-          conda activate geocat_f2py_build
+          conda activate geocat_comp_build
           source build.sh
           pytest
