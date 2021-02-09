@@ -34,7 +34,8 @@ def _handle_input(inputs):
     for i in range(len(inputs)):
         if not isinstance(inputs[i], xr.DataArray):
             inputs[i] = xr.DataArray(inputs[i])
-            inputs[i] = da.from_array(inputs[i], chunks="auto")
+
+        inputs[i] = da.from_array(inputs[i], chunks="auto")
 
     return inputs
 
