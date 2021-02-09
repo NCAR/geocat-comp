@@ -27,7 +27,7 @@ def _handle_input(inputs):
     for x in inputs:
         if np.shape(x) != same_size:
             raise ValueError(
-                f"dewtemp_trh: dimensions all input variables must match")
+                f"relhum: dimensions all input variables must match")
 
     # check for dask chunking and autochunk
     for i in range(len(inputs)):
