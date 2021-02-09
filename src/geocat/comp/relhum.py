@@ -27,8 +27,7 @@ def _handle_input(inputs):
     for x in inputs:
         if np.shape(x) != same_size:
             raise ValueError(
-                f"dewtemp_trh: dimensions all input variables must match"
-            )
+                f"dewtemp_trh: dimensions all input variables must match")
 
     # check for dask chunking and autochunk
     for i in range(len(inputs)):
@@ -70,7 +69,8 @@ def relhum(temperature, mixing_ratio, pressure):
         return _relhum_tdd(temperature, mixing_ratio, pressure)
 
     # verify and chunk inputs if necessary
-    temperature, mixing_ratio, pressure = _handle_input([temperature, mixing_ratio, pressure])
+    temperature, mixing_ratio, pressure = _handle_input(
+        [temperature, mixing_ratio, pressure])
 
     relative_humidity = map_blocks(_relhum_tdd, temperature, mixing_ratio,
                                    pressure)
@@ -109,7 +109,8 @@ def relhum_ice(temperature, mixing_ratio, pressure):
         return _relhum_ice(temperature, mixing_ratio, pressure)
 
     # verify and chunk inputs if necessary
-    temperature, mixing_ratio, pressure = _handle_input([temperature, mixing_ratio, pressure])
+    temperature, mixing_ratio, pressure = _handle_input(
+        [temperature, mixing_ratio, pressure])
 
     relative_humidity = map_blocks(_relhum_ice, temperature, mixing_ratio,
                                    pressure)
@@ -151,7 +152,8 @@ def relhum_water(temperature, mixing_ratio, pressure):
         return _relhum_water(temperature, mixing_ratio, pressure)
 
     # verify and chunk inputs if necessary
-    temperature, mixing_ratio, pressure = _handle_input([temperature, mixing_ratio, pressure])
+    temperature, mixing_ratio, pressure = _handle_input(
+        [temperature, mixing_ratio, pressure])
 
     relative_humidity = map_blocks(_relhum_water, temperature, mixing_ratio,
                                    pressure)
