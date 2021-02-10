@@ -19,7 +19,7 @@ def dewtemp(temperature, relative_humidity):
 
             Returns:
 
-                dew_pnt_temp (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+                dew_pnt_temp (:class:`numpy.ndarray` or :obj:`float`):
                     Dewpoint temperature in Kelvin. Same size as input variable temperature
     """
 
@@ -36,12 +36,15 @@ def dewtemp(temperature, relative_humidity):
     # ''' Start of boilerplate
     if not isinstance(temperature, xr.DataArray):
         temperature = xr.DataArray(temperature)
-        temperature = da.from_array(temperature, chunks="auto")
 
     if not isinstance(relative_humidity, xr.DataArray):
         relative_humidity = xr.DataArray(relative_humidity)
-        relative_humidity = da.from_array(relative_humidity, chunks="auto")
 
+    # Make sure dask arrays are autochunked dask arrays
+    relative_humidity = da.from_array(relative_humidity, chunks="auto")
+    temperature = da.from_array(temperature, chunks="auto")
+
+    # Call mapblocks to run function
     dew_pnt_temp = map_blocks(_dewtemp, temperature, relative_humidity)
     dew_pnt_temp = dew_pnt_temp.compute()
 
