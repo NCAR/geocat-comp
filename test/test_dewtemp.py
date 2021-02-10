@@ -2,7 +2,7 @@ import unittest
 import pytest
 
 import numpy as np
-from geocat.comp.dewtemp_trh import dewtemp_trh
+from geocat.comp.dewtemp import dewtemp
 
 dt_td_1 = 6.3
 
@@ -19,7 +19,7 @@ class Test_dewtemp(unittest.TestCase):
         tk = 18. + 273.15
         rh = 46.5
 
-        assert dewtemp_trh(tk, rh) - 273.15 == pytest.approx(dt_td_1, 0.1)
+        assert dewtemp(tk, rh) - 273.15 == pytest.approx(dt_td_1, 0.1)
 
     def test_array_run(self):
         t = np.asarray([
@@ -33,4 +33,4 @@ class Test_dewtemp(unittest.TestCase):
 
         tk = t + 273.15
 
-        assert dewtemp_trh(tk, rh) - 273.15 == pytest.approx(dt_td_2, 0.1)
+        assert dewtemp(tk, rh) - 273.15 == pytest.approx(dt_td_2, 0.1)
