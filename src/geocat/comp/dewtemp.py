@@ -71,9 +71,8 @@ def dewtemp_trh(temperature, relative_humidity):
                 dew_pnt_temp (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
                     Dewpoint temperature in Kelvin. Same size as input variable temperature
     """
-    
-    return dewtemp(temperature, relative_humidity)
 
+    return dewtemp(temperature, relative_humidity)
 
 
 def _dewtemp(tk, rh):
