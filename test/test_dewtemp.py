@@ -13,7 +13,7 @@ dt_td_2 = [
 ]
 
 
-class Ttest_relhum(unittest.TestCase):
+class Test_dewtemp(unittest.TestCase):
 
     def test_single_run(self):
         tk = 18. + 273.15

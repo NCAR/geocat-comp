@@ -4,7 +4,7 @@ import dask.array as da
 from dask.array.core import map_blocks
 
 
-def dewtemp_trh(temperature, relative_humidity):
+def dewtemp(temperature, relative_humidity):
     """ This function calculates the dew point temperature given temperature and relative humidity
         using equations from John Dutton's "Ceaseless Wind" (pp 273-274)
 
@@ -47,6 +47,30 @@ def dewtemp_trh(temperature, relative_humidity):
 
     # tdk = _dewtemp(temperature, relative_humidity)
     return dew_pnt_temp
+
+
+# make alias for original function name
+def dewtemp_trh(temperature, relative_humidity):
+    """ This function calculates the dew point temperature given temperature and relative humidity
+        using equations from John Dutton's "Ceaseless Wind" (pp 273-274)
+
+            Args:
+
+                temperature (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+                    Temperature in K
+
+                relative_humidity (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+                    Relative humidity. Must be the same dimensions as temperature
+
+
+            Returns:
+
+                dew_pnt_temp (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+                    Dewpoint temperature in Kelvin. Same size as input variable temperature
+    """
+    
+    return dewtemp(temperature, relative_humidity)
+
 
 
 def _dewtemp(tk, rh):
