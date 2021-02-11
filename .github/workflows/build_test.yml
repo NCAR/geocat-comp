@@ -24,9 +24,12 @@ jobs:
           activate-environment: temp
           python-version: ${{ matrix.python-version }}
           channels: conda-forge, ncar
-      - name: build_test
         run: |
           conda env create --file build_envs/environment_$(uname).yml
           conda activate geocat_comp_build
+      - name: build_test
+        run: |
           source build.sh
-          pytest
+      - name: test
+          run: |
+            pytest
