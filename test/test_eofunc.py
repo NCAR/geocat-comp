@@ -1,6 +1,7 @@
 from abc import ABCMeta
 from unittest import TestCase
 import numpy as np
+import numpy.testing as nt
 # from dask.array.tests.test_xarray import xr
 import xarray as xr
 
@@ -54,6 +55,11 @@ class BaseEOFTestClass(metaclass=ABCMeta):
 
     _num_attrs = 4
 
+    expected_output = np.full((1, 4, 4), 0.25)
+    expected_eigen_val_time_dim_2 = 26.66666
+    expected_eigen_val_time_dim_1 = 426.66666
+    expected_eigen_val_time_dim_0 = 6826.66667
+
 
 class Test_eof(TestCase, BaseEOFTestClass):
 
@@ -64,14 +70,13 @@ class Test_eof(TestCase, BaseEOFTestClass):
         eof = results.data
         attrs = results.attrs
 
-        self.assertEqual((1, 4, 4), results.shape)
+        nt.assert_equal(self.expected_output.shape, results.shape)
 
-        for e in np.nditer(eof):
-            self.assertAlmostEqual(0.25, e, 2)
+        nt.assert_array_almost_equal(self.expected_output, eof, 5)
 
-        self.assertEqual(self._num_attrs, len(attrs))
+        nt.assert_equal(self._num_attrs, len(attrs))
 
-        self.assertAlmostEqual(26.66666, attrs['eigenvalues'].values[0], 4)
+        nt.assert_almost_equal(self.expected_eigen_val_time_dim_2, attrs['eigenvalues'].values[0], 5)
 
     def test_eof_deprecated(self):
         data = self._sample_data_eof[0]
@@ -80,14 +85,13 @@ class Test_eof(TestCase, BaseEOFTestClass):
         eof = results.data
         attrs = results.attrs
 
-        self.assertEqual((1, 4, 4), results.shape)
+        nt.assert_equal(self.expected_output.shape, results.shape)
 
-        for e in np.nditer(eof):
-            self.assertAlmostEqual(0.25, e, 2)
+        nt.assert_array_almost_equal(self.expected_output, eof, 5)
 
-        self.assertEqual(self._num_attrs, len(attrs))
+        nt.assert_equal(self._num_attrs, len(attrs))
 
-        self.assertAlmostEqual(26.66666, attrs['eigenvalues'].values[0], 4)
+        nt.assert_almost_equal(self.expected_eigen_val_time_dim_2, attrs['eigenvalues'].values[0], 5)
 
     def test_eof_01(self):
         data = self._sample_data_eof[1]
@@ -96,14 +100,13 @@ class Test_eof(TestCase, BaseEOFTestClass):
         eof = results.data
         attrs = results.attrs
 
-        self.assertEqual((1, 4, 4), eof.shape)
+        nt.assert_equal(self.expected_output.shape, results.shape)
 
-        for e in np.nditer(eof):
-            self.assertAlmostEqual(0.25, e, 2)
+        nt.assert_array_almost_equal(self.expected_output, eof, 5)
 
-        self.assertEqual(self._num_attrs, len(attrs))
+        nt.assert_equal(self._num_attrs, len(attrs))
 
-        self.assertAlmostEqual(26.66666, attrs['eigenvalues'].values[0], 4)
+        nt.assert_almost_equal(self.expected_eigen_val_time_dim_2, attrs['eigenvalues'].values[0], 5)
 
     def test_eof_02(self):
         data = self._sample_data_eof[1]
@@ -112,14 +115,13 @@ class Test_eof(TestCase, BaseEOFTestClass):
         eof = results.data
         attrs = results.attrs
 
-        self.assertEqual((1, 4, 4), eof.shape)
+        nt.assert_equal(self.expected_output.shape, results.shape)
 
-        for e in np.nditer(eof):
-            self.assertAlmostEqual(0.25, e, 2)
+        nt.assert_array_almost_equal(self.expected_output, eof, 5)
 
-        self.assertEqual(self._num_attrs, len(attrs))
+        nt.assert_equal(self._num_attrs, len(attrs))
 
-        self.assertAlmostEqual(26.66666, attrs['eigenvalues'].values[0], 4)
+        nt.assert_almost_equal(self.expected_eigen_val_time_dim_2, attrs['eigenvalues'].values[0], 5)
 
     def test_eof_14(self):
         data = self._sample_data_eof[4]
@@ -128,14 +130,13 @@ class Test_eof(TestCase, BaseEOFTestClass):
         eof = results.data
         attrs = results.attrs
 
-        self.assertEqual((1, 4, 4), eof.shape)
+        nt.assert_equal(self.expected_output.shape, results.shape)
 
-        for e in np.nditer(eof):
-            self.assertAlmostEqual(0.25, e, 2)
+        nt.assert_array_almost_equal(self.expected_output, eof, 5)
 
-        self.assertEqual(self._num_attrs, len(attrs))
+        nt.assert_equal(self._num_attrs, len(attrs))
 
-        self.assertAlmostEqual(26.66666, attrs['eigenvalues'].values[0], 4)
+        nt.assert_almost_equal(self.expected_eigen_val_time_dim_2, attrs['eigenvalues'].values[0], 5)
 
     def test_eof_15(self):
 
@@ -156,16 +157,16 @@ class Test_eof(TestCase, BaseEOFTestClass):
         eof = results.data
         attrs = results.attrs
 
-        self.assertEqual((1, 4, 4), results.shape)
+        nt.assert_equal(self.expected_output.shape, results.shape)
 
-        for e in np.nditer(eof):
-            self.assertAlmostEqual(0.25, e, 2)
+        nt.assert_array_almost_equal(self.expected_output, eof, 5)
 
-        self.assertEqual(self._num_attrs, len(attrs))
+        nt.assert_equal(self._num_attrs, len(attrs))
 
-        self.assertAlmostEqual(26.66666, attrs['eigenvalues'].values[0], 4)
-        self.assertFalse("prop1" in attrs)
-        self.assertFalse("prop2" in attrs)
+        nt.assert_almost_equal(self.expected_eigen_val_time_dim_2, attrs['eigenvalues'].values[0], 5)
+
+        nt.assert_equal(False, ("prop1" in attrs))
+        nt.assert_equal(False, ("prop2" in attrs))
 
     # TODO: Maybe revisited to add time_dim support for Xarray in addition to numpy inputs
     # def test_eof_15_time_dim(self):
@@ -187,12 +188,11 @@ class Test_eof(TestCase, BaseEOFTestClass):
     #     eof = results.data
     #     attrs = results.attrs
     #
-    #     self.assertEqual((1, 4, 4), results.shape)
+    #     nt.assert_equal(self.expected_output.shape, results.shape)
     #
-    #     for e in np.nditer(eof):
-    #         self.assertAlmostEqual(0.25, e, 2)
+    #     nt.assert_array_almost_equal(self.expected_output, eof, 5)
     #
-    #     self.assertEqual(self._num_attrs, len(attrs))
+    #     nt.assert_equal(self._num_attrs + 2, len(attrs))
     #
     #     # self.assertAlmostEqual(5.33333, attrs['eval_transpose'][0], 4)
     #     # self.assertAlmostEqual(100.0, attrs['pcvar'][0], 1)
@@ -220,18 +220,18 @@ class Test_eof(TestCase, BaseEOFTestClass):
         eof = results.data
         attrs = results.attrs
 
-        self.assertEqual((1, 4, 4), results.shape)
+        nt.assert_equal(self.expected_output.shape, results.shape)
 
-        for e in np.nditer(eof):
-            self.assertAlmostEqual(0.25, e, 2)
+        nt.assert_array_almost_equal(self.expected_output, eof, 5)
 
-        self.assertEqual(self._num_attrs + 2, len(attrs))
+        nt.assert_equal(self._num_attrs + 2, len(attrs))
 
-        self.assertAlmostEqual(26.66666, attrs['eigenvalues'].values[0], 4)
-        self.assertTrue("prop1" in attrs)
-        self.assertTrue("prop2" in attrs)
-        self.assertEqual("prop1", attrs["prop1"])
-        self.assertEqual(2, attrs["prop2"])
+        nt.assert_almost_equal(self.expected_eigen_val_time_dim_2, attrs['eigenvalues'].values[0], 5)
+
+        nt.assert_equal(True, ("prop1" in attrs))
+        nt.assert_equal(True, ("prop2" in attrs))
+        nt.assert_equal("prop1", attrs["prop1"])
+        nt.assert_equal(2, attrs["prop2"])
 
     def test_eof_n_01(self):
         data = self._sample_data_eof[1]
@@ -240,14 +240,13 @@ class Test_eof(TestCase, BaseEOFTestClass):
         eof = results.data
         attrs = results.attrs
 
-        self.assertEqual((1, 4, 4), eof.shape)
+        nt.assert_equal(self.expected_output.shape, results.shape)
 
-        for e in np.nditer(eof):
-            self.assertAlmostEqual(0.25, e, 2)
+        nt.assert_array_almost_equal(self.expected_output, eof, 5)
 
-        self.assertEqual(self._num_attrs, len(attrs))
+        nt.assert_equal(self._num_attrs, len(attrs))
 
-        self.assertAlmostEqual(426.66666, attrs['eigenvalues'].values[0], 4)
+        nt.assert_almost_equal(self.expected_eigen_val_time_dim_1, attrs['eigenvalues'].values[0], 5)
 
     def test_eof_n_03(self):
         data = self._sample_data_eof[1]
@@ -256,14 +255,13 @@ class Test_eof(TestCase, BaseEOFTestClass):
         eof = results.data
         attrs = results.attrs
 
-        self.assertEqual((1, 4, 4), eof.shape)
+        nt.assert_equal(self.expected_output.shape, results.shape)
 
-        for e in np.nditer(eof):
-            self.assertAlmostEqual(0.25, e, 2)
+        nt.assert_array_almost_equal(self.expected_output, eof, 5)
 
-        self.assertEqual(self._num_attrs, len(attrs))
+        nt.assert_equal(self._num_attrs, len(attrs))
 
-        self.assertAlmostEqual(6826.6667, attrs['eigenvalues'].values[0], 4)
+        nt.assert_almost_equal(self.expected_eigen_val_time_dim_0, attrs['eigenvalues'].values[0], 5)
 
     def test_eof_n_03_1(self):
         data = self._sample_data_eof[1]
@@ -272,14 +270,13 @@ class Test_eof(TestCase, BaseEOFTestClass):
         eof = results.data
         attrs = results.attrs
 
-        self.assertEqual((1, 4, 4), eof.shape)
+        nt.assert_equal(self.expected_output.shape, results.shape)
 
-        for e in np.nditer(eof):
-            self.assertAlmostEqual(0.25, e, 2)
+        nt.assert_array_almost_equal(self.expected_output, eof, 5)
 
-        self.assertEqual(self._num_attrs, len(attrs))
+        nt.assert_equal(self._num_attrs, len(attrs))
 
-        self.assertAlmostEqual(6826.6667, attrs['eigenvalues'].values[0], 4)
+        nt.assert_almost_equal(self.expected_eigen_val_time_dim_0, attrs['eigenvalues'].values[0], 5)
 
 
 class Test_eof_ts(TestCase, BaseEOFTestClass):
@@ -291,10 +288,9 @@ class Test_eof_ts(TestCase, BaseEOFTestClass):
 
         actual_tsout = eofunc_pcs(sst, npcs=5)
 
-        np.testing.assert_equal(actual_tsout.shape, expected_tsout.shape)
+        nt.assert_equal(actual_tsout.shape, expected_tsout.shape)
 
-        np.testing.assert_array_almost_equal(actual_tsout, expected_tsout.data,
-                                             3)
+        nt.assert_array_almost_equal(actual_tsout, expected_tsout.data, 3)
 
     def test_01_deprecated(self):
         sst = self._nc_ds.sst
@@ -303,10 +299,9 @@ class Test_eof_ts(TestCase, BaseEOFTestClass):
 
         actual_tsout = eofunc_ts(sst, evec, time_dim=0)
 
-        np.testing.assert_equal(actual_tsout.shape, expected_tsout.shape)
+        nt.assert_equal(actual_tsout.shape, expected_tsout.shape)
 
-        np.testing.assert_array_almost_equal(actual_tsout, expected_tsout.data,
-                                             3)
+        nt.assert_array_almost_equal(actual_tsout, expected_tsout.data, 3)
 
     def test_02(self):
         sst = self._nc_ds.sst
@@ -315,10 +310,8 @@ class Test_eof_ts(TestCase, BaseEOFTestClass):
 
         actual_tsout = eofunc_pcs(sst, npcs=5, meta=True)
 
-        np.testing.assert_equal(actual_tsout.shape, expected_tsout.shape)
+        nt.assert_equal(actual_tsout.shape, expected_tsout.shape)
 
-        np.testing.assert_array_almost_equal(actual_tsout, expected_tsout.data,
-                                             3)
+        nt.assert_array_almost_equal(actual_tsout, expected_tsout.data, 3)
 
-        np.testing.assert_equal(actual_tsout.coords["time"].data,
-                                sst.coords["time"].data)
+        nt.assert_equal(actual_tsout.coords["time"].data, sst.coords["time"].data)
