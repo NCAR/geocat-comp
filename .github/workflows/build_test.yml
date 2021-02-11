@@ -31,5 +31,5 @@ jobs:
         run: |
           source build.sh
       - name: test
-          run: |
-            pytest
+        run: |
+          pytest
