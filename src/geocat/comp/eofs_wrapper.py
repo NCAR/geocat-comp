@@ -7,7 +7,12 @@ from eofs.xarray import Eof
 import warnings
 
 
+
 def generate_eofs_solver(data, time_dim=0, weights=None, center=True, ddof=1):
+    """
+        Convenience function to be used in both `eofunc_eofs` and `eofunc_pcs` functions.
+    """
+
     # ''' Start of boilerplate
     if not isinstance(data, xr.DataArray):
 
@@ -54,7 +59,8 @@ def eofunc_eofs(data,
 
     This implementation uses `eofs` package (https://anaconda.org/conda-forge/eofs), which is built upon the
     following study: Dawson, Andrew, "eofs: A library for EOF analysis of meteorological, oceanographic, and
-    climate data," Journal of Open Research Software, vol. 4, no. 1, 2016.
+    climate data," Journal of Open Research Software, vol. 4, no. 1, 2016. Further information about this
+    package can be found at: https://ajdawson.github.io/eofs/latest/index.html#
 
     This implementation provides a few conveniences to the user on top of `eofs` package that are described below
     in the Parameters section.
@@ -207,7 +213,8 @@ def eofunc_pcs(data,
 
     This implementation uses `eofs` package (https://anaconda.org/conda-forge/eofs), which is built upon the
     following study: Dawson, Andrew, "eofs: A library for EOF analysis of meteorological, oceanographic, and
-    climate data," Journal of Open Research Software, vol. 4, no. 1, 2016.
+    climate data," Journal of Open Research Software, vol. 4, no. 1, 2016. Further information about this
+    package can be found at: https://ajdawson.github.io/eofs/latest/index.html#
 
     This implementation provides a few conveniences to the user on top of `eofs` package that are described below
     in the Parameters section.
@@ -305,7 +312,6 @@ def eofunc_pcs(data,
 
 
 # Transparent wrappers for geocat.comp backwards compatibility
-
 
 def eofunc(data: Iterable, neval, **kwargs) -> xr.DataArray:
     warnings.warn(
