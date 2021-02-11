@@ -1,15 +1,15 @@
 package:
-  name: "geocat-comp"
-  version: "2021.01.1"
-
-source:
-  git_rev: main
-  git_url: https://github.com/NCAR/geocat-comp.git
+  name: 'geocat-comp'
+  version: '2021.02.0'
 
 build:
   noarch: python
   number: 0
   skip: True  # [py<3.5]
+
+source:
+  git_rev: main
+  git_url: https://github.com/NCAR/geocat-comp.git
 
 requirements:
   host:
@@ -41,7 +41,7 @@ about:
   home: https://geocat.ucar.edu/
   license: Apache 2.0
   license_file: LICENSE
-  summary: "GeoCAT-comp is a Python wrapper around a  Fortran library containing a subset of NCL (NCAR Command Language) computational routines."
+  summary: 'GeoCAT-comp is a Python wrapper around a  Fortran library containing a subset of NCL (NCAR Command Language) computational routines.'
 
 extra:
   recipe-maintainers:
