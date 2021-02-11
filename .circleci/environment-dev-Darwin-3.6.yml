@@ -3,11 +3,12 @@ channels:
   - conda-forge
 dependencies:
   - python=3.6
-  - clang_osx-64
-  - cython
-  - numpy
-  - xarray
   - dask
   - distributed
+  - eofs
+  - geocat-f2py
+  - netcdf4
+  - numpy
   - pytest
+  - xarray
 

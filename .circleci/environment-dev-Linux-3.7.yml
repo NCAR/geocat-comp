@@ -3,10 +3,11 @@ channels:
   - conda-forge
 dependencies:
   - python=3.7
-  - gcc_linux-64
-  - cython
-  - numpy
-  - xarray
   - dask
   - distributed
+  - eofs
+  - geocat-f2py
+  - netcdf4
+  - numpy
   - pytest
+  - xarray
