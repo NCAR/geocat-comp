@@ -28,7 +28,7 @@ jobs:
         run: |
           conda env create --file build_envs/environment_$(uname).yml
           conda activate geocat_comp_build
-      - name: build_test
+      - name: build
         run: |
           source build.sh
       - name: test
