@@ -18,12 +18,13 @@ jobs:
         uses: actions/checkout@v2
         with:
           token: ${{ secrets.A_KOOTZ_GEOCAT_COMP_TOKEN }}
-      - name: conda_env
+      - name: conda_setup
         uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: temp
           python-version: ${{ matrix.python-version }}
           channels: conda-forge, ncar
+      - name: conda_env
         run: |
           conda env create --file build_envs/environment_$(uname).yml
           conda activate geocat_comp_build
