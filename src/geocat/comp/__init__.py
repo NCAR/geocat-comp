@@ -1,5 +1,5 @@
 # move functions into geocat.comp namespace
-from .climatology import (climatology, anomaly)
+from .climatology import (climatology, anomaly, month_to_season)
 from .eofunc import (eofunc_eofs, eofunc_pcs, eofunc, eofunc_ts)
 from .errors import (Error, AttributeError, ChunkError, CoordinateError,
                      DimensionError, MetaError)
