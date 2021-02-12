@@ -41,3 +41,5 @@ GeoCAT-comp routines
    geocat.comp.climatology 
     
    geocat.comp.anomaly
+
+   geocat.comp.month_to_season 
