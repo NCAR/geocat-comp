@@ -60,7 +60,7 @@ def relhum(temperature, mixing_ratio, pressure):
 
             Returns:
 
-                relative_humidity (:class:`numpy.ndarray`):
+                relative_humidity (:class:`numpy.ndarray` or :class:`xr.DataArray`):
                     Relative humidity. Will have the same dimensions as temperature
         """
 
@@ -100,7 +100,7 @@ def relhum_ice(temperature, mixing_ratio, pressure):
 
            Returns:
 
-               relative_humidity (:class:`numpy.ndarray`):
+               relative_humidity (:class:`numpy.ndarray` or :class:`xr.DataArray`):
                    Relative humidity. Will have the same dimensions as temperature
        """
 
@@ -143,7 +143,7 @@ def relhum_water(temperature, mixing_ratio, pressure):
 
             Returns:
 
-                relative_humidity (:class:`numpy.ndarray`):
+                relative_humidity (:class:`numpy.ndarray` or :class:`xr.DataArray`):
                     Relative humidity. Will have the same dimensions as temperature
     """
 
@@ -172,7 +172,7 @@ def _relhum_tdd(t, w, p):
 
        Args:
 
-            t (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+            t (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
                 Temperature in Kelvin
 
             w (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
@@ -183,7 +183,7 @@ def _relhum_tdd(t, w, p):
 
         Returns:
 
-            rh (:class:`numpy.ndarray`):
+            rh (:class:`numpy.ndarray):
                 Relative humidity. Will have the same dimensions as temperature
     """
 
@@ -245,13 +245,13 @@ def _relhum_ice(t, w, p):
 
        Args:
 
-            t (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+            t (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
                 Temperature in Kelvin
 
-            w (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+            w (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
                 Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-            p (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+            p (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
                 Pressure in Pa. Must have the same dimensions as temperature
 
         Returns:
@@ -290,13 +290,13 @@ def _relhum_water(t, w, p):
 
        Args:
 
-            t (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+            t (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
                 Temperature in Kelvin
 
-            w (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+            w (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
                 Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-            p (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+            p (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
                 Pressure in Pa. Must have the same dimensions as temperature
 
         Returns:
