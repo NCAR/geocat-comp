@@ -1,4 +1,3 @@
-/src/geocat/comp/_ncomp/*.c
 /build/
 
 
@@ -306,3 +305,6 @@ dmypy.json
 
 .DS_Store
 test/dask-worker-space/
+/dask-worker-space/
+.vscode/
+generated/
