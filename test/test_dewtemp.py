@@ -1,10 +1,10 @@
 import unittest
-import pytest
 import numpy as np
 import xarray as xr
 import dask.array as da
 import dask.distributed as dd
 from geocat.comp.dewtemp import dewtemp
+from dask.array.core import map_blocks
 
 t_def = [
     29.3, 28.1, 23.5, 20.9, 18.4, 15.9, 13.1, 10.1, 6.7, 3.1, -0.5, -4.5, -9.0,
@@ -31,24 +31,24 @@ class Test_dewtemp(unittest.TestCase):
         tk = 18. + 273.15
         rh = 46.5
 
-        assert dewtemp(tk, rh) - 273.15 == pytest.approx(dt_1, 0.1)
+        assert np.allclose(dewtemp(tk, rh) - 273.15, dt_2, 0.1)
 
     def test_list_input(self):
         tk = (np.asarray(t_def) + 273.15).tolist()
 
-        assert dewtemp(tk, rh_def) - 273.15 == pytest.approx(dt_2, 0.1)
+        assert np.allclose(dewtemp(tk, rh_def) - 273.15, dt_2, 0.1)
 
     def test_numpy_input(self):
         tk = np.asarray(t_def) + 273.15
         rh = np.asarray(rh_def)
 
-        assert dewtemp(tk, rh) - 273.15 == pytest.approx(dt_2, 0.1)
+        assert np.allclose(dewtemp(tk, rh) - 273.15, dt_2, 0.1)
 
     def test_xarray_input(self):
         tk = xr.DataArray(np.asarray(t_def) + 273.15)
         rh = xr.DataArray(rh_def)
 
-        assert dewtemp(tk, rh) - 273.15 == pytest.approx(dt_2, 0.1)
+        assert np.allclose(dewtemp(tk, rh) - 273.15, dt_2, 0.1)
 
     def test_dask_unchunked_input(self):
         tk = da.from_array(np.asarray(t_def) + 273.15)
@@ -59,9 +59,11 @@ class Test_dewtemp(unittest.TestCase):
         print(cluster.dashboard_link)
         client = dd.Client(cluster)
 
-        assert np.allclose(dewtemp(tk, rh) - 273.15, dt_2, atol=0.1)
+        out = map_blocks(dewtemp, tk, rh).compute()
 
-        client.close()
+        assert np.allclose(out - 273.15, dt_2, atol=0.1)
+
+        client.shutdown()
 
     def test_dask_chunked_input(self):
         tk = da.from_array(np.asarray(t_def) + 273.15, chunks="auto")
@@ -72,10 +74,8 @@ class Test_dewtemp(unittest.TestCase):
         print(cluster.dashboard_link)
         client = dd.Client(cluster)
 
-        assert np.allclose(dewtemp(tk, rh) - 273.15, dt_2, atol=0.1)
+        out = map_blocks(dewtemp, tk, rh).compute()
 
-        client.close()
+        assert np.allclose(out - 273.15, dt_2, atol=0.1)
 
-
-a = Test_dewtemp()
-a.test_dask_unchunked_input()
+        client.shutdown()

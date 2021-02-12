@@ -23,32 +23,34 @@ def dewtemp(temperature, relative_humidity):
                     Dewpoint temperature in Kelvin. Same size as input variable temperature
     """
 
+    # If xarray input, pull data and store metadata
+    x_out = False
+    if isinstance(temperature, xr.DataArray):
+        x_out = True
+        save_dims = temperature.dims
+        save_coords = temperature.coords
+        save_attrs = temperature.attrs
+
+    # ensure in numpy array for function call
+    temperature = np.asarray(temperature)
+    relative_humidity = np.asarray(relative_humidity)
+
     # make sure the input arrays are of the same size
     if np.shape(temperature) != np.shape(relative_humidity):
         raise ValueError(
             f"dewtemp_trh: dimensions of temperature, {np.shape(temperature)}, and relative_humidity, "
             f"{np.shape(relative_humidity)}, do not match")
 
-    # see if single value input and skip dask if appropriate
-    if np.size(temperature) == 1:
-        return _dewtemp(temperature, relative_humidity)
-
-    # ''' Start of boilerplate
-    if not isinstance(temperature, xr.DataArray):
-        temperature = xr.DataArray(temperature)
-
-    if not isinstance(relative_humidity, xr.DataArray):
-        relative_humidity = xr.DataArray(relative_humidity)
-
-    # Make sure dask arrays are autochunked dask arrays
-    relative_humidity = da.from_array(relative_humidity, chunks="auto")
-    temperature = da.from_array(temperature, chunks="auto")
-
     # Call mapblocks to run function
-    dew_pnt_temp = map_blocks(_dewtemp, temperature, relative_humidity)
-    dew_pnt_temp = dew_pnt_temp.compute()
+    dew_pnt_temp = _dewtemp(temperature, relative_humidity)
 
-    # tdk = _dewtemp(temperature, relative_humidity)
+    # output as xarray if input as xarray
+    if x_out:
+        dew_pnt_temp = xr.DataArray(data=dew_pnt_temp,
+                                    coords=save_coords,
+                                    dims=save_dims,
+                                    attrs=save_attrs)
+
     return dew_pnt_temp
 
 
