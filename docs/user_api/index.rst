@@ -1,3 +1,5 @@
+.. currentmodule:: geocat.comp
+
 User API
 ========
 
@@ -8,7 +10,6 @@ GeoCAT-comp routines
 ^^^^^^^^^^^^^^^^^^^^
 
 .. autosummary::
-   :nosignatures:
    :toctree: ./generated/
 
    geocat.comp.linint2
@@ -36,3 +37,7 @@ GeoCAT-comp routines
    geocat.comp.triple2grid
 
    geocat.comp.grid2triple
+   
+   geocat.comp.climatology 
+    
+   geocat.comp.anomaly
