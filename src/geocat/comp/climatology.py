@@ -244,8 +244,8 @@ def month_to_season(
         The data on which to operate
     season : str
         A string representing the season to calculate: e.g., "JFM", "JJA".
-        Support values include:
-         
+        Valid values are:
+
          - DJF
          - JFM
          - FMA
@@ -301,10 +301,9 @@ def month_to_season(
             f"contributed: month_to_season: bad season: SEASON = {season}. Valid seasons include: {list(seasons_pd.keys())}"
         )
 
-
     start_date = dset[time_coord_name][0]
     end_date = dset[time_coord_name][-1]
-    
+
     # Compute the three-month means, moving time labels ahead to the middle
     # month.
     month_offset = "MS"
