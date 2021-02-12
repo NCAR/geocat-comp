@@ -1,5 +1,4 @@
 import numpy as np
-from math import exp
 import xarray as xr
 
 
@@ -165,7 +164,7 @@ def _relhum_ice(t, w, p):
     a = 22.571
     b = 273.71
 
-    est = es0 * exp((a * (t - t0)) / ((t - t0) + b))
+    est = es0 * np.exp((a * (t - t0)) / ((t - t0) + b))
     qst = (ep * est) / ((p * 0.01) - onemep * est)
 
     rh = 100 * (w / qst)
@@ -210,7 +209,7 @@ def _relhum_water(t, w, p):
     a = 17.269
     b = 35.86
 
-    est = es0 * exp((a * (t - t0)) / ((t - t0) - b))
+    est = es0 * np.exp((a * (t - t0)) / ((t - t0) - b))
     qst = (ep * est) / ((p * 0.01) - onemep * est)
 
     rh = 100 * (w / qst)
