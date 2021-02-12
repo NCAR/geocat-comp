@@ -28,6 +28,8 @@ GeoCAT-comp routines
 
    geocat.comp.isvector
 
+   geocat.comp.linint1
+
    geocat.comp.linint2
 
    geocat.comp.linint2pts
