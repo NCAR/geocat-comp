@@ -16,14 +16,14 @@ requirements:
     - python
     - pip
     - setuptools
-    - numpy=1.19
-    - xarray
-    - dask
   run:
     - python
+    - cf_xarray>=0.3.1
+    - dask
+    - eofs
+    - geocat-f2py
     - numpy=1.19
     - xarray
-    - dask
 
 test:
   source_files:

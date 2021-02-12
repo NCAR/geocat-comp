@@ -3,7 +3,7 @@ channels:
   - ncar
 dependencies:
   - python=3.7
-  - cf_xarray >= 0.3.1
+  - cf_xarray>=0.3.1
   - dask
   - distributed
   - eofs
