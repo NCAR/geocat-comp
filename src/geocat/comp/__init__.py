@@ -1,6 +1,6 @@
 # move functions into geocat.comp namespace
 from .climatology import (climatology, anomaly, month_to_season)
-from .dewtemp import (dewtemp, dewtemp_trh)
+from .dewtemp import (dewtemp)
 from .eofunc import (eofunc_eofs, eofunc_pcs, eofunc, eofunc_ts)
 from .errors import (Error, AttributeError, ChunkError, CoordinateError,
                      DimensionError, MetaError)
