@@ -57,6 +57,119 @@ def relhum(temperature, mixing_ratio, pressure):
     return relative_humidity
 
 
+def relhum_water(temperature, mixing_ratio, pressure):
+    """ Calculates relative humidity with respect to water, given temperature, mixing ratio, and pressure.
+
+        Definition of mixing ratio if,
+        es  - is the saturation mixing ratio
+        ep  - is the ratio of the molecular weights of water vapor to dry air
+        p   - is the atmospheric pressure
+        rh  - is the relative humidity (given as a percent)
+
+        rh =  100*  q / ( (ep*es)/(p-es) )
+
+       Args:
+
+            temperature (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
+                Temperature in Kelvin
+
+            mixing_ratio (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
+                Mixing ratio in kg/kg. Must have the same dimensions as temperature
+
+            pressure (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
+                Pressure in Pa. Must have the same dimensions as temperature
+
+        Returns:
+
+            relative_humidity (:class:`numpy.ndarray`):
+                Relative humidity. Will have the same dimensions as temperature
+    """
+
+    # If xarray input, pull data and store metadata
+    x_out = False
+    if isinstance(temperature, xr.DataArray):
+        x_out = True
+        save_dims = temperature.dims
+        save_coords = temperature.coords
+        save_attrs = temperature.attrs
+
+    # ensure in numpy array for function call
+    temperature = np.asarray(temperature)
+    mixing_ratio = np.asarray(mixing_ratio)
+    pressure = np.asarray(pressure)
+
+    # ensure all inputs same size
+    if np.shape(temperature) != np.shape(mixing_ratio) or np.shape(
+            temperature) != np.shape(pressure):
+        raise ValueError(f"relhum_water: dimensions of inputs are not the same")
+
+    relative_humidity = _relhum_water(temperature, mixing_ratio, pressure)
+
+    # output as xarray if input as xarray
+    if x_out:
+        relative_humidity = xr.DataArray(data=relative_humidity,
+                                         coords=save_coords,
+                                         dims=save_dims,
+                                         attrs=save_attrs)
+
+    return relative_humidity
+
+
+def relhum_ice(temperature, mixing_ratio, pressure):
+    """ Calculates relative humidity with respect to ice, given temperature, mixing ratio, and pressure.
+
+            "Improved Magnus' Form Approx. of Saturation Vapor pressure"
+            Oleg A. Alduchov and Robert E. Eskridge
+            http://www.osti.gov/scitech/servlets/purl/548871/
+            https://doi.org/10.2172/548871
+
+           Args:
+
+                temperature (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
+                    Temperature in Kelvin
+
+                mixing_ratio (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
+                    Mixing ratio in kg/kg. Must have the same dimensions as temperature
+
+                pressure (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
+                    Pressure in Pa. Must have the same dimensions as temperature
+
+            Returns:
+
+                relative_humidity (:class:`numpy.ndarray`):
+                    Relative humidity. Will have the same dimensions as temperature
+        """
+
+    # If xarray input, pull data and store metadata
+    x_out = False
+    if isinstance(temperature, xr.DataArray):
+        x_out = True
+        save_dims = temperature.dims
+        save_coords = temperature.coords
+        save_attrs = temperature.attrs
+
+    # ensure in numpy array for function call
+    temperature = np.asarray(temperature)
+    mixing_ratio = np.asarray(mixing_ratio)
+    pressure = np.asarray(pressure)
+
+    # ensure all inputs same size
+    if np.shape(temperature) != np.shape(mixing_ratio) or np.shape(
+            temperature) != np.shape(pressure):
+        raise ValueError(f"relhum_ice: dimensions of inputs are not the same")
+
+    relative_humidity = _relhum_ice(temperature, mixing_ratio, pressure)
+
+    # output as xarray if input as xarray
+    if x_out:
+        relative_humidity = xr.DataArray(data=relative_humidity,
+                                         coords=save_coords,
+                                         dims=save_dims,
+                                         attrs=save_attrs)
+
+    return relative_humidity
+
+
 def _relhum(t, w, p):
     """ Calculates relative humidity with respect to ice, given temperature, mixing ratio, and pressure.
 
@@ -130,7 +243,7 @@ def _relhum(t, w, p):
     return rh
 
 
-def relhum_ice(t, w, p):
+def _relhum_ice(t, w, p):
     """ Calculates relative humidity with respect to ice, given temperature, mixing ratio, and pressure.
 
         "Improved Magnus' Form Approx. of Saturation Vapor pressure"
@@ -172,7 +285,7 @@ def relhum_ice(t, w, p):
     return rh
 
 
-def relhum_water(t, w, p):
+def _relhum_water(t, w, p):
     """ Calculates relative humidity with respect to water, given temperature, mixing ratio, and pressure.
 
         Definition of mixing ratio if,
