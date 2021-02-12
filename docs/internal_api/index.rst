@@ -21,6 +21,8 @@ GeoCAT-comp routines
 
    geocat.comp.climatology._validate_freq
 
+   geocat.comp.dewtemp._dewtemp
+
    geocat.comp.eofunc._generate_eofs_solver
 
    geocat.comp.polynomial._get_missing_value
@@ -38,3 +40,5 @@ GeoCAT-comp routines
    geocat.comp.polynomial._to_numpy_ndarray
 
    geocat.comp.polynomial._ndpolyval
+
+   geocat.comp.relhum._relhum
