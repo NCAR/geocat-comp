@@ -31,7 +31,7 @@ class Test_dewtemp(unittest.TestCase):
         tk = 18. + 273.15
         rh = 46.5
 
-        assert np.allclose(dewtemp(tk, rh) - 273.15, dt_2, 0.1)
+        assert np.allclose(dewtemp(tk, rh) - 273.15, dt_1, 0.1)
 
     def test_list_input(self):
         tk = (np.asarray(t_def) + 273.15).tolist()
