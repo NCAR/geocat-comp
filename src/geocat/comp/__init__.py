@@ -1,6 +1,6 @@
 # move functions into geocat.comp namespace
 from .climatology import (climatology, anomaly, month_to_season)
-from .eofs_wrapper import (eofunc_eofs, eofunc_pcs, eofunc, eofunc_ts)
+from .eofunc import (eofunc_eofs, eofunc_pcs, eofunc, eofunc_ts)
 from .errors import (Error, AttributeError, ChunkError, CoordinateError,
                      DimensionError, MetaError)
 from .polynomial import (ndpolyfit, ndpolyval, detrend, isvector)

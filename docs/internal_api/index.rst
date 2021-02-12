@@ -11,11 +11,19 @@ GeoCAT-comp routines
    :nosignatures:
    :toctree: ./generated/
 
+   geocat.comp.climatology._contains_datetime_like_objects
+
+   geocat.comp.climatology._find_time_invariant_vars
+
+   geocat.comp.climatology._setup_clim_anom_input
+
+   geocat.comp.climatology._validate_freq
+
+   geocat.comp.eofunc._generate_eofs_solver
+
    geocat.comp.polynomial._get_missing_value
 
    geocat.comp.polynomial._unchunk_ifneeded
-
-   geocat.comp.polynomial.ndpolyfit
 
    geocat.comp.polynomial._ndpolyfit
 

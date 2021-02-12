@@ -8,7 +8,7 @@ import warnings
 
 
 
-def generate_eofs_solver(data, time_dim=0, weights=None, center=True, ddof=1):
+def _generate_eofs_solver(data, time_dim=0, weights=None, center=True, ddof=1):
     """
         Convenience function to be used in both `eofunc_eofs` and `eofunc_pcs` functions.
     """
@@ -156,11 +156,11 @@ def eofunc_eofs(data,
 
     """
 
-    data, solver = generate_eofs_solver(data,
-                                        time_dim=time_dim,
-                                        weights=weights,
-                                        center=center,
-                                        ddof=ddof)
+    data, solver = _generate_eofs_solver(data,
+                                         time_dim=time_dim,
+                                         weights=weights,
+                                         center=center,
+                                         ddof=ddof)
 
     # Checking number of EOFs
     if neofs <= 0:
@@ -279,11 +279,11 @@ def eofunc_pcs(data,
 
     """
 
-    data, solver = generate_eofs_solver(data,
-                                        time_dim=time_dim,
-                                        weights=weights,
-                                        center=center,
-                                        ddof=ddof)
+    data, solver = _generate_eofs_solver(data,
+                                         time_dim=time_dim,
+                                         weights=weights,
+                                         center=center,
+                                         ddof=ddof)
 
     # Checking number of EOFs
     if npcs <= 0:
