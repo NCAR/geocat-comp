@@ -63,7 +63,8 @@ class Test_dewtemp(unittest.TestCase):
 
         assert np.allclose(out - 273.15, dt_2, atol=0.1)
 
-        client.shutdown()
+        cluster.close()
+        client.close()
 
     def test_dask_chunked_input(self):
         tk = da.from_array(np.asarray(t_def) + 273.15, chunks="auto")
@@ -78,4 +79,5 @@ class Test_dewtemp(unittest.TestCase):
 
         assert np.allclose(out - 273.15, dt_2, atol=0.1)
 
-        client.shutdown()
+        cluster.close()
+        client.close()
