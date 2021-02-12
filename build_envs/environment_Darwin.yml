@@ -9,4 +9,4 @@ dependencies:
   - dask
   - distributed
   - pytest
-  - geocat-ncomp
+  - geocat-f2py
