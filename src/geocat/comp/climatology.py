@@ -278,7 +278,7 @@ def month_to_season(
     time_coord_name = _get_time_coordinate_info(dset, time_coord_name)
     mod = 12
     if dset[time_coord_name].size % mod != 0:
-        raise ValueError(f"Expected a multiple of {mod} values")
+        raise ValueError(f"The {time_coord_name} axis length must be a multiple of {mod}.")
 
     seasons_pd = {
         "DJF": ("QS-DEC", 1),
