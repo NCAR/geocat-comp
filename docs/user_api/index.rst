@@ -18,6 +18,8 @@ GeoCAT-comp routines
 
    geocat.comp.detrend
 
+   geocat.comp.dewtemp
+
    geocat.comp.dpres_plevel
 
    geocat.comp.eofunc_eofs
@@ -45,6 +47,12 @@ GeoCAT-comp routines
    geocat.comp.rcm2points
 
    geocat.comp.rcm2rgrid
+
+   geocat.comp.relhum
+
+   geocat.comp.relhum_ice
+
+   geocat.comp.relhum_water
 
    geocat.comp.rgrid2rcm
 

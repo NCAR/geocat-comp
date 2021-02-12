@@ -130,7 +130,7 @@ def _relhum(t, w, p):
     return rh
 
 
-def _relhum_ice(t, w, p):
+def relhum_ice(t, w, p):
     """ Calculates relative humidity with respect to ice, given temperature, mixing ratio, and pressure.
 
         "Improved Magnus' Form Approx. of Saturation Vapor pressure"
@@ -172,7 +172,7 @@ def _relhum_ice(t, w, p):
     return rh
 
 
-def _relhum_water(t, w, p):
+def relhum_water(t, w, p):
     """ Calculates relative humidity with respect to water, given temperature, mixing ratio, and pressure.
 
         Definition of mixing ratio if,
