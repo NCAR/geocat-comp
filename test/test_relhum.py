@@ -74,9 +74,11 @@ class Test_relhum(unittest.TestCase):
         print(cluster.dashboard_link)
         client = dd.Client(cluster)
 
-        assert np.allclose(relhum(t, q, p), rh_gt_2, atol=0.1)
+        out = map_blocks(relhum, t, q, p).compute()
 
-        client.close()
+        assert np.allclose(out, rh_gt_2, atol=0.1)
+
+        client.shutdown()
 
     def test_dask_chunked_input(self):
         p = da.from_array(p_def, chunks="auto")
@@ -88,6 +90,8 @@ class Test_relhum(unittest.TestCase):
         print(cluster.dashboard_link)
         client = dd.Client(cluster)
 
-        assert np.allclose(relhum(t, q, p), rh_gt_2, atol=0.1)
+        out = client.submit(relhum, t, q, p).result()
 
-        client.close()
+        assert np.allclose(out, rh_gt_2, atol=0.1)
+
+        client.shutdown()

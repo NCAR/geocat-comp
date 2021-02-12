@@ -5,40 +5,6 @@ import dask.array as da
 from dask.array.core import map_blocks
 
 
-def _handle_input(inputs):
-    """ Internal function designed to handle the inputs to the relhum function family
-
-        Args:
-
-            inputs (:obj:`list`):
-                A list of the input variables.
-
-        Returns:
-
-            outputs (:obj:`list`):
-                A list of the output variables, in the same order as the inputs
-                that have been checked for size requirements and dask chunked
-
-    """
-
-    # save shape of first input to compare against others
-    same_size = np.shape(inputs[0])
-
-    for x in inputs:
-        if np.shape(x) != same_size:
-            raise ValueError(
-                f"relhum: dimensions all input variables must match")
-
-    # check for dask chunking and autochunk
-    for i in range(len(inputs)):
-        if not isinstance(inputs[i], xr.DataArray):
-            inputs[i] = xr.DataArray(inputs[i])
-
-        inputs[i] = da.from_array(inputs[i], chunks="auto")
-
-    return inputs
-
-
 def relhum(temperature, mixing_ratio, pressure):
     """ This function calculates the relative humidity given temperature, mixing ratio, and pressure
 
@@ -64,105 +30,29 @@ def relhum(temperature, mixing_ratio, pressure):
                     Relative humidity. Will have the same dimensions as temperature
         """
 
-    # check if single value input, and skip dask if appropriate
-    if np.size(temperature) == 1:
-        return _relhum_tdd(temperature, mixing_ratio, pressure)
+    # If xarray input, pull data and store metadata
+    x_out = False
+    if isinstance(temperature, xr.DataArray):
+        x_out = True
+        save_dims = temperature.dims
+        save_coords = temperature.coords
+        save_attrs = temperature.attrs
 
-    # verify and chunk inputs if necessary
-    temperature, mixing_ratio, pressure = _handle_input(
-        [temperature, mixing_ratio, pressure])
+    # ensure in numpy array for function call
+    temperature = np.asarray(temperature)
+    mixing_ratio = np.asarray(mixing_ratio)
+    pressure = np.asarray(pressure)
 
-    relative_humidity = map_blocks(_relhum_tdd, temperature, mixing_ratio,
-                                   pressure)
-    relative_humidity = relative_humidity.compute()
+    relative_humidity = _relhum(temperature, mixing_ratio, pressure)
 
-    return relative_humidity
-
-
-def relhum_ice(temperature, mixing_ratio, pressure):
-    """ Calculates relative humidity with respect to ice, given temperature, mixing ratio, and pressure.
-
-           "Improved Magnus' Form Approx. of Saturation Vapor pressure"
-           Oleg A. Alduchov and Robert E. Eskridge
-           http://www.osti.gov/scitech/servlets/purl/548871/
-           https://doi.org/10.2172/548871
-
-          Args:
-
-               temperature (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
-                   Temperature in Kelvin
-
-               mixing_ratio (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
-                   Mixing ratio in kg/kg. Must have the same dimensions as temperature
-
-               pressure (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
-                   Pressure in Pa. Must have the same dimensions as temperature
-
-           Returns:
-
-               relative_humidity (:class:`numpy.ndarray` or :class:`xr.DataArray`):
-                   Relative humidity. Will have the same dimensions as temperature
-       """
-
-    # check if single value input, and skip dask if appropriate
-    if np.size(temperature) == 1:
-        return _relhum_ice(temperature, mixing_ratio, pressure)
-
-    # verify and chunk inputs if necessary
-    temperature, mixing_ratio, pressure = _handle_input(
-        [temperature, mixing_ratio, pressure])
-
-    relative_humidity = map_blocks(_relhum_ice, temperature, mixing_ratio,
-                                   pressure)
-    relative_humidity = relative_humidity.compute()
+    # output as xarray if input as xarray
+    if x_out:
+        relative_humidity = xr.DataArray(data=relative_humidity, coords=save_coords, dims=save_dims, attrs=save_attrs)
 
     return relative_humidity
 
 
-def relhum_water(temperature, mixing_ratio, pressure):
-    """ Calculates relative humidity with respect to water, given temperature, mixing ratio, and pressure.
-
-           Definition of mixing ratio if,
-           es  - is the saturation mixing ratio
-           ep  - is the ratio of the molecular weights of water vapor to dry air
-           p   - is the atmospheric pressure
-           rh  - is the relative humidity (given as a percent)
-
-           rh =  100*  q / ( (ep*es)/(p-es) )
-
-           Args:
-
-                temperature (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
-                    Temperature in Kelvin
-
-                mixing_ratio (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
-                    Mixing ratio in kg/kg. Must have the same dimensions as temperature
-
-                pressure (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
-                    Pressure in Pa. Must have the same dimensions as temperature
-
-            Returns:
-
-                relative_humidity (:class:`numpy.ndarray` or :class:`xr.DataArray`):
-                    Relative humidity. Will have the same dimensions as temperature
-    """
-
-    # check if single value input, and skip dask if appropriate
-    if np.size(temperature) == 1:
-        return _relhum_water(temperature, mixing_ratio, pressure)
-
-    # verify and chunk inputs if necessary
-    temperature, mixing_ratio, pressure = _handle_input(
-        [temperature, mixing_ratio, pressure])
-
-    relative_humidity = map_blocks(_relhum_water, temperature, mixing_ratio,
-                                   pressure)
-    relative_humidity = relative_humidity.compute()
-
-    return relative_humidity
-
-
-def _relhum_tdd(t, w, p):
+def _relhum(t, w, p):
     """ Calculates relative humidity with respect to ice, given temperature, mixing ratio, and pressure.
 
         "Improved Magnus' Form Approx. of Saturation Vapor pressure"
