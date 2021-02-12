@@ -47,7 +47,10 @@ def relhum(temperature, mixing_ratio, pressure):
 
     # output as xarray if input as xarray
     if x_out:
-        relative_humidity = xr.DataArray(data=relative_humidity, coords=save_coords, dims=save_dims, attrs=save_attrs)
+        relative_humidity = xr.DataArray(data=relative_humidity,
+                                         coords=save_coords,
+                                         dims=save_dims,
+                                         attrs=save_attrs)
 
     return relative_humidity
 
