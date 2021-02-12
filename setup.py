@@ -1,22 +1,22 @@
-try:
-    from setuptools import setup
-    from setuptools import Extension
-except ImportError:
-    from distutils.core import setup
-    from distutils.extension import Extension
+#''' setup.py is needed, but only to make namespaces happen
+from setuptools import setup, find_packages
+from pathlib import Path
 
-with open("src/geocat/comp/version.py") as f:
-    exec(f.read())
+#''' moved into function, can now be used other places
+def version():
+    for line in open('meta.yaml').readlines():
+        index = line.find('version')
+        if index > -1:
+            return line[index+8:].replace('\'','' ).strip()
 
 setup(
-    name="geocat.comp",
+    name='geocat.comp',
+    version=version(),
     package_dir={
-        "": "src",
-        "geocat": "src/geocat",
-        "geocat.comp": "src/geocat/comp"
+        '': 'src',
+        'geocat': 'src/geocat',
+        'geocat.comp': 'src/geocat/comp'
     },
-    namespace_packages=["geocat"],
-    packages=["geocat", "geocat.comp"],
-    version=__version__,
-    install_requires=["numpy", "xarray", "dask[complete]", "cf_xarray>=0.3.1"],
+    namespace_packages=['geocat'],
+    packages=['geocat', 'geocat.comp'],
 )

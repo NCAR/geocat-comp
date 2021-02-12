@@ -1,0 +1,37 @@
+name: build_test
+on: push
+jobs:
+  conda_builds:
+    if: "contains(github.event.head_commit.message, 'trigger_build_test')"
+    name: build_test_${{ matrix.python-version }}_${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash -l {0}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ "ubuntu-latest", "macos-latest"]
+        python-version: [ "3.6", "3.7", "3.8", "3.9" ]
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.A_KOOTZ_GEOCAT_COMP_TOKEN }}
+      - name: conda_setup
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: temp
+          python-version: ${{ matrix.python-version }}
+          channels: conda-forge, ncar
+      - name: conda_env
+        run: |
+          conda env create --file build_envs/environment_$(uname).yml
+      - name: build
+        run: |
+          conda activate geocat_comp_build
+          source build.sh
+      - name: test
+        run: |
+          conda activate geocat_comp_build
+          pytest
