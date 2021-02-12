@@ -1,6 +1,4 @@
 import unittest
-import pytest
-import time
 import numpy as np
 import xarray as xr
 import dask.array as da
@@ -44,7 +42,7 @@ class Test_relhum(unittest.TestCase):
         t = 18. + 273.15
         q = 6. / 1000.
 
-        assert relhum(t, q, p) == pytest.approx(rh_gt_1, 0.1)
+        assert np.allclose(relhum(t, q, p), rh_gt_1, atol=0.1)
 
     def test_list_input(self):
 

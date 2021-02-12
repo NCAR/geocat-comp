@@ -1,8 +1,6 @@
 import numpy as np
 from math import exp
 import xarray as xr
-import dask.array as da
-from dask.array.core import map_blocks
 
 
 def relhum(temperature, mixing_ratio, pressure):
