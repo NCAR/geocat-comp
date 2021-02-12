@@ -44,9 +44,9 @@ def relhum(temperature, mixing_ratio, pressure):
     pressure = np.asarray(pressure)
 
     # ensure all inputs same size
-    if np.shape(temperature) != np.shape(mixing_ratio) or np.shape(temperature) != np.shape(pressure):
-        raise ValueError(
-            f"relhum: dimensions of inputs are not the same")
+    if np.shape(temperature) != np.shape(mixing_ratio) or np.shape(
+            temperature) != np.shape(pressure):
+        raise ValueError(f"relhum: dimensions of inputs are not the same")
 
     relative_humidity = _relhum(temperature, mixing_ratio, pressure)
 
