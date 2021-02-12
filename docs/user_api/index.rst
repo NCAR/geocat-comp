@@ -16,6 +16,8 @@ GeoCAT-comp routines
 
    geocat.comp.climatology
 
+   geocat.comp.detrend
+
    geocat.comp.dpres_plevel
 
    geocat.comp.eofunc_eofs
@@ -23,6 +25,8 @@ GeoCAT-comp routines
    geocat.comp.eofunc_pcs
 
    geocat.comp.grid_to_triple
+
+   geocat.comp.isvector
 
    geocat.comp.linint2
 

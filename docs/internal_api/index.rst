@@ -15,6 +15,8 @@ GeoCAT-comp routines
 
    geocat.comp.climatology._find_time_invariant_vars
 
+   geocat.comp.climatology._get_time_coordinate_info
+
    geocat.comp.climatology._setup_clim_anom_input
 
    geocat.comp.climatology._validate_freq
@@ -33,12 +35,6 @@ GeoCAT-comp routines
 
    geocat.comp.polynomial._reverse_rearrange_axis
 
-   geocat.comp.polynomial.isvector
-
    geocat.comp.polynomial._to_numpy_ndarray
 
-   geocat.comp.polynomial.ndpolyval
-
    geocat.comp.polynomial._ndpolyval
-
-   geocat.comp.polynomial.detrend
