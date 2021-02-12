@@ -16,6 +16,7 @@ requirements:
     - python
     - pip
     - setuptools
+    - geocat-f2py
   run:
     - python
     - cf_xarray>=0.3.1
@@ -28,7 +29,6 @@ requirements:
 test:
   source_files:
     - test
-    - resources
   requires:
     - pytest
     - netcdf4
