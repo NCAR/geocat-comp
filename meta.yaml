@@ -19,11 +19,13 @@ requirements:
     - numpy=1.19
     - xarray
     - dask
+    - cf_xarray
   run:
     - python
     - numpy=1.19
     - xarray
     - dask
+    - cf_xarray
 
 test:
   source_files:
