@@ -1,3 +1,5 @@
+.. currentmodule:: geocat.comp
+
 User API
 ========
 
@@ -8,31 +10,43 @@ GeoCAT-comp routines
 ^^^^^^^^^^^^^^^^^^^^
 
 .. autosummary::
-   :nosignatures:
    :toctree: ./generated/
+
+   geocat.comp.anomaly
+
+   geocat.comp.climatology
+
+   geocat.comp.detrend
+
+   geocat.comp.dpres_plevel
+
+   geocat.comp.eofunc_eofs
+
+   geocat.comp.eofunc_pcs
+
+   geocat.comp.grid_to_triple
+
+   geocat.comp.isvector
+
+   geocat.comp.linint1
 
    geocat.comp.linint2
 
-   geocat.comp.eofunc
-
-   geocat.comp.eofunc_ts
+   geocat.comp.linint2pts
 
    geocat.comp.moc_globe_atl
+   
+   geocat.comp.month_to_season 
 
    geocat.comp.ndpolyfit
 
    geocat.comp.ndpolyval
 
-   geocat.comp.dpres_plevel
-
    geocat.comp.rcm2points
 
    geocat.comp.rcm2rgrid
 
-   geocat.comp.linint2_points
-
    geocat.comp.rgrid2rcm
 
-   geocat.comp.triple2grid
+   geocat.comp.triple_to_grid
 
-   geocat.comp.grid2triple

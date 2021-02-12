@@ -1,0 +1,51 @@
+package:
+  name: 'geocat-comp'
+  version: '2021.02.0'
+
+build:
+  noarch: python
+  number: 0
+  skip: True  # [py<3.5]
+
+source:
+  git_rev: main
+  git_url: https://github.com/NCAR/geocat-comp.git
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+  run:
+    - python
+    - cf_xarray>=0.3.1
+    - dask
+    - eofs
+    - geocat-f2py
+    - numpy=1.19
+    - xarray
+
+test:
+  source_files:
+    - test
+    - resources
+  requires:
+    - pytest
+    - netcdf4
+  imports:
+    - geocat.comp
+  commands:
+    - pytest test
+
+about:
+  home: https://geocat.ucar.edu/
+  license: Apache 2.0
+  license_file: LICENSE
+  summary: 'GeoCAT-comp is a Python wrapper around a  Fortran library containing a subset of NCL (NCAR Command Language) computational routines.'
+
+extra:
+  recipe-maintainers:
+    - A. Kootz # https://github.com/pilotchute
+    - O. Eroglu # https://github.com/erogluorhan
+    - A. Zacharias # https://github.com/anissa111
+    - M. Sizemore # https://github.com/michaelavs
