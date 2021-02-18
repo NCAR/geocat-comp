@@ -52,15 +52,18 @@ doing so should not be necessary for most users. If you are interested in
 building GeoCAT-comp from source, you will need the following packages to be
 installed.
 
-### Required dependencies for building GeoCAT-comp
+### Required dependencies for building and testing GeoCAT-comp
 
 - Python 3.6+
-- numpy
-- [xarray](http://xarray.pydata.org/en/stable/)
+- [GeoCAT-f2py](https://github.com/NCAR/geocat-f2py)
+- [cf_xarray](https://cf-xarray.readthedocs.io/en/latest/)
+- [eofs](https://ajdawson.github.io/eofs/latest/index.html)
 - [dask](https://dask.org/)
 - [distributed](https://distributed.readthedocs.io/en/latest/)
+- [netcdf4](https://unidata.github.io/netcdf4-python/)
+- [numpy](https://numpy.org/doc/stable/)
 - [pytest](https://docs.pytest.org/en/stable/)
-- [GeoCAT-f2py](https://github.com/NCAR/geocat-f2py)
+- [xarray](http://xarray.pydata.org/en/stable/)
     
 Note: [GeoCAT-f2py](https://github.com/NCAR/geocat-f2py) dependency will automatically 
 install further dependencies for compiled language implementation.
