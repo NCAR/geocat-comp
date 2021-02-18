@@ -49,7 +49,7 @@ Please see our documentation for
 
 GeoCAT-comp provides a high-level [Xarray](http://xarray.pydata.org/en/stable/) interface under the 
 `geocat.comp` namespace. However, a stripped-down NumPy interface is used under the hood to bridge 
-the gap between NumPy arrays and the Fortran data structures used by 
+the gap between NumPy arrays and the compiled language data structures used by 
 [GeoCAT-f2py](https://github.com/NCAR/geocat-f2py). These functions are accessible under the 
 `geocat.comp` namespace, but are minimally documented and are 
 intended primarily for internal use.
