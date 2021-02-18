@@ -7,11 +7,12 @@ from dask.array.core import map_blocks
 
 from geocat.comp.relhum import (relhum, relhum_water, relhum_ice)
 
+
 class Test_relhum(unittest.TestCase):
     p_def = [
         100800, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000,
-        55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 17500, 15000, 12500,
-        10000, 8000, 7000, 6000, 5000, 4000, 3000, 2500, 2000
+        55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 17500, 15000,
+        12500, 10000, 8000, 7000, 6000, 5000, 4000, 3000, 2500, 2000
     ]
 
     t_def = [
@@ -23,16 +24,16 @@ class Test_relhum(unittest.TestCase):
 
     q_def = [
         0.02038, 0.01903, 0.01614, 0.01371, 0.01156, 0.0098, 0.00833, 0.00675,
-        0.00606, 0.00507, 0.00388, 0.00329, 0.00239, 0.0017, 0.001, 0.0006, 0.0002,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        0.00606, 0.00507, 0.00388, 0.00329, 0.00239, 0.0017, 0.001, 0.0006,
+        0.0002, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     ]
 
     rh_gt_1 = 46.4
 
     rh_gt_2 = [
         79.8228, 79.3578, 84.1962, 79.4898, 73.989, 69.2401, 66.1896, 61.1084,
-        64.21, 63.8305, 58.0412, 60.8194, 57.927, 62.3734, 62.9706, 73.8184, 62.71,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        64.21, 63.8305, 58.0412, 60.8194, 57.927, 62.3734, 62.9706, 73.8184,
+        62.71, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     ]
 
     def test_float_input(self):
@@ -44,7 +45,9 @@ class Test_relhum(unittest.TestCase):
 
     def test_list_input(self):
 
-        assert np.allclose(relhum(self.t_def, self.q_def, self.p_def), self.rh_gt_2, atol=0.1)
+        assert np.allclose(relhum(self.t_def, self.q_def, self.p_def),
+                           self.rh_gt_2,
+                           atol=0.1)
 
     def test_numpy_input(self):
         p = np.asarray(self.p_def)
@@ -58,7 +61,7 @@ class Test_relhum(unittest.TestCase):
         t = xr.DataArray(self.t_def)
         q = xr.DataArray(self.q_def)
 
-        assert np.allclose(relhum(t, q, p),self. rh_gt_2, atol=0.1)
+        assert np.allclose(relhum(t, q, p), self.rh_gt_2, atol=0.1)
 
     def test_dask_unchunked_input(self):
         p = da.from_array(self.p_def)
@@ -116,4 +119,3 @@ class Test_relhum_ice(unittest.TestCase):
         p = 1000. * 100.
 
         assert np.allclose(relhum_ice(tk, w, p), self.rh_gt_1, atol=0.1)
-
