@@ -10,7 +10,9 @@ _FREQUENCIES = {"day", "month", "year", "season"}
 
 def _find_time_invariant_vars(dset, time_coord_name):
     if isinstance(dset, xr.Dataset):
-        return [v for v in dset.variables if time_coord_name not in dset[v].dims]
+        return [
+            v for v in dset.variables if time_coord_name not in dset[v].dims
+        ]
     return
 
 
@@ -19,8 +21,8 @@ def _contains_datetime_like_objects(d_arr):
     np.datetime64, or cftime.datetime)
     """
     return np.issubdtype(
-        d_arr.dtype, np.datetime64
-    ) or xr.core.common.contains_cftime_datetimes(d_arr)
+        d_arr.dtype,
+        np.datetime64) or xr.core.common.contains_cftime_datetimes(d_arr)
 
 
 def _validate_freq(freq):
@@ -60,8 +62,9 @@ def _setup_clim_anom_input(dset, freq, time_coord_name):
 
 
 def climatology(
-    dset: typing.Union[xr.DataArray, xr.Dataset], freq: str, time_coord_name: str = None
-) -> typing.Union[xr.DataArray, xr.Dataset]:
+        dset: typing.Union[xr.DataArray, xr.Dataset],
+        freq: str,
+        time_coord_name: str = None) -> typing.Union[xr.DataArray, xr.Dataset]:
     """Compute climatologies for a specified time frequency.
 
     Parameters
@@ -131,8 +134,7 @@ def climatology(
     Dimensions without coordinates: lat, lon
     """
     data, time_invariant_vars, time_coord_name, time_dot_freq = _setup_clim_anom_input(
-        dset, freq, time_coord_name
-    )
+        dset, freq, time_coord_name)
 
     grouped = data.groupby(time_dot_freq)
     # TODO: Compute weighted climatologies when `time_bounds` are available
@@ -144,8 +146,9 @@ def climatology(
 
 
 def anomaly(
-    dset: typing.Union[xr.DataArray, xr.Dataset], freq: str, time_coord_name: str = None
-) -> typing.Union[xr.DataArray, xr.Dataset]:
+        dset: typing.Union[xr.DataArray, xr.Dataset],
+        freq: str,
+        time_coord_name: str = None) -> typing.Union[xr.DataArray, xr.Dataset]:
     """Compute anomalies for a specified time frequency.
 
     Parameters
@@ -217,8 +220,7 @@ def anomaly(
     """
 
     data, time_invariant_vars, time_coord_name, time_dot_freq = _setup_clim_anom_input(
-        dset, freq, time_coord_name
-    )
+        dset, freq, time_coord_name)
 
     clim = climatology(data, freq, time_coord_name)
     anom = data.groupby(time_dot_freq) - clim
@@ -278,7 +280,8 @@ def month_to_season(
     time_coord_name = _get_time_coordinate_info(dset, time_coord_name)
     mod = 12
     if dset[time_coord_name].size % mod != 0:
-        raise ValueError(f"The {time_coord_name} axis length must be a multiple of {mod}.")
+        raise ValueError(
+            f"The {time_coord_name} axis length must be a multiple of {mod}.")
 
     seasons_pd = {
         "DJF": ("QS-DEC", 1),
@@ -307,12 +310,13 @@ def month_to_season(
     # Compute the three-month means, moving time labels ahead to the middle
     # month.
     month_offset = "MS"
-    dset_seasons = dset.resample(
-        {time_coord_name: season_pd}, loffset=month_offset
-    ).mean()
+    dset_seasons = dset.resample({
+        time_coord_name: season_pd
+    },
+                                 loffset=month_offset).mean()
 
     # Filter just the desired season, and trim to the desired time range.
-    compute_dset = dset_seasons.sel(
-        {time_coord_name: dset_seasons[time_coord_name].dt.month == season_sel}
-    ).sel({time_coord_name: slice(start_date, end_date)})
+    compute_dset = dset_seasons.sel({
+        time_coord_name: dset_seasons[time_coord_name].dt.month == season_sel
+    }).sel({time_coord_name: slice(start_date, end_date)})
     return compute_dset
