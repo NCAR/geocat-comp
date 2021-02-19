@@ -7,7 +7,6 @@ from eofs.xarray import Eof
 import warnings
 
 
-
 def _generate_eofs_solver(data, time_dim=0, weights=None, center=True, ddof=1):
     """
         Convenience function to be used in both `eofunc_eofs` and `eofunc_pcs` functions.
@@ -312,6 +311,7 @@ def eofunc_pcs(data,
 
 
 # Transparent wrappers for geocat.comp backwards compatibility
+
 
 def eofunc(data: Iterable, neval, **kwargs) -> xr.DataArray:
     warnings.warn(

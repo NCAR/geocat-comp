@@ -52,18 +52,21 @@ doing so should not be necessary for most users. If you are interested in
 building GeoCAT-comp from source, you will need the following packages to be
 installed.
 
-### Required dependencies for building GeoCAT-comp
+### Required dependencies for building and testing GeoCAT-comp
 
 - Python 3.6+
-- numpy
-- [xarray](http://xarray.pydata.org/en/stable/)
+- [GeoCAT-f2py](https://github.com/NCAR/geocat-f2py)
+- [cf_xarray](https://cf-xarray.readthedocs.io/en/latest/)
+- [eofs](https://ajdawson.github.io/eofs/latest/index.html)
 - [dask](https://dask.org/)
 - [distributed](https://distributed.readthedocs.io/en/latest/)
+- [netcdf4](https://unidata.github.io/netcdf4-python/)
+- [numpy](https://numpy.org/doc/stable/)
 - [pytest](https://docs.pytest.org/en/stable/)
-- [GeoCAT-ncomp](http://github.com/NCAR/geocat-ncomp/)
+- [xarray](http://xarray.pydata.org/en/stable/)
     
-Note: [GeoCAT-ncomp](http://github.com/NCAR/geocat-ncomp/) dependency will install further 
-dependencies for compiled language implementation.
+Note: [GeoCAT-f2py](https://github.com/NCAR/geocat-f2py) dependency will automatically 
+install further dependencies for compiled language implementation.
 
 ### How to create a Conda environment for building GeoCAT-comp
 
@@ -71,9 +74,8 @@ The GeoCAT-comp source code includes two Conda environment definition files in
 the `/build_envs` folder under the root directory that can be used to create a 
 development environment containing all of the packages required to build GeoCAT-comp.  
 The file `environment_Linux.yml` is intended to be used on Linux systems, while
-`environment_Darwin.yml` should be used on macOS.  It is necessary to have
-separate `environment_*.yml` files because Linux and macOS use different C
-compilers, although the following commands should work on both Linux and macOS:
+`environment_Darwin.yml` should be used on macOS.  The following commands should 
+work on both Linux and macOS:
 
     conda env create -f build_envs/environment_$(uname).yml
     conda activate geocat_comp_build
