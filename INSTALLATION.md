@@ -16,29 +16,29 @@ activated using:
 
     conda activate geocat
 
-Example code provided with this documentation frequently makes use of other
-software packages, such as Matplotlib, Cartopy, PyNGL, and Jupyter, which you
-may wish to install into your geocat environment.  The following `conda create`
-command can be used to create a new conda environment that includes some of
-these additional commonly used Python packages pre-installed:
+If you somewhat need to make use of other software packages, such as Matplotlib, 
+Cartopy, Jupyter, etc. with GeoCAT-comp, you may wish to install into your `geocat`
+environment.  The following `conda create` command can be used to create a new 
+`conda` environment that includes some of these additional commonly used Python 
+packages pre-installed:
 
-    conda create -n geocat -c conda-forge -c ncar geocat-comp pyngl matplotlib cartopy jupyter
+    conda create -n geocat -c conda-forge -c ncar geocat-comp matplotlib cartopy jupyter
 
 Alternatively, if you already created a conda environment using the first
 command (without the extra packages), you can activate and install the packages
 in an existing environment with the following commands:
 
-    conda activate geocat # or whatever your environment is called
-    conda install -c conda-forge pyngl matplotlib cartopy jupyter
+    conda activate geocat   # or whatever your environment is called
+    conda install -c conda-forge matplotlib cartopy jupyter
 
 Please note that the use of the **conda-forge** channel is essential to guarantee
 compatibility between dependency packages.
 
 Also, note that the Conda package manager automatically installs all `required`
-dependencies, meaning it is not necessary to explicitly install Python, NumPy,
-Xarray, or Dask when creating an environment.  Although packages like Matplotlib
-are often used with GeoCAT-comp, they are considered `optional` dependencies and
-must be explicitly installed.
+dependencies of GeoCAT-comp, meaning it is not necessary to explicitly install 
+Python, NumPy, Xarray, or Dask when creating an environment and installing GeoCAT-comp.  
+Although packages like Matplotlib are often used with GeoCAT-comp, they are considered 
+`optional` dependencies and must be explicitly installed.
 
 If you are interested in learning more about how Conda environments work, please visit 
 the [managing environments](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html) 
