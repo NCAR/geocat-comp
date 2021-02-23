@@ -2,6 +2,15 @@
 [![Documentation Status](https://readthedocs.org/projects/geocat-comp/badge/?version=latest)](https://geocat-comp.readthedocs.io/en/latest/?badge=latest)
 
 
+| CI           | [![GitHub Workflow Status][github-ci-badge]][github-ci-link] [![GitHub Workflow Status][github-conda-build-badge]][github-conda-build-link] [![Code Coverage Status][codecov-badge]][codecov-link] |
+| :----------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| **Docs**     |                                                                    [![Documentation Status][rtd-badge]][rtd-link]                                                                    |
+| **Package**  |                                                         [![Conda][conda-badge]][conda-link] [![PyPI][pypi-badge]][pypi-link]                                                         |
+| **License**  |                                                                        [![License][license-badge]][repo-link]                                                                        |
+
+
+
+
 GeoCAT-comp is both the whole computational component of the [GeoCAT](https://ncar.github.io/GeoCAT) 
 project and a single Github repository as described here. As the computational component of 
 [GeoCAT](https://ncar.github.io/GeoCAT), GeoCAT-comp provides implementations of computational functions for operating 
@@ -53,3 +62,21 @@ the gap between NumPy arrays and the compiled language data structures used by
 [GeoCAT-f2py](https://github.com/NCAR/geocat-f2py). These functions are accessible under the 
 `geocat.comp` namespace, but are minimally documented and are 
 intended primarily for internal use.
+
+
+
+
+[github-ci-badge]: https://img.shields.io/github/workflow/status/NCAR/geocat-comp/CI?label=CI&logo=github&style=for-the-badge
+[github-conda-build-badge]: https://img.shields.io/github/workflow/status/NCAR/geocat-comp/build_test?label=conda-builds&logo=github&style=for-the-badge
+[github-ci-link]: https://github.com/NCAR/geocat-comp/actions?query=workflow%3ACI
+[github-conda-build-link]: https://github.com/NCAR/geocat-comp/actions?query=workflow%3Abuild_test
+[codecov-badge]: https://img.shields.io/codecov/c/github/NCAR/geocat-comp.svg?logo=codecov&style=for-the-badge
+[codecov-link]: https://codecov.io/gh/NCAR/geocat-comp
+[rtd-badge]: https://img.shields.io/readthedocs/geocat-comp/latest.svg?style=for-the-badge
+[rtd-link]: https://geocat-comp.readthedocs.io/en/latest/?badge=latest
+[pypi-badge]: https://img.shields.io/pypi/v/geocat-comp?logo=pypi&style=for-the-badge
+[pypi-link]: https://pypi.org/project/geocat-comp
+[conda-badge]: https://img.shields.io/conda/vn/ncar/geocat-comp?logo=anaconda&style=for-the-badge
+[conda-link]: https://anaconda.org/ncar/geocat-comp
+[license-badge]: https://img.shields.io/github/license/NCAR/geocat-comp?style=for-the-badge
+[repo-link]: https://github.com/NCAR/geocat-comp
