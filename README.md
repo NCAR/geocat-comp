@@ -1,7 +1,3 @@
-![actions](https://github.com/NCAR/geocat-comp/workflows/actions/badge.svg)
-[![Documentation Status](https://readthedocs.org/projects/geocat-comp/badge/?version=latest)](https://geocat-comp.readthedocs.io/en/latest/?badge=latest)
-
-
 | CI           | [![GitHub Workflow Status][github-ci-badge]][github-ci-link] [![GitHub Workflow Status][github-conda-build-badge]][github-conda-build-link] [![Code Coverage Status][codecov-badge]][codecov-link] |
 | :----------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 | **Docs**     |                                                                    [![Documentation Status][rtd-badge]][rtd-link]                                                                    |
