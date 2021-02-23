@@ -2,6 +2,8 @@ name: build_test
 on: 
   push:
   pull_request:
+  workflow_dispatch:
+
 jobs:
   conda_builds:
     if: "contains(github.event.head_commit.message, 'trigger_build_test')"
@@ -17,21 +19,21 @@ jobs:
         os: [ "ubuntu-latest", "macos-latest"]
         python-version: [ "3.6", "3.7", "3.8", "3.9" ]
     steps:
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.8.0
+        with:
+          access_token: ${{ github.token }}
       - name: checkout
         uses: actions/checkout@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set OS UNAME
-        id: uname
-        run: | 
-          echo "uname=$(uname)" >> $GITHUB_ENV
+          token: ${{ github.token }}
       - name: conda_setup
         uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: geocat_comp_build
           python-version: ${{ matrix.python-version }}
           channels: conda-forge, ncar
-          environment-file: build_envs/environment_${{ env.uname }}.yml
+          environment-file: build_envs/environment.yml
 
       - name: build
         run: |
@@ -56,21 +58,21 @@ jobs:
         os: [ "ubuntu-latest", "macos-latest"]
         python-version: [ "3.6", "3.7", "3.8", "3.9" ]
     steps:
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.8.0
+        with:
+          access_token: ${{ github.token }}
       - name: checkout
         uses: actions/checkout@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set OS UNAME
-        id: uname
-        run: | 
-          echo "uname=$(uname)" >> $GITHUB_ENV
+          token: ${{ github.token }}
       - name: conda_setup
         uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: geocat_comp_build
           python-version: ${{ matrix.python-version }}
           channels: conda-forge, ncar
-          environment-file: build_envs/environment_${{ env.uname }}.yml
+          environment-file: build_envs/environment.yml
 
       - name: Install geocat-comp 
         run: |
