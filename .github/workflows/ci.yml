@@ -6,11 +6,10 @@ on:
   schedule:
      - cron: '0 0 * * *' # Daily “At 00:00”
 
-jobs:
-  
+jobs: 
   test:
-    # if: |
-    #   github.repository == 'NCAR/geocat-comp'
+    if: |
+      github.repository == 'NCAR/geocat-comp'
     name: Python (${{ matrix.python-version }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     defaults:
@@ -59,8 +58,8 @@ jobs:
           fail_ci_if_error: false
 
   upstream-dev:
-    # if: |
-    #   github.repository == 'NCAR/geocat-comp'
+    if: |
+      github.repository == 'NCAR/geocat-comp'
     name:  upstream-dev-py38
     runs-on: ubuntu-latest
     defaults:
