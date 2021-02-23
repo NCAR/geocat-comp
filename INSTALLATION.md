@@ -55,14 +55,15 @@ installed.
 ### Required dependencies for building and testing GeoCAT-comp
 
 - Python 3.6+
+- [GeoCAT-datafiles](https://github.com/NCAR/geocat-datafiles)  (For tests only)
 - [GeoCAT-f2py](https://github.com/NCAR/geocat-f2py)
 - [cf_xarray](https://cf-xarray.readthedocs.io/en/latest/)
 - [eofs](https://ajdawson.github.io/eofs/latest/index.html)
 - [dask](https://dask.org/)
 - [distributed](https://distributed.readthedocs.io/en/latest/)
-- [netcdf4](https://unidata.github.io/netcdf4-python/)
+- [netcdf4](https://unidata.github.io/netcdf4-python/)  (For tests only)
 - [numpy](https://numpy.org/doc/stable/)
-- [pytest](https://docs.pytest.org/en/stable/)
+- [pytest](https://docs.pytest.org/en/stable/)  (For tests only)
 - [xarray](http://xarray.pydata.org/en/stable/)
     
 Note: [GeoCAT-f2py](https://github.com/NCAR/geocat-f2py) dependency will automatically 
@@ -95,6 +96,7 @@ configure your build environment as described above.
 
 A GeoCAT-comp build can be tested from the root directory of the source code
 repository using the following command (Explicit installation of the  
-[pytest](https://docs.pytest.org/en/stable/) package may be required):
+[pytest](https://docs.pytest.org/en/stable/) package may be required, please 
+see above):
 
     pytest test

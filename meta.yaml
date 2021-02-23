@@ -32,6 +32,7 @@ test:
   requires:
     - pytest
     - netcdf4
+    - geocat-datafiles
   imports:
     - geocat.comp
   commands:
