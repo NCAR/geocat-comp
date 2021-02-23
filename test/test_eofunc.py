@@ -49,9 +49,9 @@ class BaseEOFTestClass(metaclass=ABCMeta):
     _sample_data_eof.append(np.arange(64, dtype='int64').reshape((4, 4, 4)))
 
     try:
-        _nc_ds = xr.open_dataset("sst.nc")
+        _nc_ds = xr.open_dataset("eofunc_dataset.nc")
     except:
-        _nc_ds = xr.open_dataset("test/sst.nc")
+        _nc_ds = xr.open_dataset("test/eofunc_dataset.nc")
 
     _num_attrs = 4
 
