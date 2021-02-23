@@ -35,9 +35,56 @@ jobs:
 
       - name: build
         run: |
-          conda activate geocat_comp_build
           source build.sh
       - name: test
         run: |
-          conda activate geocat_comp_build
-          pytest
+   
+          python -m pytest
+
+  test:
+    # if: |
+    #   github.repository == 'NCAR/geocat-comp'
+    name: Python (${{ matrix.python-version }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ "ubuntu-latest", "macos-latest"]
+        python-version: [ "3.6", "3.7", "3.8", "3.9" ]
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set OS UNAME
+        id: uname
+        run: | 
+          echo "uname=$(uname)" >> $GITHUB_ENV
+      - name: conda_setup
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: temp
+          python-version: ${{ matrix.python-version }}
+          channels: conda-forge, ncar
+          environment-file: build_envs/environment_${{ env.uname }}.yml
+
+      - name: Install geocat-comp 
+        run: |
+          python -m pip install . 
+      
+      - name: Running Tests
+        run: |
+          python -m pytest --cov=./ --cov-report=xml
+
+      - name: Upload code coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./coverage.xml
+          flags: unittests
+          env_vars: OS,PYTHON
+          name: codecov-umbrella
+          fail_ci_if_error: false
