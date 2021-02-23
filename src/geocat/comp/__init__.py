@@ -6,6 +6,7 @@ from .errors import (Error, AttributeError, ChunkError, CoordinateError,
                      DimensionError, MetaError)
 from .polynomial import (ndpolyfit, ndpolyval, detrend, isvector)
 from .relhum import (relhum, relhum_ice, relhum_water)
+from .vinth2p import lev_to_plev
 
 # bring all functions from geocat.f2py into the geocat.comp namespace
 try:
