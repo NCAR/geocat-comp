@@ -28,7 +28,7 @@ jobs:
       - name: conda_setup
         uses: conda-incubator/setup-miniconda@v2
         with:
-          activate-environment: temp
+          activate-environment: geocat_comp_build
           python-version: ${{ matrix.python-version }}
           channels: conda-forge, ncar
           environment-file: build_envs/environment_${{ env.uname }}.yml
@@ -67,7 +67,7 @@ jobs:
       - name: conda_setup
         uses: conda-incubator/setup-miniconda@v2
         with:
-          activate-environment: temp
+          activate-environment: geocat_comp_build
           python-version: ${{ matrix.python-version }}
           channels: conda-forge, ncar
           environment-file: build_envs/environment_${{ env.uname }}.yml
