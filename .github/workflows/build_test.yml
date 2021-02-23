@@ -24,7 +24,7 @@ jobs:
       - name: Set OS UNAME
         id: uname
         run: | 
-          echo "uname=$(uname)"
+          echo "uname=$(uname)" >> $GITHUB_ENV
       - name: conda_setup
         uses: conda-incubator/setup-miniconda@v2
         with:
