@@ -59,7 +59,7 @@ jobs:
   upstream-dev:
     # if: |
     #   github.repository == 'NCAR/geocat-comp'
-    name: upstream-dev
+    name:  upstream-dev-py38
     runs-on: ubuntu-latest
     defaults:
       run:
