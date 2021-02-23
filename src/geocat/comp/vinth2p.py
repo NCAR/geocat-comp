@@ -36,21 +36,25 @@ def _vertical_remap(x_mdl, p_mdl, plev):
     return output
 
 
-def interp_hybrid_to_pressure(data, ps, hyam, hybm, p0=100000., new_levels=__pres_lev_mandatory__):
+def interp_hybrid_to_pressure(data, ps, hyam, hybm, p0=100000., new_levels=__pres_lev_mandatory__, lev_dim='lev'):
     """
     Interpolate data from hybrid-sigma levels to isobaric levels.
+
+    Acknowledgement: We'd like to thank Brian Medeiros (https://github.com/brianpm) at NCAR for his great
+    contribution since the code implemented here is mostly a refactored version (i.e. to provide Dask
+    parallelization, code cleanup, and further documentation) of his work.
 
     Parameters
     ----------
     data : `xarray.DataArray`:
-        Multidimensional data array, which holds hybrid-sigma levels and has a 'lev' coordinate.
+        Multidimensional data array, which holds hybrid-sigma levels and has a `lev_dim` coordinate.
 
     ps : `xarray.DataArray`:
         A multi-dimensional array of surface pressures (Pa), same time/space shape as data.
 
     hyam, hybm : `xarray.DataArray`:
         One-dimensional arrays containing the hybrid A and B coefficients. Must have the same
-        dimension size as the 'lev' dimension of data.
+        dimension size as the `lev_dim` dimension of data.
 
     p0 :
         Scalar numeric value equal to surface reference pressure (Pa).
@@ -65,8 +69,8 @@ def interp_hybrid_to_pressure(data, ps, hyam, hybm, p0=100000., new_levels=__pre
     if new_levels is not None:
         pnew = new_levels
 
-    # reshape data and pressure assuming "lev" is the name of the coordinate
-    zdims = [i for i in data.dims if i != 'lev']
+    # reshape data and pressure assuming is the name of the coordinate is `lev_dim`
+    zdims = [i for i in data.dims if i != lev_dim]
     dstack = data.stack(z=zdims)
     pstack = pressure.stack(z=zdims)
 
@@ -76,8 +80,8 @@ def interp_hybrid_to_pressure(data, ps, hyam, hybm, p0=100000., new_levels=__pre
                             dstack,
                             pstack,
                             pnew,
-                            exclude_dims=set(("lev",)),  # dimensions allowed to change size. Must be set!
-                            input_core_dims=[["lev", "z"], ["lev", "z"], ["plev"]],  # Set "lev" as core dimension in both dstack and pstack
+                            exclude_dims=set((lev_dim,)),  # dimensions allowed to change size. Must be set!
+                            input_core_dims=[[lev_dim, "z"], [lev_dim, "z"], ["plev"]],  # Set lev_dim as core dimension in both dstack and pstack
                             output_core_dims=[["plev", "z"]],  # Specify output dimensions
                             vectorize=True,  # loop over non-core dims
                             dask="parallelized",  # Dask parallelization
