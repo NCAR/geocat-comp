@@ -6,6 +6,10 @@ import matplotlib.pyplot as plt
 import geocat.comp
 import geocat.datafiles as gdf
 
+import time
+
+
+# Replicates NCL's conwomap_5 (almost)
 
 # Open a netCDF data file using xarray default engine and
 # load the data into xarrays
@@ -21,23 +25,12 @@ p0     = 1000. * 100   # Pa
 pres3d = np.asarray([1000,950,800,700,600,500,400,300,200])   # mb
 pres3d = pres3d * 100   # mb to Pa
 
-#u_int = vinth2p(u, hyam, hybm, pres3d, ps(0,:,:), 2, p0, 2, False)
+start_time = time.time()
 
-u_int = geocat.comp.lev_to_plev(u, ps[0,:,:], hyam, hybm, P0=p0, new_levels=pres3d, parallel=False)
+u_int = geocat.comp.interp_hybrid_to_pressure(u, ps[0,:,:], hyam, hybm, p0=p0, new_levels=pres3d)
 
-#lev_to_plev(data, ps, hyam, hybm, P0=100000., new_levels=None, parallel=False):
-"""Interpolate data from hybrid-sigma levels to isobaric levels.
+print("--- %s seconds ---" % (time.time() - start_time))
 
-data : DataArray with a 'lev' coordinate
-ps   : DataArray of surface pressure (Pa), same time/space shape as data
-hyam, hybm : hybrid coefficients, size of len(lev)
-P0 : reference pressure
-new_levels : the output pressure levels (Pa)
-parallel : if True, use the Numba version to parallelize interpolation step.
-"""
-
-# uzon = u_int[:,:,0]
-#uzon = dim_avg(u_int)
 uzon = u_int.mean(dim='lon')
 
 # Plot:
@@ -71,9 +64,4 @@ cbar = plt.colorbar(colors,
 # Show the plot
 plt.tight_layout()
 plt.show()
-
-
-# def test_climatology_invalid_freq():
-#     with pytest.raises(ValueError):
-#         geocat.comp.climatology(dset_a, "hourly")
 
