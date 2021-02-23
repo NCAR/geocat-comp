@@ -12,4 +12,5 @@ dependencies:
   - netcdf4
   - numpy
   - pytest
+  - pytest-cov
   - xarray
