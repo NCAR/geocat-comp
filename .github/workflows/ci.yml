@@ -83,7 +83,7 @@ jobs:
           mamba-version: '*'
           python-version: 3.8
           channels: conda-forge, ncar
-          environment-file: build_envs/environment.yml
+          environment-file: build_envs/upstream-dev-environment.yml
         
 
       - name: Install geocat-comp 
