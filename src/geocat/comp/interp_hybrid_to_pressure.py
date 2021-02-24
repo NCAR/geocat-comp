@@ -82,9 +82,10 @@ def interp_hybrid_to_pressure(data,
     elif method == 'log':
         func_interpolate = metpy.interpolate.log_interpolate_1d
     else:
-        raise ValueError(f'Unknown interpolation method: {method}')
+        raise ValueError(f'Unknown interpolation method: {method}. '
+                         f'Supported methods are: "log" and "linear".')
 
-    def _vertical_remap(plev, pressure, data, interp_axis):
+    def _vertical_remap(data, pressure, plev, interp_axis):
         """
         Define interpolation function.
         """
@@ -95,15 +96,12 @@ def interp_hybrid_to_pressure(data,
     # Apply Dask parallelization with xarray.apply_ufunc
     output = xr.apply_ufunc(
         _vertical_remap,
+        data.data,
+        pressure.data,
         new_levels,
-        pressure.values,
-        data.values,
         interp_axis,
-        exclude_dims=set(
-            (lev_dim,)),  # dimensions allowed to change size. Must be set!
-        input_core_dims=[[lev_dim], [lev_dim], [
-            "plev"
-        ], []],  # Set lev_dim as core dimension in both dstack and pstack
+        exclude_dims=set((lev_dim,)),  # Set dimensions allowed to change size
+        input_core_dims=[[lev_dim], [lev_dim], ["plev"], []], # Set core dimensions
         output_core_dims=[["plev"]],  # Specify output dimensions
         vectorize=True,  # loop over non-core dims
         dask="parallelized",  # Dask parallelization
