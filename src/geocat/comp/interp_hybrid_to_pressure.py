@@ -6,7 +6,7 @@ import cf_xarray
 __pres_lev_mandatory__ = np.array([
     1000, 925, 850, 700, 500, 400, 300, 250, 200, 150, 100, 70, 50, 30, 20, 10,
     7, 5, 3, 2, 1
-])  # Mandatory pressure levels (mb)
+]).astype(np.float32)  # Mandatory pressure levels (mb)
 __pres_lev_mandatory__ = __pres_lev_mandatory__ * 100.0  # Convert mb to Pa
 
 
