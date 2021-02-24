@@ -72,7 +72,9 @@ def interp_hybrid_to_pressure(data,
         raise ValueError(f'Unknown interpolation method: {method}')
 
     def _vertical_remap(plev, pressure, data, interp_axis):
-        """Define interpolation function."""
+        """
+        Define interpolation function.
+        """
 
         return func_interpolate(plev, pressure, data, axis=interp_axis)
 
