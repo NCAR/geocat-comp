@@ -36,27 +36,27 @@ def interp_hybrid_to_pressure(data,
 
     Parameters
     ----------
-    data : `xarray.DataArray`:
+    data : xarray.DataArray
         Multidimensional data array, which holds hybrid-sigma levels and has a `lev_dim` coordinate.
 
-    ps : `xarray.DataArray`:
+    ps : xarray.DataArray
         A multi-dimensional array of surface pressures (Pa), same time/space shape as data.
 
-    hyam, hybm : `xarray.DataArray`:
+    hyam, hybm : xarray.DataArray
         One-dimensional arrays containing the hybrid A and B coefficients. Must have the same
         dimension size as the `lev_dim` dimension of data.
 
     p0 :
         Scalar numeric value equal to surface reference pressure (Pa).
 
-    new_levels : the output pressure levels (Pa)
+    new_levels : np.ndarray
         A one-dimensional array of output pressure levels (Pa). If not given, the mandatory
         list of 21 pressure levels is used.
 
-    lev_dim : `string`:
+    lev_dim : string
         String that is the name of level dimension in data. Defaults to "lev".
 
-    method : `string`:
+    method : string
         String that is the interpolation method; can be either "linear" or "log". Defaults to "linear".
 
     """
