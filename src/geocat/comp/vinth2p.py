@@ -1,3 +1,4 @@
+import metpy.interpolate
 import numpy as np
 import xarray as xr
 
@@ -12,37 +13,13 @@ def _pressure_from_hybrid(psfc, hya, hyb, p0=100000.):
     return hya * p0 + hyb * psfc
 
 
-def _vertical_remap(x_mdl, p_mdl, plev):
-    """
-    Apply simple 1-d interpolation to a field, x given the pressure p.
-
-    Parameters
-    ----------
-    x_mdl: `numpy.ndarray`:
-        Hybrid-sigma levels of shape (nlevel, spacetime).
-
-    p_mdl: `numpy.ndarray`:
-        Data of shape (nlevel, spacetime).
-
-    plev: `numpy.ndarray`:
-        New pressure levels.
-    """
-    out_shape = (plev.shape[0], x_mdl.shape[1])
-    output = np.full(out_shape, np.nan)
-
-    for i in range(out_shape[1]):
-        output[:,i] = np.interp(plev, p_mdl[:,i], x_mdl[:,i])
-
-    return output
-
-
-def interp_hybrid_to_pressure(data, ps, hyam, hybm, p0=100000., new_levels=__pres_lev_mandatory__, lev_dim='lev'):
+def interp_hybrid_to_pressure(data, ps, hyam, hybm, p0=100000., new_levels=__pres_lev_mandatory__, lev_dim='lev', method='linear'):
     """
     Interpolate data from hybrid-sigma levels to isobaric levels.
 
-    Acknowledgement: We'd like to thank Brian Medeiros (https://github.com/brianpm) at NCAR for his great
-    contribution since the code implemented here is mostly a refactored version (i.e. to provide Dask
-    parallelization, code cleanup, and further documentation) of his work.
+    ACKNOWLEDGEMENT: We'd like to thank to Brian Medeiros (https://github.com/brianpm), Matthew Long
+    (https://github.com/matt-long), and Deepak Cherian (https://github.com/dcherian) at NCAR for their
+    great contributions since the code implemented here is mostly based on their work.
 
     Parameters
     ----------
@@ -63,33 +40,56 @@ def interp_hybrid_to_pressure(data, ps, hyam, hybm, p0=100000., new_levels=__pre
         A one-dimensional array of output pressure levels (Pa). If not given, the mandatory
         list of 21 pressure levels is used.
 
+    lev_dim : `string`:
+        String that is the name of level dimension in data. Defaults to "lev".
+
+    method : `string`:
+        String that is the interpolation method; can be either "linear" or "log". Defaults to "linear".
+
     """
+
     pressure = _pressure_from_hybrid(ps, hyam, hybm, p0)  # Pa
 
-    if new_levels is not None:
-        pnew = new_levels
+    interp_axis = data.dims.index(lev_dim)
 
-    # reshape data and pressure assuming is the name of the coordinate is `lev_dim`
-    zdims = [i for i in data.dims if i != lev_dim]
-    dstack = data.stack(z=zdims)
-    pstack = pressure.stack(z=zdims)
+    # Define interpolation function
+    if method == 'linear':
+        func_interpolate = metpy.interpolate.interpolate_1d
+    elif method == 'log':
+        func_interpolate = metpy.interpolate.log_interpolate_1d
+    else:
+        raise ValueError(f'Unknown interpolation method: {method}')
+
+    def _vertical_remap(plev, pressure, data, interp_axis):
+        """Define interpolation function."""
+
+        return func_interpolate(plev, pressure, data, axis=interp_axis)
 
     # Apply vertical interpolation
     # Apply Dask parallelization with xarray.apply_ufunc
     output = xr.apply_ufunc(_vertical_remap,
-                            dstack,
-                            pstack,
-                            pnew,
+                            new_levels,
+                            pressure.values,
+                            data.values,
+                            interp_axis,
                             exclude_dims=set((lev_dim,)),  # dimensions allowed to change size. Must be set!
-                            input_core_dims=[[lev_dim, "z"], [lev_dim, "z"], ["plev"]],  # Set lev_dim as core dimension in both dstack and pstack
-                            output_core_dims=[["plev", "z"]],  # Specify output dimensions
+                            input_core_dims=[[lev_dim], [lev_dim], ["plev"], []],  # Set lev_dim as core dimension in both dstack and pstack
+                            output_core_dims=[["plev"]],  # Specify output dimensions
                             vectorize=True,  # loop over non-core dims
                             dask="parallelized",  # Dask parallelization
-                            output_dtypes=[dstack.dtype],
+                            output_dtypes=[data.dtype],
                             )
 
-    # Adjust dims and coords
-    output = xr.DataArray(output, dims=("plev", "z"), coords={"plev":pnew, "z":pstack['z']})
-    output = output.unstack()
+    # Set output dims and coords
+    dims = ["plev"] + [data.dims[i] for i in range(data.ndim) if i != interp_axis]
+
+    coords = {}
+    for (k, v) in data.coords.items():
+        if k != lev_dim:
+            coords.update({k: v})
+        else:
+            coords.update({"plev": new_levels})
+
+    output = xr.DataArray(output, dims=dims, coords=coords)
 
     return output

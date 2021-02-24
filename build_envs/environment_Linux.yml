@@ -10,6 +10,7 @@ dependencies:
   - eofs
   - geocat-datafiles  # for tests
   - geocat-f2py
+  - metpy
   - netcdf4  # for tests
   - numpy
   - pytest  # for tests

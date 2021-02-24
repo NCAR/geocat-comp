@@ -27,7 +27,7 @@ pres3d = pres3d * 100   # mb to Pa
 
 start_time = time.time()
 
-u_int = geocat.comp.interp_hybrid_to_pressure(u, ps[0,:,:], hyam, hybm, p0=p0, new_levels=pres3d)
+u_int = geocat.comp.interp_hybrid_to_pressure(u, ps[0,:,:], hyam, hybm, p0=p0, new_levels=pres3d, method="log")
 
 print("--- %s seconds ---" % (time.time() - start_time))
 

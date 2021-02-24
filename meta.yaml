@@ -23,6 +23,7 @@ requirements:
     - dask
     - eofs
     - geocat-f2py
+    - metpy
     - numpy=1.19
     - xarray
 
