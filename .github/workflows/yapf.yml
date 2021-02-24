@@ -3,6 +3,8 @@ on:
   push:
     branches-ignore:
       - main
+  pull_request:
+    
 jobs:
   yapf_formatting:
     if: "contains(github.event.head_commit.message, 'trigger_yapf') || contains(github.event.head_commit.message, 'trigger_actions')"
@@ -15,7 +17,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
         with:
-          token: ${{ secrets.A_KOOTZ_GEOCAT_COMP_TOKEN }}
+          token: ${{ github.token }}
       - name: yapf
         run: |
           pip3 install yapf
