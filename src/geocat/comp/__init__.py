@@ -6,7 +6,7 @@ from .errors import (Error, AttributeError, ChunkError, CoordinateError,
                      DimensionError, MetaError)
 from .polynomial import (ndpolyfit, ndpolyval, detrend, isvector)
 from .relhum import (relhum, relhum_ice, relhum_water)
-from .vinth2p import interp_hybrid_to_pressure
+from .interp_hybrid_to_pressure import interp_hybrid_to_pressure
 
 # bring all functions from geocat.f2py into the geocat.comp namespace
 try:
