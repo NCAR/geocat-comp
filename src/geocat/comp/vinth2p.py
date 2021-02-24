@@ -2,8 +2,12 @@ import metpy.interpolate
 import numpy as np
 import xarray as xr
 
-__pres_lev_mandatory__ = np.array([1000, 925, 850, 700, 500, 400, 300, 250, 200, 150, 100, 70, 50, 30, 20, 10, 7, 5, 3, 2, 1])  # Mandatory pressure levels (mb)
+__pres_lev_mandatory__ = np.array([
+    1000, 925, 850, 700, 500, 400, 300, 250, 200, 150, 100, 70, 50, 30, 20, 10,
+    7, 5, 3, 2, 1
+])  # Mandatory pressure levels (mb)
 __pres_lev_mandatory__ = __pres_lev_mandatory__ * 100.0  # Convert mb to Pa
+
 
 def _pressure_from_hybrid(psfc, hya, hyb, p0=100000.):
     """
@@ -13,7 +17,14 @@ def _pressure_from_hybrid(psfc, hya, hyb, p0=100000.):
     return hya * p0 + hyb * psfc
 
 
-def interp_hybrid_to_pressure(data, ps, hyam, hybm, p0=100000., new_levels=__pres_lev_mandatory__, lev_dim='lev', method='linear'):
+def interp_hybrid_to_pressure(data,
+                              ps,
+                              hyam,
+                              hybm,
+                              p0=100000.,
+                              new_levels=__pres_lev_mandatory__,
+                              lev_dim='lev',
+                              method='linear'):
     """
     Interpolate data from hybrid-sigma levels to isobaric levels.
 
@@ -67,21 +78,26 @@ def interp_hybrid_to_pressure(data, ps, hyam, hybm, p0=100000., new_levels=__pre
 
     # Apply vertical interpolation
     # Apply Dask parallelization with xarray.apply_ufunc
-    output = xr.apply_ufunc(_vertical_remap,
-                            new_levels,
-                            pressure.values,
-                            data.values,
-                            interp_axis,
-                            exclude_dims=set((lev_dim,)),  # dimensions allowed to change size. Must be set!
-                            input_core_dims=[[lev_dim], [lev_dim], ["plev"], []],  # Set lev_dim as core dimension in both dstack and pstack
-                            output_core_dims=[["plev"]],  # Specify output dimensions
-                            vectorize=True,  # loop over non-core dims
-                            dask="parallelized",  # Dask parallelization
-                            output_dtypes=[data.dtype],
-                            )
+    output = xr.apply_ufunc(
+        _vertical_remap,
+        new_levels,
+        pressure.values,
+        data.values,
+        interp_axis,
+        exclude_dims=set(
+            (lev_dim,)),  # dimensions allowed to change size. Must be set!
+        input_core_dims=[[lev_dim], [lev_dim], [
+            "plev"
+        ], []],  # Set lev_dim as core dimension in both dstack and pstack
+        output_core_dims=[["plev"]],  # Specify output dimensions
+        vectorize=True,  # loop over non-core dims
+        dask="parallelized",  # Dask parallelization
+        output_dtypes=[data.dtype],
+    )
 
     # Set output dims and coords
-    dims = ["plev"] + [data.dims[i] for i in range(data.ndim) if i != interp_axis]
+    dims = ["plev"
+           ] + [data.dims[i] for i in range(data.ndim) if i != interp_axis]
 
     coords = {}
     for (k, v) in data.coords.items():
