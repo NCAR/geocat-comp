@@ -1,6 +1,7 @@
 import metpy.interpolate
 import numpy as np
 import xarray as xr
+import cf_xarray
 
 __pres_lev_mandatory__ = np.array([
     1000, 925, 850, 700, 500, 400, 300, 250, 200, 150, 100, 70, 50, 30, 20, 10,
@@ -23,7 +24,7 @@ def interp_hybrid_to_pressure(data,
                               hybm,
                               p0=100000.,
                               new_levels=__pres_lev_mandatory__,
-                              lev_dim='lev',
+                              lev_dim=None,
                               method='linear'):
     """
     Interpolate data from hybrid-sigma levels to isobaric levels.
@@ -61,9 +62,19 @@ def interp_hybrid_to_pressure(data,
 
     """
 
-    pressure = _pressure_from_hybrid(ps, hyam, hybm, p0)  # Pa
+    # Determine the level dimension and then the interpolation axis
+    if lev_dim is None:
+        try:
+            lev_dim = data.cf["vertical"].name
+        except Exception:
+            raise ValueError(
+                "Unable to determine vertical dimension name. Please specify the name via `lev_dim` argument.'"
+                )
 
     interp_axis = data.dims.index(lev_dim)
+
+    # Calculate pressure levels at the hybrid levels
+    pressure = _pressure_from_hybrid(ps, hyam, hybm, p0)  # Pa
 
     # Define interpolation function
     if method == 'linear':
