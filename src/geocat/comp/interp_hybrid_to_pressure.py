@@ -53,10 +53,10 @@ def interp_hybrid_to_pressure(data,
         A one-dimensional array of output pressure levels (Pa). If not given, the mandatory
         list of 21 pressure levels is used.
 
-    lev_dim : string
+    lev_dim : str
         String that is the name of level dimension in data. Defaults to "lev".
 
-    method : string
+    method : str
         String that is the interpolation method; can be either "linear" or "log". Defaults to "linear".
 
     """
