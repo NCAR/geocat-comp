@@ -28,6 +28,8 @@ def interp_hybrid_to_pressure(data,
     """
     Interpolate data from hybrid-sigma levels to isobaric levels.
 
+    Notes
+    -----
     ACKNOWLEDGEMENT: We'd like to thank to Brian Medeiros (https://github.com/brianpm), Matthew Long
     (https://github.com/matt-long), and Deepak Cherian (https://github.com/dcherian) at NCAR for their
     great contributions since the code implemented here is mostly based on their work.
