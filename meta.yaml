@@ -1,6 +1,8 @@
+{% set version = "2021.02.0" %}
+
 package:
   name: 'geocat-comp'
-  version: '2021.02.0'
+  version: {{ version }}
 
 build:
   noarch: python
@@ -8,8 +10,9 @@ build:
   skip: True  # [py<3.5]
 
 source:
-  git_rev: main
-  git_url: https://github.com/NCAR/geocat-comp.git
+#  git_rev: main
+#  git_url: https://github.com/NCAR/geocat-comp.git
+  url: https://github.com/NCAR/geocat-comp/archive/v{{ version }}.tar.gz   # Fetch from Github repo tags
 
 requirements:
   host:
