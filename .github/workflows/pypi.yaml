@@ -3,8 +3,6 @@ on:
   release:
     types:
       - published
-  push:
-  pull_request:
 jobs:
   test-build:
     if: github.repository == 'NCAR/geocat-comp'
