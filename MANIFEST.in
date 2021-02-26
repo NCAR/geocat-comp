@@ -11,5 +11,6 @@ include *.yaml
 include *.txt
 prune test*
 prune ci*
-prune .github
-prune .circleci
+prune .github*
+prune .circleci*
+prune docs*
