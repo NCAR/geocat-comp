@@ -1,14 +1,13 @@
 name: Upload geocat-comp to PyPI
-
 on:
-  # release:
-  #   types:
-  #     - published
+  release:
+    types:
+      - published
   push:
   pull_request:
 jobs:
   test-build:
-    # if: github.repository == 'NCAR/geocat-comp'
+    if: github.repository == 'NCAR/geocat-comp'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
