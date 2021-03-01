@@ -3,13 +3,13 @@ on:
   push:
   pull_request:
   workflow_dispatch:
-  schedule:
-     - cron: '0 0 * * *' # Daily “At 00:00”
+  # schedule:
+  #    - cron: '0 0 * * *' # Daily “At 00:00”
 
 jobs: 
   test:
-    if: |
-      github.repository == 'NCAR/geocat-comp'
+    # if: |
+    #   github.repository == 'NCAR/geocat-comp'
     name: Python (${{ matrix.python-version }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     defaults:
