@@ -40,5 +40,5 @@ jobs:
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ github.token }}
+          github_token: ${{ secrets.A_KOOTZ_GEOCAT_COMP_TOKEN }}
           branch: ${{ github.ref }}
