@@ -7,7 +7,10 @@ on:
     
 jobs:
   yapf_formatting:
-    if: "contains(github.event.head_commit.message, 'trigger_yapf') || contains(github.event.head_commit.message, 'trigger_actions')"
+    if: |
+      (contains(github.event.head_commit.message, 'trigger_yapf') || 
+      contains(github.event.head_commit.message, 'trigger_actions')) && 
+       github.repository == 'NCAR/geocat-comp'
     name: yapf_formatting
     runs-on: ubuntu-latest
     defaults:
@@ -40,5 +43,5 @@ jobs:
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.A_KOOTZ_GEOCAT_COMP_TOKEN }}
+          github_token: ${{ github.token }}
           branch: ${{ github.ref }}
