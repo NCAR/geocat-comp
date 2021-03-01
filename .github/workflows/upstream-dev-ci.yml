@@ -1,26 +1,19 @@
-name: CI
+name: Upstream-dev CI
 on: 
-  push:
-  pull_request:
   workflow_dispatch:
   schedule:
      - cron: '0 0 * * *' # Daily “At 00:00”
 
 jobs: 
-  test:
+  upstream-dev:
     if: |
       github.repository == 'NCAR/geocat-comp'
-    name: Python (${{ matrix.python-version }}, ${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    name:  upstream-dev-py38
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash -l {0}
 
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ "ubuntu-latest", "macos-latest"]
-        python-version: [ "3.6", "3.7", "3.8", "3.9" ]
     steps:
       - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.8.0
@@ -36,9 +29,10 @@ jobs:
           activate-environment: geocat_comp_build
           channel-priority: strict
           mamba-version: '*'
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.8
           channels: conda-forge, ncar
-          environment-file: build_envs/environment.yml
+          environment-file: build_envs/upstream-dev-environment.yml
+        
 
       - name: Install geocat-comp 
         run: |
@@ -47,12 +41,3 @@ jobs:
       - name: Running Tests
         run: |
           python -m pytest --cov=./ --cov-report=xml
-
-      - name: Upload code coverage to Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          file: ./coverage.xml
-          flags: unittests
-          env_vars: OS,PYTHON
-          name: codecov-umbrella
-          fail_ci_if_error: false
