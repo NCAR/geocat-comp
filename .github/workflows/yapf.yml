@@ -51,7 +51,7 @@ jobs:
           git commit --allow-empty -am "complete_yapf, trigger_build_test"
 
       - name: Push changes
-        uses: ad-m/github-push-action@main
+        uses: ad-m/github-push-action@master
         with:
           github_token: ${{ github.token }}
           branch: ${{ github.ref }}
