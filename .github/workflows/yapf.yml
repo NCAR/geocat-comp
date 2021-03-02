@@ -24,22 +24,22 @@ jobs:
         run: |
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'noreply@github.com'
-      - if: contains(github.event.head_commit.message, 'trigger_yapf')
-        name: push_yapf
-        run: |
-          git config --global user.name 'A. Kootz'
-          git config --global user.email 'pilotchute@users.noreply.github.com'
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git commit --allow-empty -am "complete_yapf"
-          git push
-      - if: contains(github.event.head_commit.message, 'trigger_actions')
-        name: push_actions
-        run: |
-          git config --global user.name 'A. Kootz'
-          git config --global user.email 'pilotchute@users.noreply.github.com'
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git commit --allow-empty -am "complete_yapf, trigger_build_test"
-          git push
+#      - if: contains(github.event.head_commit.message, 'trigger_yapf')
+#        name: push_yapf
+#        run: |
+#          git config --global user.name 'Yapf Bot'
+#          git config --global user.email 'erogluorhan@users.noreply.github.com'
+#          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+#          git commit --allow-empty -am "complete_yapf"
+#          git push
+#      - if: contains(github.event.head_commit.message, 'trigger_actions')
+#        name: push_actions
+#        run: |
+#          git config --global user.name 'Yapf Bot'
+#          git config --global user.email 'erogluorhan@users.noreply.github.com'
+#          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+#          git commit --allow-empty -am "complete_yapf, trigger_build_test"
+#          git push
 
 
       ###
