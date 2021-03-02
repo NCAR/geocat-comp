@@ -85,23 +85,21 @@ def interp_hybrid_to_pressure(data,
         raise ValueError(f'Unknown interpolation method: {method}. '
                          f'Supported methods are: "log" and "linear".')
 
-    def _vertical_remap(data, pressure, plev, interp_axis):
+    def _vertical_remap(data, pressure):
         """
         Define interpolation function.
         """
 
-        return func_interpolate(plev, pressure, data, axis=interp_axis)
+        return func_interpolate(new_levels, pressure, data, axis=interp_axis)
 
     # Apply vertical interpolation
     # Apply Dask parallelization with xarray.apply_ufunc
     output = xr.apply_ufunc(
         _vertical_remap,
-        data.data,
-        pressure.data,
-        new_levels,
-        interp_axis,
+        data,
+        pressure,
         exclude_dims=set((lev_dim,)),  # Set dimensions allowed to change size
-        input_core_dims=[[lev_dim], [lev_dim], ["plev"], []], # Set core dimensions
+        input_core_dims=[[lev_dim], [lev_dim]],  # Set core dimensions
         output_core_dims=[["plev"]],  # Specify output dimensions
         vectorize=True,  # loop over non-core dims
         dask="parallelized",  # Dask parallelization
@@ -119,6 +117,6 @@ def interp_hybrid_to_pressure(data,
         else:
             coords.update({"plev": new_levels})
 
-    output = xr.DataArray(output, dims=dims, coords=coords)
+    output = output.transpose(*dims).assign_coords(coords)
 
     return output

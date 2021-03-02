@@ -50,6 +50,23 @@ class Test_interp_hybrid_to_pressure(TestCase):
 
         nt.assert_array_almost_equal(_uzon_expected, uzon, 5)
 
+    def test_interp_hybrid_to_pressure_atmos_dask(self):
+
+        ps_dask = _ps.chunk()
+        data_dask = _data.chunk()
+
+        u_int = geocat.comp.interp_hybrid_to_pressure(data_dask,
+                                                      ps_dask[0, :, :],
+                                                      _hyam,
+                                                      _hybm,
+                                                      p0=_p0,
+                                                      new_levels=_pres3d,
+                                                      method="log")
+
+        uzon = u_int.mean(dim='lon')
+
+        nt.assert_array_almost_equal(_uzon_expected, uzon, 5)
+
     # TODO: Migrate the following code to GeoCAT-examples NCL_conwomap_5
     # This test generates a plot, which can be compared to NCL's conwomap_5 plot:
     # https://www.ncl.ucar.edu/Applications/Images/conwomap_5_2_lg.png
@@ -96,4 +113,3 @@ class Test_interp_hybrid_to_pressure(TestCase):
         plt.show(block=False)
         plt.pause(3)
         plt.close()
-
