@@ -19,11 +19,11 @@ jobs:
       - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.8.0
         with:
-          access_token: ${{ secrets.YAPF_SECRET_TRIAL }}
+          access_token: ${{ github.token }}
       - name: checkout
         uses: actions/checkout@v2
         with:
-          token: ${{ secrets.YAPF_SECRET_TRIAL }}
+          token: ${{ github.token }}
           #ref: ${{ github.head_ref }}
       - name: yapf
         run: |
@@ -43,5 +43,5 @@ jobs:
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.YAPF_SECRET_TRIAL }}
+          github_token: ${{ github.token }}
           branch: ${{ github.ref }}
