@@ -4,6 +4,7 @@ on:
     branches-ignore:
       - main
   pull_request:
+  workflow_dispatch:
 
 jobs:
   yapf_formatting:
