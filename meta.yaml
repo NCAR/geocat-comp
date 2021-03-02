@@ -10,10 +10,10 @@ build:
   skip: True  # [py<3.5]
 
 source:
-  #git_rev: main   # For debugging purposes
-  git_rev: v{{ version }}   # For pulling tag as a branch
+  #git_rev: main   # For building from main branch for debugging purposes
+  git_tag: v{{ version }}   # For building from a specific tag
   git_url: https://github.com/NCAR/geocat-comp.git
-  #url: https://github.com/NCAR/geocat-comp/archive/v{{ version }}.tar.gz   # Fetch from Github repo tags' tarballs
+  #url: https://github.com/NCAR/geocat-comp/archive/v{{ version }}.tar.gz   # For building from a specific tag's tarball
 
 requirements:
   host:
