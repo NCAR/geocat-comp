@@ -23,7 +23,8 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
         with:
-          token: ${{ github.token }}
+          #token: ${{ github.token }}
+          ref: ${{ github.head_ref }}
       - name: yapf
         run: |
           pip3 install yapf
