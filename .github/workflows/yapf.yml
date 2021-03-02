@@ -4,6 +4,7 @@ on:
     branches-ignore:
       - main
   pull_request:
+  pull_request_target:
     
 jobs:
   yapf_formatting:
@@ -18,13 +19,13 @@ jobs:
     steps:
       - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.8.0
-        with:
-          access_token: ${{ github.token }}
+#        with:
+#          access_token: ${{ github.token }}
       - name: checkout
         uses: actions/checkout@v2
-        with:
-          token: ${{ github.token }}
-          #ref: ${{ github.head_ref }}
+#        with:
+#          token: ${{ github.token }}
+#          #ref: ${{ github.head_ref }}
       - name: yapf
         run: |
           pip3 install yapf
@@ -43,5 +44,5 @@ jobs:
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ github.token }}
+#          github_token: ${{ github.token }}
           branch: ${{ github.ref }}
