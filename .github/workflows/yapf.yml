@@ -19,12 +19,11 @@ jobs:
       - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.8.0
         with:
-          access_token: ${{ github.token }}
+          access_token: ${{ secrets.A_KOOTZ_GEOCAT_COMP_TOKEN }}
       - name: checkout
         uses: actions/checkout@v2
         with:
-          #token: ${{ github.token }}
-          ref: ${{ github.head_ref }}
+          token: ${{ secrets.A_KOOTZ_GEOCAT_COMP_TOKEN }}
       - name: yapf
         run: |
           pip3 install yapf
@@ -43,5 +42,5 @@ jobs:
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ github.token }}
+          github_token: ${{ secrets.A_KOOTZ_GEOCAT_COMP_TOKEN }}
           branch: ${{ github.ref }}
