@@ -69,7 +69,7 @@ def interp_hybrid_to_pressure(data,
         except Exception:
             raise ValueError(
                 "Unable to determine vertical dimension name. Please specify the name via `lev_dim` argument.'"
-                )
+            )
 
     interp_axis = data.dims.index(lev_dim)
 
@@ -104,7 +104,9 @@ def interp_hybrid_to_pressure(data,
         vectorize=True,  # loop over non-core dims
         dask="parallelized",  # Dask parallelization
         output_dtypes=[data.dtype],
-        dask_gufunc_kwargs={"output_sizes": {"plev": len(new_levels)}},
+        dask_gufunc_kwargs={"output_sizes": {
+            "plev": len(new_levels)
+        }},
     )
 
     # Set output dims and coords

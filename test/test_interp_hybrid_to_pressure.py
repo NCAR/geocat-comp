@@ -60,7 +60,6 @@ class Test_interp_hybrid_to_pressure(TestCase):
                                                           new_levels=_pres3d,
                                                           method="wrong_method")
 
-
     def test_interp_hybrid_to_pressure_atmos_dask(self):
 
         ps_dask = _ps.chunk()
@@ -99,16 +98,16 @@ class Test_interp_hybrid_to_pressure(TestCase):
 
         # Draw filled contours
         colors = uzon.plot.contourf(ax=ax,
-                                 levels=np.arange(-12, 44, 4),
-                                 add_colorbar=False,
-                                 add_labels=False)
+                                    levels=np.arange(-12, 44, 4),
+                                    add_colorbar=False,
+                                    add_labels=False)
         # Draw contour lines
         lines = uzon.plot.contour(ax=ax,
-                               colors='black',
-                               levels=np.arange(-12, 44, 4),
-                               linewidths=0.5,
-                               linestyles='solid',
-                               add_labels=False)
+                                  colors='black',
+                                  levels=np.arange(-12, 44, 4),
+                                  linewidths=0.5,
+                                  linestyles='solid',
+                                  add_labels=False)
 
         # Create horizontal colorbar
         cbar = plt.colorbar(colors,
