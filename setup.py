@@ -55,3 +55,4 @@ setup(
         'Tracker': 'https://github.com/NCAR/geocat-comp/issues',
     },
     zip_safe=False)
+
