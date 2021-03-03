@@ -71,14 +71,13 @@ install further dependencies for compiled language implementation.
 
 ### How to create a Conda environment for building GeoCAT-comp
 
-The GeoCAT-comp source code includes two Conda environment definition files in
-the `/build_envs` folder under the root directory that can be used to create a 
+The GeoCAT-comp source code includes a conda environment definition file in
+the `/build_envs` folder under the root directory that can be used to create a
 development environment containing all of the packages required to build GeoCAT-comp.  
-The file `environment_Linux.yml` is intended to be used on Linux systems, while
-`environment_Darwin.yml` should be used on macOS.  The following commands should 
-work on both Linux and macOS:
+The file `environment.yml` is intended to be used on Linux systems and macOS.  
+The following commands should work on both Linux and macOS:
 
-    conda env create -f build_envs/environment_$(uname).yml
+    conda env create -f build_envs/environment.yml
     conda activate geocat_comp_build
 
 ### Installing GeoCAT-comp
