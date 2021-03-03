@@ -104,6 +104,7 @@ def interp_hybrid_to_pressure(data,
         vectorize=True,  # loop over non-core dims
         dask="parallelized",  # Dask parallelization
         output_dtypes=[data.dtype],
+        dask_gufunc_kwargs={"output_sizes": {"plev": len(new_levels)}},
     )
 
     # Set output dims and coords

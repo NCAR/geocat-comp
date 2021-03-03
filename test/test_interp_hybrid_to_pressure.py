@@ -50,6 +50,17 @@ class Test_interp_hybrid_to_pressure(TestCase):
 
         nt.assert_array_almost_equal(_uzon_expected, uzon, 5)
 
+    def test_interp_hybrid_to_pressure_atmos_wrong_method(self):
+        with nt.assert_raises(ValueError):
+            u_int = geocat.comp.interp_hybrid_to_pressure(_data,
+                                                          _ps[0, :, :],
+                                                          _hyam,
+                                                          _hybm,
+                                                          p0=_p0,
+                                                          new_levels=_pres3d,
+                                                          method="wrong_method")
+
+
     def test_interp_hybrid_to_pressure_atmos_dask(self):
 
         ps_dask = _ps.chunk()
