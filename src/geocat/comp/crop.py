@@ -32,13 +32,17 @@ def max_daylight(jday, lat):
         save_attrs = jday.attrs
 
     # convert inputs to numpy arrays for function call
-    jday = np.asarray(jday)
-    lat = np.asarray(lat)
+    jday = np.asarray([jday])
+    lat = np.asarray([lat])
 
     # get and store size dimensions
     ntim = jday.shape
     dimlat = lat.shape
     nlat = dimlat[0]
+
+    # check to ensure dimension of lat is not greater than two
+    if lat.ndim > 2:
+        raise ValueError('Number of dimensions of lat must be two or less')
 
     # define constants
     pi = np.pi
@@ -46,10 +50,6 @@ def max_daylight(jday, lat):
     pi2yr = 2 * pi / 365
     latrad = lat * rad
     con = 24 / pi
-
-    # check to ensure dimension of lat is not greater than two
-    if lat.ndim > 2:
-        raise ValueError('Number of dimensions of lat must be two or less')
 
     # if  dimension of lat is 2, pull out size
     if lat.ndim == 2:
@@ -65,5 +65,5 @@ def max_daylight(jday, lat):
     return dlm
 
 
-# max_daylight([15, 180, 246, 306], [-20, 0, 45])
-max_daylight(246, -20)
+max_daylight([15, 180, 246, 306], [-20, 0, 45])
+print(max_daylight(246, -20))
