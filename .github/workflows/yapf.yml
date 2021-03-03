@@ -4,11 +4,11 @@ on:
     branches-ignore:
       - main
   pull_request:
-    
+
 jobs:
   yapf_formatting:
     if: |
-      contains(github.event.head_commit.message, 'trigger_yapf') || 
+      contains(github.event.head_commit.message, 'trigger_yapf') ||
       contains(github.event.head_commit.message, 'trigger_actions')
     name: yapf_formatting
     runs-on: ubuntu-latest
@@ -23,7 +23,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
         with:
-          token: ${{ github.token }}
+          token: ${{ secrets.A_KOOTZ_GEOCAT_COMP_TOKEN }}
       - name: yapf
         run: |
           pip3 install yapf
@@ -33,14 +33,12 @@ jobs:
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'noreply@github.com'
       - if: contains(github.event.head_commit.message, 'trigger_yapf')
+        name: push_yapf
         run: |
           git commit --allow-empty -am "complete_yapf"
+          git push
       - if: contains(github.event.head_commit.message, 'trigger_actions')
+        name: push_actions
         run: |
           git commit --allow-empty -am "complete_yapf, trigger_build_test"
-      
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.A_KOOTZ_GEOCAT_COMP_TOKEN }}
-          branch: ${{ github.ref }}
+          git push
