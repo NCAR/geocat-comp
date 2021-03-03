@@ -1,9 +1,10 @@
-name: geocat-comp-dev
+name: geocat_comp_build
 channels:
   - conda-forge
+  - ncar
 dependencies:
-  - python=3.6
-  - cf_xarray >= 0.3.1
+  - python
+  - cf_xarray>=0.3.1
   - dask
   - distributed
   - eofs
@@ -11,5 +12,5 @@ dependencies:
   - netcdf4
   - numpy
   - pytest
+  - pytest-cov
   - xarray
-  - netcdf4

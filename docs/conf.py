@@ -97,6 +97,7 @@ def read_version():
         if index > -1:
             return line[index + 15:].replace('\" %}', '').strip()
 
+
 # The short X.Y version.
 version = read_version()
 
