@@ -8,9 +8,11 @@ dependencies:
   - dask
   - distributed
   - eofs
+  - geocat-datafiles  # for tests
   - geocat-f2py
-  - netcdf4
+  - metpy
+  - netcdf4  # for tests
   - numpy
-  - pytest
-  - pytest-cov
+  - pytest  # for tests
+  - pytest-cov  # for tests
   - xarray

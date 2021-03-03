@@ -27,6 +27,7 @@ requirements:
     - dask
     - eofs
     - geocat-f2py
+    - metpy
     - numpy=1.19
     - xarray
 
@@ -36,6 +37,7 @@ test:
   requires:
     - pytest
     - netcdf4
+    - geocat-datafiles
   imports:
     - geocat.comp
   commands:
