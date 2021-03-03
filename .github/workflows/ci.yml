@@ -52,7 +52,7 @@ jobs:
         uses: codecov/codecov-action@v1
         with:
           file: ./coverage.xml
-          flags: pytest
+          flags: unittests
           env_vars: OS,PYTHON
           name: codecov-umbrella
           fail_ci_if_error: false
