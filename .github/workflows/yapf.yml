@@ -3,7 +3,7 @@ on:
   push:
     branches-ignore:
       - main
-  pull_request:
+  #pull_request:
 
 jobs:
   yapf_formatting:
