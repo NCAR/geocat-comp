@@ -55,4 +55,5 @@ jobs:
           flags: unittests
           env_vars: OS,PYTHON
           name: codecov-umbrella
+          yml: ./codecov.yml
           fail_ci_if_error: false
