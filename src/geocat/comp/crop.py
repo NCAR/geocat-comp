@@ -55,6 +55,11 @@ def max_daylight(jday, lat):
     # Equation 34 from FAO56
     dlm = np.transpose(ws * con)
 
+    # handle metadata if xarray output
+    if x_out:
+        print('meta')
+
+
     return dlm
 
 
