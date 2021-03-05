@@ -55,14 +55,15 @@ installed.
 ### Required dependencies for building and testing GeoCAT-comp
 
 - Python 3.6+
+- [GeoCAT-datafiles](https://github.com/NCAR/geocat-datafiles)  (For tests only)
 - [GeoCAT-f2py](https://github.com/NCAR/geocat-f2py)
 - [cf_xarray](https://cf-xarray.readthedocs.io/en/latest/)
 - [eofs](https://ajdawson.github.io/eofs/latest/index.html)
 - [dask](https://dask.org/)
 - [distributed](https://distributed.readthedocs.io/en/latest/)
-- [netcdf4](https://unidata.github.io/netcdf4-python/)
+- [netcdf4](https://unidata.github.io/netcdf4-python/)  (For tests only)
 - [numpy](https://numpy.org/doc/stable/)
-- [pytest](https://docs.pytest.org/en/stable/)
+- [pytest](https://docs.pytest.org/en/stable/)  (For tests only)
 - [xarray](http://xarray.pydata.org/en/stable/)
     
 Note: [GeoCAT-f2py](https://github.com/NCAR/geocat-f2py) dependency will automatically 
@@ -70,14 +71,13 @@ install further dependencies for compiled language implementation.
 
 ### How to create a Conda environment for building GeoCAT-comp
 
-The GeoCAT-comp source code includes two Conda environment definition files in
-the `/build_envs` folder under the root directory that can be used to create a 
+The GeoCAT-comp source code includes a conda environment definition file in
+the `/build_envs` folder under the root directory that can be used to create a
 development environment containing all of the packages required to build GeoCAT-comp.  
-The file `environment_Linux.yml` is intended to be used on Linux systems, while
-`environment_Darwin.yml` should be used on macOS.  The following commands should 
-work on both Linux and macOS:
+The file `environment.yml` is intended to be used on Linux systems and macOS.  
+The following commands should work on both Linux and macOS:
 
-    conda env create -f build_envs/environment_$(uname).yml
+    conda env create -f build_envs/environment.yml
     conda activate geocat_comp_build
 
 ### Installing GeoCAT-comp
@@ -95,6 +95,7 @@ configure your build environment as described above.
 
 A GeoCAT-comp build can be tested from the root directory of the source code
 repository using the following command (Explicit installation of the  
-[pytest](https://docs.pytest.org/en/stable/) package may be required):
+[pytest](https://docs.pytest.org/en/stable/) package may be required, please 
+see above):
 
     pytest test

@@ -1,13 +1,16 @@
-name: build_test
+name: CI
 on: 
   push:
+  pull_request:
+  workflow_dispatch:
+  # schedule:
+  #    - cron: '0 0 * * *' # Daily “At 00:00”
 
-jobs:
-  conda_builds:
-    if: | 
-        contains(github.event.head_commit.message, 'trigger_build_test') && 
-        github.repository == 'NCAR/geocat-comp'
-    name: build_test_${{ matrix.python-version }}_${{ matrix.os }}
+jobs: 
+  test:
+    # if: |
+    #   github.repository == 'NCAR/geocat-comp'
+    name: Python (${{ matrix.python-version }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -31,14 +34,25 @@ jobs:
         uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: geocat_comp_build
+          channel-priority: strict
+          mamba-version: '*'
           python-version: ${{ matrix.python-version }}
           channels: conda-forge, ncar
           environment-file: build_envs/environment.yml
 
-      - name: build
+      - name: Install geocat-comp 
         run: |
-          source build.sh
-      - name: Running tests
+          python -m pip install . 
+      
+      - name: Running Tests
         run: |
-   
-          python -m pytest
+          python -m pytest test -v --cov=./src --cov-report=xml 
+
+      - name: Upload code coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./coverage.xml
+          flags: unittests
+          env_vars: OS,PYTHON
+          name: codecov-umbrella
+          fail_ci_if_error: false

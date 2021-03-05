@@ -28,7 +28,7 @@ GeoCAT-comp routines
 
    geocat.comp.grid_to_triple
 
-   geocat.comp.isvector
+   geocat.comp.interp_hybrid_to_pressure
 
    geocat.comp.linint1
 
