@@ -38,7 +38,7 @@ axgr = AxesGrid(fig,
                 cbar_mode='single',
                 cbar_pad=0.5,
                 cbar_size='3%',
-                label_mode='')  # note the empty label_mode
+                label_mode='')    # note the empty label_mode
 
 plot_options = dict(transform=projection,
                     cmap=cm.jet,

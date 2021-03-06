@@ -387,10 +387,10 @@ class test_internal_ndpolyval(TestCase):
     def test_06(self):
         for i in range(50):
             # these limits are just to limit the time it takes to test.
-            deg = np.random.randint(0, 4)  # Maximum polynomial degree = 3
-            ndim = np.random.randint(1, 6)  # Maximim 5-Dimensional array
+            deg = np.random.randint(0, 4)    # Maximum polynomial degree = 3
+            ndim = np.random.randint(1, 6)    # Maximim 5-Dimensional array
             axis = np.random.randint(0, ndim)
-            max_dim_size = 11  # The maximum number of elements along one dimension
+            max_dim_size = 11    # The maximum number of elements along one dimension
 
             if ndim > 1:
                 tmp_shape = np.random.randint(1, max_dim_size, size=ndim)
@@ -423,10 +423,10 @@ class test_ndpolyval(TestCase):
     def test_01(self):
         for i in range(50):
             # these limits are just to limit the time it takes to test.
-            deg = np.random.randint(0, 4)  # Maximum polynomial degree = 3
-            ndim = np.random.randint(1, 6)  # Maximim 5-Dimensional array
+            deg = np.random.randint(0, 4)    # Maximum polynomial degree = 3
+            ndim = np.random.randint(1, 6)    # Maximim 5-Dimensional array
             axis = np.random.randint(0, ndim)
-            max_dim_size = 11  # The maximum number of elements along one dimension
+            max_dim_size = 11    # The maximum number of elements along one dimension
 
             if ndim > 1:
                 tmp_shape = np.random.randint(1, max_dim_size, size=ndim)
@@ -456,10 +456,10 @@ class test_ndpolyval(TestCase):
     def test_02(self):
         for i in range(50):
             # these limits are just to limit the time it takes to test.
-            deg = np.random.randint(0, 4)  # Maximum polynomial degree = 3
-            ndim = np.random.randint(1, 6)  # Maximim 5-Dimensional array
+            deg = np.random.randint(0, 4)    # Maximum polynomial degree = 3
+            ndim = np.random.randint(1, 6)    # Maximim 5-Dimensional array
             axis = np.random.randint(0, ndim)
-            max_dim_size = 11  # The maximum number of elements along one dimension
+            max_dim_size = 11    # The maximum number of elements along one dimension
 
             if ndim > 1:
                 tmp_shape = np.random.randint(1, max_dim_size, size=ndim)
@@ -489,10 +489,10 @@ class test_ndpolyval(TestCase):
     def test_03(self):
         for i in range(5):
             # these limits are just to limit the time it takes to test.
-            deg = np.random.randint(0, 4)  # Maximum polynomial degree = 3
-            ndim = np.random.randint(1, 6)  # Maximim 5-Dimensional array
+            deg = np.random.randint(0, 4)    # Maximum polynomial degree = 3
+            ndim = np.random.randint(1, 6)    # Maximim 5-Dimensional array
             axis = np.random.randint(0, ndim)
-            max_dim_size = 11  # The maximum number of elements along one dimension
+            max_dim_size = 11    # The maximum number of elements along one dimension
 
             if ndim > 1:
                 tmp_shape = np.random.randint(1, max_dim_size, size=ndim)

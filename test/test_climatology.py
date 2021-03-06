@@ -12,6 +12,7 @@ dset_encoded = xr.tutorial.open_dataset("rasm", decode_cf=False)
 
 def get_fake_dataset(start_month, nmonths, nlats, nlons):
     """Returns a very simple xarray dataset for testing.
+
     Data values are equal to "month of year" for monthly time steps.
     """
     # Create coordinates

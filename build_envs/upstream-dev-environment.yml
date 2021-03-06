@@ -14,7 +14,7 @@ dependencies:
   - numpy
   - pytest  # for tests
   - pytest-cov  # for tests
-  - pip 
+  - pip
   - pip:
     - git+https://github.com/pydata/xarray.git
     - git+https://github.com/xarray-contrib/cf-xarray.git
