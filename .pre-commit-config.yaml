@@ -1,16 +1,25 @@
 repos:
 -   repo: https://github.com/pre-commit/mirrors-yapf
-    rev: v0.30.0    # Use the sha / tag you want to point at
+    rev: v0.30.0
     hooks:
     - id: yapf
       args: ['--style=.style.yapf', '--recursive', '--in-place']
+#-   repo: https://github.com/myint/docformatter
+#    rev: v1.3.1
+#    hooks:
+#    - id: docformatter
+#      args: [--in-place]
+-   repo: git://github.com/FalconSocial/pre-commit-mirrors-pep257
+    sha: ''
+    hooks:
+    -   id: pep257
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.3.0
     hooks:
     - id: check-yaml
     - id: end-of-file-fixer
     - id: trailing-whitespace
--   repo: https://github.com/psf/black
-    rev: 19.3b0
-    hooks:
-    - id: black
+#-   repo: https://github.com/psf/black
+#    rev: 19.3b0
+#    hooks:
+#    - id: black
