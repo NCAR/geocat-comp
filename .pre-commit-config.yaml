@@ -4,15 +4,15 @@ repos:
     hooks:
     - id: yapf
       args: ['--style=.style.yapf', '--recursive', '--in-place']
-#-   repo: https://github.com/myint/docformatter
-#    rev: v1.3.1
-#    hooks:
-#    - id: docformatter
-#      args: [--in-place]
--   repo: git://github.com/FalconSocial/pre-commit-mirrors-pep257
-    sha: ''
+-   repo: https://github.com/myint/docformatter
+    rev: v1.3.1
     hooks:
-    -   id: pep257
+    - id: docformatter
+      args: [--in-place]
+#-   repo: git://github.com/FalconSocial/pre-commit-mirrors-pep257
+#    sha: ''
+#    hooks:
+#    -   id: pep257
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.3.0
     hooks:
