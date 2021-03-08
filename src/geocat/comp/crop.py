@@ -53,7 +53,7 @@ def max_daylight(jday, lat):
     ws = np.arccos(np.outer(-np.tan(latrad), np.tan(sdec)))
 
     # Equation 34 from FAO56
-    dlm = np.transpose(ws * con)
+    dlm = con*ws
 
     # handle metadata if xarray output
     if x_out:
@@ -64,5 +64,5 @@ def max_daylight(jday, lat):
 
 
 # print(max_daylight(246, -20))
-# print(max_daylight([15, 180, 246, 306], [-20, 0, 45]))
-print(max_daylight([15, 180], [[20, 0, 45], [10, -5, -10], [55, -55, 9]]))
+print(max_daylight([15, 180, 246, 306], [-20, 0, 45]))
+# print(max_daylight([15, 180], [[20, 0, 45], [10, -5, -10], [55, -55, 9]]))
