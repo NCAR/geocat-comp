@@ -484,13 +484,13 @@ def _reverse_rearrange_axis(data: np.ndarray, axis,
     return np.moveaxis(data.reshape((data.shape[0], *trailing_shape)), 0, axis)
 
 
-def isvector(input: Iterable) -> bool:
+def _isvector(input: Iterable) -> bool:
     if isinstance(input, np.ndarray):
         return (input.size != 1) and ((input.ndim == 1) or
                                       ((input.ndim == 2) and
                                        (np.any(input.shape == 1))))
     else:
-        return isvector(np.asarray(input))
+        return _isvector(np.asarray(input))
 
 
 def _to_numpy_ndarray(data: Iterable) -> np.ndarray:
@@ -656,7 +656,7 @@ def _ndpolyval(p: np.ndarray,
         raise ValueError(
             "x has invalid number of dimension. x must be either 1 dimensionn.")
 
-    if isvector(x):
+    if _isvector(x):
         x_original_size = x.size
         other_dims = np.asarray(p.shape)[np.arange(p.ndim) != axis]
         x = np.moveaxis(

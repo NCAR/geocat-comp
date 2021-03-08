@@ -1,6 +1,8 @@
+{% set version = "2021.03.0" %}
+
 package:
   name: 'geocat-comp'
-  version: '2021.02.0'
+  version: {{ version }}
 
 build:
   noarch: python
@@ -8,8 +10,10 @@ build:
   skip: True  # [py<3.5]
 
 source:
-  git_rev: main
+  #git_rev: main   # For building from main branch for debugging purposes
+  git_tag: v{{ version }}   # For building from a specific tag
   git_url: https://github.com/NCAR/geocat-comp.git
+  #url: https://github.com/NCAR/geocat-comp/archive/v{{ version }}.tar.gz   # For building from a specific tag's tarball
 
 requirements:
   host:
@@ -23,6 +27,7 @@ requirements:
     - dask
     - eofs
     - geocat-f2py
+    - metpy
     - numpy=1.19
     - xarray
 
@@ -32,6 +37,7 @@ test:
   requires:
     - pytest
     - netcdf4
+    - geocat-datafiles
   imports:
     - geocat.comp
   commands:

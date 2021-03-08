@@ -25,6 +25,10 @@ GeoCAT-comp routines
 
    geocat.comp.eofunc._generate_eofs_solver
 
+   geocat.comp.interp_hybrid_to_pressure._pressure_from_hybrid
+
+   geocat.comp.interp_hybrid_to_pressure._vertical_remap
+
    geocat.comp.polynomial._get_missing_value
 
    geocat.comp.polynomial._unchunk_ifneeded
@@ -32,6 +36,8 @@ GeoCAT-comp routines
    geocat.comp.polynomial._ndpolyfit
 
    geocat.comp.polynomial._check_axis
+
+   geocat.comp.polynomial._isvector
 
    geocat.comp.polynomial._rearrange_axis
 

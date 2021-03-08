@@ -3,15 +3,23 @@ on:
   push:
     branches-ignore:
       - main
+  #pull_request:
+
 jobs:
   yapf_formatting:
-    if: "contains(github.event.head_commit.message, 'trigger_yapf') || contains(github.event.head_commit.message, 'trigger_actions')"
+    if: |
+      contains(github.event.head_commit.message, 'trigger_yapf') ||
+      contains(github.event.head_commit.message, 'trigger_actions')
     name: yapf_formatting
     runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash -l {0}
     steps:
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.8.0
+        with:
+          access_token: ${{ secrets.A_KOOTZ_GEOCAT_COMP_TOKEN }}
       - name: checkout
         uses: actions/checkout@v2
         with:
