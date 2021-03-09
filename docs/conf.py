@@ -12,9 +12,10 @@
 #
 # -- Project information -----------------------------------------------------
 
-import geocat.comp
-import sys
 import os
+import sys
+
+import geocat.comp
 
 try:
     from unittest.mock import MagicMock

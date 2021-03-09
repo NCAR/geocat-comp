@@ -1,10 +1,9 @@
-import numpy as np
-import xarray as xr
+import warnings
 from typing import Iterable
 
+import numpy as np
+import xarray as xr
 from eofs.xarray import Eof
-
-import warnings
 
 
 def _generate_eofs_solver(data, time_dim=0, weights=None, center=True, ddof=1):

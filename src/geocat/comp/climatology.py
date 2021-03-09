@@ -1,7 +1,8 @@
-import xarray as xr
+import typing
+
 import cf_xarray
 import numpy as np
-import typing
+import xarray as xr
 
 xr.set_options(keep_attrs=True)
 

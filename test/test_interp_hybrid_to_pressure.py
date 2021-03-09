@@ -1,12 +1,13 @@
-import pytest
-import xarray as xr
 from unittest import TestCase
+
+import geocat.datafiles as gdf
+import matplotlib.pyplot as plt
 import numpy as np
 import numpy.testing as nt
-import matplotlib.pyplot as plt
+import pytest
+import xarray as xr
 
 import geocat.comp
-import geocat.datafiles as gdf
 
 # Sample input data
 

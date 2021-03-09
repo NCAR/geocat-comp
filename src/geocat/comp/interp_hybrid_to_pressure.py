@@ -1,7 +1,7 @@
+import cf_xarray
 import metpy.interpolate
 import numpy as np
 import xarray as xr
-import cf_xarray
 
 __pres_lev_mandatory__ = np.array([
     1000, 925, 850, 700, 500, 400, 300, 250, 200, 150, 100, 70, 50, 30, 20, 10,

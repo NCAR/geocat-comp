@@ -1,9 +1,11 @@
 from unittest import TestCase
-from geocat.comp.polynomial import _ndpolyfit, ndpolyfit, _ndpolyval, ndpolyval, detrend
 
+import dask.array as da
 import numpy as np
 import xarray as xr
-import dask.array as da
+
+from geocat.comp.polynomial import (_ndpolyfit, _ndpolyval, detrend, ndpolyfit,
+                                    ndpolyval)
 
 
 class test_internal_ndpolyfit(TestCase):

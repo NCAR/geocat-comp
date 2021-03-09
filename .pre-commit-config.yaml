@@ -4,15 +4,13 @@ repos:
     hooks:
     - id: yapf
       args: ['--style=.style.yapf', '--recursive', '--in-place']
+
 -   repo: https://github.com/myint/docformatter    # To format the doc strings to conform PEP257
     rev: v1.3.1
     hooks:
     - id: docformatter
       args: [--in-place]
-#-   repo: git://github.com/FalconSocial/pre-commit-mirrors-pep257
-#    sha: ''
-#    hooks:
-#    -   id: pep257
+
 -   repo: https://github.com/pre-commit/pre-commit-hooks    # Some common pre-commit hooks
     rev: v2.3.0
     hooks:
@@ -20,6 +18,17 @@ repos:
     - id: end-of-file-fixer        # Makes sure files end with a newline.
     - id: trailing-whitespace      # Checks for any tabs or spaces after the last non-whitespace character on the line.
     - id: check-docstring-first    # Checks that code comes after the docstrings.
+
+-   repo: https://github.com/PyCQA/isort    # To sort the imports
+    rev: 5.7.0
+    hooks:
+    - id: isort
+
+#-   repo: git://github.com/FalconSocial/pre-commit-mirrors-pep257
+#    sha: ''
+#    hooks:
+#    -   id: pep257
+
 #-   repo: https://github.com/psf/black    # Popular black formatter, slightly different than PEP8
 #    rev: 19.3b0
 #    hooks:

@@ -1,6 +1,7 @@
 #''' setup.py is needed, but only to make namespaces happen
-from setuptools import setup, find_packages
 from pathlib import Path
+
+from setuptools import find_packages, setup
 
 
 #''' moved into function, can now be used other places
