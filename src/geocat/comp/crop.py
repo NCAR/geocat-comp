@@ -1,5 +1,6 @@
 import numpy as np
 import xarray as xr
+import warnings
 
 
 def max_daylight(jday, lat):
@@ -37,7 +38,15 @@ def max_daylight(jday, lat):
 
     # check to ensure dimension of lat is not greater than two
     if lat.ndim > 1 or jday.ndim > 1:
-        raise ValueError('Inputs must have at most one dimension')
+        raise ValueError('max_daylight: inputs must have at most one dimension')
+
+    # check if latitude is outside of acceptable ranges
+    # warn if more than abs(55), error if more than abs(66)
+    if (abs(lat) > 55).all():
+        warnings.warn("WARNING: max_daylight has limited validity for abs(lat) > 55 ")
+    elif (abs(lat) > 66).all():
+        warnings.warn('WARNING: max_daylight: calculation not possible for abs(lat) > 66 for all values of jday, '
+                      'errors may occur')
 
     # define constants
     pi = np.pi
@@ -67,5 +76,5 @@ def max_daylight(jday, lat):
     return dlm
 
 
-# print(max_daylight(246, -20))
-print(max_daylight([15, 180, 246, 306], [-20, 0, 45]))
+print(max_daylight(246, -20))
+# print(max_daylight([15, 180, 246, 306], [-20, 0, 45]))
