@@ -13,15 +13,15 @@ def max_daylight(jday, lat):
     Parameters
     ----------
     jday : numpy.ndarray, xr.DataArray, list, float
-        Day of year
+        Day of year. Must be 1D
 
     lat : numpy.ndarray, xr.DataArray, list, float
-        Latitude in degrees
+        Latitude in degrees. Must be 1D
 
     Returns
     -------
     sunmax : numpy.ndarray, xr.DataArray, float
-        Calculated maximum sunlight
+        Calculated maximum sunlight in hours/day
     """
 
     x_out = False
@@ -36,8 +36,8 @@ def max_daylight(jday, lat):
     lat = np.asarray(lat)
 
     # check to ensure dimension of lat is not greater than two
-    if lat.ndim > 2:
-        raise ValueError('Number of dimensions of lat must be two or less')
+    if lat.ndim > 1 or jday.ndim > 1:
+        raise ValueError('Inputs must have at most one dimension')
 
     # define constants
     pi = np.pi
@@ -58,11 +58,14 @@ def max_daylight(jday, lat):
     # handle metadata if xarray output
     if x_out:
         print('meta')
-
+        dlm = xr.DataArray(dlm, coords=[jday,lat], dims=["doy", "lat"])
+        dlm.attrs['long_name'] = "maximum daylight: FAO_56"
+        dlm.attrs['units'] = "hours/day"
+        dlm.attrs['url'] = "http://www.fao.org/docrep/X0490E/x0490e07.htm"
+        dlm.attrs['info'] = "FAO 56; EQN 34; max_daylight"
 
     return dlm
 
 
 # print(max_daylight(246, -20))
 print(max_daylight([15, 180, 246, 306], [-20, 0, 45]))
-# print(max_daylight([15, 180], [[20, 0, 45], [10, -5, -10], [55, -55, 9]]))
