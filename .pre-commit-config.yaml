@@ -14,7 +14,8 @@ repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks    # Some common pre-commit hooks
     rev: v2.3.0
     hooks:
-    - id: check-yaml               # Checks the syntax of .yaml files.
+#    - id: check-yaml               # Checks the syntax of .yaml files.
+#      args: [--allow-multiple-documents, --unsafe]
     - id: end-of-file-fixer        # Makes sure files end with a newline.
     - id: trailing-whitespace      # Checks for any tabs or spaces after the last non-whitespace character on the line.
     - id: check-docstring-first    # Checks that code comes after the docstrings.
