@@ -25,13 +25,3 @@ repos:
     rev: 5.7.0
     hooks:
     - id: isort
-
-#-   repo: git://github.com/FalconSocial/pre-commit-mirrors-pep257
-#    sha: ''
-#    hooks:
-#    -   id: pep257
-
-#-   repo: https://github.com/psf/black    # Popular black formatter, slightly different than PEP8
-#    rev: 19.3b0
-#    hooks:
-#    - id: black
