@@ -3,7 +3,7 @@ import numpy as np
 import xarray as xr
 import dask.array as da
 import dask.distributed as dd
-from geocat.comp.dewtemp import dewtemp
+from src.geocat.comp.dewtemp import dewtemp
 from dask.array.core import map_blocks
 
 t_def = [

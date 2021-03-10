@@ -2,7 +2,7 @@ import pytest
 import xarray as xr
 import numpy as np
 import pandas as pd
-import geocat.comp
+from src.geocat.comp import anomaly, climatology, month_to_season
 
 dset_a = xr.tutorial.open_dataset("rasm")
 dset_b = xr.tutorial.open_dataset("air_temperature")
@@ -42,25 +42,25 @@ def get_fake_dataset(start_month, nmonths, nlats, nlons):
 
 def test_climatology_invalid_freq():
     with pytest.raises(ValueError):
-        geocat.comp.climatology(dset_a, "hourly")
+        climatology(dset_a, "hourly")
 
 
 def test_climatology_encoded_time():
     with pytest.raises(ValueError):
-        geocat.comp.climatology(dset_encoded, "monthly")
+        climatology(dset_encoded, "monthly")
 
 
 @pytest.mark.parametrize("dataset", [dset_a, dset_b, dset_c["Tair"]])
 @pytest.mark.parametrize("freq", ["day", "month", "year", "season"])
 def test_climatology_setup(dataset, freq):
-    computed_dset = geocat.comp.climatology(dataset, freq)
+    computed_dset = climatology(dataset, freq)
     assert type(dataset) == type(computed_dset)
 
 
 @pytest.mark.parametrize("dataset", [dset_a, dset_b, dset_c["Tair"]])
 @pytest.mark.parametrize("freq", ["day", "month", "year", "season"])
 def test_anomaly_setup(dataset, freq):
-    computed_dset = geocat.comp.anomaly(dataset, freq)
+    computed_dset = anomaly(dataset, freq)
     assert type(dataset) == type(computed_dset)
 
 
@@ -97,24 +97,24 @@ complex_dataset = get_fake_dataset(start_month="2001-01",
 @pytest.mark.parametrize("dataset, season, expected", [(ds1, "JFM", 2.0),
                                                        (ds1, "JJA", 7.0)])
 def test_month_to_season_returns_middle_month_value(dataset, season, expected):
-    season_ds = geocat.comp.month_to_season(dataset, season)
+    season_ds = month_to_season(dataset, season)
     np.testing.assert_equal(season_ds["my_var"].data, expected)
 
 
 def test_month_to_season_bad_season_exception():
     with pytest.raises(KeyError):
-        geocat.comp.month_to_season(ds1, "TEST")
+        month_to_season(ds1, "TEST")
 
 
 def test_month_to_season_partial_years_exception():
     with pytest.raises(ValueError):
-        geocat.comp.month_to_season(partial_year_dataset, "JFM")
+        month_to_season(partial_year_dataset, "JFM")
 
 
 @pytest.mark.parametrize("dataset, season, expected", [(ds1, "NDJ", 11.5)])
 def test_month_to_season_final_season_returns_2month_average(
         dataset, season, expected):
-    season_ds = geocat.comp.month_to_season(dataset, season)
+    season_ds = month_to_season(dataset, season)
     np.testing.assert_equal(season_ds["my_var"].data, expected)
 
 
@@ -137,7 +137,7 @@ def test_month_to_season_final_season_returns_2month_average(
 )
 def test_month_to_season_returns_one_point_per_year(season):
     nyears_of_data = ds3.sizes["time"] / 12
-    season_ds = geocat.comp.month_to_season(ds3, season)
+    season_ds = month_to_season(ds3, season)
     assert season_ds["my_var"].size == nyears_of_data
 
 
@@ -150,7 +150,7 @@ def test_month_to_season_returns_one_point_per_year(season):
 )
 def test_month_to_season_custom_time_coordinate(dataset, time_coordinate,
                                                 var_name, expected):
-    season_ds = geocat.comp.month_to_season(dataset,
+    season_ds = month_to_season(dataset,
                                             "JFM",
                                             time_coord_name=time_coordinate)
     np.testing.assert_almost_equal(season_ds[var_name].data,

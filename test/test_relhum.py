@@ -5,7 +5,7 @@ import dask.array as da
 import dask.distributed as dd
 from dask.array.core import map_blocks
 
-from geocat.comp.relhum import (relhum, relhum_water, relhum_ice)
+from src.geocat.comp.relhum import (relhum, relhum_water, relhum_ice)
 
 
 class Test_relhum(unittest.TestCase):

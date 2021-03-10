@@ -5,7 +5,7 @@ import numpy.testing as nt
 # from dask.array.tests.test_xarray import xr
 import xarray as xr
 
-from geocat.comp import (eofunc_eofs, eofunc_pcs, eofunc, eofunc_ts)
+from src.geocat.comp import (eofunc_eofs, eofunc_pcs, eofunc, eofunc_ts)
 
 
 class BaseEOFTestClass(metaclass=ABCMeta):

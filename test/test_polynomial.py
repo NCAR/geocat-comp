@@ -1,5 +1,5 @@
 from unittest import TestCase
-from geocat.comp.polynomial import _ndpolyfit, ndpolyfit, _ndpolyval, ndpolyval, detrend
+from src.geocat.comp.polynomial import _ndpolyfit, ndpolyfit, _ndpolyval, ndpolyval, detrend
 
 import numpy as np
 import xarray as xr
