@@ -28,9 +28,6 @@ def max_daylight(jday, lat):
     x_out = False
     if isinstance(jday, xr.DataArray):
         x_out = True
-        save_dims = jday.dims
-        save_coords = jday.coords
-        save_attrs = jday.attrs
 
     # convert inputs to numpy arrays for function call
     jday = np.asarray(jday)
