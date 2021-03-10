@@ -15,5 +15,46 @@ class Test_max_daylight(unittest.TestCase):
     lat_gt = np.linspace(-66, 66, num=133)
 
     def test_numpy_input(self):
-        assert np.allclose(max_daylight(self.jday_gt, self.lat_gt), self.ncl_gt, atol=0.1)
+        assert np.allclose(max_daylight(self.jday_gt, self.lat_gt), self.ncl_gt, atol=0.005)
 
+    def test_float_input(self):
+        assert np.allclose(max_daylight(246, -20.0), 11.66559, atol=0.005)
+
+    def test_list_input(self):
+        assert np.allclose(max_daylight(self.jday_gt.tolist(), self.lat_gt.tolist()), self.ncl_gt, atol=0.005)
+
+    def test_xarray_input(self):
+        jday = xr.DataArray(self.jday_gt)
+        lat = xr.DataArray(self.lat_gt)
+
+        assert np.allclose(max_daylight(jday, lat), self.ncl_gt, atol=0.005)
+
+    def test_dask_unchunked_input(self):
+        jday = da.from_array(self.jday_gt)
+        lat = da.from_array(self.lat_gt)
+
+        # Start dask cluster
+        cluster = dd.LocalCluster(n_workers=3, threads_per_worker=2)
+        print(cluster.dashboard_link)
+        client = dd.Client(cluster)
+
+        out = map_blocks(max_daylight, jday, lat).compute()
+
+        assert np.allclose(out, self.ncl_gt, atol=0.005)
+
+        client.shutdown()
+
+    def test_dask_chunked_input(self):
+        jday = da.from_array(self.jday_gt, chunks='auto')
+        lat = da.from_array(self.lat_gt, chunks='auto')
+
+        # Start dask cluster
+        cluster = dd.LocalCluster(n_workers=3, threads_per_worker=2)
+        print(cluster.dashboard_link)
+        client = dd.Client(cluster)
+
+        out = map_blocks(max_daylight, jday, lat).compute()
+
+        assert np.allclose(out, self.ncl_gt, atol=0.005)
+
+        client.shutdown()
