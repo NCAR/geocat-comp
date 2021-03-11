@@ -2,18 +2,6 @@
 from setuptools import setup, find_packages
 from pathlib import Path
 
-CLASSIFIERS = [
-    'Operating System :: OS Independent',
-    'Intended Audience :: Science/Research',
-    'Programming Language :: Python',
-    'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.6',
-    'Programming Language :: Python :: 3.7',
-    'Programming Language :: Python :: 3.8',
-    'Programming Language :: Python :: 3.9',
-    'Topic :: Scientific/Engineering',
-]
-
 with open('README.md') as f:
     long_description = f.read()
 
@@ -28,6 +16,7 @@ def version():
         if index > -1:
             return line[index + 15:].replace('\" %}', '').strip()
 
+
 setup(
     name='geocat.comp',
     version=version(),
@@ -36,10 +25,21 @@ setup(
     python_requires='>=3.6',
     install_requires=requirements,
     description=
-    'GeoCAT-comp is a Python wrapper around a Fortran library containing a subset of NCL (NCAR Command Language) computational routines.',
+    """GeoCAT-comp is computational component of the GeoCAT project and provides 
+    implementations of computational functions for analysis of geosciences data""",
     long_description=long_description,
     long_description_content_type='text/markdown',
-    classifiers=CLASSIFIERS,
+    classifiers=[
+        'Operating System :: OS Independent',
+        'Intended Audience :: Science/Research',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Topic :: Scientific/Engineering',
+    ],
     include_package_data=True,
     package_dir={
         '': 'src',
@@ -55,4 +55,3 @@ setup(
         'Tracker': 'https://github.com/NCAR/geocat-comp/issues',
     },
     zip_safe=False)
-
