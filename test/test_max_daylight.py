@@ -3,7 +3,6 @@ import numpy as np
 import xarray as xr
 import dask.array as da
 import dask.distributed as dd
-from dask.array.core import map_blocks
 
 from geocat.comp.crop import (max_daylight)
 
@@ -37,32 +36,25 @@ class Test_max_daylight(unittest.TestCase):
 
         assert np.allclose(max_daylight(jday, lat), self.ncl_gt, atol=0.005)
 
-    def test_dask_unchunked_input(self):
-        jday = da.from_array(self.jday_gt)
-        lat = da.from_array(self.lat_gt)
-
-        # Start dask cluster
-        cluster = dd.LocalCluster(n_workers=3, threads_per_worker=2)
-        print(cluster.dashboard_link)
-        client = dd.Client(cluster)
-
-        out = map_blocks(max_daylight, jday, lat).compute()
-
-        assert np.allclose(out, self.ncl_gt, atol=0.005)
-
-        client.shutdown()
-
-    def test_dask_chunked_input(self):
-        jday = da.from_array(self.jday_gt, chunks='auto')
-        lat = da.from_array(self.lat_gt, chunks='auto')
-
-        # Start dask cluster
-        cluster = dd.LocalCluster(n_workers=3, threads_per_worker=2)
-        print(cluster.dashboard_link)
-        client = dd.Client(cluster)
-
-        out = map_blocks(max_daylight, jday, lat).compute()
-
-        assert np.allclose(out, self.ncl_gt, atol=0.005)
-
-        client.shutdown()
+    # def test_dask_unchunked_input(self):
+    #     jday = da.from_array(self.jday_gt)
+    #     lat = da.from_array(self.lat_gt)
+    #
+    #     out = da.from_array(max_daylight(jday, lat)).compute()
+    #
+    #     assert np.allclose(out, self.ncl_gt, atol=0.005)
+    #
+    # def test_dask_chunked_input(self):
+    #     jday = da.from_array(self.jday_gt, chunks='auto')
+    #     lat = da.from_array(self.lat_gt, chunks='auto')
+    #
+    #     # Start dask cluster
+    #     cluster = dd.LocalCluster(n_workers=3, threads_per_worker=2)
+    #     print(cluster.dashboard_link)
+    #     client = dd.Client(cluster)
+    #
+    #     out = client.submit(max_daylight, jday, lat).result()
+    #
+    #     assert np.allclose(out, self.ncl_gt, atol=0.005)
+    #
+    #     client.shutdown()
