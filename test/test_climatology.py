@@ -1,7 +1,8 @@
-import pytest
-import xarray as xr
 import numpy as np
 import pandas as pd
+import pytest
+import xarray as xr
+
 import geocat.comp
 
 dset_a = xr.tutorial.open_dataset("rasm")
@@ -12,6 +13,7 @@ dset_encoded = xr.tutorial.open_dataset("rasm", decode_cf=False)
 
 def get_fake_dataset(start_month, nmonths, nlats, nlons):
     """Returns a very simple xarray dataset for testing.
+
     Data values are equal to "month of year" for monthly time steps.
     """
     # Create coordinates

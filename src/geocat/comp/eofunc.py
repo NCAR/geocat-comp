@@ -1,16 +1,14 @@
-import numpy as np
-import xarray as xr
+import warnings
 from typing import Iterable
 
+import numpy as np
+import xarray as xr
 from eofs.xarray import Eof
-
-import warnings
 
 
 def _generate_eofs_solver(data, time_dim=0, weights=None, center=True, ddof=1):
-    """
-        Convenience function to be used in both `eofunc_eofs` and `eofunc_pcs` functions.
-    """
+    """Convenience function to be used in both `eofunc_eofs` and `eofunc_pcs`
+    functions."""
 
     # ''' Start of boilerplate
     if not isinstance(data, xr.DataArray):
@@ -48,8 +46,8 @@ def eofunc_eofs(data,
                 ddof=1,
                 vfscaled=False,
                 meta=False):
-    """
-    Computes empirical orthogonal functions (EOFs, aka: Principal Component Analysis).
+    """Computes empirical orthogonal functions (EOFs, aka: Principal Component
+    Analysis).
 
     Note: `eofunc_eofs` allows to perform the EOF analysis that was previously done via the NCL function `eofunc`.
     However, there are a few changes to the NCL flow such as : (1) Only `np.nan` is supported as missing value,
@@ -152,7 +150,6 @@ def eofunc_eofs(data,
             (From `eofs` package): Fractional EOF mode variances.
 
             The fraction of the total variance explained by each EOF mode, values between 0 and 1 inclusive..
-
     """
 
     data, solver = _generate_eofs_solver(data,
@@ -201,9 +198,8 @@ def eofunc_pcs(data,
                center=True,
                ddof=1,
                meta=False):
-    """
-    Computes the principal components (time projection) in the empirical orthogonal function
-    analysis.
+    """Computes the principal components (time projection) in the empirical
+    orthogonal function analysis.
 
     Note: `eofunc_pcs` allows to perform the analysis that was previously done via the NCL function `eofunc_ts`.
     However, there are a few changes to the NCL flow such as : (1) Only `np.nan` is supported as missing value,
@@ -275,7 +271,6 @@ def eofunc_pcs(data,
 
     Returns
     -------
-
     """
 
     data, solver = _generate_eofs_solver(data,

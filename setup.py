@@ -1,6 +1,7 @@
 #''' setup.py is needed, but only to make namespaces happen
-from setuptools import setup, find_packages
 from pathlib import Path
+
+from setuptools import find_packages, setup
 
 with open('README.md') as f:
     long_description = f.read()
@@ -25,7 +26,7 @@ setup(
     python_requires='>=3.6',
     install_requires=requirements,
     description=
-    """GeoCAT-comp is computational component of the GeoCAT project and provides 
+    """GeoCAT-comp is computational component of the GeoCAT project and provides
     implementations of computational functions for analysis of geosciences data""",
     long_description=long_description,
     long_description_content_type='text/markdown',

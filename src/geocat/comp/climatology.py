@@ -1,7 +1,8 @@
-import xarray as xr
+import typing
+
 import cf_xarray
 import numpy as np
-import typing
+import xarray as xr
 
 xr.set_options(keep_attrs=True)
 
@@ -18,8 +19,7 @@ def _find_time_invariant_vars(dset, time_coord_name):
 
 def _contains_datetime_like_objects(d_arr):
     """Check if a variable contains datetime like objects (either
-    np.datetime64, or cftime.datetime)
-    """
+    np.datetime64, or cftime.datetime)"""
     return np.issubdtype(
         d_arr.dtype,
         np.datetime64) or xr.core.common.contains_cftime_datetimes(d_arr)
