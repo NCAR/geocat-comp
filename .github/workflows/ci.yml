@@ -42,7 +42,7 @@ jobs:
 
       - name: Install geocat-comp 
         run: |
-          python -m pip install . 
+          python -m pip install . --no-deps
       
       - name: Running Tests
         run: |
