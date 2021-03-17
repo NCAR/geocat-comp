@@ -82,9 +82,11 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'geocat.comp'
-import datetime 
+import datetime
+
 current_year = datetime.datetime.now().year
-copyright = u'{}, University Corporation for Atmospheric Research'.format(current_year)
+copyright = u'{}, University Corporation for Atmospheric Research'.format(
+    current_year)
 author = u'GeoCAT'
 
 # The version info for the project you're documenting, acts as replacement for
