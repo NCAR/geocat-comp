@@ -4,8 +4,8 @@ import dask.array as da
 import numpy as np
 import xarray as xr
 
-from geocat.comp.polynomial import (_ndpolyfit, _ndpolyval, detrend, ndpolyfit,
-                                    ndpolyval)
+from src.geocat.comp.polynomial import (_ndpolyfit, _ndpolyval, detrend,
+                                        ndpolyfit, ndpolyval)
 
 
 class test_internal_ndpolyfit(TestCase):

@@ -6,19 +6,19 @@ following contribution guidelines:
 # Adding new functions to the Geocat-comp repo
 
 1. For a new function or family of functions that handle similar computations, create a new Python file in
-`$GEOCATCOMP/geocat/comp/`.
+`$GEOCATCOMP/src/geocat/comp/`.
 
 2. For implementation guidelines (such as Xarray and Dask usage), please refer to:
    - Previously implemented functionality as examples,
-    e.g. [polynomial.py](https://github.com/NCAR/geocat-comp/blob/main/geocat/comp/polynomial.py) or others.
+    e.g. [polynomial.py](https://github.com/NCAR/geocat-comp/blob/main/src/geocat/comp/polynomial.py) or others.
    - [GeoCAT Contributor's Guide](https://geocat.ucar.edu/pages/contributing.html) for further information.
 
-3. In any Python script under `$GEOCATCOMP/geocat/comp/`, there may be user API functions, which are
+3. In any Python script under `$GEOCATCOMP/src/geocat/comp/`, there may be user API functions, which are
 supposed to be included in the `geocat.comp` namespace, and internal API functions, which are used by the
 user API functions as helpers, preferably starts with an underscore ("_") in their names, as well as are
 not included in the `geocat.comp` namespace.
 
-4. The user API functions should be imported in `$GEOCATCOMP/geocat/comp/__init__.py` to be included in
+4. The user API functions should be imported in `$GEOCATCOMP/src/geocat/comp/__init__.py` to be included in
 the namespace.
 
 5. For appropriate documentation, each user API and internal API function should be listed in the

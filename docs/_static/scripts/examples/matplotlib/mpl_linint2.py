@@ -10,7 +10,7 @@ from cartopy.mpl.ticker import LatitudeFormatter, LongitudeFormatter
 from matplotlib import cm
 from mpl_toolkits.axes_grid1 import AxesGrid
 
-import geocat.comp
+from src import geocat
 
 # Open a netCDF data file using xarray default engine and load the data
 # into xarrays
