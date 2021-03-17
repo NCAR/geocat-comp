@@ -43,7 +43,7 @@ setup(
     ],
     include_package_data=True,
     package_dir={
-	'': 'src'
+        '': 'src',
         'geocat': 'src/geocat',
         'geocat.comp': 'src/geocat/comp'
     },
