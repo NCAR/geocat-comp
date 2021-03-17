@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import numpy as np
-import xarray as xr
-import geocat.comp
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
-from matplotlib import cm
-from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
+import numpy as np
+import xarray as xr
 from cartopy.mpl.geoaxes import GeoAxes
+from cartopy.mpl.ticker import LatitudeFormatter, LongitudeFormatter
+from matplotlib import cm
 from mpl_toolkits.axes_grid1 import AxesGrid
+
+import geocat.comp
 
 # Open a netCDF data file using xarray default engine and load the data
 # into xarrays
@@ -38,7 +39,7 @@ axgr = AxesGrid(fig,
                 cbar_mode='single',
                 cbar_pad=0.5,
                 cbar_size='3%',
-                label_mode='')  # note the empty label_mode
+                label_mode='')    # note the empty label_mode
 
 plot_options = dict(transform=projection,
                     cmap=cm.jet,

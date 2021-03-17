@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 # coding: utf-8
-""" This example script demonstrates how to computes POP MOC field offline from POP netcdf history files.  This routine
-is designed for the CESM4 ocean component.
+"""This example script demonstrates how to computes POP MOC field offline from
+POP netcdf history files.  This routine is designed for the CESM4 ocean
+component.
 
 Example netCDF file used below can be found under https://github.com/NCAR/geocat-datafiles/tree/master/netcdf_files
 """
 
 import numpy as np
 import xarray as xr
+
 import geocat.comp
 
 # Open a netCDF data file using xarray default engine and load the data
@@ -23,7 +25,7 @@ kmt = ds.KMT[:]
 tlat = ds.TLAT[:].values.astype(np.double)
 
 # Read important parameters from input data
-nyaux = lat_aux_grid.shape[0]  # 395
+nyaux = lat_aux_grid.shape[0]    # 395
 km = np.max(kmt.values).astype(np.int)
 ny = tarea.shape[0]
 nx = tarea.shape[1]

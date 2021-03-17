@@ -1,8 +1,9 @@
-import pytest
-import xarray as xr
 import numpy as np
 import pandas as pd
-from src.geocat.comp import anomaly, climatology, month_to_season
+import pytest
+import xarray as xr
+
+from geocat.comp import anomaly, climatology, month_to_season
 
 dset_a = xr.tutorial.open_dataset("rasm")
 dset_b = xr.tutorial.open_dataset("air_temperature")
@@ -12,6 +13,7 @@ dset_encoded = xr.tutorial.open_dataset("rasm", decode_cf=False)
 
 def get_fake_dataset(start_month, nmonths, nlats, nlons):
     """Returns a very simple xarray dataset for testing.
+
     Data values are equal to "month of year" for monthly time steps.
     """
     # Create coordinates
@@ -150,9 +152,7 @@ def test_month_to_season_returns_one_point_per_year(season):
 )
 def test_month_to_season_custom_time_coordinate(dataset, time_coordinate,
                                                 var_name, expected):
-    season_ds = month_to_season(dataset,
-                                            "JFM",
-                                            time_coord_name=time_coordinate)
+    season_ds = month_to_season(dataset, "JFM", time_coord_name=time_coordinate)
     np.testing.assert_almost_equal(season_ds[var_name].data,
                                    expected,
                                    decimal=1)
