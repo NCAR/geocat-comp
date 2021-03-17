@@ -43,8 +43,9 @@ setup(
     ],
     include_package_data=True,
     package_dir={
-        'geocat': 'geocat',
-        'geocat.comp': 'geocat/comp'
+	'': 'src'
+        'geocat': 'src/geocat',
+        'geocat.comp': 'src/geocat/comp'
     },
     namespace_packages=['geocat'],
     packages=['geocat', 'geocat.comp'],
