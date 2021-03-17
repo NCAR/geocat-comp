@@ -10,7 +10,7 @@ Example netCDF file used below can be found under https://github.com/NCAR/geocat
 import numpy as np
 import xarray as xr
 
-import geocat.comp
+from src import geocat
 
 # Open a netCDF data file using xarray default engine and load the data
 # into xarrays

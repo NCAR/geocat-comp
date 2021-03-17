@@ -23,8 +23,6 @@ Dependencies:
 """
 
 import cartopy.crs as ccrs
-import geocat.datafiles as gdf
-import geocat.viz.util as gvutil
 import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
@@ -32,9 +30,12 @@ from cartopy.mpl.geoaxes import GeoAxes
 from matplotlib import cm
 from mpl_toolkits.axes_grid1 import AxesGrid
 
+from src import geocat
+from src import geocat as gdf
+from src import geocat as gvutil
+
 ###############################################################################
 # Import packages:
-import geocat.comp
 
 ###############################################################################
 # Read in data:

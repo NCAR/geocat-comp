@@ -7,7 +7,7 @@ import numpy.testing as nt
 import pytest
 import xarray as xr
 
-import geocat.comp
+from geocat.comp import interp_hybrid_to_pressure
 
 # Sample input data
 
@@ -39,13 +39,13 @@ _u_int_expected = ds_out.u_int    # Expected output
 class Test_interp_hybrid_to_pressure(TestCase):
 
     def test_interp_hybrid_to_pressure_atmos(self):
-        u_int = geocat.comp.interp_hybrid_to_pressure(_data,
-                                                      _ps[0, :, :],
-                                                      _hyam,
-                                                      _hybm,
-                                                      p0=_p0,
-                                                      new_levels=_pres3d,
-                                                      method="log")
+        u_int = interp_hybrid_to_pressure(_data,
+                                          _ps[0, :, :],
+                                          _hyam,
+                                          _hybm,
+                                          p0=_p0,
+                                          new_levels=_pres3d,
+                                          method="log")
 
         uzon = u_int.mean(dim='lon')
 
@@ -53,26 +53,26 @@ class Test_interp_hybrid_to_pressure(TestCase):
 
     def test_interp_hybrid_to_pressure_atmos_wrong_method(self):
         with nt.assert_raises(ValueError):
-            u_int = geocat.comp.interp_hybrid_to_pressure(_data,
-                                                          _ps[0, :, :],
-                                                          _hyam,
-                                                          _hybm,
-                                                          p0=_p0,
-                                                          new_levels=_pres3d,
-                                                          method="wrong_method")
+            u_int = interp_hybrid_to_pressure(_data,
+                                              _ps[0, :, :],
+                                              _hyam,
+                                              _hybm,
+                                              p0=_p0,
+                                              new_levels=_pres3d,
+                                              method="wrong_method")
 
     def test_interp_hybrid_to_pressure_atmos_dask(self):
 
         ps_dask = _ps.chunk()
         data_dask = _data.chunk()
 
-        u_int = geocat.comp.interp_hybrid_to_pressure(data_dask,
-                                                      ps_dask[0, :, :],
-                                                      _hyam,
-                                                      _hybm,
-                                                      p0=_p0,
-                                                      new_levels=_pres3d,
-                                                      method="log")
+        u_int = interp_hybrid_to_pressure(data_dask,
+                                          ps_dask[0, :, :],
+                                          _hyam,
+                                          _hybm,
+                                          p0=_p0,
+                                          new_levels=_pres3d,
+                                          method="log")
 
         uzon = u_int.mean(dim='lon')
 
@@ -82,13 +82,13 @@ class Test_interp_hybrid_to_pressure(TestCase):
     # This test generates a plot, which can be compared to NCL's conwomap_5 plot:
     # https://www.ncl.ucar.edu/Applications/Images/conwomap_5_2_lg.png
     def test_interp_hybrid_to_pressure_atmos_plot(self):
-        u_int = geocat.comp.interp_hybrid_to_pressure(_data,
-                                                      _ps[0, :, :],
-                                                      _hyam,
-                                                      _hybm,
-                                                      p0=_p0,
-                                                      new_levels=_pres3d,
-                                                      method="log")
+        u_int = interp_hybrid_to_pressure(_data,
+                                          _ps[0, :, :],
+                                          _hyam,
+                                          _hybm,
+                                          p0=_p0,
+                                          new_levels=_pres3d,
+                                          method="log")
 
         uzon = u_int.mean(dim='lon')
 
