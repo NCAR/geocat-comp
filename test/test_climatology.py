@@ -3,7 +3,7 @@ import pandas as pd
 import pytest
 import xarray as xr
 
-from geocat.comp import anomaly, climatology, month_to_season
+from src.geocat import anomaly, climatology, month_to_season
 
 dset_a = xr.tutorial.open_dataset("rasm")
 dset_b = xr.tutorial.open_dataset("air_temperature")

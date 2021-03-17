@@ -1,7 +1,7 @@
 /build/
 
 # Dask
-/geocat/comp/dask-worker-space/
+/src/geocat/comp/dask-worker-space/
 
 
 # Created by https://www.gitignore.io/api/python,intellij,intellij+all,intellij+iml
