@@ -23,8 +23,6 @@ Dependencies:
 """
 
 import cartopy.crs as ccrs
-import geocat.datafiles as gdf
-import geocat.viz.util as gvutil
 import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
@@ -35,6 +33,8 @@ from mpl_toolkits.axes_grid1 import AxesGrid
 ###############################################################################
 # Import packages:
 import geocat.comp
+import geocat.datafiles as gdf
+import geocat.viz.util as gvutil
 
 ###############################################################################
 # Read in data:
