@@ -10,6 +10,6 @@ from .relhum import relhum, relhum_ice, relhum_water
 
 # bring all functions from geocat.f2py into the geocat.comp namespace
 try:
-    from src.geocat import *
+    from geocat.f2py import *
 except ImportError:
     pass
