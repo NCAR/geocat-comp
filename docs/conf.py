@@ -82,8 +82,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'geocat.comp'
-copyright = u'2019, University Corporation for Atmospheric Research'
-author = u'Orhan Eroglu'
+copyright = u'2021, University Corporation for Atmospheric Research'
+author = u'GeoCAT'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
