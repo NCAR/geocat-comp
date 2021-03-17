@@ -1,13 +1,13 @@
 from unittest import TestCase
 
+import geocat.datafiles as gdf
 import matplotlib.pyplot as plt
 import numpy as np
 import numpy.testing as nt
 import pytest
 import xarray as xr
 
-from src import geocat as gdf
-from src.geocat import interp_hybrid_to_pressure
+from geocat.comp import interp_hybrid_to_pressure
 
 # Sample input data
 
