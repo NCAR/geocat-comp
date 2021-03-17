@@ -6,7 +6,7 @@ import numpy as np
 import xarray as xr
 from dask.array.core import map_blocks
 
-from src.geocat.comp.dewtemp import dewtemp
+from geocat.comp.dewtemp import dewtemp
 
 t_def = [
     29.3, 28.1, 23.5, 20.9, 18.4, 15.9, 13.1, 10.1, 6.7, 3.1, -0.5, -4.5, -9.0,
