@@ -35,7 +35,8 @@ u, v = mpcalc.wind_components(wspd, wdir)  # Calculate wind components
 ##############################################################################
 # Create function to calculate the showalter index
 
-def showalter_index(pressure, temperature, dewpt): 
+
+def showalter_index(pressure, temperature, dewpt):
     """
     Calculate Showalter Index from pressure temperature and 850 hPa lcl
     
@@ -67,34 +68,35 @@ def showalter_index(pressure, temperature, dewpt):
         Showalter index in delta degrees celsius
         
     """
-    
+
     # find the measured temperature and dew point temperature at 850 hPa.
     idx850 = np.where(pressure == 850 * units.hPa)
     T850 = temperature[idx850]
     Td850 = dewpt[idx850]
-    
+
     # find the parcel profile temperature at 500 hPa.
     idx500 = np.where(pressure == 500 * units.hPa)
     Tp500 = temperature[idx500]
-    
+
     # Calculate lcl at the 850 hPa level
     lcl_calc = mpcalc.lcl(850 * units.hPa, T850[0], Td850[0])
     lcl_calc = lcl_calc[0]
-    
+
     # Define start and end heights for dry and moist lapse rate calculations
     p_strt = 1000 * units.hPa
     p_end = 500 * units.hPa
-    
+
     # Calculate parcel temp when raised dry adiabatically from surface to lcl
     dl = mpcalc.dry_lapse(lcl_calc, temperature[0], p_strt)
     dl = (dl.magnitude - 273.15) * units.degC  # Change units to C
-    
+
     # Calculate parcel temp when raised moist adiabatically from lcl to 500mb
     ml = mpcalc.moist_lapse(p_end, dl, lcl_calc)
-    
+
     # Calculate the Showalter index
     shox = Tp500 - ml
     return shox
+
 
 def get_skewt_vars(ds_name, p, tc, tdc, tac, pres_pos=1, envT_loc=5):
     """
