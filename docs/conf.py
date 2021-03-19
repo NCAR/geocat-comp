@@ -81,7 +81,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'geocat.comp'
+project = u'GeoCAT-comp'
+
 import datetime
 
 current_year = datetime.datetime.now().year
@@ -89,13 +90,8 @@ copyright = u'{}, University Corporation for Atmospheric Research'.format(
     current_year)
 author = u'GeoCAT'
 
-# The version info for the project you're documenting, acts as replacement for
-# |version| and |release|, also used in various other places throughout the
-# built documents.
-#
 
-
-#''' moved into function, can now be used other places
+# The version info for the project being documented
 def read_version():
     for line in open('../meta.yaml').readlines():
         index = line.find('set version')
