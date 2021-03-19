@@ -7,9 +7,9 @@
 
 
 
-GeoCAT-comp is both the whole computational component of the [GeoCAT](https://ncar.github.io/GeoCAT)
+GeoCAT-comp is both the whole computational component of the [GeoCAT](https://geocat.ucar.edu/)
 project and a single Github repository as described here. As the computational component of
-[GeoCAT](https://ncar.github.io/GeoCAT), GeoCAT-comp provides implementations of computational functions for operating
+[GeoCAT](https://geocat.ucar.edu/), GeoCAT-comp provides implementations of computational functions for operating
 on geosciences data. Many of these functions originated in NCL and were translated into Python with the help of GeoCAT-comp;
 however, developers are welcome to come up with novel computational functions for geosciences data.
 
