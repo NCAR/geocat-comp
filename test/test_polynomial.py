@@ -1,11 +1,18 @@
+import sys
 from unittest import TestCase
 
 import dask.array as da
 import numpy as np
 import xarray as xr
 
-from geocat.comp.polynomial import (_ndpolyfit, _ndpolyval, detrend, ndpolyfit,
-                                    ndpolyval)
+# Import from directory structure if coverage test, or from installed
+# packages otherwise
+if "--cov" in str(sys.argv):
+    from src.geocat.comp import detrend, ndpolyfit, ndpolyval
+    from src.geocat.comp.polynomial import _ndpolyfit, _ndpolyval
+else:
+    from geocat.comp import detrend, ndpolyfit, ndpolyval
+    from geocat.comp.polynomial import _ndpolyfit, _ndpolyval
 
 
 class test_internal_ndpolyfit(TestCase):
