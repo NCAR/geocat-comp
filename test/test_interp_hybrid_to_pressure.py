@@ -8,8 +8,8 @@ import numpy.testing as nt
 import pytest
 import xarray as xr
 
-# from geocat.comp import interp_hybrid_to_pressure
-
+# Import from directory structure if coverage test, or from installed
+# packages otherwise
 if "--cov" in str(sys.argv):
     from src.geocat.comp import interp_hybrid_to_pressure
 else:

@@ -7,8 +7,8 @@ import numpy as np
 import xarray as xr
 from dask.array.core import map_blocks
 
-# from geocat.comp.dewtemp import dewtemp
-
+# Import from directory structure if coverage test, or from installed
+# packages otherwise
 if "--cov" in str(sys.argv):
     from src.geocat.comp import dewtemp
 else:

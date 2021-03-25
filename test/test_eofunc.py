@@ -7,8 +7,8 @@ import numpy.testing as nt
 # from dask.array.tests.test_xarray import xr
 import xarray as xr
 
-# from geocat.comp import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts
-
+# Import from directory structure if coverage test, or from installed
+# packages otherwise
 if "--cov" in str(sys.argv):
     from src.geocat.comp import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts
 else:

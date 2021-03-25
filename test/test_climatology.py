@@ -5,8 +5,8 @@ import pandas as pd
 import pytest
 import xarray as xr
 
-# from geocat.comp import anomaly, climatology, month_to_season
-
+# Import from directory structure if coverage test, or from installed
+# packages otherwise
 if "--cov" in str(sys.argv):
     from src.geocat.comp import anomaly, climatology, month_to_season
 else:
