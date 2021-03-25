@@ -10,7 +10,7 @@ from dask.array.core import map_blocks
 # from geocat.comp.dewtemp import dewtemp
 
 if "--cov" in str(sys.argv):
-    from src.geocat.comp.dewtemp import dewtemp
+    from src.geocat.comp import dewtemp
 else:
     from geocat.comp import dewtemp
 
