@@ -1,3 +1,4 @@
+import sys
 from abc import ABCMeta
 from unittest import TestCase
 
@@ -6,7 +7,12 @@ import numpy.testing as nt
 # from dask.array.tests.test_xarray import xr
 import xarray as xr
 
-from geocat.comp import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts
+# from geocat.comp import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts
+
+if "--cov" in str(sys.argv):
+    from src.geocat.comp import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts
+else:
+    from geocat.comp import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts
 
 
 class BaseEOFTestClass(metaclass=ABCMeta):

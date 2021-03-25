@@ -1,9 +1,16 @@
+import sys
+
 import numpy as np
 import pandas as pd
 import pytest
 import xarray as xr
 
-from geocat.comp import anomaly, climatology, month_to_season
+# from geocat.comp import anomaly, climatology, month_to_season
+
+if "--cov" in str(sys.argv):
+    from src.geocat.comp import anomaly, climatology, month_to_season
+else:
+    from geocat.comp import anomaly, climatology, month_to_season
 
 dset_a = xr.tutorial.open_dataset("rasm")
 dset_b = xr.tutorial.open_dataset("air_temperature")
