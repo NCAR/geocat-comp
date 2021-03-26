@@ -3,29 +3,30 @@ import xarray as xr
 
 
 def relhum(temperature, mixing_ratio, pressure):
-    """ This function calculates the relative humidity given temperature, mixing ratio, and pressure
+    """This function calculates the relative humidity given temperature, mixing
+    ratio, and pressure.
 
-        "Improved Magnus' Form Approx. of Saturation Vapor pressure"
-        Oleg A. Alduchov and Robert E. Eskridge
-        http://www.osti.gov/scitech/servlets/purl/548871/
-        https://doi.org/10.2172/548871
+    "Improved Magnus' Form Approx. of Saturation Vapor pressure"
+    Oleg A. Alduchov and Robert E. Eskridge
+    http://www.osti.gov/scitech/servlets/purl/548871/
+    https://doi.org/10.2172/548871
 
-            Args:
+        Args:
 
-                temperature (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
-                    Temperature in Kelvin
+            temperature (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+                Temperature in Kelvin
 
-                mixing_ratio (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
-                    Mixing ratio in kg/kg. Must have the same dimensions as temperature
+            mixing_ratio (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+                Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-                pressure (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
-                    Pressure in Pa. Must have the same dimensions as temperature
+            pressure (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+                Pressure in Pa. Must have the same dimensions as temperature
 
-            Returns:
+        Returns:
 
-                relative_humidity (:class:`numpy.ndarray` or :class:`xr.DataArray`):
-                    Relative humidity. Will have the same dimensions as temperature
-        """
+            relative_humidity (:class:`numpy.ndarray` or :class:`xr.DataArray`):
+                Relative humidity. Will have the same dimensions as temperature
+    """
 
     # If xarray input, pull data and store metadata
     x_out = False
@@ -58,31 +59,32 @@ def relhum(temperature, mixing_ratio, pressure):
 
 
 def relhum_water(temperature, mixing_ratio, pressure):
-    """ Calculates relative humidity with respect to water, given temperature, mixing ratio, and pressure.
+    """Calculates relative humidity with respect to water, given temperature,
+    mixing ratio, and pressure.
 
-        Definition of mixing ratio if,
-        es  - is the saturation mixing ratio
-        ep  - is the ratio of the molecular weights of water vapor to dry air
-        p   - is the atmospheric pressure
-        rh  - is the relative humidity (given as a percent)
+     Definition of mixing ratio if,
+     es  - is the saturation mixing ratio
+     ep  - is the ratio of the molecular weights of water vapor to dry air
+     p   - is the atmospheric pressure
+     rh  - is the relative humidity (given as a percent)
 
-        rh =  100*  q / ( (ep*es)/(p-es) )
+     rh =  100*  q / ( (ep*es)/(p-es) )
 
-       Args:
+    Args:
 
-            temperature (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
-                Temperature in Kelvin
+         temperature (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
+             Temperature in Kelvin
 
-            mixing_ratio (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
-                Mixing ratio in kg/kg. Must have the same dimensions as temperature
+         mixing_ratio (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
+             Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-            pressure (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
-                Pressure in Pa. Must have the same dimensions as temperature
+         pressure (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
+             Pressure in Pa. Must have the same dimensions as temperature
 
-        Returns:
+     Returns:
 
-            relative_humidity (:class:`numpy.ndarray`):
-                Relative humidity. Will have the same dimensions as temperature
+         relative_humidity (:class:`numpy.ndarray`):
+             Relative humidity. Will have the same dimensions as temperature
     """
 
     # If xarray input, pull data and store metadata
@@ -116,29 +118,30 @@ def relhum_water(temperature, mixing_ratio, pressure):
 
 
 def relhum_ice(temperature, mixing_ratio, pressure):
-    """ Calculates relative humidity with respect to ice, given temperature, mixing ratio, and pressure.
+    """Calculates relative humidity with respect to ice, given temperature,
+    mixing ratio, and pressure.
 
-            "Improved Magnus' Form Approx. of Saturation Vapor pressure"
-            Oleg A. Alduchov and Robert E. Eskridge
-            http://www.osti.gov/scitech/servlets/purl/548871/
-            https://doi.org/10.2172/548871
+     "Improved Magnus' Form Approx. of Saturation Vapor pressure"
+     Oleg A. Alduchov and Robert E. Eskridge
+     http://www.osti.gov/scitech/servlets/purl/548871/
+     https://doi.org/10.2172/548871
 
-           Args:
+    Args:
 
-                temperature (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
-                    Temperature in Kelvin
+         temperature (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
+             Temperature in Kelvin
 
-                mixing_ratio (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
-                    Mixing ratio in kg/kg. Must have the same dimensions as temperature
+         mixing_ratio (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
+             Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-                pressure (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
-                    Pressure in Pa. Must have the same dimensions as temperature
+         pressure (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
+             Pressure in Pa. Must have the same dimensions as temperature
 
-            Returns:
+     Returns:
 
-                relative_humidity (:class:`numpy.ndarray`):
-                    Relative humidity. Will have the same dimensions as temperature
-        """
+         relative_humidity (:class:`numpy.ndarray`):
+             Relative humidity. Will have the same dimensions as temperature
+    """
 
     # If xarray input, pull data and store metadata
     x_out = False
@@ -171,28 +174,29 @@ def relhum_ice(temperature, mixing_ratio, pressure):
 
 
 def _relhum(t, w, p):
-    """ Calculates relative humidity with respect to ice, given temperature, mixing ratio, and pressure.
+    """Calculates relative humidity with respect to ice, given temperature,
+    mixing ratio, and pressure.
 
-        "Improved Magnus' Form Approx. of Saturation Vapor pressure"
-        Oleg A. Alduchov and Robert E. Eskridge
-        http://www.osti.gov/scitech/servlets/purl/548871/
-        https://doi.org/10.2172/548871
+     "Improved Magnus' Form Approx. of Saturation Vapor pressure"
+     Oleg A. Alduchov and Robert E. Eskridge
+     http://www.osti.gov/scitech/servlets/purl/548871/
+     https://doi.org/10.2172/548871
 
-       Args:
+    Args:
 
-            t (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
-                Temperature in Kelvin
+         t (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
+             Temperature in Kelvin
 
-            w (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
-                Mixing ratio in kg/kg. Must have the same dimensions as temperature
+         w (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+             Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-            p (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
-                Pressure in Pa. Must have the same dimensions as temperature
+         p (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+             Pressure in Pa. Must have the same dimensions as temperature
 
-        Returns:
+     Returns:
 
-            rh (:class:`numpy.ndarray):
-                Relative humidity. Will have the same dimensions as temperature
+         rh (:class:`numpy.ndarray):
+             Relative humidity. Will have the same dimensions as temperature
     """
 
     table = np.asarray([
@@ -244,28 +248,29 @@ def _relhum(t, w, p):
 
 
 def _relhum_ice(t, w, p):
-    """ Calculates relative humidity with respect to ice, given temperature, mixing ratio, and pressure.
+    """Calculates relative humidity with respect to ice, given temperature,
+    mixing ratio, and pressure.
 
-        "Improved Magnus' Form Approx. of Saturation Vapor pressure"
-        Oleg A. Alduchov and Robert E. Eskridge
-        http://www.osti.gov/scitech/servlets/purl/548871/
-        https://doi.org/10.2172/548871
+     "Improved Magnus' Form Approx. of Saturation Vapor pressure"
+     Oleg A. Alduchov and Robert E. Eskridge
+     http://www.osti.gov/scitech/servlets/purl/548871/
+     https://doi.org/10.2172/548871
 
-       Args:
+    Args:
 
-            t (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
-                Temperature in Kelvin
+         t (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
+             Temperature in Kelvin
 
-            w (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
-                Mixing ratio in kg/kg. Must have the same dimensions as temperature
+         w (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
+             Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-            p (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
-                Pressure in Pa. Must have the same dimensions as temperature
+         p (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
+             Pressure in Pa. Must have the same dimensions as temperature
 
-        Returns:
+     Returns:
 
-            rh (:class:`numpy.ndarray`):
-                Relative humidity. Will have the same dimensions as temperature
+         rh (:class:`numpy.ndarray`):
+             Relative humidity. Will have the same dimensions as temperature
     """
 
     # Define data variables
@@ -286,31 +291,32 @@ def _relhum_ice(t, w, p):
 
 
 def _relhum_water(t, w, p):
-    """ Calculates relative humidity with respect to water, given temperature, mixing ratio, and pressure.
+    """Calculates relative humidity with respect to water, given temperature,
+    mixing ratio, and pressure.
 
-        Definition of mixing ratio if,
-        es  - is the saturation mixing ratio
-        ep  - is the ratio of the molecular weights of water vapor to dry air
-        p   - is the atmospheric pressure
-        rh  - is the relative humidity (given as a percent)
+     Definition of mixing ratio if,
+     es  - is the saturation mixing ratio
+     ep  - is the ratio of the molecular weights of water vapor to dry air
+     p   - is the atmospheric pressure
+     rh  - is the relative humidity (given as a percent)
 
-        rh =  100*  q / ( (ep*es)/(p-es) )
+     rh =  100*  q / ( (ep*es)/(p-es) )
 
-       Args:
+    Args:
 
-            t (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
-                Temperature in Kelvin
+         t (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
+             Temperature in Kelvin
 
-            w (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
-                Mixing ratio in kg/kg. Must have the same dimensions as temperature
+         w (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
+             Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-            p (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
-                Pressure in Pa. Must have the same dimensions as temperature
+         p (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
+             Pressure in Pa. Must have the same dimensions as temperature
 
-        Returns:
+     Returns:
 
-            rh (:class:`numpy.ndarray`):
-                Relative humidity. Will have the same dimensions as temperature
+         rh (:class:`numpy.ndarray`):
+             Relative humidity. Will have the same dimensions as temperature
     """
 
     # Define data variables

@@ -1,0 +1,5 @@
+cf_xarray>=0.3.1
+dask[array]
+eofs
+numpy==1.19
+xarray

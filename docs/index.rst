@@ -25,6 +25,12 @@
 GeoCAT-comp
 ===========
 
+GeoCAT-comp is computational component of the `GeoCAT <https://geocat.ucar.edu/>`_
+project. GeoCAT-comp provides implementations of computational functions for operating
+on geosciences data. Many of these functions originated in NCL and were translated into
+Python with the help of GeoCAT-comp; however, developers are welcome to come up with
+novel computational functions for geosciences data.
+
 .. toctree::
    :maxdepth: 2
 
@@ -48,4 +54,3 @@ Indices and tables
 Science Foundation. Any opinions, findings and conclusions or recommendations
 expressed in this material do not necessarily reflect the views of the
 National Science Foundation.*
-

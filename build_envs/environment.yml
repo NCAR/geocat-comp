@@ -16,3 +16,5 @@ dependencies:
   - pytest  # for tests
   - pytest-cov  # for tests
   - xarray
+  - pip:
+      - pre-commit
