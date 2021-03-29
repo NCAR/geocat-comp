@@ -11,7 +11,7 @@ class AttributeError(Error):
 
 class ChunkError(Error):
     """Exception raised when a Dask array is chunked in a way that is
-    incompatible with an _ncomp function."""
+    incompatible with an f2py function."""
     pass
 
 

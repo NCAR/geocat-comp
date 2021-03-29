@@ -1,11 +1,15 @@
 # move functions into geocat.comp namespace
-from .errors import (Error, AttributeError, ChunkError, CoordinateError,
-                     DimensionError, MetaError)
-from .polynomial import (ndpolyfit, ndpolyval, detrend, isvector)
-from .version import __version__
+from .climatology import anomaly, climatology, month_to_season
+from .dewtemp import dewtemp
+from .eofunc import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts
+from .errors import (AttributeError, ChunkError, CoordinateError,
+                     DimensionError, Error, MetaError)
+from .interp_hybrid_to_pressure import interp_hybrid_to_pressure
+from .polynomial import detrend, ndpolyfit, ndpolyval
+from .relhum import relhum, relhum_ice, relhum_water
 
-# bring all functions from geocat.ncomp into the geocat.comp namespace
+# bring all functions from geocat.f2py into the geocat.comp namespace
 try:
-    from geocat.ncomp import *
+    from geocat.f2py import *
 except ImportError:
     pass

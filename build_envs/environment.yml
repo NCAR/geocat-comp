@@ -1,3 +1,4 @@
+name: geocat_comp_build
 channels:
   - conda-forge
   - ncar
@@ -13,4 +14,7 @@ dependencies:
   - netcdf4  # for tests
   - numpy
   - pytest  # for tests
+  - pytest-cov  # for tests
   - xarray
+  - pip:
+      - pre-commit
