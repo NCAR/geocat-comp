@@ -11,7 +11,9 @@ from geocat.comp.crop import max_daylight
 class Test_max_daylight(unittest.TestCase):
 
     @classmethod
-    def setUpClass(self):
+    def setUpClass(cls):
+        # print("i hate pytest")
+        # print(__name__)
         # get ground truth from ncl run netcdf file
         try:
             ncl_xr_gt = xr.open_dataarray(
@@ -20,19 +22,23 @@ class Test_max_daylight(unittest.TestCase):
         except:
             ncl_xr_gt = xr.open_dataarray("test/max_daylight_test.nc")
 
-        self.ncl_gt = np.asarray(ncl_xr_gt)
+        cls.ncl_gt = np.asarray(ncl_xr_gt)
 
-        self.jday_gt = np.linspace(1, 365, num=365)
-        self.lat_gt = np.linspace(-66, 66, num=133)
+        cls.jday_gt = np.linspace(1, 365, num=365)
+        cls.lat_gt = np.linspace(-66, 66, num=133)
 
-        if __name__ == 'test_max_daylight':
-            cluster = dd.LocalCluster(n_workers=2, threads_per_worker=2)
-            print(cluster.dashboard_link)
-            self.client = dd.Client(cluster)
+        cls.client = dd.Client()
+
+        # if __name__ == 'test.test_z_max_daylight':
+        #     cluster = dd.LocalCluster(n_workers=2, threads_per_worker=2)
+        #     print(cluster.dashboard_link)
+        #     cls.client = dd.Client(cluster)
 
     @classmethod
-    def tearDownClass(self):
-        self.client.close()
+    def tearDownClass(cls):
+        # cls.client.shutdown()
+        # cls.client.close()
+        pass
 
     def test_numpy_input(self):
         assert np.allclose(max_daylight(self.jday_gt, self.lat_gt),
