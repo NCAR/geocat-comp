@@ -13,30 +13,23 @@ import geocat.viz.util as gvutil
 import geocat.datafiles as gdf
 
 ###############################################################################
-# Read in data:
 
-# Open a CSV data file using xarray default engine and load the data into xarrays
-da = pd.read_csv(gdf.get('ascii_files/sounding.testdata'),
-                 delimiter='\\s+',
-                 header=None)
-
-# Extract the data
-p = da[1].values * units.hPa  # Pressure [mb/hPa]
-tc = (da[5].values + 2) * units.degC  # Temperature [C]
-tdc = (da[9].values + 2) * units.degC  # Dew pt temp  [C]
+p_upper = np.arange(1000, 200, -50) * units.hPa 
+p_lower = np.arange(175, 0, -25) * units.hPa 
+p = np.append(p_upper, p_lower,)
+tc = np.linspace(30, -30, 23) * units.degC 
+tdc = np.linspace(10, -30, 23) * units.degC
 ta = mpcalc.parcel_profile(p, tc[0], tdc[0])  # Parcel profile
-tac = (ta.magnitude - 273.15) * units.degC  # Parcel temp in C
+tac = np.linspace(20, -40, 23) * units.degC
 
 # Create dummy wind data
 wspd = np.linspace(0, 150, len(p)) * units.knots  # Wind speed   [knots or m/s]
 wdir = np.linspace(0, 360, len(p)) * units.degrees  # Meteorological wind dir
 u, v = mpcalc.wind_components(wspd, wdir)  # Calculate wind components
-
 ##############################################################################
 # Create function to calculate the showalter index
 
-
-def showalter_index(pressure, temperature, dewpt):
+def showalter_index(pressure, temperature, dewpt): 
     """
     Calculate Showalter Index from pressure temperature and 850 hPa lcl
     
@@ -68,45 +61,45 @@ def showalter_index(pressure, temperature, dewpt):
         Showalter index in delta degrees celsius
         
     """
-
+    
     # find the measured temperature and dew point temperature at 850 hPa.
     idx850 = np.where(pressure == 850 * units.hPa)
     T850 = temperature[idx850]
     Td850 = dewpt[idx850]
-
+    
     # find the parcel profile temperature at 500 hPa.
     idx500 = np.where(pressure == 500 * units.hPa)
     Tp500 = temperature[idx500]
-
+    
     # Calculate lcl at the 850 hPa level
     lcl_calc = mpcalc.lcl(850 * units.hPa, T850[0], Td850[0])
     lcl_calc = lcl_calc[0]
-
+    
     # Define start and end heights for dry and moist lapse rate calculations
     p_strt = 1000 * units.hPa
     p_end = 500 * units.hPa
-
+    
     # Calculate parcel temp when raised dry adiabatically from surface to lcl
     dl = mpcalc.dry_lapse(lcl_calc, temperature[0], p_strt)
     dl = (dl.magnitude - 273.15) * units.degC  # Change units to C
-
+    
     # Calculate parcel temp when raised moist adiabatically from lcl to 500mb
     ml = mpcalc.moist_lapse(p_end, dl, lcl_calc)
-
+    
     # Calculate the Showalter index
     shox = Tp500 - ml
     return shox
 
-
-def get_skewt_vars(ds_name, p, tc, tdc, tac, pres_pos=1, envT_loc=5):
+def get_skewt_vars(p, tc, tdc, tac, pres_pos=1, envT_loc=5):
     """
     This function processes the dataset values and returns a string element which
     can be used as a subtitle to replicate the styles of NCL Skew-T Diagrams
     
     Args:
-        ds_name (:class: `pandas.core.frame.DataFrame`, :class: `netCDF4.Dataset`
+        
         p (:class: `pint.quantity.build_quantity_class.<locals>.Quantity`):
             Pressure level input from dataset
+            
         tc (:class: `pint.quantity.build_quantity_class.<locals>.Quantity`):
             Temperature for parcel from dataset
         
@@ -131,24 +124,20 @@ def get_skewt_vars(ds_name, p, tc, tdc, tac, pres_pos=1, envT_loc=5):
     # CAPE
     cape = mpcalc.cape_cin(p, tc, tdc, ta)
     cape = cape[0].magnitude
-    # print(cape)
 
     # Precipitable Water
     pwat = mpcalc.precipitable_water(p, tdc)
     pwat = (pwat.magnitude / 10) * units.cm  # Convert mm to cm
     pwat = pwat.magnitude
-    # print(precp)
 
     # Pressure and temperature of lcl
     lcl = mpcalc.lcl(p[0], tc[0], tdc[0])
     plcl = lcl[0].magnitude
     tlcl = lcl[1].magnitude
-    # print(lcl)
 
     # Showalter index
     shox = showalter_index(p, tc, tdc)
     shox = shox[0].magnitude
-    # print("The calculated value for Showalter index is", shox)
 
     # Place calculated values in iterable list
     vals = [plcl, tlcl, shox, pwat, cape]
@@ -167,7 +156,7 @@ def get_skewt_vars(ds_name, p, tc, tdc, tac, pres_pos=1, envT_loc=5):
     return joined
 
 
-##############################################################################
+#############################################################################
 # Plot:
 
 # Note that MetPy forces the x axis scale to be in Celsius and the y axis
@@ -201,11 +190,11 @@ skew.plot_barbs(pressure=p[::2],
 
 # Draw line underneath wind barbs
 line = mlines.Line2D([1.05, 1.05], [0, 1],
-                     color='gray',
-                     linewidth=0.5,
-                     transform=ax.transAxes,
-                     clip_on=False,
-                     zorder=1)
+                      color='gray',
+                      linewidth=0.5,
+                      transform=ax.transAxes,
+                      clip_on=False,
+                      zorder=1)
 ax.add_line(line)
 
 # Shade every other section between isotherms
@@ -227,9 +216,9 @@ skew.plot_dry_adiabats(t0=t0, linestyles='solid', colors='tan', linewidths=1.5)
 # Choose starting temperatures in Kelvin for the moist adiabats
 t0 = units.K * np.arange(281.15, 306.15, 4)
 skew.plot_moist_adiabats(t0=t0,
-                         linestyles='solid',
-                         colors='lime',
-                         linewidth=1.5)
+                          linestyles='solid',
+                          colors='lime',
+                          linewidth=1.5)
 
 # Choose mixing ratios
 w = np.array([0.001, 0.002, 0.003, 0.005, 0.008, 0.012, 0.020]).reshape(-1, 1)
@@ -239,10 +228,10 @@ p_levs = units.hPa * np.linspace(1000, 400, 7)
 
 # Plot mixing ratio lines
 skew.plot_mixing_lines(w,
-                       p_levs,
-                       linestyle='dashed',
-                       colors='lime',
-                       linewidths=1)
+                        p_levs,
+                        linestyle='dashed',
+                        colors='lime',
+                        linewidths=1)
 
 # Use geocat.viz utility functions to set axes limits and ticks
 gvutil.set_axes_limits_and_ticks(
@@ -252,32 +241,31 @@ gvutil.set_axes_limits_and_ticks(
 
 # Use geocat.viz utility function to change the look of ticks and ticklabels
 gvutil.add_major_minor_ticks(ax=ax,
-                             x_minor_per_major=1,
-                             y_minor_per_major=1,
-                             labelsize=14)
+                              x_minor_per_major=1,
+                              y_minor_per_major=1,
+                              labelsize=14)
 # The utility function draws tickmarks all around the plot. We only need ticks
 # on the left and bottom edges
 ax.tick_params('both', which='both', top=False, right=False)
 
 # Use geocat.viz utility functions to add a main title
 gvutil.set_titles_and_labels(ax=ax,
-                             maintitle="Raob; [Wind Reports]",
-                             maintitlefontsize=22,
-                             xlabel='Temperature (C)',
-                             ylabel='P (hPa)',
-                             labelfontsize=14)
+                              maintitle="Raob; [Wind Reports]",
+                              maintitlefontsize=22,
+                              xlabel='Temperature (C)',
+                              ylabel='P (hPa)',
+                              labelfontsize=14)
 
 # Change the style of the gridlines
 plt.grid(True,
-         which='major',
-         axis='both',
-         color='tan',
-         linewidth=1.5,
-         alpha=0.5)
+          which='major',
+          axis='both',
+          color='tan',
+          linewidth=1.5,
+          alpha=0.5)
 
 # Create subtitle var for plotting
 title_var = get_skewt_vars(
-    da,
     p,
     tc,
     tdc,
