@@ -3,20 +3,19 @@ import unittest
 import dask.array as da
 import dask.distributed as dd
 import numpy as np
-import pytest
 import xarray as xr
 
 from geocat.comp.crop import max_daylight
 
+print(__name__)
+
+if __name__ == 'test_max_daylight':
+    cluster = dd.LocalCluster(n_workers=2, threads_per_worker=2)
+    print(cluster.dashboard_link)
+    client = dd.Client(cluster)
+
 
 class Test_max_daylight(unittest.TestCase):
-
-    @pytest.fixture(scope="class", autouse=True)
-    def dask_client(self):
-        cluster = dd.LocalCluster(n_workers=2, threads_per_worker=2)
-        print(cluster.dashboard_link)
-        client = dd.Client(cluster)
-        return client
 
     # get ground truth from ncl run netcdf file
     try:
@@ -51,17 +50,15 @@ class Test_max_daylight(unittest.TestCase):
 
         assert np.allclose(max_daylight(jday, lat), self.ncl_gt, atol=0.005)
 
-    def test_dask_unchunked_input(self, dask_client):
+    def test_dask_unchunked_input(self):
         jday = da.from_array(self.jday_gt)
         lat = da.from_array(self.lat_gt)
-
-        client = [dask_client]
 
         out = client.submit(max_daylight, jday, lat).result()
 
         assert np.allclose(out, self.ncl_gt, atol=0.005)
 
-    def test_dask_chunked_input(self, dask_client):
+    def test_dask_chunked_input(self):
         jday = da.from_array(self.jday_gt, chunks='auto')
         lat = da.from_array(self.lat_gt, chunks='auto')
 
