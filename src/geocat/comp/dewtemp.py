@@ -73,8 +73,8 @@ def _dewtemp(tk, rh):
             Dewpoint temperature in Kelvin. Same size as input variable temperature
     """
 
-    gc = 461.5    # gas constant for water vapor [j/{kg-k}]
-    gcx = gc / (1000 * 4.186)    # [cal/{g-k}]
+    gc = 461.5  # gas constant for water vapor [j/{kg-k}]
+    gcx = gc / (1000 * 4.186)  # [cal/{g-k}]
 
     lhv = (597.3 - 0.57 * (tk - 273)) / gcx
     tdk = tk * lhv / (lhv - tk * np.log(rh * 0.01))
