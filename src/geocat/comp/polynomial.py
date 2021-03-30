@@ -416,12 +416,12 @@ def _ndpolyfit(x: np.ndarray,
         }
 
         if not has_missing:
-            if full:    # full == True
+            if full:  # full == True
                 attrs["residuals"] = polyfit_output[1]
                 attrs["rank"] = polyfit_output[2]
                 attrs["singular_values"] = polyfit_output[3]
                 attrs["rcond"] = polyfit_output[4]
-            elif cov:    # (full == False) and (cov == True)
+            elif cov:  # (full == False) and (cov == True)
                 attrs["V"] = polyfit_output[1]
 
         return xr.DataArray(p, attrs=attrs)
