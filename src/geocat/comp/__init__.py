@@ -1,5 +1,6 @@
 # move functions into geocat.comp namespace
 from .climatology import anomaly, climatology, month_to_season
+from .comp_util import _is_duck_array
 from .crop import max_daylight
 from .dewtemp import dewtemp
 from .eofunc import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts
