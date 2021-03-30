@@ -2,7 +2,8 @@ import warnings
 
 import numpy as np
 import xarray as xr
-from comp_util import _is_duck_array
+
+from .comp_util import _is_duck_array
 
 
 def max_daylight(jday, lat):
