@@ -1,24 +1,22 @@
+import warnings
+
 import numpy as np
 import xarray as xr
-import warnings
 
 
 def _is_duck_array(value):
-    """ Returns True when ``value`` is array-like. """
+    """Returns True when ``value`` is array-like."""
     if isinstance(value, np.ndarray):
         return True
-    return (
-            hasattr(value, "ndim")
-            and hasattr(value, "shape")
-            and hasattr(value, "dtype")
-            and hasattr(value, "__array_function__")
-            and hasattr(value, "__array_ufunc__")
-    )
+    return (hasattr(value, "ndim") and hasattr(value, "shape") and
+            hasattr(value, "dtype") and hasattr(value, "__array_function__") and
+            hasattr(value, "__array_ufunc__"))
 
 
 def max_daylight(jday, lat):
     """Computes maximum number of daylight hours as describe in the Food and
-     Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
+    Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
+
      Crop evapotranspiration - Guidelines for computing crop water
      requirement. Specifically, see equation 34 of Chapter 3.
 
@@ -55,10 +53,12 @@ def max_daylight(jday, lat):
     # check if latitude is outside of acceptable ranges
     # warn if more than abs(55), error if more than abs(66)
     if (abs(lat) > 55).all():
-        warnings.warn("WARNING: max_daylight has limited validity for abs(lat) > 55 ")
+        warnings.warn(
+            "WARNING: max_daylight has limited validity for abs(lat) > 55 ")
     elif (abs(lat) > 66).all():
-        warnings.warn('WARNING: max_daylight: calculation not possible for abs(lat) > 66 for all values of jday, '
-                      'errors may occur')
+        warnings.warn(
+            'WARNING: max_daylight: calculation not possible for abs(lat) > 66 for all values of jday, '
+            'errors may occur')
 
     # define constants
     pi = np.pi
