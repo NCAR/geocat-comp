@@ -36,9 +36,11 @@ GeoCAT-comp routines
 
    geocat.comp.linint2pts
 
+   geocat.comp.max_daylight
+
    geocat.comp.moc_globe_atl
-   
-   geocat.comp.month_to_season 
+
+   geocat.comp.month_to_season
 
    geocat.comp.ndpolyfit
 
@@ -57,4 +59,3 @@ GeoCAT-comp routines
    geocat.comp.rgrid2rcm
 
    geocat.comp.triple_to_grid
-

@@ -3,22 +3,23 @@ import xarray as xr
 
 
 def dewtemp(temperature, relative_humidity):
-    """ This function calculates the dew point temperature given temperature and relative humidity
-        using equations from John Dutton's "Ceaseless Wind" (pp 273-274)
+    """This function calculates the dew point temperature given temperature and
+    relative humidity using equations from John Dutton's "Ceaseless Wind" (pp
+    273-274)
 
-            Args:
+    Args:
 
-                temperature (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
-                    Temperature in K
+        temperature (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+            Temperature in K
 
-                relative_humidity (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
-                    Relative humidity. Must be the same dimensions as temperature
+        relative_humidity (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+            Relative humidity. Must be the same dimensions as temperature
 
 
-            Returns:
+    Returns:
 
-                dew_pnt_temp (:class:`numpy.ndarray` or :obj:`float`):
-                    Dewpoint temperature in Kelvin. Same size as input variable temperature
+        dew_pnt_temp (:class:`numpy.ndarray` or :obj:`float`):
+            Dewpoint temperature in Kelvin. Same size as input variable temperature
     """
 
     # If xarray input, pull data and store metadata
@@ -53,22 +54,23 @@ def dewtemp(temperature, relative_humidity):
 
 
 def _dewtemp(tk, rh):
-    """ This function calculates the dew point temperature given temperature and relative humidity
-        using equations from John Dutton's "Ceaseless Wind" (pp 273-274)
+    """This function calculates the dew point temperature given temperature and
+    relative humidity using equations from John Dutton's "Ceaseless Wind" (pp
+    273-274)
 
-            Args:
+    Args:
 
-                tk (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
-                    Temperature in K
+        tk (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+            Temperature in K
 
-                rh (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
-                    Relative humidity. Must be the same dimensions as temperature
+        rh (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+            Relative humidity. Must be the same dimensions as temperature
 
 
-            Returns:
+    Returns:
 
-                tdk (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
-                    Dewpoint temperature in Kelvin. Same size as input variable temperature
+        tdk (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+            Dewpoint temperature in Kelvin. Same size as input variable temperature
     """
 
     gc = 461.5  # gas constant for water vapor [j/{kg-k}]

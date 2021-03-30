@@ -81,7 +81,7 @@ compilers, although the following commands should work on both Linux and macOS::
 
 Installing GeoCAT-comp
 ^^^^^^^^^^^^^^^^^^^^^^
- 
+
 Once the dependencies listed above are installed, you can install GeoCAT-comp
 with the command::
 

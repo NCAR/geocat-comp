@@ -1,4 +1,4 @@
-from typing import Iterable, Any
+from typing import Any, Iterable
 
 import dask.array as da
 import numpy as np
@@ -6,8 +6,8 @@ import xarray as xr
 
 
 def _get_missing_value(data: xr.DataArray, args: dict) -> Any:
-    """
-    Attempts to extract `missing_value` or `_FillValue` from either `data` or `dict`. If not found, returns `np.nan`
+    """Attempts to extract `missing_value` or `_FillValue` from either `data`
+    or `dict`. If not found, returns `np.nan`
 
     Parameters
     ----------
@@ -20,7 +20,6 @@ def _get_missing_value(data: xr.DataArray, args: dict) -> Any:
     -------
     missing_value : :class:`Any`
         The `missing_value` representation.
-
     """
     if "missing_value" in args:
         missing_value = args["missing_value"]
@@ -38,8 +37,7 @@ def _get_missing_value(data: xr.DataArray, args: dict) -> Any:
 
 
 def _unchunk_ifneeded(data: da.Array, axis: int) -> da.Array:
-    """
-    Returns `data` unchunked along `axis`.
+    """Returns `data` unchunked along `axis`.
 
     Parameters
     ----------
@@ -52,7 +50,6 @@ def _unchunk_ifneeded(data: da.Array, axis: int) -> da.Array:
     -------
         data : :class:`dask.array.Array`
             A dask array which is not chunked along the specified axis.
-
     """
     if isinstance(data, da.Array):
         shape = data.shape
@@ -70,8 +67,8 @@ def ndpolyfit(x: Iterable,
               deg: int,
               axis: int = 0,
               **kwargs) -> (xr.DataArray, da.Array):
-    """
-    An extension to `numpy.polyfit` function to support multi-dimensional arrays, Dask arrays, and missing values.
+    """An extension to `numpy.polyfit` function to support multi-dimensional
+    arrays, Dask arrays, and missing values.
 
     Parameters
     ----------
@@ -216,7 +213,6 @@ def ndpolyfit(x: Iterable,
         >>> print(y_md[1, :, 1, 1])
         [  2.   9.  24.  47.  78. 117. 164. 219. 282. 353.]
         >>> p = ndpolyfit(x, y_md, deg=2, axis=1)
-
     """
 
     rcond = kwargs.get("rcond", None)
@@ -273,8 +269,8 @@ def _ndpolyfit(x: np.ndarray,
                cov=False,
                missing_value=np.nan,
                xarray_output=True) -> (np.ndarray, xr.DataArray):
-    """
-    An extension to `numpy.polyfit` function to support multi-dimensional arrays, Dask arrays, and missing values.
+    """An extension to `numpy.polyfit` function to support multi-dimensional
+    arrays, Dask arrays, and missing values.
 
     Parameters
     ----------
@@ -318,7 +314,6 @@ def _ndpolyfit(x: np.ndarray,
     -------
     coefficients : :class:`xarray.DataArray` or :class:`numpy.ndarray`
         An array containing the coefficients of the fitted polynomial.
-
     """
 
     if not isinstance(x, np.ndarray):
@@ -447,9 +442,9 @@ def _check_axis(axis, ndim) -> int:
 
 
 def _rearrange_axis(data: np.ndarray, axis: int = 0) -> tuple:
-    """
-    rearranges the `numpy.ndarray` as a two-dimensional array of size (n, -1), where n is the number of elements of
-    the dimension defined by `axis`.
+    """rearranges the `numpy.ndarray` as a two-dimensional array of size (n,
+
+    -1), where n is the number of elements of the dimension defined by `axis`.
 
     Parameters
     ----------
@@ -462,7 +457,6 @@ def _rearrange_axis(data: np.ndarray, axis: int = 0) -> tuple:
     -------
     tuple (data :class:`numpy.ndarray`, shape :class:`tuple`):
         A tuple, where the first element contains the reshaped data, and the second is a tuple with all dimensions except the one specified by the axis.
-
     """
     if not isinstance(data, np.ndarray):
         raise TypeError("data must be a numpy.ndarray.")
@@ -503,8 +497,8 @@ def _to_numpy_ndarray(data: Iterable) -> np.ndarray:
 
 
 def ndpolyval(p: Iterable, x: Iterable, axis: int = 0, **kwargs):
-    """
-    Extended version of `numpy.polyval` to support multi-dimensional outputs provided by `geocat.comp.ndpolyfit`.
+    """Extended version of `numpy.polyval` to support multi-dimensional outputs
+    provided by `geocat.comp.ndpolyfit`.
 
     As the name suggest, this version supports a multi-dimensional `p` array. Let's say `p` is of dimension `(s0,s1,s2)`
     and `axis=1`, then the output would be of dimension `(s0, M, s2)` where M depends on `x`.
@@ -616,7 +610,6 @@ def ndpolyval(p: Iterable, x: Iterable, axis: int = 0, **kwargs):
         Traceback (most recent call last):
           ...
         ValueError: x has invalid shape.
-
     """
     p_ndarr = _to_numpy_ndarray(p)
     axis = _check_axis(axis, p_ndarr.ndim)
@@ -677,11 +670,12 @@ def _ndpolyval(p: np.ndarray,
 
 
 def detrend(data: Iterable, deg=1, axis=0, **kwargs):
-    """
-    Estimates and removes the trend of the leftmost dimension from all grid points.
-    This method, at the minimum, provides all the functionality that is provided by NCL's 'dtrend',
-    'dtrend_quadratic', 'dtrend_quadratic_msg_n', 'dtrend_msg_n', 'dtrend_msg', 'dtrend_n'.
-    However, this function is not limited to quadratic detrending and you could use higher polynomial degree as well.
+    """Estimates and removes the trend of the leftmost dimension from all grid
+    points. This method, at the minimum, provides all the functionality that is
+    provided by NCL's 'dtrend', 'dtrend_quadratic', 'dtrend_quadratic_msg_n',
+    'dtrend_msg_n', 'dtrend_msg', 'dtrend_n'. However, this function is not
+    limited to quadratic detrending and you could use higher polynomial degree
+    as well.
 
     Parameters
     ----------
@@ -737,8 +731,6 @@ def detrend(data: Iterable, deg=1, axis=0, **kwargs):
         >>> y_trend = ndpolyval(p, x, axis=1)
         >>> y_detrended = detrend(y, x=x, axis=1)
         >>> np.testing.assert_almost_equal(y_detrended + y_trend, y)
-
-
     """
     if (int(deg) != deg) or (deg < 0):
         raise ValueError("deg must be non-negative integer value.")

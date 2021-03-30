@@ -1,7 +1,7 @@
+import cf_xarray
 import metpy.interpolate
 import numpy as np
 import xarray as xr
-import cf_xarray
 
 __pres_lev_mandatory__ = np.array([
     1000, 925, 850, 700, 500, 400, 300, 250, 200, 150, 100, 70, 50, 30, 20, 10,
@@ -11,9 +11,7 @@ __pres_lev_mandatory__ = __pres_lev_mandatory__ * 100.0  # Convert mb to Pa
 
 
 def _pressure_from_hybrid(psfc, hya, hyb, p0=100000.):
-    """
-    Calculate pressure at the hybrid levels
-    """
+    """Calculate pressure at the hybrid levels."""
     # This will be in Pa
     return hya * p0 + hyb * psfc
 
@@ -26,8 +24,7 @@ def interp_hybrid_to_pressure(data,
                               new_levels=__pres_lev_mandatory__,
                               lev_dim=None,
                               method='linear'):
-    """
-    Interpolate data from hybrid-sigma levels to isobaric levels.
+    """Interpolate data from hybrid-sigma levels to isobaric levels.
 
     Notes
     -----
@@ -59,7 +56,6 @@ def interp_hybrid_to_pressure(data,
 
     method : str
         String that is the interpolation method; can be either "linear" or "log". Defaults to "linear".
-
     """
 
     # Determine the level dimension and then the interpolation axis
@@ -86,9 +82,7 @@ def interp_hybrid_to_pressure(data,
                          f'Supported methods are: "log" and "linear".')
 
     def _vertical_remap(data, pressure):
-        """
-        Define interpolation function.
-        """
+        """Define interpolation function."""
 
         return func_interpolate(new_levels, pressure, data, axis=interp_axis)
 
