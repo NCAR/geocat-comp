@@ -65,3 +65,14 @@ class Test_max_daylight(unittest.TestCase):
         out = self.client.submit(max_daylight, jday, lat).result()
 
         assert np.allclose(out, self.ncl_gt, atol=0.005)
+
+    def test_input_dim(self):
+        self.assertRaises(ValueError, max_daylight,
+                          np.arange(4).reshape(2, 2),
+                          np.arange(4).reshape(2, 2))
+
+    def test_lat_bound_warning(self):
+        self.assertWarns(UserWarning, max_daylight, 10, 56)
+
+    def test_lat_bound_second_warning(self):
+        self.assertWarns(UserWarning, max_daylight, 10, 67)

@@ -2,15 +2,7 @@ import warnings
 
 import numpy as np
 import xarray as xr
-
-
-def _is_duck_array(value):
-    """Returns True when ``value`` is array-like."""
-    if isinstance(value, np.ndarray):
-        return True
-    return (hasattr(value, "ndim") and hasattr(value, "shape") and
-            hasattr(value, "dtype") and hasattr(value, "__array_function__") and
-            hasattr(value, "__array_ufunc__"))
+from comp_util import _is_duck_array
 
 
 def max_daylight(jday, lat):
@@ -51,7 +43,8 @@ def max_daylight(jday, lat):
         raise ValueError('max_daylight: inputs must have at most one dimension')
 
     # check if latitude is outside of acceptable ranges
-    # warn if more than abs(55), error if more than abs(66)
+    # warn if more than abs(55)
+    # Give stronger warning if more than abs(66)
     if (abs(lat) > 55).all():
         warnings.warn(
             "WARNING: max_daylight has limited validity for abs(lat) > 55 ")
@@ -78,7 +71,6 @@ def max_daylight(jday, lat):
 
     # handle metadata if xarray output
     if x_out:
-        print('meta')
         dlm = xr.DataArray(dlm, coords=[jday, lat], dims=["doy", "lat"])
         dlm.attrs['long_name'] = "maximum daylight: FAO_56"
         dlm.attrs['units'] = "hours/day"
