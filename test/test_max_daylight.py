@@ -12,8 +12,7 @@ class Test_max_daylight(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        # print("i hate pytest")
-        # print(__name__)
+
         # get ground truth from ncl run netcdf file
         try:
             ncl_xr_gt = xr.open_dataarray(
@@ -22,23 +21,14 @@ class Test_max_daylight(unittest.TestCase):
         except:
             ncl_xr_gt = xr.open_dataarray("test/max_daylight_test.nc")
 
+        # set up ground truths
         cls.ncl_gt = np.asarray(ncl_xr_gt)
 
         cls.jday_gt = np.linspace(1, 365, num=365)
         cls.lat_gt = np.linspace(-66, 66, num=133)
 
+        # make client to reference in subsequent tests
         cls.client = dd.Client()
-
-        # if __name__ == 'test.test_z_max_daylight':
-        #     cluster = dd.LocalCluster(n_workers=2, threads_per_worker=2)
-        #     print(cluster.dashboard_link)
-        #     cls.client = dd.Client(cluster)
-
-    @classmethod
-    def tearDownClass(cls):
-        # cls.client.shutdown()
-        # cls.client.close()
-        pass
 
     def test_numpy_input(self):
         assert np.allclose(max_daylight(self.jday_gt, self.lat_gt),
