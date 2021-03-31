@@ -7,11 +7,11 @@ from .comp_util import _is_duck_array
 
 
 def max_daylight(jday, lat):
-    """Computes maximum number of daylight hours as describe in the Food and
+    """Computes maximum number of daylight hours as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
 
-     Crop evapotranspiration - Guidelines for computing crop water
-     requirement. Specifically, see equation 34 of Chapter 3.
+    Crop evapotranspiration - Guidelines for computing crop water
+    requirement. Specifically, see equation 34 of Chapter 3.
 
     Note for abs(lat) > 55 the eqns have limited validity.
 
