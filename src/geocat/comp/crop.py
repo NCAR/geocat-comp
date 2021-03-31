@@ -3,22 +3,15 @@ import warnings
 import numpy as np
 import xarray as xr
 
-
-def _is_duck_array(value):
-    """Returns True when ``value`` is array-like."""
-    if isinstance(value, np.ndarray):
-        return True
-    return (hasattr(value, "ndim") and hasattr(value, "shape") and
-            hasattr(value, "dtype") and hasattr(value, "__array_function__") and
-            hasattr(value, "__array_ufunc__"))
+from .comp_util import _is_duck_array
 
 
 def max_daylight(jday, lat):
-    """Computes maximum number of daylight hours as describe in the Food and
+    """Computes maximum number of daylight hours as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
 
-     Crop evapotranspiration - Guidelines for computing crop water
-     requirement. Specifically, see equation 34 of Chapter 3.
+    Crop evapotranspiration - Guidelines for computing crop water
+    requirement. Specifically, see equation 34 of Chapter 3.
 
     Note for abs(lat) > 55 the eqns have limited validity.
 
@@ -51,7 +44,8 @@ def max_daylight(jday, lat):
         raise ValueError('max_daylight: inputs must have at most one dimension')
 
     # check if latitude is outside of acceptable ranges
-    # warn if more than abs(55), error if more than abs(66)
+    # warn if more than abs(55)
+    # Give stronger warning if more than abs(66)
     if (abs(lat) > 55).all():
         warnings.warn(
             "WARNING: max_daylight has limited validity for abs(lat) > 55 ")
@@ -78,7 +72,6 @@ def max_daylight(jday, lat):
 
     # handle metadata if xarray output
     if x_out:
-        print('meta')
         dlm = xr.DataArray(dlm, coords=[jday, lat], dims=["doy", "lat"])
         dlm.attrs['long_name'] = "maximum daylight: FAO_56"
         dlm.attrs['units'] = "hours/day"
