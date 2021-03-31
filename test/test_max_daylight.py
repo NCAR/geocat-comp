@@ -6,7 +6,12 @@ import dask.distributed as dd
 import numpy as np
 import xarray as xr
 
-from geocat.comp import max_daylight
+# Import from directory structure if coverage test, or from installed
+# packages otherwise
+if "--cov" in str(sys.argv):
+    from src.geocat.comp import max_daylight
+else:
+    from geocat.comp import max_daylight
 
 
 class Test_max_daylight(unittest.TestCase):
