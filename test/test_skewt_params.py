@@ -1,7 +1,12 @@
 import numpy as np
 from metpy.units import units
 
-from geocat.comp.skewt_params import get_skewt_vars, showalter_index
+# Import from directory structure if coverage test, or from installed
+# packages otherwise
+if "--cov" in str(sys.argv):
+    from src.geocat.comp import get_skewt_vars, showalter_index
+else:
+    from geocat.comp import get_skewt_vars, showalter_index
 
 
 def test_showalter_index():
