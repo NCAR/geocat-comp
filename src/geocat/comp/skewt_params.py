@@ -65,7 +65,7 @@ def showalter_index(pressure, temperature, dewpt):
     return shox
 
 
-def get_skewt_vars(p, tc, tdc, tac):
+def get_skewt_vars(p, tc, tdc, pro):
     """This function processes the dataset values and returns a string element
     which can be used as a subtitle to replicate the styles of NCL Skew-T
     Diagrams.
@@ -81,7 +81,7 @@ def get_skewt_vars(p, tc, tdc, tac):
         tdc (:class: `pint.quantity.build_quantity_class.<locals>.Quantity`):
             Dew point temperature for parcel from dataset
 
-        tac (:class: `pint.quantity.build_quantity_class.<locals>.Quantity`):
+        pro (:class: `pint.quantity.build_quantity_class.<locals>.Quantity`):
             Parcel profile temperature converted to degC
 
 
@@ -90,7 +90,7 @@ def get_skewt_vars(p, tc, tdc, tac):
     """
 
     # CAPE
-    cape = mpcalc.cape_cin(p, tc, tdc, ta)
+    cape = mpcalc.cape_cin(p, tc, tdc, pro)
     cape = cape[0].magnitude
 
     # Precipitable Water

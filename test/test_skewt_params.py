@@ -18,11 +18,9 @@ def test_showalter_index():
     p = np.append(
         p_upper,
         p_lower,
-    )
-    tc = np.linspace(30, -30, 23) * units.degC
-    tdc = np.linspace(10, -30, 23) * units.degC
-    ta = mpcalc.parcel_profile(p, tc[0], tdc[0])
-    tac = np.linspace(20, -40, 23) * units.degC
+    )  # Pressure levels in hPa
+    tc = np.linspace(30, -30, 23) * units.degC  # Env temp in degC
+    tdc = np.linspace(10, -30, 23) * units.degC  # DewPt temp in degC
 
     result = showalter_index(p, tc, tdc)
     expected = 21.353962321924012 * units.delta_degree_Celsius
@@ -38,13 +36,12 @@ def test_get_skewt_vars():
     p = np.append(
         p_upper,
         p_lower,
-    )
-    tc = np.linspace(30, -30, 23) * units.degC
-    tdc = np.linspace(10, -30, 23) * units.degC
-    ta = mpcalc.parcel_profile(p, tc[0], tdc[0])
-    tac = np.linspace(20, -40, 23) * units.degC
+    )  # Pressure levels in hPa
+    tc = np.linspace(30, -30, 23) * units.degC  # Env temp in degC
+    tdc = np.linspace(10, -30, 23) * units.degC  # DewPt temp in degC
+    pro = mpcalc.parcel_profile(p, tc[0], tdc[0])  # Parcel Profile
 
-    result = get_skewt_vars(p, tc, tdc, tac)
+    result = get_skewt_vars(p, tc, tdc, pro)
     expected = 'Plcl= 747 Tlcl[C]= 6 Shox= 21 Pwat[cm]= 5 Cape[J]= 0'
 
     if result == expected:
