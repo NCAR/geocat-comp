@@ -1,5 +1,6 @@
 import sys
 
+import metpy.calc as mpcalc
 import numpy as np
 from metpy.units import units
 
@@ -20,7 +21,7 @@ def test_showalter_index():
     )
     tc = np.linspace(30, -30, 23) * units.degC
     tdc = np.linspace(10, -30, 23) * units.degC
-    ta = mpcalc.parcel_profile(p, tc[0], tdc[0])  # Parcel profile
+    ta = mpcalc.parcel_profile(p, tc[0], tdc[0])
     tac = np.linspace(20, -40, 23) * units.degC
 
     result = showalter_index(p, tc, tdc)
