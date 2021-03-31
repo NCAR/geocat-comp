@@ -46,7 +46,7 @@ def max_daylight(jday, lat):
     # check if latitude is outside of acceptable ranges
     # warn if more than abs(55)
     # Give stronger warning if more than abs(66)
-    if (abs(lat) > 55).all():
+    if (abs(lat) > 55).all() and (abs(lat) <= 66).all():
         warnings.warn(
             "WARNING: max_daylight has limited validity for abs(lat) > 55 ")
     elif (abs(lat) > 66).all():
