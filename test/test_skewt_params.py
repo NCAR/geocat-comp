@@ -1,3 +1,5 @@
+import sys
+
 import numpy as np
 from metpy.units import units
 
