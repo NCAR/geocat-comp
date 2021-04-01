@@ -26,6 +26,8 @@ GeoCAT-comp routines
 
    geocat.comp.eofunc_pcs
 
+   geocat.comp.get_skewt_vars
+
    geocat.comp.grid_to_triple
 
    geocat.comp.interp_hybrid_to_pressure
@@ -58,6 +60,6 @@ GeoCAT-comp routines
 
    geocat.comp.rgrid2rcm
 
-   geocat.comp.skewt_params
+   geocat.comp.showalter_index
 
    geocat.comp.triple_to_grid
