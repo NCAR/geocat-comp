@@ -36,6 +36,8 @@ GeoCAT-comp routines
 
    geocat.comp.linint2pts
 
+   geocat.comp.max_daylight
+
    geocat.comp.moc_globe_atl
 
    geocat.comp.month_to_season

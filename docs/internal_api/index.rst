@@ -21,6 +21,8 @@ GeoCAT-comp routines
 
    geocat.comp.climatology._validate_freq
 
+   geocat.comp.comp_util._is_duck_array
+
    geocat.comp.dewtemp._dewtemp
 
    geocat.comp.eofunc._generate_eofs_solver
