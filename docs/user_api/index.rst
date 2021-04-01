@@ -58,4 +58,6 @@ GeoCAT-comp routines
 
    geocat.comp.rgrid2rcm
 
+   geocat.comp.skewt_params
+
    geocat.comp.triple_to_grid
