@@ -22,6 +22,10 @@ def heat_index(t, rh, opt):
         Calculated heat index. Same shape as t
     """
 
+    # temporarily make everything into numpy arrays
+    t = np.asarray(t, dtype='float32')
+    rh = np.asarray(rh, dtype='float32')
+
     # Default coefficients for (t>=80F) and (40<gh<100)
     c = [
         -42.379, 2.04901523, 10.14333127, -0.22475541, -0.00683783, -0.05481717,
@@ -40,8 +44,7 @@ def heat_index(t, rh, opt):
 
     # NWS practice
     # average Steadman and t
-    hi = np.asarray(
-        (0.5 * (t + 61.0 + ((t - 68.0) * 1.2) + (rh * 0.094)) + t) * 0.5)
+    hi = (0.5 * (t + 61.0 + ((t - 68.0) * 1.2) + (rh * 0.094)) + t) * 0.5
 
     # http://ehp.niehs.nih.gov/1206273/
     hi = [(ti if ti < 40.0 else hii) for hii, ti in zip(hi, t)]
@@ -54,10 +57,16 @@ def heat_index(t, rh, opt):
     else:
         eqnType = 1
         for i in range(len(hi)):
-            if hi[i] > crit[0]:
-                hi[i] = c[0] + c[1] * t[i] + c[2] * rh[i] + c[3] * t[i] * rh[i]
-                +c[4] * t[i]**2 + c[5] * rh[i]**2 + c[6] * t[i]**2 * rh
-                +c[7] * t[i] * rh[i]**2 + c[8] * t[i]**2 * rh[i]**2
+            if hi[i] >= crit[0]:
+                hi[i] = c[0] \
+                        + c[1] * t[i] \
+                        + c[2] * rh[i] \
+                        + c[3] * t[i] * rh[i] \
+                        + c[4] * t[i]**2 \
+                        + c[5] * rh[i]**2 \
+                        + c[6] * t[i]**2 * rh[i] \
+                        + c[7] * t[i] * rh[i]**2 \
+                        + c[8] * t[i]**2 * rh[i]**2
 
             # adjustments
             if rh[i] < 13 and (80 < t[i] < 112):
@@ -65,6 +74,12 @@ def heat_index(t, rh, opt):
                     (17 - abs(t[i] - 95)) / 17)
 
             if rh[i] > 85 and (80 < t[i] < 87):
-                hi[i] = hi[i] + ((rh[i] - 85) / 10) * ((87 - t[i]) / 5)
+                hi[i] = hi[i] + ((rh[i] - 85.0) / 10.0) * ((87.0 - t[i]) / 5.0)
 
         return hi
+
+
+t = [104, 100, 92, 92, 86, 80, 80, 60, 30]
+rh = [55, 65, 60, 90, 90, 40, 75, 90, 50]
+
+print(heat_index(t, rh, False))
