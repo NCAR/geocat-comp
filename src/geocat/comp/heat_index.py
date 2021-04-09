@@ -42,6 +42,16 @@ def heat_index(t, rh, alt_coef=False):
     -------
     hi : numpy.ndarray, xr.DataArray, float
         Calculated heat index. Same shape as t
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import geocat.comp
+    >>> t = np.array([104, 100, 92])
+    >>> rh = np.array([55, 65, 60])
+    >>> hi = heat_index(t, rh)
+    >>> hi
+    array([137.36135724, 135.8679973 , 104.68441864])
     """
 
     x_out = False
@@ -89,13 +99,13 @@ def heat_index(t, rh, alt_coef=False):
     hi = (0.5 * (t + 61.0 + ((t - 68.0) * 1.2) + (rh * 0.094)) + t) * 0.5
 
     # http://ehp.niehs.nih.gov/1206273/
-    hi = [(ti if ti < 40.0 else hii) for hii, ti in zip(hi, t)]
+    hi = np.array([(ti if ti < 40.0 else hii) for hii, ti in zip(hi, t)])
 
     # if all t values less than critical, return hi
     # otherwise perform calculation
-    eqType = 0
+    eqtype = 0
     if not all(ti < crit[0] for ti in t):
-        eqType = 1
+        eqtype = 1
         for i in range(len(hi)):
             if hi[i] >= crit[0]:
                 hi[i] = c[0] \
@@ -125,10 +135,15 @@ def heat_index(t, rh, alt_coef=False):
             'www'] = "http://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml"
         hi.attrs['info'] = "appropriate for shady locations with no wind"
 
-        if eqType is 1:
+        if eqtype == 1:
             hi.attrs[
                 'tag'] = "NCL: heat_index_nws; (Steadman+t)*0.5 and Rothfusz"
         else:
             hi.attrs['tag'] = "NCL: heat_index_nws; (Steadman+t)*0.5"
 
     return hi
+
+
+t = np.array([104, 100, 92])
+rh = np.array([55, 65, 60])
+print(heat_index(t, rh))
