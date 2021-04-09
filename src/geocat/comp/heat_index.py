@@ -47,6 +47,8 @@ def heat_index(t, rh, alt_coef=False):
     x_out = False
     if isinstance(t, xr.DataArray):
         x_out = True
+        save_dims = t.dims
+        save_coords = t.coords
 
     # convert inputs to numpy arrays if necessary
     if not _is_duck_array(t):
@@ -57,6 +59,10 @@ def heat_index(t, rh, alt_coef=False):
     # check to ensure dimensions of inputs not greater than 1
     if t.ndim > 1 or rh.ndim > 1:
         raise ValueError('heat_index: inputs must have at most one dimension')
+
+    # Input validation on relative humidity
+    if any(rh < 0) or any(rh > 100):
+        raise ValueError('heat_index: invalid values for relative humidity')
 
     # Check if relative humidity fractional
     if all(rh < 1):
@@ -87,9 +93,9 @@ def heat_index(t, rh, alt_coef=False):
 
     # if all t values less than critical, return hi
     # otherwise perform calculation
-    if all(ti < crit[0] for ti in t):
-        return hi
-    else:
+    eqType = 0
+    if not all(ti < crit[0] for ti in t):
+        eqType = 1
         for i in range(len(hi)):
             if hi[i] >= crit[0]:
                 hi[i] = c[0] \
@@ -110,4 +116,19 @@ def heat_index(t, rh, alt_coef=False):
             if rh[i] > 85 and (80 < t[i] < 87):
                 hi[i] = hi[i] + ((rh[i] - 85.0) / 10.0) * ((87.0 - t[i]) / 5.0)
 
-        return hi
+    # reformat output for xarray if necessary
+    if x_out:
+        hi = xr.DataArray(hi, coords=save_coords, dims=save_dims)
+        hi.attrs['long_name'] = "heat index: NWS"
+        hi.attrs['units'] = "F"
+        hi.attrs[
+            'www'] = "http://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml"
+        hi.attrs['info'] = "appropriate for shady locations with no wind"
+
+        if eqType is 1:
+            hi.attrs[
+                'tag'] = "NCL: heat_index_nws; (Steadman+t)*0.5 and Rothfusz"
+        else:
+            hi.attrs['tag'] = "NCL: heat_index_nws; (Steadman+t)*0.5"
+
+    return hi
