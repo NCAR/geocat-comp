@@ -3,10 +3,10 @@ import warnings
 import numpy as np
 import xarray as xr
 
-from .comp_util import _is_duck_array
+from geocat.comp import _is_duck_array
 
 
-def heat_index(t, rh, alt_coef):
+def heat_index(t, rh, alt_coef=False):
     """Compute the 'heat index' as calculated by the National Weather Service.
 
     The heat index calculation in this funtion is described at:
@@ -34,13 +34,13 @@ def heat_index(t, rh, alt_coef):
     rh : numpy.ndarray, xr.DataArray, float
         relative humidity as a percentage. Must be the same shape as t
 
-    alt_coef : Boolean
-        option to use alternate set of coefficients appropriate for
+    alt_coef : Boolean, Optional
+        flag to use alternate set of coefficients appropriate for
         temperatures from 70F to 115F and humidities between 0% and 80%
 
     Returns
     -------
-    hi : numpy.ndarray, xr.DataArray, list, float
+    hi : numpy.ndarray, xr.DataArray, float
         Calculated heat index. Same shape as t
     """
 
@@ -50,10 +50,9 @@ def heat_index(t, rh, alt_coef):
 
     # convert inputs to numpy arrays if necessary
     if not _is_duck_array(t):
-        jday = np.asarray(t, dtype='float32')
+        t = np.asarray(t, dtype='float32')
     if not _is_duck_array(rh):
-
-        lat = np.asarray(rh, dtype='float32')
+        rh = np.asarray(rh, dtype='float32')
 
     # check to ensure dimensions of inputs not greater than 1
     if t.ndim > 1 or rh.ndim > 1:
@@ -112,9 +111,3 @@ def heat_index(t, rh, alt_coef):
                 hi[i] = hi[i] + ((rh[i] - 85.0) / 10.0) * ((87.0 - t[i]) / 5.0)
 
         return hi
-
-
-# t = [104, 100, 92, 92, 86, 80, 80, 60, 30]
-# rh = [55, 65, 60, 90, 90, 40, 75, 90, 50]
-#
-# print(heat_index(t, rh, False))
