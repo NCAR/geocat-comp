@@ -142,8 +142,3 @@ def heat_index(t, rh, alt_coef=False):
             hi.attrs['tag'] = "NCL: heat_index_nws; (Steadman+t)*0.5"
 
     return hi
-
-
-t = np.array([104, 100, 92])
-rh = np.array([55, 65, 60])
-print(heat_index(t, rh))
