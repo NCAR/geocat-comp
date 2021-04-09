@@ -5,7 +5,9 @@ hi1 = heat_index_nws(t1, rh1, io, False)
 
 t2  = (/ 70, 75, 80, 85, 90, 95, 100, 105, 110, 115 /)    ; degF
 rh2 = (/ 10, 75, 15, 80, 65, 25, 30,  40,  50,  5 /)    ; %
-hi2 = heat_index_nws(t2, rh2, io, False)
+opt2 = True
+opt2@coef=2
+hi2 = heat_index_nws(t2, rh2, io, opt2)
 
 system("/bin/rm -f heat_index_output.nc")   ; remove any pre-existing file
 ncdf = addfile("heat_index_output.nc" ,"c")  ; open output netCDF file
