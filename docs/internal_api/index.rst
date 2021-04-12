@@ -27,6 +27,8 @@ GeoCAT-comp routines
 
    geocat.comp.eofunc._generate_eofs_solver
 
+   geocat.comp.heat_index._nws_eqn
+
    geocat.comp.interp_hybrid_to_pressure._pressure_from_hybrid
 
    geocat.comp.interp_hybrid_to_pressure._vertical_remap
