@@ -61,18 +61,18 @@ def heat_index(t, rh, alt_coef=False):
 
     Returns
     -------
-    hi : numpy.ndarray, xr.DataArray, float
+    hi : numpy.ndarray, xr.DataArray
         Calculated heat index. Same shape as t
 
-    # Examples
-    # --------
-    # >>> import numpy as np
-    # >>> import geocat.comp
-    # >>> t = np.array([104, 100, 92])
-    # >>> rh = np.array([55, 65, 60])
-    # >>> hi = heat_index(t, rh)
-    # >>> hi
-    # array([137.36135724, 135.8679973 , 104.68441864])
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import geocat.comp
+    >>> t = np.array([104, 100, 92])
+    >>> rh = np.array([55, 65, 60])
+    >>> hi = heat_index(t, rh)
+    >>> hi
+    array([137.36135724, 135.8679973 , 104.68441864])
     """
 
     x_out = False
@@ -128,6 +128,7 @@ def heat_index(t, rh, alt_coef=False):
     if not all(ti < crit[0] for ti in t):
         eqtype = 1
 
+        # run through nws heat index equations
         hi = np.array([(hii if hii < crit[0] else _nws_eqn(c, ti, rhi))
                        for hii, ti, rhi in zip(hi, t, rh)])
 
@@ -137,7 +138,7 @@ def heat_index(t, rh, alt_coef=False):
         hi.attrs['long_name'] = "heat index: NWS"
         hi.attrs['units'] = "F"
         hi.attrs[
-            'www'] = "http://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml"
+            'www'] = "https://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml"
         hi.attrs['info'] = "appropriate for shady locations with no wind"
 
         if eqtype == 1:
