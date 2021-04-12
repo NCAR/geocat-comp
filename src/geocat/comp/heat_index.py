@@ -6,6 +6,27 @@ import xarray as xr
 from geocat.comp import _is_duck_array
 
 
+def _nws_eqn(c, t, rh):
+    hi = c[0] \
+         + c[1] * t \
+         + c[2] * rh \
+         + c[3] * t * rh \
+         + c[4] * t ** 2 \
+         + c[5] * rh ** 2 \
+         + c[6] * t ** 2 * rh \
+         + c[7] * t * rh ** 2 \
+         + c[8] * t ** 2 * rh ** 2
+
+    # adjustments
+    if rh < 13 and (80 < t < 112):
+        hi = hi - ((13 - rh) / 4) * np.sqrt((17 - abs(t - 95)) / 17)
+
+    if rh > 85 and (80 < t < 87):
+        hi = hi + ((rh - 85.0) / 10.0) * ((87.0 - t) / 5.0)
+
+    return hi
+
+
 def heat_index(t, rh, alt_coef=False):
     """Compute the 'heat index' as calculated by the National Weather Service.
 
@@ -43,15 +64,15 @@ def heat_index(t, rh, alt_coef=False):
     hi : numpy.ndarray, xr.DataArray, float
         Calculated heat index. Same shape as t
 
-    Examples
-    --------
-    >>> import numpy as np
-    >>> import geocat.comp
-    >>> t = np.array([104, 100, 92])
-    >>> rh = np.array([55, 65, 60])
-    >>> hi = heat_index(t, rh)
-    >>> hi
-    array([137.36135724, 135.8679973 , 104.68441864])
+    # Examples
+    # --------
+    # >>> import numpy as np
+    # >>> import geocat.comp
+    # >>> t = np.array([104, 100, 92])
+    # >>> rh = np.array([55, 65, 60])
+    # >>> hi = heat_index(t, rh)
+    # >>> hi
+    # array([137.36135724, 135.8679973 , 104.68441864])
     """
 
     x_out = False
@@ -62,9 +83,9 @@ def heat_index(t, rh, alt_coef=False):
 
     # convert inputs to numpy arrays if necessary
     if not _is_duck_array(t):
-        t = np.asarray(t, dtype='float32')
+        t = np.atleast_1d(t)
     if not _is_duck_array(rh):
-        rh = np.asarray(rh, dtype='float32')
+        rh = np.atleast_1d(rh)
 
     # check to ensure dimensions of inputs not greater than 1
     if t.ndim > 1 or rh.ndim > 1:
@@ -106,25 +127,9 @@ def heat_index(t, rh, alt_coef=False):
     eqtype = 0
     if not all(ti < crit[0] for ti in t):
         eqtype = 1
-        for i in range(len(hi)):
-            if hi[i] >= crit[0]:
-                hi[i] = c[0] \
-                        + c[1] * t[i] \
-                        + c[2] * rh[i] \
-                        + c[3] * t[i] * rh[i] \
-                        + c[4] * t[i] ** 2 \
-                        + c[5] * rh[i] ** 2 \
-                        + c[6] * t[i] ** 2 * rh[i] \
-                        + c[7] * t[i] * rh[i] ** 2 \
-                        + c[8] * t[i] ** 2 * rh[i] ** 2
 
-            # adjustments
-            if rh[i] < 13 and (80 < t[i] < 112):
-                hi[i] = hi[i] - ((13 - rh[i]) / 4) * np.sqrt(
-                    (17 - abs(t[i] - 95)) / 17)
-
-            if rh[i] > 85 and (80 < t[i] < 87):
-                hi[i] = hi[i] + ((rh[i] - 85.0) / 10.0) * ((87.0 - t[i]) / 5.0)
+        hi = np.array([(hii if hii < crit[0] else _nws_eqn(c, ti, rhi))
+                       for hii, ti, rhi in zip(hi, t, rh)])
 
     # reformat output for xarray if necessary
     if x_out:
