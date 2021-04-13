@@ -9,9 +9,9 @@ import xarray as xr
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
 if "--cov" in str(sys.argv):
-    from src.geocat.comp.heat_index import heat_index
+    from src.geocat.comp import heat_index
 else:
-    from geocat.comp.heat_index import heat_index
+    from geocat.comp import heat_index
 
 
 class Test_heat_index(unittest.TestCase):
