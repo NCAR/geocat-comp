@@ -6,28 +6,30 @@ import xarray as xr
 from geocat.comp import _is_duck_array
 
 
-def _nws_eqn(c, t, rh):
-    hi = c[0] \
-         + c[1] * t \
-         + c[2] * rh \
-         + c[3] * t * rh \
-         + c[4] * t ** 2 \
-         + c[5] * rh ** 2 \
-         + c[6] * t ** 2 * rh \
-         + c[7] * t * rh ** 2 \
-         + c[8] * t ** 2 * rh ** 2
+def _nws_eqn(coeffs, temp, rel_hum):
+    heatindex = coeffs[0] \
+         + coeffs[1] * temp \
+         + coeffs[2] * rel_hum \
+         + coeffs[3] * temp * rel_hum \
+         + coeffs[4] * temp ** 2 \
+         + coeffs[5] * rel_hum ** 2 \
+         + coeffs[6] * temp ** 2 * rel_hum \
+         + coeffs[7] * temp * rel_hum ** 2 \
+         + coeffs[8] * temp ** 2 * rel_hum ** 2
 
     # adjustments
-    if rh < 13 and (80 < t < 112):
-        hi = hi - ((13 - rh) / 4) * np.sqrt((17 - abs(t - 95)) / 17)
+    if rel_hum < 13 and (80 < temp < 112):
+        heatindex = heatindex - ((13 - rel_hum) / 4) * np.sqrt(
+            (17 - abs(temp - 95)) / 17)
 
-    if rh > 85 and (80 < t < 87):
-        hi = hi + ((rh - 85.0) / 10.0) * ((87.0 - t) / 5.0)
+    if rel_hum > 85 and (80 < temp < 87):
+        heatindex = heatindex + ((rel_hum - 85.0) / 10.0) * (
+            (87.0 - temp) / 5.0)
 
-    return hi
+    return heatindex
 
 
-def heat_index(t, rh, alt_coef=False):
+def heat_index(temperature, relative_humidity, alternate_coeffs=False):
     """Compute the 'heat index' as calculated by the National Weather Service.
 
     The heat index calculation in this funtion is described at:
@@ -49,20 +51,21 @@ def heat_index(t, rh, alt_coef=False):
 
     Parameters
     ----------
-    t : numpy.ndarray, xr.DataArray, float
+    temperature : numpy.ndarray, xr.DataArray, float
         temperature(s) in Fahrenheit
 
-    rh : numpy.ndarray, xr.DataArray, float
-        relative humidity as a percentage. Must be the same shape as t
+    relative_humidity : numpy.ndarray, xr.DataArray, float
+        relative humidity as a percentage. Must be the same shape as
+        temperature
 
-    alt_coef : Boolean, Optional
+    alternate_coeffs : Boolean, Optional
         flag to use alternate set of coefficients appropriate for
         temperatures from 70F to 115F and humidities between 0% and 80%
 
     Returns
     -------
-    hi : numpy.ndarray, xr.DataArray
-        Calculated heat index. Same shape as t
+    heatindex : numpy.ndarray, xr.DataArray
+        Calculated heat index. Same shape as temperature
 
     Examples
     --------
@@ -70,46 +73,46 @@ def heat_index(t, rh, alt_coef=False):
     >>> import geocat.comp
     >>> t = np.array([104, 100, 92])
     >>> rh = np.array([55, 65, 60])
-    >>> hi = heat_index(t, rh)
+    >>> hi = heat_index(t,rh)
     >>> hi
     array([137.36135724, 135.8679973 , 104.68441864])
     """
 
     x_out = False
-    if isinstance(t, xr.DataArray):
+    if isinstance(temperature, xr.DataArray):
         x_out = True
-        save_dims = t.dims
-        save_coords = t.coords
+        save_dims = temperature.dims
+        save_coords = temperature.coords
 
     # convert inputs to numpy arrays if necessary
-    if not _is_duck_array(t):
-        t = np.atleast_1d(t)
-    if not _is_duck_array(rh):
-        rh = np.atleast_1d(rh)
+    if not _is_duck_array(temperature):
+        temperature = np.atleast_1d(temperature)
+    if not _is_duck_array(relative_humidity):
+        relative_humidity = np.atleast_1d(relative_humidity)
 
     # check to ensure dimensions of inputs not greater than 1
-    if t.ndim > 1 or rh.ndim > 1:
+    if temperature.ndim > 1 or relative_humidity.ndim > 1:
         raise ValueError('heat_index: inputs must have at most one dimension')
 
     # Input validation on relative humidity
-    if any(rh < 0) or any(rh > 100):
+    if any(relative_humidity < 0) or any(relative_humidity > 100):
         raise ValueError('heat_index: invalid values for relative humidity')
 
     # Check if relative humidity fractional
-    if all(rh < 1):
+    if all(relative_humidity < 1):
         warnings.warn("WARNING: rh must be %, not fractional; All rh are < 1")
 
     # Default coefficients for (t>=80F) and (40<gh<100)
-    c = [
+    coeffs = [
         -42.379, 2.04901523, 10.14333127, -0.22475541, -0.00683783, -0.05481717,
         0.00122874, 0.00085282, -0.00000199
     ]
     crit = [80, 40, 100]  # [T_low [F], RH_low, RH_high]
 
     # Optional flag coefficients for (70F<t<115F) and (0<gh<80)
-    # within 3F of default coefs
-    if alt_coef:
-        c = [
+    # within 3F of default coeffs
+    if alternate_coeffs:
+        coeffs = [
             0.363445176, 0.988622465, 4.777114035, -0.114037667, -0.000850208,
             -0.020716198, 0.000687678, 0.000274954, 0.0
         ]
@@ -117,34 +120,39 @@ def heat_index(t, rh, alt_coef=False):
 
     # NWS practice
     # average Steadman and t
-    hi = (0.5 * (t + 61.0 + ((t - 68.0) * 1.2) + (rh * 0.094)) + t) * 0.5
+    heatindex = (0.5 * (temperature + 61.0 + ((temperature - 68.0) * 1.2) +
+                        (relative_humidity * 0.094)) + temperature) * 0.5
 
     # http://ehp.niehs.nih.gov/1206273/
-    hi = np.array([(ti if ti < 40.0 else hii) for hii, ti in zip(hi, t)])
+    heatindex = np.array([
+        (ti if ti < 40.0 else hii) for hii, ti in zip(heatindex, temperature)
+    ])
 
     # if all t values less than critical, return hi
     # otherwise perform calculation
     eqtype = 0
-    if not all(ti < crit[0] for ti in t):
+    if not all(ti < crit[0] for ti in temperature):
         eqtype = 1
 
         # run through nws heat index equations
-        hi = np.array([(hii if hii < crit[0] else _nws_eqn(c, ti, rhi))
-                       for hii, ti, rhi in zip(hi, t, rh)])
+        heatindex = np.array([
+            (hii if hii < crit[0] else _nws_eqn(coeffs, ti, rhi))
+            for hii, ti, rhi in zip(heatindex, temperature, relative_humidity)
+        ])
 
     # reformat output for xarray if necessary
     if x_out:
-        hi = xr.DataArray(hi, coords=save_coords, dims=save_dims)
-        hi.attrs['long_name'] = "heat index: NWS"
-        hi.attrs['units'] = "F"
-        hi.attrs[
+        heatindex = xr.DataArray(heatindex, coords=save_coords, dims=save_dims)
+        heatindex.attrs['long_name'] = "heat index: NWS"
+        heatindex.attrs['units'] = "F"
+        heatindex.attrs[
             'www'] = "https://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml"
-        hi.attrs['info'] = "appropriate for shady locations with no wind"
+        heatindex.attrs['info'] = "appropriate for shady locations with no wind"
 
         if eqtype == 1:
-            hi.attrs[
+            heatindex.attrs[
                 'tag'] = "NCL: heat_index_nws; (Steadman+t)*0.5 and Rothfusz"
         else:
-            hi.attrs['tag'] = "NCL: heat_index_nws; (Steadman+t)*0.5"
+            heatindex.attrs['tag'] = "NCL: heat_index_nws; (Steadman+t)*0.5"
 
-    return hi
+    return heatindex
