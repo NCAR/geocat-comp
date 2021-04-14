@@ -1,5 +1,6 @@
 name: Upload geocat-comp to PyPI
 on:
+  push:
   release:
     types:
       - published
