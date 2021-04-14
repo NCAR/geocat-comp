@@ -3,7 +3,7 @@ import warnings
 import numpy as np
 import xarray as xr
 
-from geocat.comp import _is_duck_array
+from .comp_util import _is_duck_array
 
 
 def _nws_eqn(coeffs, temp, rel_hum):
