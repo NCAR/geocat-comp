@@ -63,6 +63,13 @@ class Test_heat_index(unittest.TestCase):
 
         assert np.allclose(heat_index(t, rh), self.ncl_gt_1, atol=0.005)
 
+    def test_alternate_xarray_tag(self):
+        t = xr.DataArray([15, 20])
+        rh = xr.DataArray([15, 20])
+
+        out = heat_index(t, rh)
+        assert out.tag == "NCL: heat_index_nws; (Steadman+t)*0.5"
+
     def test_input_dimensions(self):
         self.assertRaises(ValueError, heat_index,
                           np.arange(4).reshape(2, 2),
