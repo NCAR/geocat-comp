@@ -3,7 +3,7 @@ import warnings
 import numpy as np
 import xarray as xr
 
-from .comp_util import _is_duck_array
+from geocat.comp.comp_util import _is_duck_array
 
 
 def _nws_eqn(coeffs, temp, rel_hum):
@@ -16,15 +16,6 @@ def _nws_eqn(coeffs, temp, rel_hum):
          + coeffs[6] * temp ** 2 * rel_hum \
          + coeffs[7] * temp * rel_hum ** 2 \
          + coeffs[8] * temp ** 2 * rel_hum ** 2
-
-    # adjustments
-    if rel_hum < 13 and (80 < temp < 112):
-        heatindex = heatindex - ((13 - rel_hum) / 4) * np.sqrt(
-            (17 - abs(temp - 95)) / 17)
-
-    if rel_hum > 85 and (80 < temp < 87):
-        heatindex = heatindex + ((rel_hum - 85.0) / 10.0) * (
-            (87.0 - temp) / 5.0)
 
     return heatindex
 
@@ -69,13 +60,13 @@ def heat_index(temperature, relative_humidity, alternate_coeffs=False):
 
     Examples
     --------
-    >>> import numpy as np
-    >>> import geocat.comp
-    >>> t = np.array([104, 100, 92])
-    >>> rh = np.array([55, 65, 60])
-    >>> hi = heat_index(t,rh)
-    >>> hi
-    array([137.36135724, 135.8679973 , 104.68441864])
+    # >>> import numpy as np
+    # >>> import geocat.comp
+    # >>> t = np.array([104, 100, 92])
+    # >>> rh = np.array([55, 65, 60])
+    # >>> hi = heat_index(t,rh)
+    # >>> hi
+    # array([137.36135724, 135.8679973 , 104.68441864])
     """
 
     x_out = False
@@ -140,6 +131,22 @@ def heat_index(temperature, relative_humidity, alternate_coeffs=False):
             for hii, ti, rhi in zip(heatindex, temperature, relative_humidity)
         ])
 
+        heatindex = np.where(heatindex < crit[0],
+                             _nws_eqn(coeffs, temperature, relative_humidity),
+                             heatindex)
+
+        # adjustments
+        adjustment1 = (relative_humidity < 13) & (80 < temperature < 112)
+
+        heatindex = np.where(
+            adjustment1, heatindex - ((13 - relative_humidity) / 4) * np.sqrt(
+                (17 - abs(temperature - 95)) / 17), heatindex)
+
+        adjustment2 = (relative_humidity > 13) & (80 < temperature < 87)
+        heatindex = np.where(
+            adjustment2, heatindex + ((relative_humidity - 85.0) / 10.0) *
+            ((87.0 - temperature) / 5.0), heatindex)
+
     # reformat output for xarray if necessary
     if x_out:
         heatindex = xr.DataArray(heatindex, coords=save_coords, dims=save_dims)
@@ -156,3 +163,9 @@ def heat_index(temperature, relative_humidity, alternate_coeffs=False):
             heatindex.attrs['tag'] = "NCL: heat_index_nws; (Steadman+t)*0.5"
 
     return heatindex
+
+
+t = np.array([104, 100, 92, 92, 86, 80, 80, 60, 30])
+rh = np.array([55, 65, 60, 90, 90, 40, 75, 90, 50])
+
+heat_index(t, rh)
