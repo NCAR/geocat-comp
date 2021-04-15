@@ -81,16 +81,13 @@ def heat_index(temperature, relative_humidity, alternate_coeffs=False):
     if not _is_duck_array(relative_humidity):
         relative_humidity = np.atleast_1d(relative_humidity)
 
-    # check to ensure dimensions of inputs not greater than 1
-    if temperature.ndim > 1 or relative_humidity.ndim > 1:
-        raise ValueError('heat_index: inputs must have at most one dimension')
-
     # Input validation on relative humidity
-    if any(relative_humidity < 0) or any(relative_humidity > 100):
+    if any(relative_humidity.ravel() < 0) or any(
+            relative_humidity.ravel() > 100):
         raise ValueError('heat_index: invalid values for relative humidity')
 
     # Check if relative humidity fractional
-    if all(relative_humidity < 1):
+    if all(relative_humidity.ravel() < 1):
         warnings.warn("WARNING: rh must be %, not fractional; All rh are < 1")
 
     # Default coefficients for (t>=80F) and (40<gh<100)
@@ -120,7 +117,7 @@ def heat_index(temperature, relative_humidity, alternate_coeffs=False):
     # if all t values less than critical, return hi
     # otherwise perform calculation
     eqtype = 0
-    if not all(ti < crit[0] for ti in temperature):
+    if not all(temperature.ravel() < crit[0]):
         eqtype = 1
 
         heatindex = np.where(heatindex > crit[0],
@@ -156,15 +153,3 @@ def heat_index(temperature, relative_humidity, alternate_coeffs=False):
             heatindex.attrs['tag'] = "NCL: heat_index_nws; (Steadman+t)*0.5"
 
     return heatindex
-
-
-t = np.array([104, 100, 92, 92, 86, 80, 80, 60, 30])
-rh = np.array([55, 65, 60, 90, 90, 40, 75, 90, 50])
-
-t2 = np.array([70, 75, 80, 85, 90, 95, 100, 105, 110, 115])
-rh2 = np.array([10, 75, 15, 80, 65, 25, 30, 40, 50, 5])
-
-output = heat_index(t, rh)
-output2 = heat_index(t2, rh2)
-
-print(output)

@@ -38,10 +38,14 @@ class Test_heat_index(unittest.TestCase):
         cls.client = dd.Client()
 
     def test_numpy_input(self):
-        # print(heat_index(self.t2, self.rh2, True))
-        # print(self.ncl_gt_2)
         assert np.allclose(heat_index(self.t1, self.rh1, False),
                            self.ncl_gt_1,
+                           atol=0.005)
+
+    def test_multi_dimensional_input(self):
+        assert np.allclose(heat_index(self.t2.reshape(2, 5),
+                                      self.rh2.reshape(2, 5), True),
+                           np.asarray(self.ncl_gt_2).reshape(2, 5),
                            atol=0.005)
 
     def test_alt_coef(self):
@@ -69,11 +73,6 @@ class Test_heat_index(unittest.TestCase):
 
         out = heat_index(t, rh)
         assert out.tag == "NCL: heat_index_nws; (Steadman+t)*0.5"
-
-    def test_input_dimensions(self):
-        self.assertRaises(ValueError, heat_index,
-                          np.arange(4).reshape(2, 2),
-                          np.arange(4).reshape(2, 2))
 
     def test_rh_warning(self):
         self.assertWarns(UserWarning, heat_index, [50, 80, 90], [0.1, 0.2, 0.5])
