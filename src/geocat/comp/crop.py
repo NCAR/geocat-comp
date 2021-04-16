@@ -79,3 +79,61 @@ def max_daylight(jday, lat):
         dlm.attrs['info'] = "FAO 56; EQN 34; max_daylight"
 
     return dlm
+
+
+def psychro(pressure):
+    """Compute psychrometric constant[kPa / C], described in the Food and
+    Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
+
+    Crop evapotranspiration - Guidelines for computing crop water
+    requirement. Specifically, see equation 7 of Chapter 3 or equation 3-2 in
+    Annex 3.
+
+    From FAO 56:
+
+    The specific heat at constant pressure is the amount of energy required to
+    increase the temperature of a unit mass of air by one degree at constant
+    pressure. Its value depends on the composition of the air, i.e.,  on its
+    humidity. For average atmospheric conditions a value
+    cp = 1.013 10-3 MJ kg-1 C-1 can be used. As an average atmospheric
+    pressure is used for each location (Equation 7), the psychrometric
+    constant is kept constant for each location.
+
+    A table listing the psychometric constant for different altitudes is
+    located here: https://www.fao.org/3/X0490E/x0490e0j.htm
+
+    Parameters
+    ----------
+    pressure : numpy.ndarray, xr.DataArray, list, float
+        pressure in kPa/C
+
+    Returns
+    -------
+    psy_const : numpy.ndarray, xr.DataArray
+        the computed psychrometric constant. Same shape as pressure.
+    """
+
+    x_out = False
+    if isinstance(pressure, xr.DataArray):
+        x_out = True
+        save_dims = pressure.dims
+        save_coords = pressure.coords
+
+    # convert inputs to numpy arrays if necessary
+    if not _is_duck_array(pressure):
+        pressure = np.asarray(pressure)
+
+    con = 0.66474e-3
+
+    psy_const = con * pressure
+
+    # reformat output for xarray if necessary
+    if x_out:
+        heatindex = xr.DataArray(psy_const, coords=save_coords, dims=save_dims)
+        heatindex.attrs['long_name'] = "psychrometric constan"
+        heatindex.attrs['units'] = "kPa/C"
+        heatindex.attrs[
+            'url'] = "https://www.fao.org/docrep/X0490E/x0490e07.htm"
+        heatindex.attrs['info'] = "FAO 56; EQN 8; psychro_fao56"
+
+    return psy_const
