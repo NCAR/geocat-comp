@@ -82,7 +82,7 @@ def max_daylight(jday, lat):
 
 
 def psychrometric_constant(pressure):
-    """Compute psychrometric constant[kPa / C], described in the Food and
+    """Compute psychrometric constant [kPa / C] as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
 
     Crop evapotranspiration - Guidelines for computing crop water
@@ -130,10 +130,116 @@ def psychrometric_constant(pressure):
     # reformat output for xarray if necessary
     if x_out:
         heatindex = xr.DataArray(psy_const, coords=save_coords, dims=save_dims)
-        heatindex.attrs['long_name'] = "psychrometric constan"
+        heatindex.attrs['long_name'] = "psychrometric constant"
         heatindex.attrs['units'] = "kPa/C"
         heatindex.attrs[
             'url'] = "https://www.fao.org/docrep/X0490E/x0490e07.htm"
-        heatindex.attrs['info'] = "FAO 56; EQN 8; psychro_fao56"
+        heatindex.attrs['info'] = "FAO 56; EQN 8; psychrometric_constant"
 
     return psy_const
+
+
+def saturation_vapor_pressure(temperature, tfill=np.NAN):
+    """Compute saturation vapor pressure as described in the Food and
+     Agriculture Organization (FAO) Irrigation and Drainage Paper 56
+     entitled:
+
+    Crop evapotranspiration - Guidelines for computing crop water
+    requirement. Specifically, see equation 11 of Chapter 3.
+
+    This is Tetens' Formula: an empirical expression for saturation vapor
+    pressure with respect to liquid water that includes the variation of
+    latent heat with temperature.
+
+    Note that if temperature = tdew, then this function computes actual vapor
+    pressure.
+
+    Parameters
+    ----------
+    temperature : numpy.ndarray, xr.DataArray, list, float
+        Temperature in Fahrenheit
+
+    tfill : float, np.NAN, Optional
+        An optional parameter for a fill value in the return value
+
+    Returns
+    -------
+    svp : numpy.ndarray, xr.DataArray
+        the computed actual saturation vapor pressure in kPa.
+        Same shape as temperature.
+    """
+
+    x_out = False
+    if isinstance(temperature, xr.DataArray):
+        x_out = True
+        save_dims = temperature.dims
+        save_coords = temperature.coords
+
+    temp_c = (temperature - 32) * 5 / 9
+    svp = np.where(temp_c > 0, 0.6108 * np.exp(
+        (17.27 * temp_c) / (temp_c + 237.3)), tfill)
+
+    # reformat output for xarray if necessary
+    if x_out:
+        heatindex = xr.DataArray(svp, coords=save_coords, dims=save_dims)
+        heatindex.attrs['long_name'] = "saturation vapor pressure"
+        heatindex.attrs['units'] = "kPa"
+        heatindex.attrs[
+            'url'] = "https://www.fao.org/docrep/X0490E/x0490e07.htm"
+        heatindex.attrs['info'] = "FAO 56; EQN 11; saturation_vapor_pressure"
+
+    return svp
+
+
+def actual_saturation_vapor_pressure(tdew, tfill=np.NAN):
+    """ Compute 'actual' saturation vapor pressure [kPa] as described in the
+     Food and Agriculture Organization (FAO) Irrigation and Drainage Paper 56
+     entitled:
+
+    Crop evapotranspiration - Guidelines for computing crop water
+    requirement. Specifically, see equation 14 of Chapter 3.
+
+    The dew point temperature is synonymous with the wet bulb temperature.
+
+    Note that this function is the same as saturation_vapor_pressure, but with
+    temperature = dew point temperature with different metadata
+
+    Parameters
+    ----------
+    tdew : numpy.ndarray, xr.DataArray, list, float
+        Dew point temperatures in Fahrenheit
+
+    tfill : float, np.NAN, Optional
+        An optional parameter for a fill value in the return value
+
+    Returns
+    -------
+    asvp : numpy.ndarray, xr.DataArray
+        the computed actual saturation vapor pressure in kPa.
+        Same shape as tdew.
+    """
+
+    x_out = False
+    if isinstance(tdew, xr.DataArray):
+        x_out = True
+        save_dims = tdew.dims
+        save_coords = tdew.coords
+
+    # convert inputs to numpy arrays if necessary
+    if not _is_duck_array(tdew):
+        tdew = np.asarray(tdew)
+
+    asvp = saturation_vapor_pressure(tdew, tfill)
+
+    # reformat output for xarray if necessary
+    if x_out:
+        heatindex = xr.DataArray(asvp, coords=save_coords, dims=save_dims)
+        heatindex.attrs[
+            'long_name'] = "actual saturation vapor pressure via Tdew"
+        heatindex.attrs['units'] = "kPa"
+        heatindex.attrs[
+            'url'] = "https://www.fao.org/docrep/X0490E/x0490e07.htm"
+        heatindex.attrs[
+            'info'] = "FAO 56; EQN 14; actual_saturation_vapor_pressure"
+
+    return asvp
