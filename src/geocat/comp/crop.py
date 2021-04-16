@@ -81,7 +81,7 @@ def max_daylight(jday, lat):
     return dlm
 
 
-def psychro(pressure):
+def psychrometric_constant(pressure):
     """Compute psychrometric constant[kPa / C], described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
 
