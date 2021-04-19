@@ -12,7 +12,6 @@ def fourier_filter(signal,
                    low_pass=False,
                    band_pass=False,
                    band_block=False):
-    ## Fourier Pass
     resolution = frequency / len(signal)
     res_fft = np.fft.fft(signal, axis=time_axis)
     cfl_index = m.floor(cutoff_frequency_low / resolution)
