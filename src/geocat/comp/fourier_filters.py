@@ -1,6 +1,3 @@
-import math as m
-
-import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -17,17 +14,24 @@ def fourier_filter(signal,
     resolution = frequency / len(signal)
     res_fft = np.fft.fft(signal, axis=time_axis)
     for index in range(len(res_fft)):
-        if low_pass and (index * resolution >= cutoff_frequency_low):
+        if low_pass and (
+                index * resolution >= cutoff_frequency_low and
+                index * resolution <= frequency - cutoff_frequency_low):
             res_fft[index] = 0
-        if high_pass and (index * resolution <= cutoff_frequency_high):
+        if high_pass and (
+                index * resolution <= cutoff_frequency_high or
+                index * resolution >= frequency - cutoff_frequency_high):
             res_fft[index] = 0
         if band_pass and (index * resolution <= cutoff_frequency_low or
                           index * resolution >= cutoff_frequency_high):
             res_fft[index] = 0
-        if band_block and (index * resolution >= cutoff_frequency_low and
-                           index * resolution <= cutoff_frequency_high):
+        if band_block and (
+            (index * resolution >= cutoff_frequency_low and
+             index * resolution <= cutoff_frequency_high) or
+            (index * resolution <= frequency - cutoff_frequency_low and
+             index * resolution >= frequency - cutoff_frequency_high)):
             res_fft[index] = 0
-    result = np.fft.ifft(res_fft, axis=time_axis)
+    result = np.real(np.fft.ifft(res_fft, axis=time_axis))  # why times 2?
     return result
 
 
