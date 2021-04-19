@@ -1,6 +1,5 @@
 # move functions into geocat.comp namespace
 from .climatology import anomaly, climatology, month_to_season
-from .comp_util import _is_duck_array
 from .crop import max_daylight
 from .dewtemp import dewtemp
 from .eofunc import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts
@@ -9,6 +8,7 @@ from .errors import (AttributeError, ChunkError, CoordinateError,
 from .fourier_filters import (fourier_band_block, fourier_band_pass,
                               fourier_filter, fourier_high_pass,
                               fourier_low_pass)
+from .heat_index import heat_index
 from .interp_hybrid_to_pressure import interp_hybrid_to_pressure
 from .polynomial import detrend, ndpolyfit, ndpolyval
 from .relhum import relhum, relhum_ice, relhum_water

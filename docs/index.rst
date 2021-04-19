@@ -37,6 +37,7 @@ novel computational functions for geosciences data.
    ./installation
    ./api
    ./examples
+   ./citation
    ./support
 
 
