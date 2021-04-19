@@ -141,8 +141,8 @@ def psychrometric_constant(pressure):
 
 def saturation_vapor_pressure(temperature, tfill=np.NAN):
     """Compute saturation vapor pressure as described in the Food and
-     Agriculture Organization (FAO) Irrigation and Drainage Paper 56
-     entitled:
+    Agriculture Organization (FAO) Irrigation and Drainage Paper 56
+    entitled:
 
     Crop evapotranspiration - Guidelines for computing crop water
     requirement. Specifically, see equation 11 of Chapter 3.
@@ -193,8 +193,8 @@ def saturation_vapor_pressure(temperature, tfill=np.NAN):
 
 def actual_saturation_vapor_pressure(tdew, tfill=np.NAN):
     """ Compute 'actual' saturation vapor pressure [kPa] as described in the
-     Food and Agriculture Organization (FAO) Irrigation and Drainage Paper 56
-     entitled:
+    Food and Agriculture Organization (FAO) Irrigation and Drainage Paper 56
+    entitled:
 
     Crop evapotranspiration - Guidelines for computing crop water
     requirement. Specifically, see equation 14 of Chapter 3.
@@ -243,3 +243,53 @@ def actual_saturation_vapor_pressure(tdew, tfill=np.NAN):
             'info'] = "FAO 56; EQN 14; actual_saturation_vapor_pressure"
 
     return asvp
+
+
+def saturation_vapor_pressure_slope(temperature, tfill=np.NAN):
+    """Compute the slope [kPa/C] of saturation vapor pressure curve as
+    described in the Food and Agriculture Organization (FAO) Irrigation and
+    Drainage Paper 56 entitled:
+
+    Crop evapotranspiration - Guidelines for computing crop water
+    requirement. Specifically, see equation 13 of Chapter 3.
+
+    Parameters
+    ----------
+    temperature : numpy.ndarray, xr.DataArray, list, float
+        Temperature in Fahrenheit
+
+    tfill : float, np.NAN, Optional
+        An optional parameter for a fill value in the return value
+
+    Returns
+    -------
+    svp_slope : numpy.ndarray, xr.DataArray
+        The computed slopes of the saturation vapor pressure curve.
+        Will be the same shape as temperature.
+    """
+
+    x_out = False
+    if isinstance(temperature, xr.DataArray):
+        x_out = True
+        save_dims = temperature.dims
+        save_coords = temperature.coords
+
+    # convert to Celsius
+    temp_c = (temperature - 32) * 5 / 9
+
+    svp_slope = np.where(
+        temperature > 0, 4098 * (0.6108 * np.exp(
+            (17.27 * temp_c) / (temp_c + 237.3))) / ((temp_c + 237.3)**2),
+        tfill)
+
+    # reformat output for xarray if necessary
+    if x_out:
+        heatindex = xr.DataArray(svp_slope, coords=save_coords, dims=save_dims)
+        heatindex.attrs['long_name'] = "slope saturation vapor pressure curve"
+        heatindex.attrs['units'] = "kPa/C"
+        heatindex.attrs[
+            'url'] = "https://www.fao.org/docrep/X0490E/x0490e07.htm"
+        heatindex.attrs[
+            'info'] = "FAO 56; EQN 13; saturation_vapor_pressure_slope"
+
+    return svp_slope
