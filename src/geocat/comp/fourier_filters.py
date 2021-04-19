@@ -14,25 +14,22 @@ def fourier_filter(signal,
     resolution = frequency / len(signal)
     res_fft = np.fft.fft(signal, axis=time_axis)
     for index in range(len(res_fft)):
-        if low_pass and (
-                index * resolution >= cutoff_frequency_low and
-                index * resolution <= frequency - cutoff_frequency_low):
+        ffreq = index * resolution
+        if low_pass and (ffreq >= cutoff_frequency_low and
+                         ffreq <= frequency - cutoff_frequency_low):
             res_fft[index] = 0
-        if high_pass and (
-                index * resolution <= cutoff_frequency_high or
-                index * resolution >= frequency - cutoff_frequency_high):
+        if high_pass and (ffreq <= cutoff_frequency_high or
+                          ffreq >= frequency - cutoff_frequency_high):
             res_fft[index] = 0
-        if band_pass and (
-                index * resolution <= cutoff_frequency_low or
-            (index * resolution >= cutoff_frequency_high and
-             index * resolution <= frequency - cutoff_frequency_high) or
-                index * resolution >= frequency - cutoff_frequency_low):
+        if band_pass and (ffreq <= cutoff_frequency_low or
+                          (ffreq >= cutoff_frequency_high and
+                           ffreq <= frequency - cutoff_frequency_high) or
+                          ffreq >= frequency - cutoff_frequency_low):
             res_fft[index] = 0
-        if band_block and (
-            (index * resolution >= cutoff_frequency_low and
-             index * resolution <= cutoff_frequency_high) or
-            (index * resolution <= frequency - cutoff_frequency_low and
-             index * resolution >= frequency - cutoff_frequency_high)):
+        if band_block and ((ffreq >= cutoff_frequency_low and
+                            ffreq <= cutoff_frequency_high) or
+                           (ffreq <= frequency - cutoff_frequency_low and
+                            ffreq >= frequency - cutoff_frequency_high)):
             res_fft[index] = 0
     result = np.real(np.fft.ifft(res_fft, axis=time_axis))  # why times 2?
     return result
