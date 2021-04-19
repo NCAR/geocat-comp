@@ -1,3 +1,5 @@
+import math as m
+
 import numpy as np
 
 
@@ -13,24 +15,27 @@ def fourier_filter(signal,
     ## Fourier Pass
     resolution = frequency / len(signal)
     res_fft = np.fft.fft(signal, axis=time_axis)
-    for index in range(len(res_fft)):
-        ffreq = index * resolution
-        if low_pass and (ffreq >= cutoff_frequency_low and
-                         ffreq <= frequency - cutoff_frequency_low):
-            res_fft[index] = 0
-        if high_pass and (ffreq <= cutoff_frequency_high or
-                          ffreq >= frequency - cutoff_frequency_high):
-            res_fft[index] = 0
-        if band_pass and (ffreq <= cutoff_frequency_low or
-                          (ffreq >= cutoff_frequency_high and
-                           ffreq <= frequency - cutoff_frequency_high) or
-                          ffreq >= frequency - cutoff_frequency_low):
-            res_fft[index] = 0
-        if band_block and ((ffreq >= cutoff_frequency_low and
-                            ffreq <= cutoff_frequency_high) or
-                           (ffreq <= frequency - cutoff_frequency_low and
-                            ffreq >= frequency - cutoff_frequency_high)):
-            res_fft[index] = 0
+    cfl_index = m.floor(cutoff_frequency_low / resolution)
+    cfln_index = m.ceil((frequency - cutoff_frequency_low) / resolution)
+    cfh_index = m.ceil(cutoff_frequency_high / resolution)
+    cfhn_index = m.floor(
+        (frequency - cutoff_frequency_high) / resolution)  # nyquist echo of cfl
+    if low_pass:
+        res_fft[cfl_index:cfln_index] = np.zeros(
+            res_fft[cfl_index:cfln_index].shape)
+    if high_pass:
+        res_fft[:cfh_index] = np.zeros(res_fft[:cfh_index].shape)
+        res_fft[cfhn_index:] = np.zeros(res_fft[cfhn_index:].shape)
+    if band_pass:
+        res_fft[:cfl_index] = np.zeros(res_fft[:cfl_index].shape)
+        res_fft[cfh_index:cfhn_index] = np.zeros(
+            res_fft[cfh_index:cfhn_index].shape)
+        res_fft[cfln_index:] = np.zeros(res_fft[cfln_index:].shape)
+    if band_block:
+        res_fft[cfl_index:cfh_index] = np.zeros(
+            res_fft[cfl_index:cfh_index].shape)
+        res_fft[cfhn_index:cfln_index] = np.zeros(
+            res_fft[cfhn_index:cfln_index].shape)
     result = np.real(np.fft.ifft(res_fft, axis=time_axis))  # why times 2?
     return result
 
