@@ -22,8 +22,11 @@ def fourier_filter(signal,
                 index * resolution <= cutoff_frequency_high or
                 index * resolution >= frequency - cutoff_frequency_high):
             res_fft[index] = 0
-        if band_pass and (index * resolution <= cutoff_frequency_low or
-                          index * resolution >= cutoff_frequency_high):
+        if band_pass and (
+                index * resolution <= cutoff_frequency_low or
+            (index * resolution >= cutoff_frequency_high and
+             index * resolution <= frequency - cutoff_frequency_high) or
+                index * resolution >= frequency - cutoff_frequency_low):
             res_fft[index] = 0
         if band_block and (
             (index * resolution >= cutoff_frequency_low and
