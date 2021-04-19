@@ -12,6 +12,11 @@ def fourier_filter(signal,
                    low_pass=False,
                    band_pass=False,
                    band_block=False):
+    """TODO list:
+
+    [ ] axis reordering is time axis is not 0 [ ] test against
+    dask.client.submit() [ ] test against xarray packaged data
+    """
     resolution = frequency / len(signal)
     res_fft = np.fft.fft(signal, axis=time_axis)
     cfl_index = m.floor(cutoff_frequency_low / resolution)
