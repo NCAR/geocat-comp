@@ -45,9 +45,9 @@ def test_one_low_pass():
     t_expected_result = (np.sin(t * m.tau) / 0.1 + np.sin(2 * t * m.tau) / 0.2 +
                          np.sin(5 * t * m.tau) / 0.5 + np.sin(10 * t * m.tau))
     t_result = fourier_low_pass(t_data, freq, 15)
-    # plt.plot(t_expected_result)
     # plt.plot(t_result)
-    # plt.plot(t_expected_result-t_result)
+    # plt.plot(t_expected_result)
+    # plt.plot(t_expected_result - t_result)
     # plt.show()
     np.testing.assert_almost_equal(t_result, t_expected_result)
 
@@ -65,6 +65,41 @@ def test_one_high_pass():
     t_result = fourier_high_pass(t_data, freq, 15)
     # plt.plot(t_result)
     # plt.plot(t_expected_result)
-    plt.plot(t_expected_result - t_result)
-    plt.show()
+    # plt.plot(t_expected_result - t_result)
+    # plt.show()
+    np.testing.assert_almost_equal(t_result, t_expected_result)
+
+
+def test_one_band_pass():
+    freq = 10000
+    t = np.arange(30000) / freq  # three seconds of 1kHz
+    t_data = (np.sin(t * m.tau) / 0.1 + np.sin(2 * t * m.tau) / 0.2 +
+              np.sin(5 * t * m.tau) / 0.5 + np.sin(10 * t * m.tau) +
+              np.sin(20 * t * m.tau) / 2 + np.sin(50 * t * m.tau) / 5 +
+              np.sin(100 * t * m.tau) / 10)
+    t_expected_result = (np.sin(5 * t * m.tau) / 0.5 + np.sin(10 * t * m.tau) +
+                         np.sin(20 * t * m.tau) / 2)
+    t_result = fourier_band_pass(t_data, freq, 3, 30)
+    # plt.plot(t_result)
+    # plt.plot(t_expected_result)
+    # plt.plot(t_expected_result - t_result)
+    # plt.show()
+    np.testing.assert_almost_equal(t_result, t_expected_result)
+
+
+def test_one_band_block():
+    freq = 10000
+    t = np.arange(30000) / freq  # three seconds of 1kHz
+    t_data = (np.sin(t * m.tau) / 0.1 + np.sin(2 * t * m.tau) / 0.2 +
+              np.sin(5 * t * m.tau) / 0.5 + np.sin(10 * t * m.tau) +
+              np.sin(20 * t * m.tau) / 2 + np.sin(50 * t * m.tau) / 5 +
+              np.sin(100 * t * m.tau) / 10)
+    t_expected_result = (np.sin(t * m.tau) / 0.1 + np.sin(2 * t * m.tau) / 0.2 +
+                         np.sin(50 * t * m.tau) / 5 +
+                         np.sin(100 * t * m.tau) / 10)
+    t_result = fourier_band_block(t_data, freq, 3, 30)
+    # plt.plot(t_result)
+    # plt.plot(t_expected_result)
+    # plt.plot(t_expected_result - t_result)
+    # plt.show()
     np.testing.assert_almost_equal(t_result, t_expected_result)
