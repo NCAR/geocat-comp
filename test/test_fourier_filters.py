@@ -103,3 +103,26 @@ def test_one_band_block():
     # plt.plot(t_expected_result - t_result)
     # plt.show()
     np.testing.assert_almost_equal(t_result, t_expected_result)
+
+
+def test_two_low_pass():
+    freq = 10000
+    t = np.arange(30000) / freq  # one seconds of 1kHz
+    t = t[None, :] + np.zeros((30000, 1))
+    t_data = (np.sin(t * m.tau) / 0.1 + np.sin(2 * t * m.tau) / 0.2 +
+              np.sin(5 * t * m.tau) / 0.5 + np.sin(10 * t * m.tau) +
+              np.sin(20 * t * m.tau) / 2 + np.sin(50 * t * m.tau) / 5 +
+              np.sin(100 * t * m.tau) / 10)
+    t_expected_result = (np.sin(t * m.tau) / 0.1 + np.sin(2 * t * m.tau) / 0.2 +
+                         np.sin(5 * t * m.tau) / 0.5 + np.sin(10 * t * m.tau))
+    t_result = fourier_low_pass(t_data, freq, 15, time_axis=0)
+    plt.imshow(t_result)
+    plt.colorbar()
+    plt.show()
+    plt.imshow(t_expected_result)
+    plt.colorbar()
+    plt.show()
+    plt.imshow(t_expected_result - t_result)
+    plt.colorbar()
+    plt.show()
+    np.testing.assert_almost_equal(t_result, t_expected_result)
