@@ -18,8 +18,7 @@ def fourier_filter(signal,
     cfl_index = m.floor(cutoff_frequency_low / resolution)
     cfln_index = m.ceil((frequency - cutoff_frequency_low) / resolution)
     cfh_index = m.ceil(cutoff_frequency_high / resolution)
-    cfhn_index = m.floor(
-        (frequency - cutoff_frequency_high) / resolution)  # nyquist echo of cfl
+    cfhn_index = m.floor((frequency - cutoff_frequency_high) / resolution)
     if low_pass:
         res_fft[cfl_index:cfln_index] = np.zeros(
             res_fft[cfl_index:cfln_index].shape)
