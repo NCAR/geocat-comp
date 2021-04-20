@@ -3,7 +3,7 @@
 | **Docs**     |                                                                    [![Documentation Status][rtd-badge]][rtd-link]                                                                    |
 | **Package**  |                                                         [![Conda][conda-badge]][conda-link] [![PyPI][pypi-badge]][pypi-link]                                                         |
 | **License**  |                                                                        [![License][license-badge]][repo-link]                                                                        |
-
+| **Citing**  |                                                                              [![DOI][doi-badge]][doi-link]                                                                            |
 
 
 
@@ -59,6 +59,24 @@ the gap between NumPy arrays and the compiled language data structures used by
 `geocat.comp` namespace, but are minimally documented and are
 intended primarily for internal use.
 
+# Citing GeoCAT-comp
+
+Cite GeoCAT-comp using the following text:
+
+<> Visualization & Analysis Systems Technologies. (Year).
+Geoscience Community Analysis Toolkit (GeoCAT-comp version \<version\>) [Software].
+Boulder, CO: UCAR/NCAR - Computational and Informational System Lab. doi:10.5065/A8PP-4358.
+
+Update the GeoCAT-comp version and year as appropriate. For example:
+
+<> Visualization & Analysis Systems Technologies. (2021).
+Geoscience Community Analysis Toolkit (GeoCAT-comp version 2021.04.0) [Software].
+Boulder, CO: UCAR/NCAR - Computational and Informational System Lab. doi:10.5065/A8PP-4358.
+
+For further information, please refer to
+[GeoCAT homepage - Citation](https://geocat.ucar.edu/pages/citation.html).
+
+
 
 
 
@@ -75,4 +93,6 @@ intended primarily for internal use.
 [conda-badge]: https://img.shields.io/conda/vn/ncar/geocat-comp?logo=anaconda&style=for-the-badge
 [conda-link]: https://anaconda.org/ncar/geocat-comp
 [license-badge]: https://img.shields.io/github/license/NCAR/geocat-comp?style=for-the-badge
+[doi-badge]: https://img.shields.io/badge/DOI-10.5065%2Fa8pp--4358-brightgreen?style=for-the-badge
+[doi-link]: https://doi.org/10.5065/a8pp-4358
 [repo-link]: https://github.com/NCAR/geocat-comp
