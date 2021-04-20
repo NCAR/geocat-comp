@@ -14,8 +14,7 @@ def fourier_filter(signal,
                    band_block=False):
     """TODO list:
 
-    [ ] axis reordering is time axis is not 0 [ ] test against
-    dask.client.submit() [ ] test against xarray packaged data
+    [ ] test against xarray packaged data
     """
     resolution = frequency / len(signal)
     signal = np.swapaxes(signal, time_axis, 0)

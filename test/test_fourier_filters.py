@@ -203,3 +203,21 @@ def test_three_band_block_t1():
     t_expected_result = np.swapaxes(t_expected_result, 1, 0)
     t_result = fourier_band_block(t_data, freq, 3, 30, time_axis=1)
     np.testing.assert_almost_equal(t_result, t_expected_result)
+
+
+def test_three_band_block_t2():
+    freq = 200
+    t = np.arange(200) / freq
+    t = t[:, None] + t
+    t = t[:, :, None] + t
+    t_data = (np.sin(t * m.tau) / 0.1 + np.sin(2 * t * m.tau) / 0.2 +
+              np.sin(5 * t * m.tau) / 0.5 + np.sin(10 * t * m.tau) +
+              np.sin(20 * t * m.tau) / 2 + np.sin(50 * t * m.tau) / 5 +
+              np.sin(100 * t * m.tau) / 10)
+    t_data = np.swapaxes(t_data, 2, 0)
+    t_expected_result = (np.sin(t * m.tau) / 0.1 + np.sin(2 * t * m.tau) / 0.2 +
+                         np.sin(50 * t * m.tau) / 5 +
+                         np.sin(100 * t * m.tau) / 10)
+    t_expected_result = np.swapaxes(t_expected_result, 2, 0)
+    t_result = fourier_band_block(t_data, freq, 3, 30, time_axis=2)
+    np.testing.assert_almost_equal(t_result, t_expected_result)
