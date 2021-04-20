@@ -40,7 +40,7 @@ def fourier_filter(signal,
             res_fft[cfl_index:cfh_index].shape)
         res_fft[cfhn_index:cfln_index] = np.zeros(
             res_fft[cfhn_index:cfln_index].shape)
-    result = np.real(np.fft.ifft(res_fft, axis=time_axis))
+    result = np.real(np.fft.ifft(res_fft, axis=0))
     result = np.swapaxes(result, time_axis, 0)
     return result
 
