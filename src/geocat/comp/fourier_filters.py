@@ -18,7 +18,8 @@ def fourier_filter(signal,
     dask.client.submit() [ ] test against xarray packaged data
     """
     resolution = frequency / len(signal)
-    res_fft = np.fft.fft(signal, axis=time_axis)
+    signal = np.swapaxes(signal, time_axis, 0)
+    res_fft = np.fft.fft(signal, axis=0)
     cfl_index = m.floor(cutoff_frequency_low / resolution)
     cfln_index = m.ceil((frequency - cutoff_frequency_low) / resolution)
     cfh_index = m.ceil(cutoff_frequency_high / resolution)
@@ -40,6 +41,7 @@ def fourier_filter(signal,
         res_fft[cfhn_index:cfln_index] = np.zeros(
             res_fft[cfhn_index:cfln_index].shape)
     result = np.real(np.fft.ifft(res_fft, axis=time_axis))
+    result = np.swapaxes(result, time_axis, 0)
     return result
 
 
