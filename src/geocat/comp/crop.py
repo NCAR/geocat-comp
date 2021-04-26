@@ -175,6 +175,10 @@ def saturation_vapor_pressure(temperature, tfill=np.NAN):
         save_dims = temperature.dims
         save_coords = temperature.coords
 
+    # convert inputs to numpy arrays for function call if necessary
+    if not _is_duck_array(temperature):
+        temperature = np.asarray(temperature, dtype='float32')
+
     temp_c = (temperature - 32) * 5 / 9
     svp = np.where(temp_c > 0, 0.6108 * np.exp(
         (17.27 * temp_c) / (temp_c + 237.3)), tfill)
@@ -273,6 +277,10 @@ def saturation_vapor_pressure_slope(temperature, tfill=np.NAN):
         x_out = True
         save_dims = temperature.dims
         save_coords = temperature.coords
+
+    # convert inputs to numpy arrays for function call if necessary
+    if not _is_duck_array(temperature):
+        temperature = np.asarray(temperature, dtype='float32')
 
     # convert to Celsius
     temp_c = (temperature - 32) * 5 / 9
