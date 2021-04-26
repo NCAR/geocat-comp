@@ -278,9 +278,8 @@ def saturation_vapor_pressure_slope(temperature, tfill=np.NAN):
     temp_c = (temperature - 32) * 5 / 9
 
     svp_slope = np.where(
-        temperature > 0, 4098 * (0.6108 * np.exp(
-            (17.27 * temp_c) / (temp_c + 237.3))) / ((temp_c + 237.3)**2),
-        tfill)
+        temp_c > 0, 4096 * (0.6108 * np.exp(
+            (17.27 * temp_c) / (temp_c + 237.3)) / (temp_c + 237.3)**2), tfill)
 
     # reformat output for xarray if necessary
     if x_out:
