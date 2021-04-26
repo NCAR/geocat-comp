@@ -9,8 +9,8 @@ import xarray as xr
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
 if "--cov" in str(sys.argv):
-    from src.geocat.comp import (actual_saturation_vapor_pressure,
-                                 max_daylight, psychrometric_constant,
+    from src.geocat.comp import (actual_saturation_vapor_pressure, max_daylight,
+                                 psychrometric_constant,
                                  saturation_vapor_pressure,
                                  saturation_vapor_pressure_slope)
 else:
@@ -196,4 +196,10 @@ class Test_saturation_vapor_pressure_slope(unittest.TestCase):
     def test_numpy_input(self):
         assert np.allclose(saturation_vapor_pressure_slope(self.temp_gt),
                            self.ncl_gt,
+                           equal_nan=True)
+
+    def test_list_input(self):
+        assert np.allclose(saturation_vapor_pressure_slope(
+            self.temp_gt.tolist()),
+                           self.ncl_gt.tolist(),
                            equal_nan=True)
