@@ -77,14 +77,16 @@ class Test_actual_saturation_vapor_pressure(unittest.TestCase):
     def test_dask_unchunked_input(self):
         tempf = da.from_array(self.temp_gt)
         out = self.client.submit(actual_saturation_vapor_pressure,
-                                 tempf).result()
+                                 tempf,
+                                 tfill=1.0000000e+20).result()
 
         assert np.allclose(out, self.ncl_gt)
 
     def test_dask_chunked_input(self):
         tempf = da.from_array(self.temp_gt, chunks='auto')
         out = self.client.submit(actual_saturation_vapor_pressure,
-                                 tempf).result()
+                                 tempf,
+                                 tfill=1.0000000e+20).result()
 
         assert np.allclose(out, self.ncl_gt)
 
@@ -282,13 +284,17 @@ class Test_saturation_vapor_pressure(unittest.TestCase):
 
     def test_dask_unchunked_input(self):
         tempf = da.from_array(self.temp_gt)
-        out = self.client.submit(saturation_vapor_pressure, tempf).result()
+        out = self.client.submit(saturation_vapor_pressure,
+                                 tempf,
+                                 tfill=1.0000000e+20).result()
 
         assert np.allclose(out, self.ncl_gt)
 
     def test_dask_chunked_input(self):
         tempf = da.from_array(self.temp_gt, chunks='auto')
-        out = self.client.submit(saturation_vapor_pressure, tempf).result()
+        out = self.client.submit(saturation_vapor_pressure,
+                                 tempf,
+                                 tfill=1.0000000e+20).result()
 
         assert np.allclose(out, self.ncl_gt)
 
@@ -353,11 +359,11 @@ class Test_saturation_vapor_pressure_slope(unittest.TestCase):
         out = self.client.submit(saturation_vapor_pressure_slope,
                                  tempf).result()
 
-        assert np.allclose(out, self.ncl_gt)
+        assert np.allclose(out, self.ncl_gt, equal_nan=True)
 
     def test_dask_chunked_input(self):
         tempf = da.from_array(self.temp_gt, chunks='auto')
         out = self.client.submit(saturation_vapor_pressure_slope,
                                  tempf).result()
 
-        assert np.allclose(out, self.ncl_gt)
+        assert np.allclose(out, self.ncl_gt, equal_nan=True)
