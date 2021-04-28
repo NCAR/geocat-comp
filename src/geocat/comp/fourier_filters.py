@@ -1,7 +1,6 @@
 import math as m
 
 import numpy as np
-import xarray as xr
 
 
 def fourier_filter(signal,
@@ -39,19 +38,53 @@ def fourier_filter(signal,
     --------
     Example 1: The tidal cycle needs to be removed from a 10/hr oceanic dataset,
     (https://tidesandcurrents.noaa.gov/waterlevels.html?id=9415020&units=standard&bdate=20210101&edate=20210131&timezone=GMT&datum=MLLW&interval=6&action=data)
-    numpy_dataset(lat,lon,time,[sea_surface_height,sea_surface_temperature])
-    dataset shape is assumed to be (7440,)
-    the frequency resolution will be 0.00137 (cycles/day)
-    to remove the semidiurnal tidal cycle, ~1.9323 cycles per day
-    to remove the semidiurnal tidal cycle, use a band-block filter centered on
-    1.9323 cycles per day, with a width of
-    lower bound should be 1.9323-0.00137
-    >>> result = fourier_filter(dataset,1,cutoff_frequency_low=1.9,,)
 
-    >>> xarray_dataset = xarray.DataArray(dataset)
-    dataset can, but should not, be chunked in the time dimension,
-    all other dimensions may be chunked at will, we will chunk by lat and lon
-    >>> xarray_dataset.chunk((1,1,730,2))
+    >>>import xarray as xr
+    >>>import numpy as np
+    >>>import matplotlib.pyplot as plt
+    >>>from mpl_toolkits.mplot3d import Axes3D
+    >>>import pandas as pd
+
+    >>>dataset = xr.DataArray(pd.read_csv('CO-OPS_9415020_wl.csv'))
+    >>>xr_data = dataset.loc[:,'Verified (ft)']
+
+    >>>data_freq = 10 #points per hour
+    >>>tide_freq1 = 1/(1*12.4206) #tides per hour
+    >>>tide_freq2 = 1/(2*12.4206) #tides per hour
+    >>>res = data_freq/(len(xr_data))
+    >>>cflow1 = tide_freq1 - res*5
+    >>>cfhigh1 = tide_freq1 + res*5
+    >>>cflow2 = tide_freq2 - res*5
+    >>>cfhigh2 = tide_freq2 + res*5
+
+    >>>fig, ax = plt.subplots(1,1,dpi=100,figsize=(8,4),constrained_layout=True)
+    >>>no_tide = xr_data
+    >>>ax.plot(no_tide[2000:3000])
+    >>>no_tide = fourier_filter(no_tide, data_freq, cutoff_frequency_low=cflow1,cutoff_frequency_high=cfhigh1,band_block=True)
+    >>>ax.plot(no_tide[2000:3000])
+    >>>no_tide = fourier_filter(no_tide, data_freq, cutoff_frequency_low=cflow2,cutoff_frequency_high=cfhigh2,band_block=True)
+    >>>ax.plot(no_tide[2000:3000])
+    >>>fig.show()
+
+    >>>fig, axs = plt.subplots(2,1, dpi=100,figsize=(8,4),constrained_layout=True)
+    >>>axs[0].set_title('real')
+    >>>axs[0].plot(np.real(np.fft.fft(xr_data)[1:100]))
+    >>>axs[0].plot(np.real(np.fft.fft(no_tide)[1:100]))
+    >>>axs[1].set_title('imag')
+    >>>axs[1].plot(np.imag(np.fft.fft(xr_data)[1:100]))
+    >>>axs[1].plot(np.imag(np.fft.fft(no_tide)[1:100]))
+    >>>fig.show()
+
+    >>>fig, axs = plt.subplots(2,1, dpi=100,figsize=(8,4),constrained_layout=True)
+    >>>start = 0
+    >>>end = -1
+    >>>axs[0].set_title('real')
+    >>>axs[0].plot(np.real(xr_data)[start:end])
+    >>>axs[0].plot(np.real(no_tide)[start:end])
+    >>>axs[1].set_title('imag')
+    >>>axs[1].plot(np.imag(xr_data)[start:end])
+    >>>axs[1].plot(np.imag(no_tide)[start:end])
+    >>>fig.show()
     """
     resolution = frequency / len(signal)
     signal = np.swapaxes(signal, time_axis, 0)
@@ -76,7 +109,8 @@ def fourier_filter(signal,
             res_fft[cfl_index:cfh_index].shape)
         res_fft[cfhn_index:cfln_index] = np.zeros(
             res_fft[cfhn_index:cfln_index].shape)
-    result = np.real(np.fft.ifft(res_fft, axis=0))
+    result = np.fft.ifft(res_fft, axis=0)
+    #result = np.real(result)
     result = np.swapaxes(result, time_axis, 0)
     if type(signal) == xr.DataArray:
         xr_result = signal.copy()
