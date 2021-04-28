@@ -295,17 +295,17 @@ class Test_saturation_vapor_pressure_slope(unittest.TestCase):
                            equal_nan=True)
 
     def test_multi_dimensional_input(self):
-        assert np.allclose(saturation_vapor_pressure_slope(self.temp_gt.reshape(
-            2, 50),
-                                                           tfill=1.0000000e+20),
+        assert np.allclose(saturation_vapor_pressure_slope(
+            self.temp_gt.reshape(2, 50)),
                            self.ncl_gt.reshape(2, 50),
-                           atol=0.005)
+                           atol=0.005,
+                           equal_nan=True)
 
     def test_xarray_input(self):
         tempf = xr.DataArray(self.temp_gt)
         expected = xr.DataArray(self.ncl_gt)
 
-        assert np.allclose(saturation_vapor_pressure_slope(tempf,
-                                                           tfill=1.0000000e+20),
+        assert np.allclose(saturation_vapor_pressure_slope(tempf),
                            expected,
-                           atol=0.005)
+                           atol=0.005,
+                           equal_nan=True)
