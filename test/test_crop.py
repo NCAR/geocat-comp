@@ -46,6 +46,34 @@ class Test_actual_saturation_vapor_pressure(unittest.TestCase):
                            self.ncl_gt,
                            atol=0.005)
 
+    def test_float_input(self):
+        degf = 59
+        expected = 1.70535
+        assert np.allclose(actual_saturation_vapor_pressure(degf),
+                           expected,
+                           atol=0.005)
+
+    def test_list_input(self):
+        assert np.allclose(actual_saturation_vapor_pressure(
+            self.temp_gt.tolist(), tfill=1.0000000e+20),
+                           self.ncl_gt.tolist(),
+                           atol=0.005)
+
+    def test_multi_dimensional_input(self):
+        assert np.allclose(actual_saturation_vapor_pressure(
+            self.temp_gt.reshape(2, 50), tfill=1.0000000e+20),
+                           self.ncl_gt.reshape(2, 50),
+                           atol=0.005)
+
+    def test_xarray_input(self):
+        tempf = xr.DataArray(self.temp_gt)
+        expected = xr.DataArray(self.ncl_gt)
+
+        assert np.allclose(actual_saturation_vapor_pressure(
+            tempf, tfill=1.0000000e+20),
+                           expected,
+                           atol=0.005)
+
 
 class Test_max_daylight(unittest.TestCase):
 
@@ -143,6 +171,32 @@ class Test_psychometric_constant(unittest.TestCase):
                            self.ncl_gt,
                            atol=0.005)
 
+    def test_float_input(self):
+        pressure = 81.78
+        expected = 0.05434634
+        assert np.allclose(psychrometric_constant(pressure),
+                           expected,
+                           atol=0.005)
+
+    def test_list_input(self):
+        assert np.allclose(psychrometric_constant(self.pressure_gt.tolist()),
+                           self.ncl_gt.tolist(),
+                           atol=0.005)
+
+    def test_multi_dimensional_input(self):
+        assert np.allclose(psychrometric_constant(
+            self.pressure_gt.reshape(2, 50)),
+                           self.ncl_gt.reshape(2, 50),
+                           atol=0.005)
+
+    def test_xarray_input(self):
+        pressure = xr.DataArray(self.pressure_gt)
+        expected = xr.DataArray(self.ncl_gt)
+
+        assert np.allclose(psychrometric_constant(pressure),
+                           expected,
+                           atol=0.005)
+
 
 class Test_saturation_vapor_pressure(unittest.TestCase):
 
@@ -169,6 +223,35 @@ class Test_saturation_vapor_pressure(unittest.TestCase):
         assert np.allclose(saturation_vapor_pressure(self.temp_gt,
                                                      tfill=1.0000000e+20),
                            self.ncl_gt,
+                           atol=0.005)
+
+    def test_float_input(self):
+        degf = 59
+        expected = 1.70535
+        assert np.allclose(saturation_vapor_pressure(degf),
+                           expected,
+                           atol=0.005)
+
+    def test_list_input(self):
+        assert np.allclose(saturation_vapor_pressure(self.temp_gt.tolist(),
+                                                     tfill=1.0000000e+20),
+                           self.ncl_gt.tolist(),
+                           atol=0.005)
+
+    def test_multi_dimensional_input(self):
+        assert np.allclose(saturation_vapor_pressure(self.temp_gt.reshape(
+            2, 50),
+                                                     tfill=1.0000000e+20),
+                           self.ncl_gt.reshape(2, 50),
+                           atol=0.005)
+
+    def test_xarray_input(self):
+        tempf = xr.DataArray(self.temp_gt)
+        expected = xr.DataArray(self.ncl_gt)
+
+        assert np.allclose(saturation_vapor_pressure(tempf,
+                                                     tfill=1.0000000e+20),
+                           expected,
                            atol=0.005)
 
 
@@ -198,8 +281,31 @@ class Test_saturation_vapor_pressure_slope(unittest.TestCase):
                            self.ncl_gt,
                            equal_nan=True)
 
+    def test_float_input(self):
+        degf = 67.55
+        expected = 0.142793
+        assert np.allclose(saturation_vapor_pressure_slope(degf),
+                           expected,
+                           atol=0.005)
+
     def test_list_input(self):
         assert np.allclose(saturation_vapor_pressure_slope(
             self.temp_gt.tolist()),
                            self.ncl_gt.tolist(),
                            equal_nan=True)
+
+    def test_multi_dimensional_input(self):
+        assert np.allclose(saturation_vapor_pressure_slope(self.temp_gt.reshape(
+            2, 50),
+                                                           tfill=1.0000000e+20),
+                           self.ncl_gt.reshape(2, 50),
+                           atol=0.005)
+
+    def test_xarray_input(self):
+        tempf = xr.DataArray(self.temp_gt)
+        expected = xr.DataArray(self.ncl_gt)
+
+        assert np.allclose(saturation_vapor_pressure_slope(tempf,
+                                                           tfill=1.0000000e+20),
+                           expected,
+                           atol=0.005)
