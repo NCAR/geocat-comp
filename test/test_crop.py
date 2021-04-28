@@ -74,6 +74,20 @@ class Test_actual_saturation_vapor_pressure(unittest.TestCase):
                            expected,
                            atol=0.005)
 
+    def test_dask_unchunked_input(self):
+        tempf = da.from_array(self.temp_gt)
+        out = self.client.submit(actual_saturation_vapor_pressure,
+                                 tempf).result()
+
+        assert np.allclose(out, self.ncl_gt)
+
+    def test_dask_chunked_input(self):
+        tempf = da.from_array(self.temp_gt, chunks='auto')
+        out = self.client.submit(actual_saturation_vapor_pressure,
+                                 tempf).result()
+
+        assert np.allclose(out, self.ncl_gt)
+
 
 class Test_max_daylight(unittest.TestCase):
 
@@ -197,6 +211,18 @@ class Test_psychometric_constant(unittest.TestCase):
                            expected,
                            atol=0.005)
 
+    def test_dask_unchunked_input(self):
+        pressure = da.from_array(self.pressure_gt)
+        out = self.client.submit(psychrometric_constant, pressure).result()
+
+        assert np.allclose(out, self.ncl_gt)
+
+    def test_dask_chunked_input(self):
+        pressure = da.from_array(self.pressure_gt, chunks='auto')
+        out = self.client.submit(psychrometric_constant, pressure).result()
+
+        assert np.allclose(out, self.ncl_gt)
+
 
 class Test_saturation_vapor_pressure(unittest.TestCase):
 
@@ -254,6 +280,18 @@ class Test_saturation_vapor_pressure(unittest.TestCase):
                            expected,
                            atol=0.005)
 
+    def test_dask_unchunked_input(self):
+        tempf = da.from_array(self.temp_gt)
+        out = self.client.submit(saturation_vapor_pressure, tempf).result()
+
+        assert np.allclose(out, self.ncl_gt)
+
+    def test_dask_chunked_input(self):
+        tempf = da.from_array(self.temp_gt, chunks='auto')
+        out = self.client.submit(saturation_vapor_pressure, tempf).result()
+
+        assert np.allclose(out, self.ncl_gt)
+
 
 class Test_saturation_vapor_pressure_slope(unittest.TestCase):
 
@@ -309,3 +347,17 @@ class Test_saturation_vapor_pressure_slope(unittest.TestCase):
                            expected,
                            atol=0.005,
                            equal_nan=True)
+
+    def test_dask_unchunked_input(self):
+        tempf = da.from_array(self.temp_gt)
+        out = self.client.submit(saturation_vapor_pressure_slope,
+                                 tempf).result()
+
+        assert np.allclose(out, self.ncl_gt)
+
+    def test_dask_chunked_input(self):
+        tempf = da.from_array(self.temp_gt, chunks='auto')
+        out = self.client.submit(saturation_vapor_pressure_slope,
+                                 tempf).result()
+
+        assert np.allclose(out, self.ncl_gt)
