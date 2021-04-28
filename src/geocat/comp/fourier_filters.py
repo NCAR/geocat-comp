@@ -126,7 +126,7 @@ def fourier_filter(signal,
         res_fft[cfhn_index:cfln_index] = np.zeros(
             res_fft[cfhn_index:cfln_index].shape)
     result = np.fft.ifft(res_fft, axis=0)
-    #result = np.real(result)
+    result = np.real(result)
     result = np.swapaxes(result, time_axis, 0)
     if type(signal) == xr.DataArray:
         xr_result = signal.copy()
