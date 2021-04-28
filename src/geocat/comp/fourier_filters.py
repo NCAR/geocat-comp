@@ -47,8 +47,8 @@ def fourier_filter(signal,
 
     Returns
     -------
-    heatindex : numpy.ndarray, xr.DataArray
-        Calculated heat index. Same shape as temperature
+    return_signal : numpy.ndarray, xr.DataArray
+        signal with specified filters applied
 
     Examples
     --------
