@@ -239,7 +239,7 @@ def test_three_band_block_xr():
     t_data = xr.DataArray(t_data)
     t_expected_result = xr.DataArray(t_expected_result)
     t_result = fourier_band_block(t_data, freq, 3, 30, time_axis=0)
-    np.testing.assert_almost_equal(t_result, t_expected_result)
+    np.testing.assert_almost_equal(t_result.data, t_expected_result)
 
 
 def test_three_band_block_t1_xr():
@@ -259,7 +259,7 @@ def test_three_band_block_t1_xr():
     t_data = xr.DataArray(t_data)
     t_expected_result = xr.DataArray(t_expected_result)
     t_result = fourier_band_block(t_data, freq, 3, 30, time_axis=1)
-    np.testing.assert_almost_equal(t_result, t_expected_result)
+    np.testing.assert_almost_equal(t_result.data, t_expected_result)
 
 
 def test_three_band_block_t2_xr():
@@ -279,4 +279,4 @@ def test_three_band_block_t2_xr():
     t_data = xr.DataArray(t_data)
     t_expected_result = xr.DataArray(t_expected_result)
     t_result = fourier_band_block(t_data, freq, 3, 30, time_axis=2)
-    np.testing.assert_almost_equal(t_result, t_expected_result)
+    np.testing.assert_almost_equal(t_result.data, t_expected_result)

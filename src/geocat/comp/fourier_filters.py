@@ -1,6 +1,7 @@
 import math as m
 
 import numpy as np
+import xarray as xr
 
 
 def fourier_filter(signal,
