@@ -8,26 +8,42 @@ def fourier_filter(signal,
                    cutoff_frequency_low=0,
                    cutoff_frequency_high=0,
                    time_axis=0,
-                   high_pass=False,
                    low_pass=False,
+                   high_pass=False,
                    band_pass=False,
                    band_block=False):
-    """Filter a dataset by frequency. This function allowes for low-pass, high-
-    pass, band-pass, or band-block filtering of the data's freqency
+    """Filter a dataset by frequency. This function allowes for low_pass, high_
+    pass, band_pass, or band_block filtering of the data's freqency
     representation.
 
     Parameters
     ----------
-    temperature : numpy.ndarray, xr.DataArray, float
-        temperature(s) in Fahrenheit
+    signal : numpy.ndarray, xr.DataArray,
+        n-dimensional dataset
 
-    relative_humidity : numpy.ndarray, xr.DataArray, float
-        relative humidity as a percentage. Must be the same shape as
-        temperature
+    frequency : float
+        sample frequency of dataset
 
-    alternate_coeffs : Boolean, Optional
-        flag to use alternate set of coefficients appropriate for
-        temperatures from 70F to 115F and humidities between 0% and 80%
+    cutoff_frequency_low : float, Optional
+        low frequency for cutting fourier transform, used by low_pass, band_pass, band_block
+
+    cutoff_frequency_high : float, Optional
+        high frequency for cutting fourier transform, used by low_pass, band_pass, band_block
+
+    time_axis : int, Optional
+        the time axis of the data set
+
+    low_pass : boolean, Optional
+        runs a low_pass filter on the data if set to True
+
+    high_pass : boolean, Optional
+        runs a high_pass filter on the data if set to True
+
+    band_pass : boolean, Optional
+        runs a band_pass filter on the data if set to True
+
+    band_block : boolean, Optional
+        runs a band_block filter on the data if set to True
 
     Returns
     -------
