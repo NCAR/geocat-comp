@@ -27,6 +27,17 @@ def max_daylight(jday, lat):
     -------
     sunmax : numpy.ndarray, xr.DataArray, float
         Calculated maximum sunlight in hours/day
+
+    Examples
+    --------
+    >>> from geocat.comp import max_daylight
+    >>> import numpy as np
+    >>> jday = np.array([100, 123, 246])
+    >>> lat = np.array([10, 20])
+    >>> max_daylight(jday, lat)
+    array([[12.18035083, 12.37238906],
+           [12.37577081, 12.77668231],
+           [12.16196585, 12.33440805]])
     """
 
     x_out = False
@@ -111,6 +122,14 @@ def psychrometric_constant(pressure):
     -------
     psy_const : numpy.ndarray, xr.DataArray
         the computed psychrometric constant. Same shape as pressure.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from geocat.comp import psychrometric_constant
+    >>> pressure = np.array([60, 80, 100])
+    >>> psychrometric_constant(pressure)
+    array([0.0398844, 0.0531792, 0.066474 ])
     """
 
     x_out = False
@@ -167,6 +186,14 @@ def saturation_vapor_pressure(temperature, tfill=np.NAN):
     svp : numpy.ndarray, xr.DataArray
         the computed actual saturation vapor pressure in kPa.
         Same shape as temperature.
+
+     Examples
+    --------
+    >>> import numpy as np
+    >>> from geocat.comp import saturation_vapor_pressure
+    >>> temp = np.array([50, 60, 70])
+    >>> saturation_vapor_pressure(temp)
+    array([1.22796262, 1.76730647, 2.50402976])
     """
 
     x_out = False
@@ -221,6 +248,14 @@ def actual_saturation_vapor_pressure(tdew, tfill=np.NAN):
     asvp : numpy.ndarray, xr.DataArray
         the computed actual saturation vapor pressure in kPa.
         Same shape as tdew.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from geocat.comp import actual_saturation_vapor_pressure
+    >>> temp = np.array([50, 60, 70])
+    >>> actual_saturation_vapor_pressure(temp)
+    array([1.22796262, 1.76730647, 2.50402976])
     """
 
     x_out = False
@@ -270,6 +305,14 @@ def saturation_vapor_pressure_slope(temperature, tfill=np.NAN):
     svp_slope : numpy.ndarray, xr.DataArray
         The computed slopes of the saturation vapor pressure curve.
         Will be the same shape as temperature.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from geocat.comp import saturation_vapor_pressure_slope
+    >>> temp = np.array([50, 60, 70])
+    >>> saturation_vapor_pressure_slope(temp)
+    array([0.08224261, 0.11322096, 0.153595  ])
     """
 
     x_out = False
