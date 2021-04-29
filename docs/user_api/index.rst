@@ -12,6 +12,8 @@ GeoCAT-comp routines
 .. autosummary::
    :toctree: ./generated/
 
+   geocat.comp.actual_saturation_vapor_pressure
+
    geocat.comp.anomaly
 
    geocat.comp.climatology
@@ -50,6 +52,8 @@ GeoCAT-comp routines
 
    geocat.comp.ndpolyval
 
+   geocat.comp.psychrometric_constant
+
    geocat.comp.rcm2points
 
    geocat.comp.rcm2rgrid
@@ -61,6 +65,10 @@ GeoCAT-comp routines
    geocat.comp.relhum_water
 
    geocat.comp.rgrid2rcm
+
+   geocat.comp.saturation_vapor_pressure
+
+   geocat.comp.saturation_vapor_pressure_slope
 
    geocat.comp.showalter_index
 

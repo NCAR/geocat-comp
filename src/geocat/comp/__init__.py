@@ -1,6 +1,8 @@
 # move functions into geocat.comp namespace
 from .climatology import anomaly, climatology, month_to_season
-from .crop import max_daylight
+from .crop import (actual_saturation_vapor_pressure, max_daylight,
+                   psychrometric_constant, saturation_vapor_pressure,
+                   saturation_vapor_pressure_slope)
 from .dewtemp import dewtemp
 from .eofunc import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts
 from .errors import (AttributeError, ChunkError, CoordinateError,
