@@ -109,7 +109,7 @@ def get_skewt_vars(p, tc, tdc, pro):
 
     # Place calculated values in iterable list
     vals = [plcl, tlcl, shox, pwat, cape]
-    vals = [np.round(num).astype(int) for num in vals]
+    vals = np.round(vals).astype(int)
 
     # Define variable names for calculated values
     names = ['Plcl=', 'Tlcl[C]=', 'Shox=', 'Pwat[cm]=', 'Cape[J]=']
