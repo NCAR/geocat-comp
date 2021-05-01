@@ -28,7 +28,7 @@ GeoCAT-comp routines
 
    geocat.comp.eofunc_pcs
 
-   geocat.comp.fourier_filters.fourier_bank_block
+   geocat.comp.fourier_filters.fourier_band_block
 
    geocat.comp.fourier_filters.fourier_band_pass
 
