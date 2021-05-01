@@ -136,18 +136,62 @@ def fourier_filter(signal,
     return result
 
 
-def fourier_low_pass(signal, frequency, cutoff_frequency, time_axis=0):
+def fourier_low_pass(signal, frequency, cutoff_frequency_low, time_axis=0):
+    """Filter a dataset by frequency. This function allowes for low_pass
+    filtering of the data's freqency representation.
+
+    Parameters
+    ----------
+    signal : numpy.ndarray, xr.DataArray,
+        n-dimensional dataset
+
+    frequency : float
+        sample frequency of dataset
+
+    cutoff_frequency_low : float, Optional
+        low frequency for cutting fourier transform
+
+    time_axis : int, Optional
+        the time axis of the data set
+
+    Returns
+    -------
+    return_signal : numpy.ndarray, xr.DataArray
+        signal with specified filters applied
+    """
     return fourier_filter(signal,
                           frequency,
-                          cutoff_frequency_low=cutoff_frequency,
+                          cutoff_frequency_low=cutoff_frequency_low,
                           time_axis=time_axis,
                           low_pass=True)
 
 
-def fourier_high_pass(signal, frequency, cutoff_frequency, time_axis=0):
+def fourier_high_pass(signal, frequency, cutoff_frequency_high, time_axis=0):
+    """Filter a dataset by frequency. This function allowes for high_pass
+    filtering of the data's freqency representation.
+
+    Parameters
+    ----------
+    signal : numpy.ndarray, xr.DataArray,
+        n-dimensional dataset
+
+    frequency : float
+        sample frequency of dataset
+
+    cutoff_frequency_high : float, Optional
+        high frequency for cutting fourier transform
+
+    time_axis : int, Optional
+        the time axis of the data set
+
+    Returns
+    -------
+    return_signal : numpy.ndarray, xr.DataArray
+        signal with specified filters applied
+    """
     return fourier_filter(signal,
                           frequency,
-                          cutoff_frequency_high=cutoff_frequency,
+                          cutoff_frequency_high=cutoff_frequency_high,
                           time_axis=time_axis,
                           high_pass=True)
 
@@ -157,6 +201,31 @@ def fourier_band_pass(signal,
                       cutoff_frequency_low,
                       cutoff_frequency_high,
                       time_axis=0):
+    """Filter a dataset by frequency. This function allowes for band_pass
+    filtering of the data's freqency representation.
+
+    Parameters
+    ----------
+    signal : numpy.ndarray, xr.DataArray,
+        n-dimensional dataset
+
+    frequency : float
+        sample frequency of dataset
+
+    cutoff_frequency_low : float, Optional
+        low frequency for cutting fourier transform
+
+    cutoff_frequency_high : float, Optional
+        high frequency for cutting fourier transform
+
+    time_axis : int, Optional
+        the time axis of the data set
+
+    Returns
+    -------
+    return_signal : numpy.ndarray, xr.DataArray
+        signal with specified filters applied
+    """
     return fourier_filter(signal,
                           frequency,
                           cutoff_frequency_low=cutoff_frequency_low,
@@ -170,6 +239,31 @@ def fourier_band_block(signal,
                        cutoff_frequency_low,
                        cutoff_frequency_high,
                        time_axis=0):
+    """Filter a dataset by frequency. This function allowes for band_block
+    filtering of the data's freqency representation.
+
+    Parameters
+    ----------
+    signal : numpy.ndarray, xr.DataArray,
+        n-dimensional dataset
+
+    frequency : float
+        sample frequency of dataset
+
+    cutoff_frequency_low : float, Optional
+        low frequency for cutting fourier transform
+
+    cutoff_frequency_high : float, Optional
+        high frequency for cutting fourier transform
+
+    time_axis : int, Optional
+        the time axis of the data set
+
+    Returns
+    -------
+    return_signal : numpy.ndarray, xr.DataArray
+        signal with specified filters applied
+    """
     return fourier_filter(signal,
                           frequency,
                           cutoff_frequency_low=cutoff_frequency_low,
