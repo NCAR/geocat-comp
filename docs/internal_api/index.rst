@@ -27,6 +27,16 @@ GeoCAT-comp routines
 
    geocat.comp.eofunc._generate_eofs_solver
 
+   geocat.comp.fourier_filters.fourier_bank_block
+
+   geocat.comp.fourier_filters.fourier_band_pass
+
+   geocat.comp.fourier_filters.fourier_filter
+
+   geocat.comp.fourier_filters.fourier_low_pass
+
+   geocat.comp.fourier_filters.fourier_high_pass
+
    geocat.comp.heat_index._nws_eqn
 
    geocat.comp.interp_hybrid_to_pressure._pressure_from_hybrid
