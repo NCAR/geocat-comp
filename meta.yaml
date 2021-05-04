@@ -1,4 +1,4 @@
-{% set version = "2021.05.0" %}
+{% set version = "2021.05.1" %}
 
 package:
   name: 'geocat-comp'
@@ -28,7 +28,7 @@ requirements:
     - eofs
     - geocat-f2py
     - metpy
-    - numpy=1.19
+    - numpy
     - xarray
 
 test:
