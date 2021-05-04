@@ -28,7 +28,7 @@ requirements:
     - eofs
     - geocat-f2py
     - metpy
-    - numpy=1.19
+    - numpy
     - xarray
 
 test:
