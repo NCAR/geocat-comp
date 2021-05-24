@@ -320,3 +320,86 @@ def month_to_season(
         time_coord_name: dset_seasons[time_coord_name].dt.month == season_sel
     }).sel({time_coord_name: slice(start_date, end_date)})
     return compute_dset
+
+def month_to_season_optimized(
+        dset: typing.Union[xr.Dataset, xr.DataArray],
+        season: str,
+        time_coord_name: str = None,
+) -> typing.Union[xr.Dataset, xr.DataArray]:
+    """Computes a user-specified three-month seasonal mean.
+
+    This function takes an xarray dataset containing monthly data spanning years and
+    returns a dataset with one sample per year, for a specified three-month season.
+
+    Parameters
+    ----------
+    dset : xr.Dataset, xr.DataArray
+        The data on which to operate
+    season : str
+        A string representing the season to calculate: e.g., "JFM", "JJA".
+        Valid values are:
+
+         - DJF {December, January, February}
+         - JFM {January, February, March}
+         - FMA {February, March, April}
+         - MAM {March, April, May}
+         - AMJ {April, May, June}
+         - MJJ {May, June, July}
+         - JJA {June, July, August}
+         - JAS {July, August, September}
+         - ASO {August, September, October}
+         - SON {September, October, November}
+         - OND {October, November, Decmber}
+         - NDJ {November, Decmber, January}
+    time_coord_name: str, Optional
+        Name for time coordinate to use
+
+    Returns
+    -------
+    computed_dset : xr.Dataset, xr.DataArray
+       The computed data
+
+    Notes
+    -----
+    This function requires the number of months to be a multiple of 12, i.e. full years must be provided.
+    Time stamps are centered on the season. For example, seasons='DJF' returns January timestamps.
+    If a calculated season's timestamp falls outside the original range of monthly values, then the calculated mean
+    is dropped.  For example, if the monthly data's time range is [Jan-2000, Dec-2003] and the season is "DJF", the
+    seasonal mean computed from the single month of Dec-2003 is dropped.
+    """
+
+    time_coord_name = _get_time_coordinate_info(dset, time_coord_name)
+    mod = 12
+    if dset[time_coord_name].size % mod != 0:
+        raise ValueError(
+            f"The {time_coord_name} axis length must be a multiple of {mod}.")
+
+    seasons_pd = {
+        "DJF": [12, 1, 2],
+        "JFM": [1, 2, 3],
+        "FMA": [2, 3, 4],
+        "MAM": [3, 4, 5],
+        "AMJ": [4, 5, 6],
+        "MJJ": [5, 6, 7],
+        "JJA": [6, 7, 8],
+        "JAS": [7, 8, 9],
+        "ASO": [8, 9, 10],
+        "SON": [9, 10, 11],
+        "OND": [10, 11, 12],
+        "NDJ": [11, 12, 1],
+    }
+    try:
+        (month1, month2, month3) = seasons_pd[season]
+    except KeyError:
+        raise KeyError(
+            f"contributed: month_to_season: bad season: SEASON = {season}. Valid seasons include: {list(seasons_pd.keys())}"
+        )
+
+    # Filter data to only contain the months of interest
+    month_1st = dset.sel({time_coord_name : dset[time_coord_name].dt.month == month1})
+    month_2nd = dset.sel({time_coord_name : dset[time_coord_name].dt.month == month2})
+    month_3rd = dset.sel({time_coord_name : dset[time_coord_name].dt.month == month3})
+
+    data_filter = xr.concat([month_1st, month_2nd, month_3rd], dim='time')
+
+    return data_filter.mean(dim=time_coord_name, keep_attrs=True, skipna=True)
