@@ -28,6 +28,16 @@ GeoCAT-comp routines
 
    geocat.comp.eofunc_pcs
 
+   geocat.comp.fourier_filters.fourier_band_block
+
+   geocat.comp.fourier_filters.fourier_band_pass
+
+   geocat.comp.fourier_filters.fourier_filter
+
+   geocat.comp.fourier_filters.fourier_low_pass
+
+   geocat.comp.fourier_filters.fourier_high_pass
+
    geocat.comp.get_skewt_vars
 
    geocat.comp.grid_to_triple
