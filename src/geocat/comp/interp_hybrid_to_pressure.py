@@ -162,7 +162,7 @@ def interp_hybrid_to_pressure(data,
         data.dims[i] if i != interp_axis else "plev" for i in range(data.ndim)
     ]
 
-    # This is needed with the existence of above workaround block
+    # Rename output dims. This is only needed with above workaround block
     dims_dict = {output.dims[i]: dims[i] for i in range(len(output.dims))}
     output = output.rename(dims_dict)
 
