@@ -320,3 +320,51 @@ def month_to_season(
         time_coord_name: dset_seasons[time_coord_name].dt.month == season_sel
     }).sel({time_coord_name: slice(start_date, end_date)})
     return compute_dset
+
+
+def month_to_season12(dset: typing.Union[xr.Dataset, xr.DataArray],
+                      time_coord_name: str = None,
+                      ) -> typing.Union[xr.Dataset, xr.DataArray]:
+
+    """Computes three-month seasonal means.
+
+    This function takes an xarray dataset containing monthly data spanning years and
+    returns a dataset of three-month seasonal means (DJF, JFM, FMA, MAM, AMJ, MJJ, JJA, JAS, ASO, SON, OND, NDJ).
+    The first seasonal average (DJF=JF) and the last seasonal average (NDJ=ND) are actually two-month averages.
+
+    Parameters
+    ----------
+    dset : xr.Dataset, xr.DataArray
+        The data on which to operate
+    time_coord_name: str, Optional
+        Name for time coordinate to use
+
+    Returns
+    -------
+    computed_dset : xr.Dataset, xr.DataArray
+       The computed data
+
+    Notes
+    -----
+    This function requires the number of months to be a multiple of 12, i.e. full years must be provided.
+    Time stamps are centered on the season. For example, seasons='DJF' returns January timestamps.
+    If a calculated season's timestamp falls outside the original range of monthly values, then the calculated mean
+    is dropped.  For example, if the monthly data's time range is [Jan-2000, Dec-2003] and the season is "DJF", the
+    seasonal mean computed from the single month of Dec-2003 is dropped.
+    """
+
+    time_coord_name = _get_time_coordinate_info(dset, time_coord_name)
+    mod = 12
+    if dset[time_coord_name].size % mod != 0:
+        raise ValueError(
+            f"The {time_coord_name} axis length must be a multiple of {mod}.")
+
+    # Compute the three-month means, moving time labels ahead to the middle
+    # month.
+    month_offset = "MS"
+    qs_dec_seasons = dset.resample({time_coord_name: 'QS-DEC'}, loffset=month_offset).mean()
+    qs_jan_seasons = dset.resample({time_coord_name: 'QS-JAN'}, loffset=month_offset).mean()
+    qs_feb_seasons = dset.resample({time_coord_name: 'QS-FEB'}, loffset=month_offset).mean()
+
+    dset_seasons = xr.concat([qs_dec_seasons, qs_jan_seasons, qs_feb_seasons], dim=time_coord_name).sortby(time_coord_name).isel({time_coord_name: slice(1, -1)})
+    return dset_seasons
