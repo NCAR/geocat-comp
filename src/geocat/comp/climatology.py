@@ -366,5 +366,7 @@ def month_to_season12(dset: typing.Union[xr.Dataset, xr.DataArray],
     qs_jan_seasons = dset.resample({time_coord_name: 'QS-JAN'}, loffset=month_offset).mean()
     qs_feb_seasons = dset.resample({time_coord_name: 'QS-FEB'}, loffset=month_offset).mean()
 
-    dset_seasons = xr.concat([qs_dec_seasons, qs_jan_seasons, qs_feb_seasons], dim=time_coord_name).sortby(time_coord_name).isel({time_coord_name: slice(1, -1)})
+    dset_seasons = xr.concat([qs_dec_seasons, qs_jan_seasons, qs_feb_seasons], dim=time_coord_name)\
+                     .sortby(time_coord_name)\
+                     .isel({time_coord_name: slice(1, -1)})
     return dset_seasons
