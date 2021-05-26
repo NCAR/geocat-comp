@@ -375,31 +375,40 @@ def month_to_season_optimized(
             f"The {time_coord_name} axis length must be a multiple of {mod}.")
 
     seasons_pd = {
-        "DJF": [12, 1, 2],
-        "JFM": [1, 2, 3],
-        "FMA": [2, 3, 4],
-        "MAM": [3, 4, 5],
-        "AMJ": [4, 5, 6],
-        "MJJ": [5, 6, 7],
-        "JJA": [6, 7, 8],
-        "JAS": [7, 8, 9],
-        "ASO": [8, 9, 10],
-        "SON": [9, 10, 11],
-        "OND": [10, 11, 12],
-        "NDJ": [11, 12, 1],
+        "DJF": ([12, 1, 2], 'QS-DEC'),
+        "JFM": ([1, 2, 3], 'QS-JAN'),
+        "FMA": ([2, 3, 4], 'QS-FEB'),
+        "MAM": ([3, 4, 5], 'QS-MAR'),
+        "AMJ": ([4, 5, 6], 'QS-APR'),
+        "MJJ": ([5, 6, 7], 'QS-MAY'),
+        "JJA": ([6, 7, 8], 'QS-JUN'),
+        "JAS": ([7, 8, 9], 'QS-JUL'),
+        "ASO": ([8, 9, 10], 'QS-AUG'),
+        "SON": ([9, 10, 11], 'QS-SEP'),
+        "OND": ([10, 11, 12], 'QS-OCT'),
+        "NDJ": ([11, 12, 1], 'QS-NOV'),
     }
     try:
-        (month1, month2, month3) = seasons_pd[season]
+        ((month1, month2, month3), quarter) = seasons_pd[season]
     except KeyError:
         raise KeyError(
             f"contributed: month_to_season: bad season: SEASON = {season}. Valid seasons include: {list(seasons_pd.keys())}"
         )
 
     # Filter data to only contain the months of interest
-    month_1st = dset.sel({time_coord_name : dset[time_coord_name].dt.month == month1})
-    month_2nd = dset.sel({time_coord_name : dset[time_coord_name].dt.month == month2})
-    month_3rd = dset.sel({time_coord_name : dset[time_coord_name].dt.month == month3})
+    month_1st = dset.sel({time_coord_name: dset[time_coord_name].dt.month == month1})
+    month_2nd = dset.sel({time_coord_name: dset[time_coord_name].dt.month == month2})
+    month_3rd = dset.sel({time_coord_name: dset[time_coord_name].dt.month == month3})
 
-    data_filter = xr.concat([month_1st, month_2nd, month_3rd], dim='time')
+    data_filter = xr.concat([month_1st, month_2nd, month_3rd], dim=time_coord_name).sortby(time_coord_name)
+    if season == 'DJF':  # For this season, the last "mean" will be the value for Dec so we drop the last month
+        data_filter = data_filter.isel({time_coord_name: slice(None, -1)})
+    elif season == 'NDJ':  # For this season, the first "mean" will be the value for Jan so we drop the first month
+        data_filter = data_filter.isel({time_coord_name: slice(1, None)})
 
-    return data_filter.mean(dim=time_coord_name, keep_attrs=True, skipna=True)
+    # Group the months into three and take the mean
+    means = data_filter.resample({time_coord_name: quarter}, loffset='MS').mean()
+
+    # The line above tries to take the mean for all quarters even if there is not data for some of them
+    # Therefore, we must filter out the NaNs
+    return means.sel({time_coord_name: means[time_coord_name].dt.month == month2})
