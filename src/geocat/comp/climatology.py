@@ -298,18 +298,15 @@ def month_to_season(
         "NDJ": ([11, 12, 1], 'QS-NOV'),
     }
     try:
-        ((month1, month2, month3), quarter) = seasons_pd[season]
+        (months, quarter) = seasons_pd[season]
     except KeyError:
         raise KeyError(
             f"contributed: month_to_season: bad season: SEASON = {season}. Valid seasons include: {list(seasons_pd.keys())}"
         )
 
     # Filter data to only contain the months of interest
-    month_1st = dset.sel({time_coord_name: dset[time_coord_name].dt.month == month1})
-    month_2nd = dset.sel({time_coord_name: dset[time_coord_name].dt.month == month2})
-    month_3rd = dset.sel({time_coord_name: dset[time_coord_name].dt.month == month3})
+    data_filter = dset.sel({time_coord_name: dset[time_coord_name].dt.month.isin(months)})
 
-    data_filter = xr.concat([month_1st, month_2nd, month_3rd], dim=time_coord_name).sortby(time_coord_name)
     if season == 'DJF':  # For this season, the last "mean" will be the value for Dec so we drop the last month
         data_filter = data_filter.isel({time_coord_name: slice(None, -1)})
     elif season == 'NDJ':  # For this season, the first "mean" will be the value for Jan so we drop the first month
@@ -320,4 +317,4 @@ def month_to_season(
 
     # The line above tries to take the mean for all quarters even if there is not data for some of them
     # Therefore, we must filter out the NaNs
-    return means.sel({time_coord_name: means[time_coord_name].dt.month == month2})
+    return means.sel({time_coord_name: means[time_coord_name].dt.month == months[1]})
