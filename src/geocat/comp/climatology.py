@@ -231,9 +231,9 @@ def anomaly(
 
 
 def month_to_season(
-        dset: typing.Union[xr.Dataset, xr.DataArray],
-        season: str,
-        time_coord_name: str = None,
+    dset: typing.Union[xr.Dataset, xr.DataArray],
+    season: str,
+    time_coord_name: str = None,
 ) -> typing.Union[xr.Dataset, xr.DataArray]:
     """Computes a user-specified three-month seasonal mean.
 
@@ -305,7 +305,8 @@ def month_to_season(
         )
 
     # Filter data to only contain the months of interest
-    data_filter = dset.sel({time_coord_name: dset[time_coord_name].dt.month.isin(months)})
+    data_filter = dset.sel(
+        {time_coord_name: dset[time_coord_name].dt.month.isin(months)})
 
     if season == 'DJF':  # For this season, the last "mean" will be the value for Dec so we drop the last month
         data_filter = data_filter.isel({time_coord_name: slice(None, -1)})
@@ -313,8 +314,11 @@ def month_to_season(
         data_filter = data_filter.isel({time_coord_name: slice(1, None)})
 
     # Group the months into three and take the mean
-    means = data_filter.resample({time_coord_name: quarter}, loffset='MS').mean()
+    means = data_filter.resample({
+        time_coord_name: quarter
+    }, loffset='MS').mean()
 
     # The line above tries to take the mean for all quarters even if there is not data for some of them
     # Therefore, we must filter out the NaNs
-    return means.sel({time_coord_name: means[time_coord_name].dt.month == months[1]})
+    return means.sel(
+        {time_coord_name: means[time_coord_name].dt.month == months[1]})
