@@ -120,20 +120,15 @@ def interp_hybrid_to_pressure(data,
     #     }},
     # )
 
-    if isinstance(data, xr.DataArray):
-        # If an unchunked Xarray input is given, chunk it just with its dims
-        if (data.chunks is None):
-            data_chunk = dict([
-                (k, v) for (k, v) in zip(list(data.dims), list(data.shape))
-            ])
-            data = data.chunk(data_chunk)
+    # If an unchunked Xarray input is given, chunk it just with its dims
+    if (data.chunks is None):
+        data_chunk = dict([
+            (k, v) for (k, v) in zip(list(data.dims), list(data.shape))
+        ])
+        data = data.chunk(data_chunk)
 
-        if (pressure.chunks is None):
-            pressure_chunk = dict([
-                (k, v)
-                for (k, v) in zip(list(pressure.dims), list(pressure.shape))
-            ])
-            pressure = pressure.chunk(pressure_chunk)
+    # Chunk pressure equal to data's chunks
+    pressure = pressure.chunk(data.chunks)
 
     # Output data structure elements
     out_chunks = list(data.chunks)
