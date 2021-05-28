@@ -8,9 +8,9 @@ import xarray as xr
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
 if "--cov" in str(sys.argv):
-    from src.geocat.comp import anomaly, climatology, month_to_season
+    from src.geocat.comp.climatology import anomaly, climatology, month_to_season, month_to_season12
 else:
-    from geocat.comp import anomaly, climatology, month_to_season
+    from geocat.comp.climatology import anomaly, climatology, month_to_season, month_to_season12
 
 dset_a = xr.tutorial.open_dataset("rasm")
 dset_b = xr.tutorial.open_dataset("air_temperature")
@@ -163,3 +163,59 @@ def test_month_to_season_custom_time_coordinate(dataset, time_coordinate,
     np.testing.assert_almost_equal(season_ds[var_name].data,
                                    expected,
                                    decimal=1)
+
+
+# month_to_season12() tests
+output = np.array([1.5, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 11.5])
+output = output.reshape(12, 1, 1)
+
+Tair_output = [
+    7.46595, 2.146251, -3.792110333, -10.33093667, -11.091882, -10.55811833,
+    -4.627381667, 2.964090333, 10.493255, 15.52151533, 17.46814333, 16.09427167,
+    10.80445333, 4.354372, -2.675233667, -7.786983, -10.875342, -8.128558,
+    -1.981713667, 5.608445667, 12.14102933, 16.326123, 17.559428, 14.78849933,
+    8.127865333, -0.221743333, -7.366629667, -9.816663333, -9.657381, -7.124741,
+    -2.536883667, 4.460225667, 11.641407, 16.05071, 17.40207767, 17.2052265
+]
+
+non_datetime = ds1.assign_coords(time=[
+    '2000-01', '2000-02', '2000-03', '2000-04', '2000-05', '2000-06', '2000-07',
+    '2000-08', '2000-09', '2000-10', '2000-11', '2000-12'
+])
+
+
+@pytest.mark.parametrize("dataset, expected", [(ds1, output)])
+def test_month_to_season12_returns_correct_vals(dataset, expected):
+    season_ds = month_to_season12(dataset)
+    np.testing.assert_equal(season_ds["my_var"].data, expected)
+
+
+@pytest.mark.parametrize("dataset, dims", [(ds1, ds1.dims)])
+def test_month_to_season12_dimension(dataset, dims):
+    season_ds = month_to_season12(dataset)
+    assert season_ds.dims == dims
+
+
+def test_month_to_season12_partial_years_exception():
+    with pytest.raises(ValueError):
+        month_to_season12(partial_year_dataset)
+
+
+@pytest.mark.parametrize(
+    "dataset, time_coordinate, var_name, expected",
+    [
+        (custom_time_dataset, "my_time", "my_var", output),
+        (dset_c.isel(x=110, y=200), None, "Tair", Tair_output),
+    ],
+)
+def test_month_to_season12_custom_time_coordinate(dataset, time_coordinate,
+                                                  var_name, expected):
+    season_ds = month_to_season12(dataset, time_coord_name=time_coordinate)
+    np.testing.assert_almost_equal(season_ds[var_name].data,
+                                   expected,
+                                   decimal=5)
+
+
+def test_month_to_season12_not_datetimelike():
+    with pytest.raises(ValueError):
+        month_to_season12(non_datetime)
