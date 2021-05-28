@@ -322,10 +322,10 @@ def month_to_season(
     return compute_dset
 
 
-def month_to_season12(dset: typing.Union[xr.Dataset, xr.DataArray],
-                      time_coord_name: str = None,
-                      ) -> typing.Union[xr.Dataset, xr.DataArray]:
-
+def month_to_season12(
+    dset: typing.Union[xr.Dataset, xr.DataArray],
+    time_coord_name: str = None,
+) -> typing.Union[xr.Dataset, xr.DataArray]:
     """Computes three-month seasonal means.
 
     This function takes an xarray dataset containing monthly data spanning years and
@@ -359,14 +359,9 @@ def month_to_season12(dset: typing.Union[xr.Dataset, xr.DataArray],
         raise ValueError(
             f"The {time_coord_name} axis length must be a multiple of {mod}.")
 
-    # Compute the three-month means, moving time labels ahead to the middle
-    # month.
-    month_offset = "MS"
-    qs_dec_seasons = dset.resample({time_coord_name: 'QS-DEC'}, loffset=month_offset).mean()
-    qs_jan_seasons = dset.resample({time_coord_name: 'QS-JAN'}, loffset=month_offset).mean()
-    qs_feb_seasons = dset.resample({time_coord_name: 'QS-FEB'}, loffset=month_offset).mean()
+    # Calculate rolling average with a window size of 3 months, a minimum of 2 months, and centering the time
+    rolling = dset.rolling(dim={
+        time_coord_name: 3
+    }, min_periods=2, center=True).mean()
 
-    dset_seasons = xr.concat([qs_dec_seasons, qs_jan_seasons, qs_feb_seasons], dim=time_coord_name)\
-                     .sortby(time_coord_name)\
-                     .isel({time_coord_name: slice(1, -1)})
-    return dset_seasons
+    return rolling
