@@ -323,13 +323,11 @@ def month_to_season(
     return compute_dset
 
 
-def rolling_avg(dset, window_size, step=1):
+def rolling_avg(dset, window_size):
     """Computes a rolling boxcar average.
 
     This function takes an xarray dataset and computes a boxcar average over a
-    user-specified dimension using a user-specified window size. By default, the
-    window in a moving average moves by one datapoint in each iteration. This
-    can be changed using the step argument.
+    user-specified dimension using a user-specified window size.
 
     Parameters
     ----------
@@ -337,8 +335,6 @@ def rolling_avg(dset, window_size, step=1):
         The data on which to operate
     window_size : int
         The number of data points that the window should span
-    step : int TODO: implement step feature
-        The number of data points that the window moves over between iterations
 
     Returns
     -------
