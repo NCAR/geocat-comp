@@ -96,8 +96,8 @@ def interp_hybrid_to_pressure(data,
     # For the issue with metpy's xarray interface:
     #
     # `metpy.interpolate.interpolate_1d` had "no implementation found for
-    # 'numpy.apply_along_axis'" for cases where the input is xarray.Dataarray
-    # and has more than 3 dimensions (e.g. 4th dim of `time`).
+    # 'numpy.apply_along_axis'" issue for cases where the input is
+    # xarray.Dataarray and has more than 3 dimensions (e.g. 4th dim of `time`).
 
     # Use dask.array.core.map_blocks instead of xarray.apply_ufunc and
     # auto-chunk input arrays to ensure using only Numpy interface of
@@ -107,13 +107,13 @@ def interp_hybrid_to_pressure(data,
     # # Apply Dask parallelization with xarray.apply_ufunc
     # output = xr.apply_ufunc(
     #     _vertical_remap,
-    #     data.values,
-    #     pressure.values,
+    #     data,
+    #     pressure,
     #     exclude_dims=set((lev_dim,)),  # Set dimensions allowed to change size
     #     input_core_dims=[[lev_dim], [lev_dim]],  # Set core dimensions
     #     output_core_dims=[["plev"]],  # Specify output dimensions
     #     vectorize=True,  # loop over non-core dims
-    #     # dask="parallelized",  # Dask parallelization
+    #     dask="parallelized",  # Dask parallelization
     #     output_dtypes=[data.dtype],
     #     dask_gufunc_kwargs={"output_sizes": {
     #         "plev": len(new_levels)
