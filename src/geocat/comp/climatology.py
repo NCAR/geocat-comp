@@ -320,3 +320,34 @@ def month_to_season(
         time_coord_name: dset_seasons[time_coord_name].dt.month == season_sel
     }).sel({time_coord_name: slice(start_date, end_date)})
     return compute_dset
+
+
+def rolling_avg(dset, window_size, step=1):
+    """Computes a rolling boxcar average.
+
+    This function takes an xarray dataset and computes a boxcar average over a
+    user-specified dimension using a user-specified window size. By default, the
+    window in a moving average moves by one datapoint in each iteration. This
+    can be changed using the step argument.
+
+    Parameters
+    ----------
+    dset : xr.Dataset, xr.DataArray
+        The data on which to operate
+    window_size : int
+        The number of data points that the window should span
+    step : int TODO: implement step feature
+        The number of data points that the window moves over between iterations
+
+    Returns
+    -------
+    computed_dset : xr.Dataset, xr.DataArray
+       The computed data
+    """
+    window = [1] * window_size
+    # TODO: range -> list [*range(a,b)] test for performance later
+    taper = list(range(1, window_size + 1)) + [window_size] * (
+        len(dset) - window_size - 1) + list(range(window_size, 0, -1))
+    print(taper)
+    computed_dset = convolve(dset, window) / taper
+    return computed_dset
