@@ -3,6 +3,7 @@ import typing
 import cf_xarray
 import numpy as np
 import xarray as xr
+from scipy.signal import convolve
 
 xr.set_options(keep_attrs=True)
 
