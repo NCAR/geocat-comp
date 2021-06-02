@@ -323,7 +323,7 @@ def month_to_season(
     return compute_dset
 
 
-def rolling_avg(dset, window_size):
+def rolling_avg(dset, dim, window_size):
     """Computes a rolling boxcar average.
 
     This function takes an xarray dataset and computes a boxcar average over a
@@ -331,20 +331,27 @@ def rolling_avg(dset, window_size):
 
     Parameters
     ----------
-    dset : xr.Dataset, xr.DataArray
+    dset : xr.Dataset, xr.DataArray, np.ndarray
         The data on which to operate
     window_size : int
         The number of data points that the window should span
 
     Returns
     -------
-    computed_dset : xr.Dataset, xr.DataArray
+    computed_dset : xr.Dataset, xr.DataArray, np.ndarray
        The computed data
     """
-    window = [1] * window_size
-    # TODO: range -> list [*range(a,b)] test for performance later
-    taper = list(range(1, window_size + 1)) + [window_size] * (
-        len(dset) - window_size - 1) + list(range(window_size, 0, -1))
-    print(taper)
-    computed_dset = convolve(dset, window) / taper
-    return computed_dset
+
+    if isinstance(dset, (xr.DataArray, xr.Dataset)):
+
+        rolling = dset.rolling({dim:window_size}, center=True)
+        return rolling.mean()
+
+    elif isinstance(dset, np.ndarray):  # TODO: duck typing for arrays
+        window = [1] * window_size
+        # TODO: range -> list [*range(a,b)] test for performance later
+        taper = list(range(1, window_size + 1)) + \
+                [window_size] * (len(dset) - window_size - 1) + \
+                list(range(window_size, 0, -1))
+        computed_dset = np.convolve(dset, window) / taper
+        return computed_dset
