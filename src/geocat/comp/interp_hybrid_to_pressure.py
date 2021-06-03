@@ -1,7 +1,6 @@
 import cf_xarray
 import metpy.interpolate
 import numpy as np
-import xarray
 import xarray as xr
 
 __pres_lev_mandatory__ = np.array([
@@ -150,7 +149,7 @@ def interp_hybrid_to_pressure(data,
     # End of Workaround
     ###############################################################################
 
-    output = xarray.DataArray(output)
+    output = xr.DataArray(output)
 
     # Set output dims and coords
     dims = [
