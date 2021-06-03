@@ -121,7 +121,7 @@ def interp_hybrid_to_pressure(data,
     # )
 
     # If an unchunked Xarray input is given, chunk it just with its dims
-    if (data.chunks is None):
+    if data.chunks is None:
         data_chunk = dict([
             (k, v) for (k, v) in zip(list(data.dims), list(data.shape))
         ])
