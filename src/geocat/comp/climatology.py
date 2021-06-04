@@ -330,7 +330,7 @@ def month_to_season12(
 
     This function takes an xarray dataset containing monthly data spanning years and
     returns a dataset of three-month seasonal means (DJF, JFM, FMA, MAM, AMJ, MJJ, JJA, JAS, ASO, SON, OND, NDJ).
-    The first seasonal average (DJF=JF) and the last seasonal average (NDJ=ND) are actually two-month averages.
+    The first seasonal average  and the last seasonal average are actually two-month averages (DJF=JF, NDJ=ND).
 
     Parameters
     ----------
@@ -351,6 +351,8 @@ def month_to_season12(
     If a calculated season's timestamp falls outside the original range of monthly values, then the calculated mean
     is dropped.  For example, if the monthly data's time range is [Jan-2000, Dec-2003] and the season is "DJF", the
     seasonal mean computed from the single month of Dec-2003 is dropped.
+
+    To calculate seasonal means for only one season, see `month_to_season() <http://xarray.pydata.org/en/stable/generated/xarray.core.rolling.DataArrayRolling.construct.html>`_
     """
 
     time_coord_name = _get_time_coordinate_info(dset, time_coord_name)
@@ -360,8 +362,6 @@ def month_to_season12(
             f"The {time_coord_name} axis length must be a multiple of {mod}.")
 
     # Calculate rolling average with a window size of 3 months, a minimum of 2 months, and centering the time
-    rolling = dset.rolling(dim={
+    return dset.rolling(dim={
         time_coord_name: 3
     }, min_periods=2, center=True).mean()
-
-    return rolling
