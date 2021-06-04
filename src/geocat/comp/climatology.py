@@ -324,44 +324,66 @@ def month_to_season(
     return compute_dset
 
 
-def rolling_avg(dset, dim, window_size=3):
-    """Computes a rolling boxcar average.
-
-    This function takes an xarray dataset and computes a boxcar average over a
-    user-specified dimension using a user-specified window size.
+def time_avg(dset, window, time_dim=None, rolling=False, **rolling_kwargs):
+    """
+    Function to take N-d data and compute averages over the time dimension
+    using a specified window size.
 
     Parameters
     ----------
-    dset : xr.Dataset, xr.DataArray, np.ndarray
-        The data on which to operate
-    dim : int, str
-        The dimension along which the rolling mean is calculated. If `dset` is
-        of type xr.Dataset or xr.DataArray, `dim` should be a string with the
-        name of the labeled dimension. If `dset` is a simple array, `dim` should
-        be an integer representing the index of the desired dimension (i.e. 0 = row,
-        1 = columns for a 2-D array).
-    window_size : int
-        The number of data points that the window should span. Default is 3.
+    dset : `xarray.Dataset`, `xarray.DataArray`, `numpy.ndarray`
+    window : `int`
+        Size of the window used to compute the averages
+    time_dim : `str`, `int`
+        Name of the time coordinate for `xarray` objects. If `None`, then the coordinate with
+        Datetime objects will be used. If `dset` is a numpy array, `time_dim` must be the
+        index of the dimension that is represented by time.
+    rolling : `boolean`, Optional
+        Defaults to `False` and computes a sequential average where the
+        stride of the window is equal to the window size. `True` computes a
+        rolling average where the window uses a stride of 1.
+    **rolling_kwargs :
+        Keyword arguments to pass into xarray.DataArray.rolling.
 
     Returns
     -------
-    computed_dset : xr.Dataset, xr.DataArray, np.ndarray
-       The computed data
+    computed_dset: same type as dset
+        The computed data
     """
 
-    if isinstance(dset, (xr.DataArray, xr.Dataset)):
-        if dim==None or not isinstance(dim, str):  # if dimension is not specified, throw error
-            raise ValueError(f'A dimension name is required for {type(dset)} objects. Possible dimensions: {list(dset.dims)}')
-        rolling = dset.rolling({dim:window_size}, center=True)
-        return rolling.mean()
+    min_periods = rolling_kwargs.get('min_periods')
+    center = rolling_kwargs.get('center')
 
-    elif isinstance(dset, np.ndarray):  # TODO: duck typing for arrays
-        if dim==None or not isinstance(dim, int):
-            raise ValueError(f'`dim` must be an integer for {type(dset)} objects. Possible dimensions: {np.arange(len(dset.shape))}')
-        da = xr.DataArray(data=dset)
+    if isinstance(dset, np.ndarray):  # TODO: duck typing for arrays
+        if time_dim==None or not isinstance(time_dim, int):
+            raise ValueError(f'`time_dim` must be the index of the time dimension for {type(dset)} objects')
+        dset = xr.DataArray(data=dset)
         try:
-            dim = da.dims[dim]
+            time_dim = dset.dims[time_dim]
         except IndexError:
-            raise IndexError(f'`dim` value is out of range. Possible dimensions: {list(range(len(dset.shape)))}') from None
-        rolling = da.rolling({dim:window_size}, center=True)
-        return np.asarray(rolling.mean())
+            raise IndexError('`time_dim` value is out of range') from None
+        if rolling:
+            return np.asarray(dset.rolling({time_dim:window},
+                                           min_periods=min_periods,
+                                           center=center) \
+                                  .mean())
+        else:
+            return np.asarray(dset.rolling({time_dim:window},
+                                           min_periods=min_periods,
+                                           center=center) \
+                                  .construct('window_dim', stride=window) \
+                                  .mean('window_dim'))
+
+    else:
+        time_dim = _get_time_coordinate_info(dset, time_dim)
+        if rolling:
+            return dset.rolling({time_dim:window},
+                                min_periods=min_periods,
+                                center=center)\
+                       .mean()
+        else:
+            return dset.rolling({time_dim:window},
+                                min_periods=min_periods,
+                                center=center)\
+                       .construct('window_dim', stride=window)\
+                       .mean('window_dim')
