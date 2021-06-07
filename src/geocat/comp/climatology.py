@@ -3,8 +3,6 @@ import typing
 import cf_xarray
 import numpy as np
 import xarray as xr
-from scipy.signal import convolve
-import warnings
 
 xr.set_options(keep_attrs=True)
 
@@ -61,6 +59,10 @@ def _setup_clim_anom_input(dset, freq, time_coord_name):
     time_dot_freq = ".".join([time_coord_name, freq])
 
     return data, time_invariant_vars, time_coord_name, time_dot_freq
+
+
+def _avg_groups(dset, group):
+    return dset.groupby(group).mean()
 
 
 def climatology(
@@ -388,10 +390,6 @@ def time_avg(dset, window, time_dim=None, rolling=False, **rolling_kwargs):
                                 center=center)\
                        .construct('window_dim', stride=window)\
                        .mean('window_dim')
-
-
-def _avg_groups(dset, group):
-    return dset.groupby(group).mean()
 
 
 def monthly_avg(dset, time_dim=None, across_years=True):
