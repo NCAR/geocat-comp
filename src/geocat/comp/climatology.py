@@ -332,6 +332,7 @@ def time_avg(dset, window, time_dim=None, rolling=False, **rolling_kwargs):
     Parameters
     ----------
     dset : `xarray.Dataset`, `xarray.DataArray`, `numpy.ndarray`
+        The data on which to operate
     window : `int`
         Size of the window used to compute the averages
     time_dim : `str`, `int`
@@ -343,7 +344,7 @@ def time_avg(dset, window, time_dim=None, rolling=False, **rolling_kwargs):
         stride of the window is equal to the window size. `True` computes a
         rolling average where the window uses a stride of 1.
     **rolling_kwargs :
-        Keyword arguments to pass into xarray.DataArray.rolling.
+        Keyword arguments to pass into `xarray.DataArray.rolling`.
 
     Returns
     -------
@@ -387,3 +388,42 @@ def time_avg(dset, window, time_dim=None, rolling=False, **rolling_kwargs):
                                 center=center)\
                        .construct('window_dim', stride=window)\
                        .mean('window_dim')
+
+
+def _avg_groups(dset, group):
+    return dset.groupby(group).mean()
+
+
+def monthly_avg(dset, time_dim=None, across_years=True):
+    """
+    This function computes monthly averages from data with a finer
+    time resolution than monthly (i.e. daily, weekly).
+
+    Parameters
+    ----------
+    dset : `xarray.Dataset`, `xarray.DataArray`
+        The data on which to operate
+    window : `int`
+        Size of the window used to compute the averages
+    time_dim : `str`
+        Name of the time coordinate for `xarray` objects. If `None`, then the coordinate with
+        Datetime objects will be used.
+    across_years : `boolean`
+        Default True. If True, the average for each month across years
+        will be calculated and one number will be returned for each month.
+        If False, the data with be averaged for each month in each year. Twelve
+        values will be returned for each year, with each value representing
+        the respective month's average value.
+
+    Returns
+    -------
+    computed_dset: same type as dset
+        The computed monthly means
+    """
+    # TODO: check if data has time resolution for less than 1 month; return error if not
+    # TODO: check if data has incomplete years/months?
+    time_dim = _get_time_coordinate_info(dset, time_dim)
+    if not across_years:
+        return dset.groupby(time_dim+'.month').mean()
+    else:
+        return dset.groupby(time_dim+'.year').map(_avg_groups, group=time_dim+'.month')
