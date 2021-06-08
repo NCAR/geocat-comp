@@ -421,7 +421,7 @@ def monthly_avg(dset, time_dim=None, across_years=True):
     # TODO: check if data has time resolution for less than 1 month; return error if not
     # TODO: check if data has incomplete years/months?
     time_dim = _get_time_coordinate_info(dset, time_dim)
-    if not across_years:
+    if across_years:
         return dset.groupby(time_dim+'.month').mean()
     else:
         return dset.groupby(time_dim+'.year').map(_avg_groups, group=time_dim+'.month')
