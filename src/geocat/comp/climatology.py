@@ -329,8 +329,7 @@ def month_to_season(
 
 
 def time_avg(dset, window, time_dim=None, rolling=False, **rolling_kwargs):
-    """
-    Function to take N-d data and compute averages over the time dimension
+    """Function to take N-d data and compute averages over the time dimension
     using a specified window size.
 
     Parameters
@@ -360,20 +359,22 @@ def time_avg(dset, window, time_dim=None, rolling=False, **rolling_kwargs):
     center = rolling_kwargs.get('center')
 
     if isinstance(dset, np.ndarray):  # TODO: duck typing for arrays
-        if time_dim==None or not isinstance(time_dim, int):
-            raise ValueError(f'`time_dim` must be the index of the time dimension for {type(dset)} objects')
+        if time_dim == None or not isinstance(time_dim, int):
+            raise ValueError(
+                f'`time_dim` must be the index of the time dimension for {type(dset)} objects'
+            )
         dset = xr.DataArray(data=dset)
         try:
             time_dim = dset.dims[time_dim]
         except IndexError:
             raise IndexError('`time_dim` value is out of range') from None
         if rolling:
-            return np.asarray(dset.rolling({time_dim:window},
+            return np.asarray(dset.rolling({time_dim: window},
                                            min_periods=min_periods,
                                            center=center) \
                                   .mean())
         else:
-            return np.asarray(dset.rolling({time_dim:window},
+            return np.asarray(dset.rolling({time_dim: window},
                                            min_periods=min_periods,
                                            center=center) \
                                   .construct('window_dim', stride=window) \
@@ -382,22 +383,61 @@ def time_avg(dset, window, time_dim=None, rolling=False, **rolling_kwargs):
     else:
         time_dim = _get_time_coordinate_info(dset, time_dim)
         if rolling:
-            return dset.rolling({time_dim:window},
+            return dset.rolling({time_dim: window},
                                 min_periods=min_periods,
                                 center=center)\
                        .mean()
         else:
-            return dset.rolling({time_dim:window},
+            return dset.rolling({time_dim: window},
                                 min_periods=min_periods,
                                 center=center)\
                        .construct('window_dim', stride=window)\
                        .mean('window_dim')
 
 
-def monthly_avg(dset, time_dim=None, across_years=True):
+def daily_avg(dset, time_dim=None, across_years=True):
+    """This function computes daily averages from data with a time resolution
+    finer than or equal to daily (i.e. 30 minute, hourly, daily). Data by
+    default is averaged across years. Data can be calculated for each day
+    differentiating them by year.
+
+    Parameters
+    ----------
+    dset : `xarray.Dataset`, `xarray.DataArray`
+        The data on which to operate
+    window : `int`
+        Size of the window used to compute the averages
+    time_dim : `str`
+        Name of the time coordinate for `xarray` objects. If `None`, then the coordinate with
+        Datetime objects will be used.
+    across_years : `boolean`
+        Default True. If True, the average for each day across years will be
+        calculated and one number will be returned for each day of the year.
+        If False, the data with be averaged for each day in each year. 364 or 365
+        values will be returned for each year (depending on whether or not the data
+        contains leap years) with each value representing the respective day's average value.
+
+    Returns
+    -------
+    computed_dset: same type as dset
+        The computed daily means
     """
-    This function computes monthly averages from data with a finer
-    time resolution than monthly (i.e. daily, weekly).
+
+    # TODO: check if data has correct time resolution
+    time_dim = _get_time_coordinate_info(dset, time_dim)
+    if across_years:
+        return dset.groupby(time_dim + '.dayofyear').mean()
+    else:
+        return dset.groupby(time_dim + '.year').map(_avg_groups,
+                                                    group=time_dim +
+                                                    '.dayofyear')
+
+
+def monthly_avg(dset, time_dim=None, across_years=True):
+    """This function computes monthly averages from data with a time resolution
+    finer than or equal to monthly (i.e. daily, weekly, monthly). Data by
+    default is averaged across years. Data can be calculated for each month
+    differentiating them by year.
 
     Parameters
     ----------
@@ -420,10 +460,10 @@ def monthly_avg(dset, time_dim=None, across_years=True):
     computed_dset: same type as dset
         The computed monthly means
     """
-    # TODO: check if data has time resolution for less than 1 month; return error if not
-    # TODO: check if data has incomplete years/months?
+    # TODO: check if data has correct time resolution
     time_dim = _get_time_coordinate_info(dset, time_dim)
     if across_years:
-        return dset.groupby(time_dim+'.month').mean()
+        return dset.groupby(time_dim + '.month').mean()
     else:
-        return dset.groupby(time_dim+'.year').map(_avg_groups, group=time_dim+'.month')
+        return dset.groupby(time_dim + '.year').map(_avg_groups,
+                                                    group=time_dim + '.month')
