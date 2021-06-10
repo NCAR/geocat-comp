@@ -3,6 +3,7 @@ import typing
 import cf_xarray
 import numpy as np
 import xarray as xr
+import pandas as pd
 
 xr.set_options(keep_attrs=True)
 
@@ -461,30 +462,37 @@ def daily_avg(dset, time_dim=None, across_years=True):
     # TODO: check if data has correct time resolution
 
     time_dim = _get_time_coordinate_info(dset, time_dim)
-    foo = dset['time.year'].values
     data = np.empty((0))
     time = np.empty((0)).astype(np.datetime64)
     if across_years:
-        year = int(np.median(np.unique(dset[time_dim + '.year'].values)))
-        data, time = _month_day_avg(dset, time_dim, year)
-        return xr.DataArray(data=data,
-                            coords=dict(time=time),
-                            dims=['time'],
-                            attrs=dset.attrs)
-        #return dset.groupby(time_dim + '.month')\
-        #           .map(_avg_groups, group=time_dim+'.day')
+        return dset.groupby(time_dim + '.month')\
+                   .map(_avg_groups, group=time_dim+'.day')
     else:
+        # TODO: make work for time ranges that end on a day less than 31
+        data = None
         years = np.unique(dset[time_dim + '.year'].values)
         for year in years:
-            data_yr = dset.sel(time=str(year))
-            year_avg, year_time = _month_day_avg(data_yr, time_dim, year)
-            data = np.append(data, year_avg)
-            time = np.append(time, year_time)
+            year = str(year)
+            year_data = dset.sel(time=year)
+            means = year_data.groupby(time_dim + '.month') \
+                             .map(_avg_groups, group=time_dim+'.day')
 
-        return xr.DataArray(data=data,
-                            coords=dict(time=time),
-                            dims=['time'],
-                            attrs=dset.attrs)
+            start_month = str(means.month.values[0])
+            end_month = str(means.month.values[-1])
+            start_day = str(means.day.values[0])
+            end_day = str(means.day.values[-1])
+            time = pd.date_range(year + '-' + start_month + '-' + start_day,
+                                 year + '-' + end_month + '-' + end_day)
+
+            means = means.stack(time=['month', 'day'])
+            dims = means.dims
+            means = means.transpose('time', *dims[0:-1], transpose_coords=False)
+            means['time'] = time
+            if data is None:
+                data = means
+            else:
+                data = xr.concat([data, means], 'time')
+        return data
 
 
 def monthly_avg(dset, time_dim=None, across_years=True):
