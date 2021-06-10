@@ -68,20 +68,6 @@ def _avg_groups(dset, group):
     return dset.groupby(group).mean()
 
 
-def _create_groups(
-    dset, time_dim
-):  #TODO: compute averages according to year, month, day distinction
-    arr = None
-    years = dset.groupby(time_dim + '.year')
-    for year, year_data in years:
-        months = year_data.groupby(time_dim + '.month')
-        for month, month_data in months:
-            days = month_data.groupby(time_dim + '.day')
-            for i, day, day_data in enumarate(days):
-                arr = day_data
-    return arr
-
-
 def climatology(
         dset: typing.Union[xr.DataArray, xr.Dataset],
         freq: str,
@@ -410,25 +396,6 @@ def time_avg(dset, window, time_dim=None, rolling=False, **rolling_kwargs):
                                 center=center)\
                        .construct('window_dim', stride=window)\
                        .mean('window_dim')
-
-
-def _month_day_avg(dset, time_dim, year):
-    data = np.empty((0))
-    time = np.empty((0)).astype(np.datetime64)
-    months = np.unique(dset[time_dim + '.month'].values)
-    for month in months:
-        data_mon = dset.sel(time=str(year) + '-' + str(month))
-        days = np.unique(data_mon[time_dim + '.day'].values)
-        for day in days:
-            data_day = data_mon.sel(time=str(year) + '-' + str(month) + '-' +
-                                    str(day))
-            data = np.append(data, data_day.mean())
-            time = np.append(
-                time,
-                np.datetime64(
-                    str(year) + '-' + str(month).zfill(2) + '-' +
-                    str(day).zfill(2)))
-    return data, time
 
 
 def daily_avg(dset, time_dim=None, across_years=True):
