@@ -62,7 +62,23 @@ def _setup_clim_anom_input(dset, freq, time_coord_name):
 
 
 def _avg_groups(dset, group):
+    """Helper function to be used in xarray.core.groupby.DataArrayGroupBy.map()
+    Takes in a group (dset) and groups the data again using a new group."""
     return dset.groupby(group).mean()
+
+
+def _create_groups(
+    dset, time_dim
+):  #TODO: compute averages according to year, month, day distinction
+    arr = None
+    years = dset.groupby(time_dim + '.year')
+    for year, year_data in years:
+        months = year_data.groupby(time_dim + '.month')
+        for month, month_data in months:
+            days = month_data.groupby(time_dim + '.day')
+            for i, day, day_data in enumarate(days):
+                arr = day_data
+    return arr
 
 
 def climatology(
@@ -395,6 +411,25 @@ def time_avg(dset, window, time_dim=None, rolling=False, **rolling_kwargs):
                        .mean('window_dim')
 
 
+def _month_day_avg(dset, time_dim, year):
+    data = np.empty((0))
+    time = np.empty((0)).astype(np.datetime64)
+    months = np.unique(dset[time_dim + '.month'].values)
+    for month in months:
+        data_mon = dset.sel(time=str(year) + '-' + str(month))
+        days = np.unique(data_mon[time_dim + '.day'].values)
+        for day in days:
+            data_day = data_mon.sel(time=str(year) + '-' + str(month) + '-' +
+                                    str(day))
+            data = np.append(data, data_day.mean())
+            time = np.append(
+                time,
+                np.datetime64(
+                    str(year) + '-' + str(month).zfill(2) + '-' +
+                    str(day).zfill(2)))
+    return data, time
+
+
 def daily_avg(dset, time_dim=None, across_years=True):
     """This function computes daily averages from data with a time resolution
     finer than or equal to daily (i.e. 30 minute, hourly, daily). Data by
@@ -424,13 +459,32 @@ def daily_avg(dset, time_dim=None, across_years=True):
     """
 
     # TODO: check if data has correct time resolution
+
     time_dim = _get_time_coordinate_info(dset, time_dim)
+    foo = dset['time.year'].values
+    data = np.empty((0))
+    time = np.empty((0)).astype(np.datetime64)
     if across_years:
-        return dset.groupby(time_dim + '.dayofyear').mean()
+        year = int(np.median(np.unique(dset[time_dim + '.year'].values)))
+        data, time = _month_day_avg(dset, time_dim, year)
+        return xr.DataArray(data=data,
+                            coords=dict(time=time),
+                            dims=['time'],
+                            attrs=dset.attrs)
+        #return dset.groupby(time_dim + '.month')\
+        #           .map(_avg_groups, group=time_dim+'.day')
     else:
-        return dset.groupby(time_dim + '.year').map(_avg_groups,
-                                                    group=time_dim +
-                                                    '.dayofyear')
+        years = np.unique(dset[time_dim + '.year'].values)
+        for year in years:
+            data_yr = dset.sel(time=str(year))
+            year_avg, year_time = _month_day_avg(data_yr, time_dim, year)
+            data = np.append(data, year_avg)
+            time = np.append(time, year_time)
+
+        return xr.DataArray(data=data,
+                            coords=dict(time=time),
+                            dims=['time'],
+                            attrs=dset.attrs)
 
 
 def monthly_avg(dset, time_dim=None, across_years=True):
@@ -465,5 +519,5 @@ def monthly_avg(dset, time_dim=None, across_years=True):
     if across_years:
         return dset.groupby(time_dim + '.month').mean()
     else:
-        return dset.groupby(time_dim + '.year').map(_avg_groups,
-                                                    group=time_dim + '.month')
+        return dset.groupby(time_dim + '.year')\
+                   .map(_avg_groups, group=time_dim + '.month')
