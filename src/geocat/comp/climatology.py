@@ -362,7 +362,7 @@ def time_avg(dset, window, time_dim=None, rolling=False, **rolling_kwargs):
     center = rolling_kwargs.get('center')
 
     if isinstance(dset, np.ndarray):  # TODO: duck typing for arrays
-        if time_dim == None or not isinstance(time_dim, int):
+        if time_dim is None or not isinstance(time_dim, int):
             raise ValueError(
                 f'`time_dim` must be the index of the time dimension for {type(dset)} objects'
             )
@@ -429,37 +429,10 @@ def daily_avg(dset, time_dim=None, across_years=True):
     # TODO: check if data has correct time resolution
 
     time_dim = _get_time_coordinate_info(dset, time_dim)
-    data = np.empty((0))
-    time = np.empty((0)).astype(np.datetime64)
     if across_years:
-        return dset.groupby(time_dim + '.month')\
-                   .map(_avg_groups, group=time_dim+'.day')
+        return dset.groupby(dset[time_dim].dt.strftime('%m-%d')).mean()
     else:
-        # TODO: make work for time ranges that end on a day less than 31
-        data = None
-        years = np.unique(dset[time_dim + '.year'].values)
-        for year in years:
-            year = str(year)
-            year_data = dset.sel(time=year)
-            means = year_data.groupby(time_dim + '.month') \
-                             .map(_avg_groups, group=time_dim+'.day')
-
-            start_month = str(means.month.values[0])
-            end_month = str(means.month.values[-1])
-            start_day = str(means.day.values[0])
-            end_day = str(means.day.values[-1])
-            time = pd.date_range(year + '-' + start_month + '-' + start_day,
-                                 year + '-' + end_month + '-' + end_day)
-
-            means = means.stack(time=['month', 'day'])
-            dims = means.dims
-            means = means.transpose('time', *dims[0:-1], transpose_coords=False)
-            means['time'] = time
-            if data is None:
-                data = means
-            else:
-                data = xr.concat([data, means], 'time')
-        return data
+        return dset.resample(time='D').mean().dropna(time_dim)
 
 
 def monthly_avg(dset, time_dim=None, across_years=True):
@@ -492,7 +465,6 @@ def monthly_avg(dset, time_dim=None, across_years=True):
     # TODO: check if data has correct time resolution
     time_dim = _get_time_coordinate_info(dset, time_dim)
     if across_years:
-        return dset.groupby(time_dim + '.month').mean()
+        return dset.groupby(dset[time_dim].dt.strftime('%m')).mean()
     else:
-        return dset.groupby(time_dim + '.year')\
-                   .map(_avg_groups, group=time_dim + '.month')
+        return dset.resample(time='M').mean().dropna(time_dim)
