@@ -398,73 +398,51 @@ def time_avg(dset, window, time_dim=None, rolling=False, **rolling_kwargs):
                        .mean('window_dim')
 
 
-def daily_avg(dset, time_dim=None, across_years=True):
-    """This function computes daily averages from data with a time resolution
-    finer than or equal to daily (i.e. 30 minute, hourly, daily). Data by
-    default is averaged across years. Data can be calculated for each day
-    differentiating them by year.
+def clim_avg(
+        dset: typing.Union[xr.DataArray, xr.Dataset],
+        freq: str,
+        time_dim: str = None,
+        across_years: bool = True) -> typing.Union[xr.DataArray, xr.Dataset]:
+    """This function computes averages according to a given time frequency.
 
     Parameters
     ----------
     dset : `xarray.Dataset`, `xarray.DataArray`
         The data on which to operate
-    window : `int`
-        Size of the window used to compute the averages
-    time_dim : `str`
-        Name of the time coordinate for `xarray` objects. If `None`, then the coordinate with
-        Datetime objects will be used.
+
+    freq : str
+        Frequency alias. Accepted alias:
+
+            - 'day': for daily averages
+            - 'month': for monthly averages
+
+    time_dim : `str`, Optional
+        Name of the time coordinate for `xarray` objects
+
     across_years : `boolean`
-        Default True. If True, the average for each day across years will be
-        calculated and one number will be returned for each day of the year.
-        If False, the data with be averaged for each day in each year. 364 or 365
-        values will be returned for each year (depending on whether or not the data
-        contains leap years) with each value representing the respective day's average value.
+        Default True. If True, the average for each period (day, month, etc.)
+        will be calculated across years, so one number will be returned for
+        each period. If False, the average for each period will be calculated
+        for it's given year (i.e. the average for Jan-2000 will be independent
+        of the average for Jan-2001).
 
     Returns
     -------
     computed_dset: same type as dset
-        The computed daily means
+        The computed data
     """
 
-    # TODO: check if data has correct time resolution
+    freq_dict = {'day': ('%m-%d', 'D'), 'month': ('%m', 'M')}
+    try:
+        (format, freq) = freq_dict[period]
+    except KeyError:
+        raise KeyError(
+            f"contributed: clim_avg: bad period: PERIOD = {period}. Valid periods include: {list(freq_dict.keys())}"
+        )
 
     time_dim = _get_time_coordinate_info(dset, time_dim)
+
     if across_years:
-        return dset.groupby(dset[time_dim].dt.strftime('%m-%d')).mean()
+        return dset.groupby(dset[time_dim].dt.strftime(format)).mean()
     else:
-        return dset.resample(time='D').mean().dropna(time_dim)
-
-
-def monthly_avg(dset, time_dim=None, across_years=True):
-    """This function computes monthly averages from data with a time resolution
-    finer than or equal to monthly (i.e. daily, weekly, monthly). Data by
-    default is averaged across years. Data can be calculated for each month
-    differentiating them by year.
-
-    Parameters
-    ----------
-    dset : `xarray.Dataset`, `xarray.DataArray`
-        The data on which to operate
-    window : `int`
-        Size of the window used to compute the averages
-    time_dim : `str`
-        Name of the time coordinate for `xarray` objects. If `None`, then the coordinate with
-        Datetime objects will be used.
-    across_years : `boolean`
-        Default True. If True, the average for each month across years
-        will be calculated and one number will be returned for each month.
-        If False, the data with be averaged for each month in each year. Twelve
-        values will be returned for each year, with each value representing
-        the respective month's average value.
-
-    Returns
-    -------
-    computed_dset: same type as dset
-        The computed monthly means
-    """
-    # TODO: check if data has correct time resolution
-    time_dim = _get_time_coordinate_info(dset, time_dim)
-    if across_years:
-        return dset.groupby(dset[time_dim].dt.strftime('%m')).mean()
-    else:
-        return dset.resample(time='M').mean().dropna(time_dim)
+        return dset.resample(time_dim=freq).mean().dropna(time_dim)
