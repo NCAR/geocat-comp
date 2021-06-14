@@ -443,6 +443,14 @@ def clim_avg(
     time_dim = _get_time_coordinate_info(dset, time_dim)
 
     if across_years:
-        return dset.groupby(dset[time_dim].dt.strftime(format)).mean()
+        median_yr = np.median(dset[time_dim].dt.year.values)
+        time = pd.date_range(f'{median_yr:.0f}-01-01',
+                             f'{median_yr:.0f}-12-31',
+                             freq=frequency)
+        return dset.groupby(dset[time_dim].dt.strftime(format))\
+                   .mean()\
+                   .rename({'strftime': time_dim})\
+                   .assign_coords({time_dim: time})
+
     else:
         return dset.resample({time_dim: frequency}).mean().dropna(time_dim)
