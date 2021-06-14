@@ -72,6 +72,9 @@ def interp_hybrid_to_pressure(data,
     # Calculate pressure levels at the hybrid levels
     pressure = _pressure_from_hybrid(ps, hyam, hybm, p0)  # Pa
 
+    # Make pressure shape same as data shape
+    pressure = pressure.transpose(*data.dims)
+
     # Define interpolation function
     if method == 'linear':
         func_interpolate = metpy.interpolate.interpolate_1d
@@ -86,26 +89,76 @@ def interp_hybrid_to_pressure(data,
 
         return func_interpolate(new_levels, pressure, data, axis=interp_axis)
 
-    # Apply vertical interpolation
-    # Apply Dask parallelization with xarray.apply_ufunc
-    output = xr.apply_ufunc(
+    ###############################################################################
+    # Workaround
+    #
+    # For the issue with metpy's xarray interface:
+    #
+    # `metpy.interpolate.interpolate_1d` had "no implementation found for
+    # 'numpy.apply_along_axis'" issue for cases where the input is
+    # xarray.Dataarray and has more than 3 dimensions (e.g. 4th dim of `time`).
+
+    # Use dask.array.core.map_blocks instead of xarray.apply_ufunc and
+    # auto-chunk input arrays to ensure using only Numpy interface of
+    # `metpy.interpolate.interpolate_1d`.
+
+    # # Apply vertical interpolation
+    # # Apply Dask parallelization with xarray.apply_ufunc
+    # output = xr.apply_ufunc(
+    #     _vertical_remap,
+    #     data,
+    #     pressure,
+    #     exclude_dims=set((lev_dim,)),  # Set dimensions allowed to change size
+    #     input_core_dims=[[lev_dim], [lev_dim]],  # Set core dimensions
+    #     output_core_dims=[["plev"]],  # Specify output dimensions
+    #     vectorize=True,  # loop over non-core dims
+    #     dask="parallelized",  # Dask parallelization
+    #     output_dtypes=[data.dtype],
+    #     dask_gufunc_kwargs={"output_sizes": {
+    #         "plev": len(new_levels)
+    #     }},
+    # )
+
+    # If an unchunked Xarray input is given, chunk it just with its dims
+    if data.chunks is None:
+        data_chunk = dict([
+            (k, v) for (k, v) in zip(list(data.dims), list(data.shape))
+        ])
+        data = data.chunk(data_chunk)
+
+    # Chunk pressure equal to data's chunks
+    pressure = pressure.chunk(data.chunks)
+
+    # Output data structure elements
+    out_chunks = list(data.chunks)
+    out_chunks[interp_axis] = (new_levels.size,)
+    out_chunks = tuple(out_chunks)
+    # ''' end of boilerplate
+
+    from dask.array.core import map_blocks
+    output = map_blocks(
         _vertical_remap,
-        data,
-        pressure,
-        exclude_dims=set((lev_dim,)),  # Set dimensions allowed to change size
-        input_core_dims=[[lev_dim], [lev_dim]],  # Set core dimensions
-        output_core_dims=[["plev"]],  # Specify output dimensions
-        vectorize=True,  # loop over non-core dims
-        dask="parallelized",  # Dask parallelization
-        output_dtypes=[data.dtype],
-        dask_gufunc_kwargs={"output_sizes": {
-            "plev": len(new_levels)
-        }},
+        data.data,
+        pressure.data,
+        chunks=out_chunks,
+        dtype=data.dtype,
+        drop_axis=[interp_axis],
+        new_axis=[interp_axis],
     )
 
+    # End of Workaround
+    ###############################################################################
+
+    output = xr.DataArray(output)
+
     # Set output dims and coords
-    dims = ["plev"
-           ] + [data.dims[i] for i in range(data.ndim) if i != interp_axis]
+    dims = [
+        data.dims[i] if i != interp_axis else "plev" for i in range(data.ndim)
+    ]
+
+    # Rename output dims. This is only needed with above workaround block
+    dims_dict = {output.dims[i]: dims[i] for i in range(len(output.dims))}
+    output = output.rename(dims_dict)
 
     coords = {}
     for (k, v) in data.coords.items():
