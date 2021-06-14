@@ -434,10 +434,10 @@ def clim_avg(
 
     freq_dict = {'day': ('%m-%d', 'D'), 'month': ('%m', 'M')}
     try:
-        (format, freq) = freq_dict[period]
+        (format, frequency) = freq_dict[freq]
     except KeyError:
         raise KeyError(
-            f"contributed: clim_avg: bad period: PERIOD = {period}. Valid periods include: {list(freq_dict.keys())}"
+            f"contributed: clim_avg: bad period: PERIOD = {freq}. Valid periods include: {list(freq_dict.keys())}"
         )
 
     time_dim = _get_time_coordinate_info(dset, time_dim)
@@ -445,4 +445,4 @@ def clim_avg(
     if across_years:
         return dset.groupby(dset[time_dim].dt.strftime(format)).mean()
     else:
-        return dset.resample(time_dim=freq).mean().dropna(time_dim)
+        return dset.resample({time_dim: frequency}).mean().dropna(time_dim)
