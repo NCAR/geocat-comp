@@ -9,7 +9,7 @@ def relhum(temperature, mixing_ratio, pressure):
 
     "Improved Magnus' Form Approx. of Saturation Vapor pressure"
     Oleg A. Alduchov and Robert E. Eskridge
-    http://www.osti.gov/scitech/servlets/purl/548871/
+    https://www.osti.gov/scitech/servlets/purl/548871/
     https://doi.org/10.2172/548871
 
         Args:
