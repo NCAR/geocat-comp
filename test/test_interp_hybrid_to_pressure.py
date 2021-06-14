@@ -57,6 +57,22 @@ class Test_interp_hybrid_to_pressure(TestCase):
 
         nt.assert_array_almost_equal(_uzon_expected, uzon, 5)
 
+    def test_interp_hybrid_to_pressure_atmos_4d(self):
+        data_t = _data.expand_dims("time")
+
+        u_int = interp_hybrid_to_pressure(data_t,
+                                          _ps,
+                                          _hyam,
+                                          _hybm,
+                                          p0=_p0,
+                                          new_levels=_pres3d,
+                                          method="log")
+
+        uzon = u_int.mean(dim='lon')
+
+        uzon_expected_t = _uzon_expected.expand_dims("time")
+        nt.assert_array_almost_equal(uzon_expected_t, uzon, 5)
+
     def test_interp_hybrid_to_pressure_atmos_wrong_method(self):
         with nt.assert_raises(ValueError):
             u_int = interp_hybrid_to_pressure(_data,
@@ -83,50 +99,3 @@ class Test_interp_hybrid_to_pressure(TestCase):
         uzon = u_int.mean(dim='lon')
 
         nt.assert_array_almost_equal(_uzon_expected, uzon, 5)
-
-    # # TODO: Migrate the following code to GeoCAT-examples NCL_conwomap_5
-    # # This test generates a plot, which can be compared to NCL's conwomap_5 plot:
-    # # https://www.ncl.ucar.edu/Applications/Images/conwomap_5_2_lg.png
-    # def test_interp_hybrid_to_pressure_atmos_plot(self):
-    #     u_int = interp_hybrid_to_pressure(_data,
-    #                                       _ps[0, :, :],
-    #                                       _hyam,
-    #                                       _hybm,
-    #                                       p0=_p0,
-    #                                       new_levels=_pres3d,
-    #                                       method="log")
-    #
-    #     uzon = u_int.mean(dim='lon')
-    #
-    #     # Plot:
-    #     # Generate figure (set its size (width, height) in inches) and axes
-    #     plt.figure(figsize=(12, 12))
-    #     ax = plt.gca()
-    #
-    #     # Draw filled contours
-    #     colors = uzon.plot.contourf(ax=ax,
-    #                                 levels=np.arange(-12, 44, 4),
-    #                                 add_colorbar=False,
-    #                                 add_labels=False)
-    #     # Draw contour lines
-    #     lines = uzon.plot.contour(ax=ax,
-    #                               colors='black',
-    #                               levels=np.arange(-12, 44, 4),
-    #                               linewidths=0.5,
-    #                               linestyles='solid',
-    #                               add_labels=False)
-    #
-    #     # Create horizontal colorbar
-    #     cbar = plt.colorbar(colors,
-    #                         ticks=np.arange(-12, 44, 4),
-    #                         orientation='horizontal',
-    #                         drawedges=True,
-    #                         aspect=12,
-    #                         shrink=0.8,
-    #                         pad=0.075)
-    #
-    #     # Show the plot
-    #     plt.tight_layout()
-    #     plt.show(block=False)
-    #     plt.pause(3)
-    #     plt.close()

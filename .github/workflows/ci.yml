@@ -35,7 +35,6 @@ jobs:
         with:
           activate-environment: geocat_comp_build
           channel-priority: strict
-          mamba-version: '*'
           python-version: ${{ matrix.python-version }}
           channels: conda-forge, ncar
           environment-file: build_envs/environment.yml

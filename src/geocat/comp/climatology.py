@@ -248,18 +248,18 @@ def month_to_season(
         A string representing the season to calculate: e.g., "JFM", "JJA".
         Valid values are:
 
-         - DJF
-         - JFM
-         - FMA
-         - MAM
-         - AMJ
-         - MJJ
-         - JJA
-         - JAS
-         - ASO
-         - SON
-         - OND
-         - NDJ
+         - DJF {December, January, February}
+         - JFM {January, February, March}
+         - FMA {February, March, April}
+         - MAM {March, April, May}
+         - AMJ {April, May, June}
+         - MJJ {May, June, July}
+         - JJA {June, July, August}
+         - JAS {July, August, September}
+         - ASO {August, September, October}
+         - SON {September, October, November}
+         - OND {October, November, Decmber}
+         - NDJ {November, Decmber, January}
     time_coord_name: str, Optional
         Name for time coordinate to use
 
@@ -284,39 +284,41 @@ def month_to_season(
             f"The {time_coord_name} axis length must be a multiple of {mod}.")
 
     seasons_pd = {
-        "DJF": ("QS-DEC", 1),
-        "JFM": ("QS-JAN", 2),
-        "FMA": ("QS-FEB", 3),
-        "MAM": ("QS-MAR", 4),
-        "AMJ": ("QS-APR", 5),
-        "MJJ": ("QS-MAY", 6),
-        "JJA": ("QS-JUN", 7),
-        "JAS": ("QS-JUL", 8),
-        "ASO": ("QS-AUG", 9),
-        "SON": ("QS-SEP", 10),
-        "OND": ("QS-OCT", 11),
-        "NDJ": ("QS-NOV", 12),
+        "DJF": ([12, 1, 2], 'QS-DEC'),
+        "JFM": ([1, 2, 3], 'QS-JAN'),
+        "FMA": ([2, 3, 4], 'QS-FEB'),
+        "MAM": ([3, 4, 5], 'QS-MAR'),
+        "AMJ": ([4, 5, 6], 'QS-APR'),
+        "MJJ": ([5, 6, 7], 'QS-MAY'),
+        "JJA": ([6, 7, 8], 'QS-JUN'),
+        "JAS": ([7, 8, 9], 'QS-JUL'),
+        "ASO": ([8, 9, 10], 'QS-AUG'),
+        "SON": ([9, 10, 11], 'QS-SEP'),
+        "OND": ([10, 11, 12], 'QS-OCT'),
+        "NDJ": ([11, 12, 1], 'QS-NOV'),
     }
     try:
-        (season_pd, season_sel) = seasons_pd[season]
+        (months, quarter) = seasons_pd[season]
     except KeyError:
         raise KeyError(
             f"contributed: month_to_season: bad season: SEASON = {season}. Valid seasons include: {list(seasons_pd.keys())}"
         )
 
-    start_date = dset[time_coord_name][0]
-    end_date = dset[time_coord_name][-1]
+    # Filter data to only contain the months of interest
+    data_filter = dset.sel(
+        {time_coord_name: dset[time_coord_name].dt.month.isin(months)})
 
-    # Compute the three-month means, moving time labels ahead to the middle
-    # month.
-    month_offset = "MS"
-    dset_seasons = dset.resample({
-        time_coord_name: season_pd
-    },
-                                 loffset=month_offset).mean()
+    if season == 'DJF':  # For this season, the last "mean" will be the value for Dec so we drop the last month
+        data_filter = data_filter.isel({time_coord_name: slice(None, -1)})
+    elif season == 'NDJ':  # For this season, the first "mean" will be the value for Jan so we drop the first month
+        data_filter = data_filter.isel({time_coord_name: slice(1, None)})
 
-    # Filter just the desired season, and trim to the desired time range.
-    compute_dset = dset_seasons.sel({
-        time_coord_name: dset_seasons[time_coord_name].dt.month == season_sel
-    }).sel({time_coord_name: slice(start_date, end_date)})
-    return compute_dset
+    # Group the months into three and take the mean
+    means = data_filter.resample({
+        time_coord_name: quarter
+    }, loffset='MS').mean()
+
+    # The line above tries to take the mean for all quarters even if there is not data for some of them
+    # Therefore, we must filter out the NaNs
+    return means.sel(
+        {time_coord_name: means[time_coord_name].dt.month == months[1]})
