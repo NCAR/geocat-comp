@@ -71,6 +71,14 @@ class Test_relhum(unittest.TestCase):
 
         assert np.allclose(relhum(t, q, p), self.rh_gt_2, atol=0.1)
 
+    def test_dims_error(self):
+        self.assertRaises(ValueError, relhum, self.t_def[:10], self.q_def[:10],
+                          self.p_def[:9])
+
+    def test_xarray_type_error(self):
+        self.assertRaises(TypeError, relhum, self.t_def,
+                          xr.DataArray(self.q_def), self.p_def)
+
     def test_dask_compute(self):
         p = xr.DataArray(self.p_def).chunk(10)
         t = xr.DataArray(self.t_def).chunk(10)
