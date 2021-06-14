@@ -432,7 +432,11 @@ def clim_avg(
         The computed data
     """
 
-    freq_dict = {'day': ('%m-%d', 'D'), 'month': ('%m', 'M')}
+    freq_dict = {
+        'day': ('%m-%d', 'D'),
+        'month': ('%m', 'M'),
+        'season': (None, None)
+    }
     try:
         (format, frequency) = freq_dict[freq]
     except KeyError:
@@ -442,7 +446,22 @@ def clim_avg(
 
     time_dim = _get_time_coordinate_info(dset, time_dim)
 
+    # If the frequency is for seasonal averages, ensure data is averaged monthly
+    # and return the three month averages for the seasons
+    if freq == 'season':
+        monthly = clim_avg(dset,
+                           freq='month',
+                           time_dim=time_dim,
+                           across_years=across_years)
+        return time_avg(monthly,
+                        window=3,
+                        time_dim=time_dim,
+                        rolling=False,
+                        center=True)
+
+    # Group the data by the given format (i.e. MM-DD) and then average groups
     if across_years:
+        # Create array of datetimes to set as time coordinate of returned data
         median_yr = np.median(dset[time_dim].dt.year.values)
         time = pd.date_range(f'{median_yr:.0f}-01-01',
                              f'{median_yr:.0f}-12-31',
@@ -451,6 +470,6 @@ def clim_avg(
                    .mean()\
                    .rename({'strftime': time_dim})\
                    .assign_coords({time_dim: time})
-
+    # Resample data using given frequency which preserves the year of the data
     else:
         return dset.resample({time_dim: frequency}).mean().dropna(time_dim)
