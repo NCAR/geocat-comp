@@ -39,13 +39,20 @@ def dewtemp(temperature, relative_humidity):
                 "relhum: if using xarray, all inputs must be xarray")
 
         # call internal computation function
+        # note: no alternative internal function required for dewtemp
         dew_pnt_temp = _dewtemp(temperature, relative_humidity)
 
         # set xarray attributes
         dew_pnt_temp.attrs['long_name'] = 'dew point temperature'
         dew_pnt_temp.attrs['units'] = 'Kelvin'
 
-    dew_pnt_temp = _dewtemp(temperature, relative_humidity)
+    else:
+        # ensure in numpy array for function call
+        temperature = np.asarray(temperature)
+        relative_humidity = np.asarray(relative_humidity)
+
+        # function call for non-dask/xarray
+        dew_pnt_temp = _dewtemp(temperature, relative_humidity)
 
     return dew_pnt_temp
 
