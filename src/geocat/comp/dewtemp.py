@@ -22,33 +22,30 @@ def dewtemp(temperature, relative_humidity):
             Dewpoint temperature in Kelvin. Same size as input variable temperature
     """
 
-    # If xarray input, pull data and store metadata
-    x_out = False
-    if isinstance(temperature, xr.DataArray):
-        x_out = True
-        save_dims = temperature.dims
-        save_coords = temperature.coords
-        save_attrs = temperature.attrs
+    inputs = [temperature, relative_humidity]
 
-    # ensure in numpy array for function call
-    temperature = np.asarray(temperature)
-    relative_humidity = np.asarray(relative_humidity)
+    # ensure all inputs same size
+    if not (np.shape(x) == np.shape(inputs[0]) for x in inputs):
+        raise ValueError("dewtemp: dimensions of inputs are not the same")
 
-    # make sure the input arrays are of the same size
-    if np.shape(temperature) != np.shape(relative_humidity):
-        raise ValueError(
-            f"dewtemp_trh: dimensions of temperature, {np.shape(temperature)}, and relative_humidity, "
-            f"{np.shape(relative_humidity)}, do not match")
+    # Get input types
+    in_types = [type(item) for item in inputs]
 
-    # Call mapblocks to run function
+    if xr.DataArray in in_types:
+
+        # check all inputs are xr.DataArray
+        if not all(x == xr.DataArray for x in in_types):
+            raise TypeError(
+                "relhum: if using xarray, all inputs must be xarray")
+
+        # call internal computation function
+        dew_pnt_temp = _dewtemp(temperature, relative_humidity)
+
+        # set xarray attributes
+        dew_pnt_temp.attrs['long_name'] = 'dew point temperature'
+        dew_pnt_temp.attrs['units'] = 'Kelvin'
+
     dew_pnt_temp = _dewtemp(temperature, relative_humidity)
-
-    # output as xarray if input as xarray
-    if x_out:
-        dew_pnt_temp = xr.DataArray(data=dew_pnt_temp,
-                                    coords=save_coords,
-                                    dims=save_dims,
-                                    attrs=save_attrs)
 
     return dew_pnt_temp
 

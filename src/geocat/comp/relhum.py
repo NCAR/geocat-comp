@@ -29,13 +29,14 @@ def relhum(temperature, mixing_ratio, pressure):
                 Relative humidity. Will have the same dimensions as temperature
     """
 
+    inputs = [temperature, mixing_ratio, pressure]
+
     # ensure all inputs same size
-    if np.shape(temperature) != np.shape(mixing_ratio) or np.shape(
-            temperature) != np.shape(pressure):
+    if not (np.shape(x) == np.shape(inputs[0]) for x in inputs):
         raise ValueError("relhum: dimensions of inputs are not the same")
 
     # Get input types
-    in_types = [type(item) for item in [temperature, mixing_ratio, pressure]]
+    in_types = [type(item) for item in inputs]
 
     # run dask compatible version if input is xarray
     if xr.DataArray in in_types:
