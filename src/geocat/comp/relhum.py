@@ -60,6 +60,7 @@ def relhum(temperature, mixing_ratio, pressure):
         mixing_ratio = np.asarray(mixing_ratio)
         pressure = np.asarray(pressure)
 
+        # function call for non-dask/xarray
         relative_humidity = _relhum(temperature, mixing_ratio, pressure)
 
     return relative_humidity

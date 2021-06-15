@@ -1,7 +1,6 @@
 import sys
 import unittest
 
-import dask.array as da
 import dask
 import dask.distributed as dd
 import numpy as np
@@ -19,7 +18,7 @@ class Test_relhum(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-
+        # set up ground truths
         cls.p_def = [
             100800, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000,
             60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000,
@@ -48,6 +47,7 @@ class Test_relhum(unittest.TestCase):
             73.8184, 62.71, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         ]
 
+        # make dask client to reference in subsequent tests
         cls.client = dd.Client()
 
     def test_float_input(self):
