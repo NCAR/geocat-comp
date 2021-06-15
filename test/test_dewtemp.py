@@ -1,11 +1,10 @@
 import sys
 import unittest
 
-import dask
+import dask.array
 import dask.distributed as dd
 import numpy as np
 import xarray as xr
-from dask.array.core import map_blocks
 
 # Import from directory structure if coverage test, or from installed
 # packages otherwise

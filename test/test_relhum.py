@@ -1,7 +1,7 @@
 import sys
 import unittest
 
-import dask
+import dask.array
 import dask.distributed as dd
 import numpy as np
 import xarray as xr
