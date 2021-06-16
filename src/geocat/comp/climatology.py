@@ -415,6 +415,7 @@ def clim_avg(
 
             - 'day': for daily averages
             - 'month': for monthly averages
+            - 'season': for metorological seasonal averages (DJF, MAM, JJA, and SON)
 
     time_dim : `str`, Optional
         Name of the time coordinate for `xarray` objects
@@ -430,12 +431,18 @@ def clim_avg(
     -------
     computed_dset: same type as dset
         The computed data
+
+    Notes
+    -----
+    Seasonal averages are weighted averages based on the number of days in
+    each month. This means that the given data must be monotonic and must not
+    overlap between months (i.e. hourly, daily, monthly).
     """
 
     freq_dict = {
         'day': ('%m-%d', 'D'),
         'month': ('%m', 'M'),
-        'season': (None, None)
+        'season': (None, 'QS-DEC')
     }
     try:
         (format, frequency) = freq_dict[freq]
@@ -446,18 +453,26 @@ def clim_avg(
 
     time_dim = _get_time_coordinate_info(dset, time_dim)
 
-    # If the frequency is for seasonal averages, ensure data is averaged monthly
-    # and return the three month averages for the seasons
+    # Group monthly data by season using groupby for values across years and
+    # resample for values for each season in each year
     if freq == 'season':
-        monthly = clim_avg(dset,
-                           freq='month',
-                           time_dim=time_dim,
-                           across_years=across_years)
-        return time_avg(monthly,
-                        window=3,
-                        time_dim=time_dim,
-                        rolling=False,
-                        center=True)
+        # Ensure that the data is monthly. If not, compute monthly averages
+        if dset[time_dim].dt.month.values[0] == dset[time_dim].dt.month.values[1]:
+            dset_monthly = clim_avg(dset, 'month', time_dim, False)
+        else:
+            dset_monthly = dset
+        if across_years:
+            month_length = dset_monthly[time_dim].dt.days_in_month\
+                                                 .groupby(time_dim + '.season')
+            weights = month_length / month_length.sum()
+            return (dset_monthly * weights).groupby(time_dim + '.season')\
+                                           .sum(dim=time_dim)
+        else:
+            month_length = dset_monthly[time_dim].dt.days_in_month\
+                                                 .resample({time_dim: frequency})
+            weights = month_length.map(lambda group: group / group.sum())
+            return (dset_monthly * weights).resample({time_dim: frequency})\
+                                           .sum()
 
     # Group the data by the given format (i.e. MM-DD) and then average groups
     if across_years:
