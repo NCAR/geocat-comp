@@ -53,6 +53,12 @@ class Test_heat_index(unittest.TestCase):
                            self.ncl_gt_2,
                            atol=0.005)
 
+    def test_xarray_alt_coef(self):
+        assert np.allclose(heat_index(xr.DataArray(self.t2),
+                                      xr.DataArray(self.rh2), True),
+                           self.ncl_gt_2,
+                           atol=0.005)
+
     def test_float_input(self):
         assert np.allclose(heat_index(80, 75), 83.5751, atol=0.005)
 
@@ -80,9 +86,19 @@ class Test_heat_index(unittest.TestCase):
     def test_rh_valid(self):
         self.assertRaises(ValueError, heat_index, [50, 80, 90], [-1, 101, 50])
 
+    def test_xarray_rh_warning(self):
+        self.assertWarns(UserWarning, heat_index, [50, 80, 90], [0.1, 0.2, 0.5])
+
+    def test_xarray_rh_valid(self):
+        self.assertRaises(ValueError, heat_index, xr.DataArray([50, 80, 90]),
+                          xr.DataArray([-1, 101, 50]))
+
     def test_xarray_type_error(self):
         self.assertRaises(TypeError, heat_index, self.t1,
                           xr.DataArray(self.rh1))
+
+    def test_dims_error(self):
+        self.assertRaises(ValueError, heat_index, self.t1[:10], self.rh1[:8])
 
     def test_dask_compute(self):
         t = xr.DataArray(self.t1).chunk(3)
