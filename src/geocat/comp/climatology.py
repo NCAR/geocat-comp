@@ -440,12 +440,12 @@ def clim_avg(
     """
 
     freq_dict = {
-        'day': ('%m-%d', 'D'),
-        'month': ('%m', 'M'),
-        'season': (None, 'QS-DEC')
+        'day': ('%m-%d', 'D', '12H'),
+        'month': ('%m', 'MS', 'SMS'),
+        'season': (None, 'QS-DEC', 'MS')
     }
     try:
-        (format, frequency) = freq_dict[freq]
+        (format, frequency, offset) = freq_dict[freq]
     except KeyError:
         raise KeyError(
             f"contributed: clim_avg: bad period: PERIOD = {freq}. Valid periods include: {list(freq_dict.keys())}"
@@ -457,10 +457,13 @@ def clim_avg(
     # resample for values for each season in each year
     if freq == 'season':
         # Ensure that the data is monthly. If not, compute monthly averages
-        if dset[time_dim].dt.month.values[0] == dset[time_dim].dt.month.values[1]:
+        # TODO: fix git hooks causing horrendous formatting
+        if dset[time_dim].dt.month.values[0] == dset[time_dim].dt.month.values[
+                1]:
             dset_monthly = clim_avg(dset, 'month', time_dim, False)
         else:
             dset_monthly = dset
+
         if across_years:
             month_length = dset_monthly[time_dim].dt.days_in_month\
                                                  .groupby(time_dim + '.season')
@@ -471,20 +474,27 @@ def clim_avg(
             month_length = dset_monthly[time_dim].dt.days_in_month\
                                                  .resample({time_dim: frequency})
             weights = month_length.map(lambda group: group / group.sum())
-            return (dset_monthly * weights).resample({time_dim: frequency})\
+            return (dset_monthly * weights).resample({time_dim: frequency},
+                                                     loffset=offset)\
                                            .sum()
 
     # Group the data by the given format (i.e. MM-DD) and then average groups
     if across_years:
+        if freq == 'month':
+            offset_obj = pd.offsets.SemiMonthBegin()
+        if freq == 'day':
+            offset_obj = 12 * pd.offsets.Hour()
         # Create array of datetimes to set as time coordinate of returned data
         median_yr = np.median(dset[time_dim].dt.year.values)
         time = pd.date_range(f'{median_yr:.0f}-01-01',
                              f'{median_yr:.0f}-12-31',
-                             freq=frequency)
+                             freq=frequency) + offset_obj
         return dset.groupby(dset[time_dim].dt.strftime(format))\
                    .mean()\
                    .rename({'strftime': time_dim})\
                    .assign_coords({time_dim: time})
     # Resample data using given frequency which preserves the year of the data
     else:
-        return dset.resample({time_dim: frequency}).mean().dropna(time_dim)
+        return dset.resample({time_dim: frequency}, loffset=offset)\
+                   .mean()\
+                   .dropna(time_dim)
