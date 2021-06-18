@@ -402,7 +402,7 @@ def clim_avg(
         dset: typing.Union[xr.DataArray, xr.Dataset],
         freq: str,
         time_dim: str = None,
-        across_years: bool = True) -> typing.Union[xr.DataArray, xr.Dataset]:
+        climatology: bool = True) -> typing.Union[xr.DataArray, xr.Dataset]:
     """This function computes averages according to a given time frequency.
 
     Parameters
@@ -420,7 +420,7 @@ def clim_avg(
     time_dim : `str`, Optional
         Name of the time coordinate for `xarray` objects
 
-    across_years : `boolean`
+    climatology : `boolean`
         Default True. If True, the average for each period (day, month, etc.)
         will be calculated across years, so one number will be returned for
         each period. If False, the average for each period will be calculated
@@ -438,7 +438,7 @@ def clim_avg(
     each month. This means that the given data must be monotonic and must not
     overlap between months (i.e. hourly, daily, monthly).
     """
-
+    # TODO: add hourly/day-hour means, checkout the NCL function for this first
     freq_dict = {
         'day': ('%m-%d', 'D', '12H'),
         'month': ('%m', 'MS', 'SMS'),
@@ -453,38 +453,14 @@ def clim_avg(
 
     time_dim = _get_time_coordinate_info(dset, time_dim)
 
-    # Group monthly data by season using groupby for values across years and
-    # resample for values for each season in each year
-    if freq == 'season':
-        # Ensure that the data is monthly. If not, compute monthly averages
-        # TODO: fix git hooks causing horrendous formatting
-        if dset[time_dim].dt.month.values[0] == dset[time_dim].dt.month.values[
-                1]:
-            dset_monthly = clim_avg(dset, 'month', time_dim, False)
-        else:
-            dset_monthly = dset
-
-        if across_years:
-            month_length = dset_monthly[time_dim].dt.days_in_month\
-                                                 .groupby(time_dim + '.season')
-            weights = month_length / month_length.sum()
-            return (dset_monthly * weights).groupby(time_dim + '.season')\
-                                           .sum(dim=time_dim)
-        else:
-            month_length = dset_monthly[time_dim].dt.days_in_month\
-                                                 .resample({time_dim: frequency})
-            weights = month_length.map(lambda group: group / group.sum())
-            return (dset_monthly * weights).resample({time_dim: frequency},
-                                                     loffset=offset)\
-                                           .sum()
-
-    # Group the data by the given format (i.e. MM-DD) and then average groups
-    if across_years:
-        if freq == 'month':
+    # Average data across years
+    if climatology:
+        if freq == 'month' or freq == 'season':
             offset_obj = pd.offsets.SemiMonthBegin()
         if freq == 'day':
             offset_obj = 12 * pd.offsets.Hour()
         # Create array of datetimes to set as time coordinate of returned data
+        # Offsets are used to ensure the time coordinate of the returned climatology is centered on the period
         median_yr = np.median(dset[time_dim].dt.year.values)
         time = pd.date_range(f'{median_yr:.0f}-01-01',
                              f'{median_yr:.0f}-12-31',
