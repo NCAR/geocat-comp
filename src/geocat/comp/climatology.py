@@ -375,27 +375,27 @@ def time_avg(dset, window, time_dim=None, rolling=False, **rolling_kwargs):
             return np.asarray(dset.rolling({time_dim: window},
                                            min_periods=min_periods,
                                            center=center) \
-                                  .mean())
+                              .mean())
         else:
             return np.asarray(dset.rolling({time_dim: window},
                                            min_periods=min_periods,
                                            center=center) \
-                                  .construct('window_dim', stride=window) \
-                                  .mean('window_dim'))
+                              .construct('window_dim', stride=window) \
+                              .mean('window_dim'))
 
     else:
         time_dim = _get_time_coordinate_info(dset, time_dim)
         if rolling:
             return dset.rolling({time_dim: window},
                                 min_periods=min_periods,
-                                center=center)\
-                       .mean()
+                                center=center) \
+                .mean()
         else:
             return dset.rolling({time_dim: window},
                                 min_periods=min_periods,
-                                center=center)\
-                       .construct('window_dim', stride=window)\
-                       .mean('window_dim')
+                                center=center) \
+                .construct('window_dim', stride=window) \
+                .mean('window_dim')
 
 
 def clim_avg(
@@ -444,12 +444,22 @@ def clim_avg(
         'month': ('%m', 'MS', 'SMS'),
         'season': (None, 'QS-DEC', 'MS')
     }
+
     try:
-        (format, frequency, offset) = freq_dict[freq]
+        freq_dict[freq]
     except KeyError:
         raise KeyError(
             f"contributed: clim_avg: bad period: PERIOD = {freq}. Valid periods include: {list(freq_dict.keys())}"
         )
+
+    # If freq is 'season', key is set to monthly in order to calculate monthly
+    # averages which are then used to calculate seasonal averages
+    if freq == 'season':
+        key = 'month'
+    else:
+        key = freq
+
+    (format, frequency, offset) = freq_dict[key]
 
     time_dim = _get_time_coordinate_info(dset, time_dim)
 
@@ -465,12 +475,35 @@ def clim_avg(
         time = pd.date_range(f'{median_yr:.0f}-01-01',
                              f'{median_yr:.0f}-12-31',
                              freq=frequency) + offset_obj
-        return dset.groupby(dset[time_dim].dt.strftime(format))\
-                   .mean()\
-                   .rename({'strftime': time_dim})\
-                   .assign_coords({time_dim: time})
-    # Resample data using given frequency which preserves the year of the data
+
+        dset = dset.groupby(dset[time_dim].dt.strftime(format)).mean().rename({
+            'strftime': time_dim
+        }).assign_coords({time_dim: time})
+        if freq == 'season':
+            # Compute the weights for the months in each season so that the
+            # seasonal averages account for months being of different lengths
+            month_length = dset[time_dim].dt.days_in_month.groupby(time_dim +
+                                                                   '.season')
+            weights = month_length / month_length.sum()
+            dset = (dset * weights).groupby(time_dim +
+                                            '.season').sum(dim=time_dim)
+    # Average data for each period considering the year of the period
     else:
-        return dset.resample({time_dim: frequency}, loffset=offset)\
-                   .mean()\
-                   .dropna(time_dim)
+        # Resample data using given frequency which preserves the year of the data
+        dset = dset.resample({
+            time_dim: frequency
+        }, loffset=offset).mean().dropna(time_dim)
+        if freq == 'season':
+            key = 'season'
+            (format, frequency, offset) = freq_dict[key]
+            # Compute the weights for the months in each season so that the
+            # seasonal averages account for months being of different lengths
+            month_length = dset[time_dim].dt.days_in_month.resample(
+                {time_dim: frequency})
+            weights = month_length.map(lambda group: group / group.sum())
+            dset = (dset * weights).resample({
+                time_dim: frequency
+            },
+                                             loffset=offset).sum()
+
+    return dset
