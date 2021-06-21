@@ -139,7 +139,7 @@ def psychrometric_constant(pressure):
         pressure = np.asarray(pressure)
 
     # psychrometric constant calculation
-    # Note: no additional functions needed for type compatibility
+    # Note: no additional functions needed for xarray compatibility
     con = 0.66474e-3
     psy_const = con * pressure
 
@@ -210,9 +210,7 @@ def saturation_vapor_pressure(temperature, tfill=np.NAN):
         svp.attrs['info'] = "FAO 56; EQN 11; saturation_vapor_pressure"
 
     else:
-        # if not xarray, make sure in numpy for calculation
-        if in_type is not xr.DataArray:
-            temperature = np.asarray(temperature)
+        temperature = np.asarray(temperature)
 
         temp_c = (temperature - 32) * 5 / 9
         svp = np.where(temp_c > 0, 0.6108 * np.exp(
@@ -324,9 +322,7 @@ def saturation_vapor_pressure_slope(temperature, tfill=np.NAN):
             'info'] = "FAO 56; EQN 13; saturation_vapor_pressure_slope"
 
     else:
-        # if not xarray, make sure in numpy for calculation
-        if in_type is not xr.DataArray:
-            temperature = np.asarray(temperature)
+        temperature = np.asarray(temperature)
 
         # convert to Celsius
         temp_c = (temperature - 32) * 5 / 9
