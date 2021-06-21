@@ -257,28 +257,16 @@ def actual_saturation_vapor_pressure(tdew, tfill=np.NAN):
     array([1.22796262, 1.76730647, 2.50402976])
     """
 
-    x_out = False
-    if isinstance(tdew, xr.DataArray):
-        x_out = True
-        save_dims = tdew.dims
-        save_coords = tdew.coords
-
-    # convert inputs to numpy arrays if necessary
-    if not _is_duck_array(tdew):
-        tdew = np.asarray(tdew)
+    in_type = type(tdew)
 
     asvp = saturation_vapor_pressure(tdew, tfill)
 
-    # reformat output for xarray if necessary
-    if x_out:
-        heatindex = xr.DataArray(asvp, coords=save_coords, dims=save_dims)
-        heatindex.attrs[
-            'long_name'] = "actual saturation vapor pressure via Tdew"
-        heatindex.attrs['units'] = "kPa"
-        heatindex.attrs[
-            'url'] = "https://www.fao.org/docrep/X0490E/x0490e07.htm"
-        heatindex.attrs[
-            'info'] = "FAO 56; EQN 14; actual_saturation_vapor_pressure"
+    # reformat metadata for xarray
+    if in_type is xr.DataArray:
+        asvp.attrs['long_name'] = "actual saturation vapor pressure via Tdew"
+        asvp.attrs['units'] = "kPa"
+        asvp.attrs['url'] = "https://www.fao.org/docrep/X0490E/x0490e07.htm"
+        asvp.attrs['info'] = "FAO 56; EQN 14; actual_saturation_vapor_pressure"
 
     return asvp
 
