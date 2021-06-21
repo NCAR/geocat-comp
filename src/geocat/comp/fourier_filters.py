@@ -1,5 +1,3 @@
-import math as m
-
 import numpy as np
 import xarray as xr
 
@@ -108,26 +106,37 @@ def fourier_filter(signal,
     resolution = frequency / len(signal)
     signal = np.swapaxes(signal, time_axis, 0)
     res_fft = np.fft.fft(signal, axis=0)
-    cfl_index = m.floor(cutoff_frequency_low / resolution)
+    cfl_index = round(cutoff_frequency_low / resolution)
     cfln_index = 1 - cfl_index
-    cfh_index = m.ceil(cutoff_frequency_high / resolution)
+    cfh_index = round(cutoff_frequency_high / resolution)
     cfhn_index = 1 - cfh_index
     if low_pass:
-        res_fft[cfl_index:cfln_index] = np.zeros(
-            res_fft[cfl_index:cfln_index].shape)
+        if cfl_index > 1:
+            res_fft[cfl_index:cfln_index] = np.zeros(
+                res_fft[cfl_index:cfln_index].shape)
+        else:
+            res_fft[cfl_index:] = np.zeros(res_fft[cfl_index:].shape)
     if high_pass:
         res_fft[:cfh_index] = np.zeros(res_fft[:cfh_index].shape)
-        res_fft[cfhn_index:] = np.zeros(res_fft[cfhn_index:].shape)
+        if cfh_index > 1:
+            res_fft[cfhn_index:] = np.zeros(res_fft[cfhn_index:].shape)
     if band_pass:
         res_fft[:cfl_index] = np.zeros(res_fft[:cfl_index].shape)
-        res_fft[cfh_index:cfhn_index] = np.zeros(
-            res_fft[cfh_index:cfhn_index].shape)
-        res_fft[cfln_index:] = np.zeros(res_fft[cfln_index:].shape)
+        if cfh_index > 1:
+            res_fft[cfh_index:cfhn_index] = np.zeros(
+                res_fft[cfh_index:cfhn_index].shape)
+        else:
+            res_fft[cfh_index:] = np.zeros(res_fft[cfh_index:].shape)
+        if cfl_index > 1:
+            res_fft[cfln_index:] = np.zeros(res_fft[cfln_index:].shape)
     if band_block:
         res_fft[cfl_index:cfh_index] = np.zeros(
             res_fft[cfl_index:cfh_index].shape)
-        res_fft[cfhn_index:cfln_index] = np.zeros(
-            res_fft[cfhn_index:cfln_index].shape)
+        if cfl_index > 1 and cfh_index > 1:
+            res_fft[cfhn_index:cfln_index] = np.zeros(
+                res_fft[cfhn_index:cfln_index].shape)
+        elif cfh_index > 1:
+            res_fft[cfhn_index:] = np.zeros(res_fft[cfhn_index:].shape)
     result = np.fft.ifft(res_fft, axis=0)
     result = np.real(result)
     result = np.swapaxes(result, time_axis, 0)
