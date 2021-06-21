@@ -302,31 +302,39 @@ def saturation_vapor_pressure_slope(temperature, tfill=np.NAN):
     array([0.08224261, 0.11322096, 0.153595  ])
     """
 
-    x_out = False
-    if isinstance(temperature, xr.DataArray):
-        x_out = True
-        save_dims = temperature.dims
-        save_coords = temperature.coords
+    in_type = type(temperature)
 
-    # convert inputs to numpy arrays for function call if necessary
-    if not _is_duck_array(temperature):
-        temperature = np.asarray(temperature, dtype='float32')
+    if in_type is xr.DataArray:
 
-    # convert to Celsius
-    temp_c = (temperature - 32) * 5 / 9
+        # convert to Celsius
+        temp_c = (temperature - 32) * 5 / 9
 
-    svp_slope = np.where(
-        temp_c > 0, 4096 * (0.6108 * np.exp(
-            (17.27 * temp_c) / (temp_c + 237.3)) / (temp_c + 237.3)**2), tfill)
+        # calculate svp_slope
+        svp_slope = xr.where(
+            temp_c > 0, 4096 * (0.6108 * np.exp(
+                (17.27 * temp_c) / (temp_c + 237.3)) / (temp_c + 237.3)**2),
+            tfill)
 
-    # reformat output for xarray if necessary
-    if x_out:
-        heatindex = xr.DataArray(svp_slope, coords=save_coords, dims=save_dims)
-        heatindex.attrs['long_name'] = "slope saturation vapor pressure curve"
-        heatindex.attrs['units'] = "kPa/C"
-        heatindex.attrs[
+        # add relevant metadata
+        svp_slope.attrs['long_name'] = "slope saturation vapor pressure curve"
+        svp_slope.attrs['units'] = "kPa/C"
+        svp_slope.attrs[
             'url'] = "https://www.fao.org/docrep/X0490E/x0490e07.htm"
-        heatindex.attrs[
+        svp_slope.attrs[
             'info'] = "FAO 56; EQN 13; saturation_vapor_pressure_slope"
+
+    else:
+        # if not xarray, make sure in numpy for calculation
+        if in_type is not xr.DataArray:
+            temperature = np.asarray(temperature)
+
+        # convert to Celsius
+        temp_c = (temperature - 32) * 5 / 9
+
+        # calculate svp_slope
+        svp_slope = np.where(
+            temp_c > 0, 4096 * (0.6108 * np.exp(
+                (17.27 * temp_c) / (temp_c + 237.3)) / (temp_c + 237.3)**2),
+            tfill)
 
     return svp_slope
