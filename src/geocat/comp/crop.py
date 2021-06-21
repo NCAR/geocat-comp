@@ -192,28 +192,31 @@ def saturation_vapor_pressure(temperature, tfill=np.NAN):
     array([1.22796262, 1.76730647, 2.50402976])
     """
 
-    x_out = False
-    if isinstance(temperature, xr.DataArray):
-        x_out = True
-        save_dims = temperature.dims
-        save_coords = temperature.coords
+    in_type = type(temperature)
 
-    # convert inputs to numpy arrays for function call if necessary
-    if not _is_duck_array(temperature):
-        temperature = np.asarray(temperature, dtype='float32')
+    if in_type is xr.DataArray:
 
-    temp_c = (temperature - 32) * 5 / 9
-    svp = np.where(temp_c > 0, 0.6108 * np.exp(
-        (17.27 * temp_c) / (temp_c + 237.3)), tfill)
+        # convert temperature to Celsius
+        temp_c = (temperature - 32) * 5 / 9
 
-    # reformat output for xarray if necessary
-    if x_out:
-        heatindex = xr.DataArray(svp, coords=save_coords, dims=save_dims)
-        heatindex.attrs['long_name'] = "saturation vapor pressure"
-        heatindex.attrs['units'] = "kPa"
-        heatindex.attrs[
-            'url'] = "https://www.fao.org/docrep/X0490E/x0490e07.htm"
-        heatindex.attrs['info'] = "FAO 56; EQN 11; saturation_vapor_pressure"
+        # calculate svp
+        svp = xr.where(temp_c > 0, 0.6108 * np.exp(
+            (17.27 * temp_c) / (temp_c + 237.3)), tfill)
+
+        # add relevant metadata
+        svp.attrs['long_name'] = "saturation vapor pressure"
+        svp.attrs['units'] = "kPa"
+        svp.attrs['url'] = "https://www.fao.org/docrep/X0490E/x0490e07.htm"
+        svp.attrs['info'] = "FAO 56; EQN 11; saturation_vapor_pressure"
+
+    else:
+        # if not xarray, make sure in numpy for calculation
+        if in_type is not xr.DataArray:
+            temperature = np.asarray(temperature)
+
+        temp_c = (temperature - 32) * 5 / 9
+        svp = np.where(temp_c > 0, 0.6108 * np.exp(
+            (17.27 * temp_c) / (temp_c + 237.3)), tfill)
 
     return svp
 
