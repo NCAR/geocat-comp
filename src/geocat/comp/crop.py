@@ -134,7 +134,7 @@ def psychrometric_constant(pressure):
 
     in_type = type(pressure)
 
-    # if not
+    # if not xarray, make sure in numpy for calculation
     if in_type is not xr.DataArray:
         pressure = np.asarray(pressure)
 
