@@ -1,6 +1,7 @@
 import sys
 import unittest
 
+import dask.array
 import dask.array as da
 import dask.distributed as dd
 import numpy as np
@@ -161,7 +162,7 @@ class Test_max_daylight(unittest.TestCase):
         self.assertWarns(UserWarning, max_daylight, 10, 67)
 
 
-class Test_psychometric_constant(unittest.TestCase):
+class Test_psychrometric_constant(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -213,17 +214,18 @@ class Test_psychometric_constant(unittest.TestCase):
                            expected,
                            atol=0.005)
 
-    def test_dask_unchunked_input(self):
-        pressure = da.from_array(self.pressure_gt)
-        out = self.client.submit(psychrometric_constant, pressure).result()
+    def test_dask_compute(self):
+        pressure = xr.DataArray(self.pressure_gt).chunk(10)
 
-        assert np.allclose(out, self.ncl_gt)
+        assert np.allclose(psychrometric_constant(pressure),
+                           self.ncl_gt,
+                           atol=0.005)
 
-    def test_dask_chunked_input(self):
-        pressure = da.from_array(self.pressure_gt, chunks='auto')
-        out = self.client.submit(psychrometric_constant, pressure).result()
+    def test_dask_lazy(self):
+        pressure = xr.DataArray(self.pressure_gt).chunk(10)
 
-        assert np.allclose(out, self.ncl_gt)
+        assert isinstance((psychrometric_constant(pressure)).data,
+                          dask.array.Array)
 
 
 class Test_saturation_vapor_pressure(unittest.TestCase):

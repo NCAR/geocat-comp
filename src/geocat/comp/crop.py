@@ -110,7 +110,7 @@ def psychrometric_constant(pressure):
     pressure is used for each location (Equation 7), the psychrometric
     constant is kept constant for each location.
 
-    A table listing the psychometric constant for different altitudes is
+    A table listing the psychrometric constant for different altitudes is
     located here: https://www.fao.org/3/X0490E/x0490e0j.htm
 
     Parameters
@@ -132,28 +132,24 @@ def psychrometric_constant(pressure):
     array([0.0398844, 0.0531792, 0.066474 ])
     """
 
-    x_out = False
-    if isinstance(pressure, xr.DataArray):
-        x_out = True
-        save_dims = pressure.dims
-        save_coords = pressure.coords
+    in_type = type(pressure)
 
-    # convert inputs to numpy arrays if necessary
-    if not _is_duck_array(pressure):
+    # if not
+    if in_type is not xr.DataArray:
         pressure = np.asarray(pressure)
 
+    # psychrometric constant calculation
+    # Note: no additional functions needed for type compatibility
     con = 0.66474e-3
-
     psy_const = con * pressure
 
-    # reformat output for xarray if necessary
-    if x_out:
-        heatindex = xr.DataArray(psy_const, coords=save_coords, dims=save_dims)
-        heatindex.attrs['long_name'] = "psychrometric constant"
-        heatindex.attrs['units'] = "kPa/C"
-        heatindex.attrs[
+    # if output is xarray, add relevant metadata
+    if in_type is xr.DataArray:
+        psy_const.attrs['long_name'] = "psychrometric constant"
+        psy_const.attrs['units'] = "kPa/C"
+        psy_const.attrs[
             'url'] = "https://www.fao.org/docrep/X0490E/x0490e07.htm"
-        heatindex.attrs['info'] = "FAO 56; EQN 8; psychrometric_constant"
+        psy_const.attrs['info'] = "FAO 56; EQN 8; psychrometric_constant"
 
     return psy_const
 
