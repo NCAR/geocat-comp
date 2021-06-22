@@ -132,19 +132,19 @@ def psychrometric_constant(pressure):
     array([0.0398844, 0.0531792, 0.066474 ])
     """
 
+    # Constant
+    con = 0.66474e-3
+
     in_type = type(pressure)
 
-    # if not xarray, make sure in numpy for calculation
+    # Psychrometric constant calculation
+    # if input not xarray, make sure in numpy for calculation
     if in_type is not xr.DataArray:
-        pressure = np.asarray(pressure)
+        psy_const = con * np.asarray(pressure)
 
-    # psychrometric constant calculation
-    # Note: no additional functions needed for xarray compatibility
-    con = 0.66474e-3
-    psy_const = con * pressure
-
-    # if output is xarray, add relevant metadata
-    if in_type is xr.DataArray:
+    # else if input is xarray, add relevant metadata for xarray output
+    else:
+        psy_const = con * pressure
         psy_const.attrs['long_name'] = "psychrometric constant"
         psy_const.attrs['units'] = "kPa/C"
         psy_const.attrs[
