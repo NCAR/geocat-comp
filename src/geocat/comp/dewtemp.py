@@ -34,7 +34,7 @@ def dewtemp(temperature, relative_humidity):
     if xr.DataArray in in_types:
 
         # check all inputs are xr.DataArray
-        if not all(x == xr.DataArray for x in in_types):
+        if any(x != xr.DataArray for x in in_types):
             raise TypeError(
                 "relhum: if using xarray, all inputs must be xarray")
 
