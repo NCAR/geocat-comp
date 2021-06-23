@@ -31,17 +31,18 @@ def _get_dummy_data(start_date, end_date, freq, nlats, nlons):
 
 
 # Test Datasets
+hourly_data = np.arange(24 * 62).reshape(1488, 1, 1)
 hourly_2020 = _get_dummy_data('01-01-2020', '1-31-2020T23:00:00', 'H', 1, 1)
 hourly_2021 = _get_dummy_data('01-01-2021', '1-31-2021T23:00:00', 'H', 1, 1)
-hourly = xr.concat([hourly_2020, hourly_2021], dim='time')
+hourly = xr.concat([hourly_2020, hourly_2021], dim='time')\
+           .update({'data': (('time', 'lat', 'lon'), hourly_data)})
 
 daily = _get_dummy_data('01-01-2020', '12-31-2021', 'D', 1, 1)
 
 monthly = _get_dummy_data('01-01-2020', '12-01-2021', 'MS', 1, 1)
 
 # Tests w/ expected outputs
-day_avg = np.arange(11.5, 755.5, 24).reshape(31, 1, 1)
-day_avg = np.concatenate([day_avg, day_avg])
+day_avg = np.arange(11.5, 1499.5, 24).reshape(62, 1, 1)
 day_avg_time = np.concatenate([
     pd.date_range('01-01-2020T12:00:00', '01-31-2020T12:00:00', freq='24H'),
     pd.date_range('01-01-2021T12:00:00', '01-31-2021T12:00:00', freq='24H')
@@ -120,7 +121,7 @@ def test_monthly_to_seasonal_avg(dset, expected):
 
 
 # Climatology Computational Tests
-day_clim = np.arange(383, 1127, 24).reshape(31, 1, 1)
+day_clim = np.arange(383.5, 1127.5, 24).reshape(31, 1, 1)
 day_clim_time = np.concatenate(
     [pd.date_range('01-01-2020T12:00:00', '01-31-2020T12:00:00', freq='24H')])
 
@@ -135,10 +136,8 @@ hour_2_day_clim = xr.Dataset(
 
 @pytest.mark.parametrize('dset, expected', [(hourly, hour_2_day_clim)])
 def test_hourly_to_daily_clim(dset, expected):
-    #todo: fix the assumption that the data is for a full year
-    #todo: calculate the time date range correctly
-    #result = clim_avg(dset, freq='day', climatology=True)
-    assert False
+    result = clim_avg(dset, freq='day', climatology=True)
+    xr.testing.assert_equal(result, expected)
 
 
 month_clim = np.array([
@@ -205,13 +204,13 @@ def test_invalid_freq(freq):
 
 time_dim = 'my_time'
 custom_time = daily.rename({'time': time_dim})
-custom_time_expected = day_2_month_clim.rename({'time': time_dim})
+custom_time_expected = day_2_month_avg.rename({'time': time_dim})
 
 
 @pytest.mark.parametrize('dset, expected, time_dim',
                          [(custom_time, custom_time_expected, time_dim)])
 def test_custom_time_coord(dset, expected, time_dim):
-    result = clim_avg(dset, freq='month', time_dim=time_dim, climatology=True)
+    result = clim_avg(dset, freq='month', time_dim=time_dim, climatology=False)
     xr.testing.assert_allclose(result, expected)
 
 

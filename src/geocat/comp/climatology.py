@@ -467,30 +467,42 @@ def clim_avg(
     if climatology:
         if freq == 'month' or freq == 'season':
             offset_obj = pd.offsets.SemiMonthBegin()
+
         if freq == 'day':
             offset_obj = 12 * pd.offsets.Hour()
-        # Create array of datetimes to set as time coordinate of returned data
-        # Offsets are used to ensure the time coordinate of the returned climatology is centered on the period
-        median_yr = np.median(dset[time_dim].dt.year.values)
-        #todo: fix the assumption that the data is for a full year
-        #todo: calculate the time date range correctly
-        time = pd.date_range(f'{median_yr:.0f}-01-01',
-                             f'{median_yr:.0f}-12-31',
-                             freq=frequency) + offset_obj
 
-        dset = dset.groupby(dset[time_dim].dt.strftime(format)).mean().rename({
-            'strftime': time_dim
-        }).assign_coords({time_dim: time})
         if freq == 'season':
+            # Calculate monthly average before calculating seasonal climatologies
+            dset = dset.resample({
+                time_dim: frequency
+            }, loffset=offset).mean().dropna(time_dim)
+
             # Compute the weights for the months in each season so that the
             # seasonal averages account for months being of different lengths
-            # TODO: don't calculate monthly clim first, messes up submonthly->seasonally
-            # Todo: maybe calculate monthly avg before seasonal clim?
             month_length = dset[time_dim].dt.days_in_month.groupby(time_dim +
                                                                    '.season')
             weights = month_length / month_length.sum()
             dset = (dset * weights).groupby(time_dim + '.season')
             dset = dset.sum(dim=time_dim)
+        else:
+            # Retrieve floor of median year
+            median_yr = np.median(dset[time_dim].dt.year.values)
+
+            # Group data by format then calculate average of groups
+            dset = dset.groupby(
+                dset[time_dim].dt.strftime(format)).mean().rename(
+                    {'strftime': time_dim})
+
+            # Create array of datetimes to set as time coordinate of returned data
+            # Offsets are used to ensure the time coordinate of the returned climatology is centered on the period
+            start_day = dset[time_dim].values[0]
+            end_day = dset[time_dim].values[-1]
+
+            time = pd.date_range(f'{median_yr:.0f}-{start_day}',
+                                 f'{median_yr:.0f}-{end_day}',
+                                 freq=frequency) + offset_obj
+            dset = dset.assign_coords({time_dim: time})
+
     # Average data for each period considering the year of the period
     else:
         # Resample data using given frequency which preserves the year of the data
