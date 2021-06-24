@@ -42,6 +42,32 @@ daily = _get_dummy_data('01-01-2020', '12-31-2021', 'D', 1, 1)
 monthly = _get_dummy_data('01-01-2020', '12-01-2021', 'MS', 1, 1)
 
 # Tests w/ expected outputs
+year_avg_time = pd.to_datetime(['07-01-2020', '07-01-2021'])
+day_2_year_avg = [[[182.5]], [[548]]]
+day_2_year_avg = xr.Dataset(
+    data_vars={'data': (('time', 'lat', 'lon'), day_2_year_avg)},
+    coords={
+        'time': year_avg_time,
+        'lat': [-90.0],
+        'lon': [-180.0]
+    })
+month_2_year_avg = [[[5.513661202]], [[17.5260274]]]
+month_2_year_avg = xr.Dataset(
+    data_vars={'data': (('time', 'lat', 'lon'), month_2_year_avg)},
+    coords={
+        'time': year_avg_time,
+        'lat': [-90.0],
+        'lon': [-180.0]
+    })
+
+
+@pytest.mark.parametrize('dset, expected', [(daily, day_2_year_avg),
+                                            (monthly, month_2_year_avg)])
+def test_yearly_avg(dset, expected):
+    result = clim_avg(dset, freq='year')
+    xr.testing.assert_allclose(result, expected)
+
+
 day_avg = np.arange(11.5, 1499.5, 24).reshape(62, 1, 1)
 day_avg_time = np.concatenate([
     pd.date_range('01-01-2020T12:00:00', '01-31-2020T12:00:00', freq='24H'),

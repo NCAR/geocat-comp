@@ -4,6 +4,7 @@ import cf_xarray
 import numpy as np
 import xarray as xr
 import pandas as pd
+import warnings
 
 xr.set_options(keep_attrs=True)
 
@@ -442,7 +443,8 @@ def clim_avg(
     freq_dict = {
         'day': ('%m-%d', 'D', '12H'),
         'month': ('%m', 'MS', 'SMS'),
-        'season': (None, 'QS-DEC', 'MS')
+        'season': (None, 'QS-DEC', 'MS'),
+        'year': (None, 'YS', '6MS')
     }
 
     try:
@@ -454,7 +456,7 @@ def clim_avg(
 
     # If freq is 'season', key is set to monthly in order to calculate monthly
     # averages which are then used to calculate seasonal averages
-    if freq == 'season':
+    if freq == 'season' or freq == 'year':
         key = 'month'
     else:
         key = freq
@@ -463,6 +465,11 @@ def clim_avg(
 
     time_dim = _get_time_coordinate_info(dset, time_dim)
 
+    if freq == 'year' and climatology:
+        climatology = False
+        warnings.warn(
+            'Cannot compute yearly climatology data since climatologies are averaged over years. To remove warning, set `climatology` to False'
+        )
     # Average data across years
     if climatology:
         if freq == 'month' or freq == 'season':
@@ -509,8 +516,8 @@ def clim_avg(
         dset = dset.resample({
             time_dim: frequency
         }, loffset=offset).mean().dropna(time_dim)
-        if freq == 'season':
-            key = 'season'
+        if freq == 'season' or freq == 'year':
+            key = freq
             (format, frequency, offset) = freq_dict[key]
             # Compute the weights for the months in each season so that the
             # seasonal averages account for months being of different lengths
