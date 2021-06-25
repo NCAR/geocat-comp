@@ -441,6 +441,7 @@ def clim_avg(
     """
     # TODO: add hourly/day-hour means, checkout the NCL function for this first
     freq_dict = {
+        'hour': ('%m-%d %H', 'H', '30min'),
         'day': ('%m-%d', 'D', '12H'),
         'month': ('%m', 'MS', 'SMS'),
         'season': (None, 'QS-DEC', 'MS'),
@@ -477,6 +478,9 @@ def clim_avg(
 
         if freq == 'day':
             offset_obj = 12 * pd.offsets.Hour()
+
+        if freq == 'hour':
+            offset_obj = 30 * pd.offsets.Minute()
 
         if freq == 'season':
             # Calculate monthly average before calculating seasonal climatologies

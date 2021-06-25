@@ -31,6 +31,12 @@ def _get_dummy_data(start_date, end_date, freq, nlats, nlons):
 
 
 # Test Datasets
+minute_data = np.arange(48 * 14).reshape(48 * 14, 1, 1)
+minute_2020 = _get_dummy_data('01-01-2020', '1-07-2020T23:30:00', '30min', 1, 1)
+minute_2021 = _get_dummy_data('01-01-2021', '1-07-2021T23:30:00', '30min', 1, 1)
+minute = xr.concat([minute_2020, minute_2021], dim='time') \
+           .update({'data': (('time', 'lat', 'lon'), minute_data)})
+
 hourly_data = np.arange(24 * 62).reshape(1488, 1, 1)
 hourly_2020 = _get_dummy_data('01-01-2020', '1-31-2020T23:00:00', 'H', 1, 1)
 hourly_2021 = _get_dummy_data('01-01-2021', '1-31-2021T23:00:00', 'H', 1, 1)
@@ -42,30 +48,26 @@ daily = _get_dummy_data('01-01-2020', '12-31-2021', 'D', 1, 1)
 monthly = _get_dummy_data('01-01-2020', '12-01-2021', 'MS', 1, 1)
 
 # Tests w/ expected outputs
-year_avg_time = pd.to_datetime(['07-01-2020', '07-01-2021'])
-day_2_year_avg = [[[182.5]], [[548]]]
-day_2_year_avg = xr.Dataset(
-    data_vars={'data': (('time', 'lat', 'lon'), day_2_year_avg)},
+hour_avg = np.arange(0.5, 672.5, 2).reshape(336, 1, 1)
+hour_avg_time = np.concatenate([
+    pd.date_range('01-01-2020T00:30:00', '01-07-2020T23:30:00', freq='H'),
+    pd.date_range('01-01-2021T00:30:00', '01-07-2021T23:30:00', freq='H')
+])
+min_2_hour_avg = xr.Dataset(
+    data_vars={'data': (('time', 'lat', 'lon'), hour_avg)},
     coords={
-        'time': year_avg_time,
-        'lat': [-90.0],
-        'lon': [-180.0]
-    })
-month_2_year_avg = [[[5.513661202]], [[17.5260274]]]
-month_2_year_avg = xr.Dataset(
-    data_vars={'data': (('time', 'lat', 'lon'), month_2_year_avg)},
-    coords={
-        'time': year_avg_time,
+        'time': hour_avg_time,
         'lat': [-90.0],
         'lon': [-180.0]
     })
 
 
-@pytest.mark.parametrize('dset, expected', [(daily, day_2_year_avg),
-                                            (monthly, month_2_year_avg)])
-def test_yearly_avg(dset, expected):
-    result = clim_avg(dset, freq='year')
-    xr.testing.assert_allclose(result, expected)
+@pytest.mark.parametrize('dset, expected', [(minute, min_2_hour_avg)])
+def test_30min_to_hourly_avg(dset, expected):
+    result = clim_avg(dset, freq='hour', climatology=False)
+    print(result.time.values)
+    print(expected.time.values)
+    xr.testing.assert_equal(result, expected)
 
 
 day_avg = np.arange(11.5, 1499.5, 24).reshape(62, 1, 1)
@@ -146,7 +148,52 @@ def test_monthly_to_seasonal_avg(dset, expected):
     xr.testing.assert_allclose(result, expected)
 
 
+year_avg_time = pd.to_datetime(['07-01-2020', '07-01-2021'])
+day_2_year_avg = [[[182.5]], [[548]]]
+day_2_year_avg = xr.Dataset(
+    data_vars={'data': (('time', 'lat', 'lon'), day_2_year_avg)},
+    coords={
+        'time': year_avg_time,
+        'lat': [-90.0],
+        'lon': [-180.0]
+    })
+month_2_year_avg = [[[5.513661202]], [[17.5260274]]]
+month_2_year_avg = xr.Dataset(
+    data_vars={'data': (('time', 'lat', 'lon'), month_2_year_avg)},
+    coords={
+        'time': year_avg_time,
+        'lat': [-90.0],
+        'lon': [-180.0]
+    })
+
+
+@pytest.mark.parametrize('dset, expected', [(daily, day_2_year_avg),
+                                            (monthly, month_2_year_avg)])
+def test_yearly_avg(dset, expected):
+    result = clim_avg(dset, freq='year')
+    xr.testing.assert_allclose(result, expected)
+
+
 # Climatology Computational Tests
+hour_clim = np.arange(168.5, 504.5, 2).reshape(24 * 7, 1, 1)
+hour_clim_time = pd.date_range('01-01-2020T00:30:00',
+                               '01-07-2020T23:30:00',
+                               freq='H')
+min_2_hourly_clim = xr.Dataset(
+    data_vars={'data': (('time', 'lat', 'lon'), hour_clim)},
+    coords={
+        'time': hour_clim_time,
+        'lat': [-90.0],
+        'lon': [-180.0]
+    })
+
+
+@pytest.mark.parametrize('dset, expected', [(minute, min_2_hourly_clim)])
+def test_30min_to_hourly_clim(dset, expected):
+    result = clim_avg(dset, freq='hour', climatology=True)
+    xr.testing.assert_allclose(result, expected)
+
+
 day_clim = np.arange(383.5, 1127.5, 24).reshape(31, 1, 1)
 day_clim_time = np.concatenate(
     [pd.date_range('01-01-2020T12:00:00', '01-31-2020T12:00:00', freq='24H')])
