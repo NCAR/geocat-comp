@@ -1,7 +1,7 @@
 import sys
 import unittest
 
-import dask.array as da
+import dask.array
 import dask.distributed as dd
 import numpy as np
 import xarray as xr
@@ -53,6 +53,12 @@ class Test_heat_index(unittest.TestCase):
                            self.ncl_gt_2,
                            atol=0.005)
 
+    def test_xarray_alt_coef(self):
+        assert np.allclose(heat_index(xr.DataArray(self.t2),
+                                      xr.DataArray(self.rh2), True),
+                           self.ncl_gt_2,
+                           atol=0.005)
+
     def test_float_input(self):
         assert np.allclose(heat_index(80, 75), 83.5751, atol=0.005)
 
@@ -80,18 +86,28 @@ class Test_heat_index(unittest.TestCase):
     def test_rh_valid(self):
         self.assertRaises(ValueError, heat_index, [50, 80, 90], [-1, 101, 50])
 
-    def test_dask_unchunked_input(self):
-        t = da.from_array(self.t1)
-        rh = da.from_array(self.rh1)
+    def test_xarray_rh_warning(self):
+        self.assertWarns(UserWarning, heat_index, [50, 80, 90], [0.1, 0.2, 0.5])
 
-        out = self.client.submit(heat_index, t, rh).result()
+    def test_xarray_rh_valid(self):
+        self.assertRaises(ValueError, heat_index, xr.DataArray([50, 80, 90]),
+                          xr.DataArray([-1, 101, 50]))
 
-        assert np.allclose(out, self.ncl_gt_1, atol=0.005)
+    def test_xarray_type_error(self):
+        self.assertRaises(TypeError, heat_index, self.t1,
+                          xr.DataArray(self.rh1))
 
-    def test_dask_chunked_input(self):
-        t = da.from_array(self.t1, chunks='auto')
-        rh = da.from_array(self.rh1, chunks='auto')
+    def test_dims_error(self):
+        self.assertRaises(ValueError, heat_index, self.t1[:10], self.rh1[:8])
 
-        out = self.client.submit(heat_index, t, rh).result()
+    def test_dask_compute(self):
+        t = xr.DataArray(self.t1).chunk(3)
+        rh = xr.DataArray(self.rh1).chunk(3)
 
-        assert np.allclose(out, self.ncl_gt_1, atol=0.005)
+        assert np.allclose(heat_index(t, rh), self.ncl_gt_1, atol=0.005)
+
+    def test_dask_lazy(self):
+        t = xr.DataArray(self.t1).chunk(3)
+        rh = xr.DataArray(self.rh1).chunk(3)
+
+        assert isinstance((heat_index(t, rh)).data, dask.array.Array)

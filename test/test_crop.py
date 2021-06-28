@@ -1,6 +1,7 @@
 import sys
 import unittest
 
+import dask.array
 import dask.array as da
 import dask.distributed as dd
 import numpy as np
@@ -74,21 +75,20 @@ class Test_actual_saturation_vapor_pressure(unittest.TestCase):
                            expected,
                            atol=0.005)
 
-    def test_dask_unchunked_input(self):
-        tempf = da.from_array(self.temp_gt)
-        out = self.client.submit(actual_saturation_vapor_pressure,
-                                 tempf,
-                                 tfill=1.0000000e+20).result()
+    def test_dask_compute(self):
+        tempf = xr.DataArray(self.temp_gt).chunk(10)
 
-        assert np.allclose(out, self.ncl_gt)
+        assert np.allclose(actual_saturation_vapor_pressure(
+            tempf, tfill=1.0000000e+20),
+                           self.ncl_gt,
+                           atol=0.005)
 
-    def test_dask_chunked_input(self):
-        tempf = da.from_array(self.temp_gt, chunks='auto')
-        out = self.client.submit(actual_saturation_vapor_pressure,
-                                 tempf,
-                                 tfill=1.0000000e+20).result()
+    def test_dask_lazy(self):
+        tempf = xr.DataArray(self.temp_gt).chunk(10)
 
-        assert np.allclose(out, self.ncl_gt)
+        assert isinstance(
+            (actual_saturation_vapor_pressure(tempf, tfill=1.0000000e+20)).data,
+            dask.array.Array)
 
 
 class Test_max_daylight(unittest.TestCase):
@@ -161,7 +161,7 @@ class Test_max_daylight(unittest.TestCase):
         self.assertWarns(UserWarning, max_daylight, 10, 67)
 
 
-class Test_psychometric_constant(unittest.TestCase):
+class Test_psychrometric_constant(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -213,17 +213,18 @@ class Test_psychometric_constant(unittest.TestCase):
                            expected,
                            atol=0.005)
 
-    def test_dask_unchunked_input(self):
-        pressure = da.from_array(self.pressure_gt)
-        out = self.client.submit(psychrometric_constant, pressure).result()
+    def test_dask_compute(self):
+        pressure = xr.DataArray(self.pressure_gt).chunk(10)
 
-        assert np.allclose(out, self.ncl_gt)
+        assert np.allclose(psychrometric_constant(pressure),
+                           self.ncl_gt,
+                           atol=0.005)
 
-    def test_dask_chunked_input(self):
-        pressure = da.from_array(self.pressure_gt, chunks='auto')
-        out = self.client.submit(psychrometric_constant, pressure).result()
+    def test_dask_lazy(self):
+        pressure = xr.DataArray(self.pressure_gt).chunk(10)
 
-        assert np.allclose(out, self.ncl_gt)
+        assert isinstance((psychrometric_constant(pressure)).data,
+                          dask.array.Array)
 
 
 class Test_saturation_vapor_pressure(unittest.TestCase):
@@ -282,21 +283,20 @@ class Test_saturation_vapor_pressure(unittest.TestCase):
                            expected,
                            atol=0.005)
 
-    def test_dask_unchunked_input(self):
-        tempf = da.from_array(self.temp_gt)
-        out = self.client.submit(saturation_vapor_pressure,
-                                 tempf,
-                                 tfill=1.0000000e+20).result()
+    def test_dask_compute(self):
+        tempf = xr.DataArray(self.temp_gt).chunk(10)
 
-        assert np.allclose(out, self.ncl_gt)
+        assert np.allclose(saturation_vapor_pressure(tempf,
+                                                     tfill=1.0000000e+20),
+                           self.ncl_gt,
+                           atol=0.005)
 
-    def test_dask_chunked_input(self):
-        tempf = da.from_array(self.temp_gt, chunks='auto')
-        out = self.client.submit(saturation_vapor_pressure,
-                                 tempf,
-                                 tfill=1.0000000e+20).result()
+    def test_dask_lazy(self):
+        tempf = xr.DataArray(self.temp_gt).chunk(10)
 
-        assert np.allclose(out, self.ncl_gt)
+        assert isinstance((saturation_vapor_pressure(tempf,
+                                                     tfill=1.0000000e+20)).data,
+                          dask.array.Array)
 
 
 class Test_saturation_vapor_pressure_slope(unittest.TestCase):
@@ -354,16 +354,16 @@ class Test_saturation_vapor_pressure_slope(unittest.TestCase):
                            atol=0.005,
                            equal_nan=True)
 
-    def test_dask_unchunked_input(self):
-        tempf = da.from_array(self.temp_gt)
-        out = self.client.submit(saturation_vapor_pressure_slope,
-                                 tempf).result()
+    def test_dask_compute(self):
+        tempf = xr.DataArray(self.temp_gt).chunk(10)
 
-        assert np.allclose(out, self.ncl_gt, equal_nan=True)
+        assert np.allclose(saturation_vapor_pressure_slope(tempf),
+                           self.ncl_gt,
+                           atol=0.005,
+                           equal_nan=True)
 
-    def test_dask_chunked_input(self):
-        tempf = da.from_array(self.temp_gt, chunks='auto')
-        out = self.client.submit(saturation_vapor_pressure_slope,
-                                 tempf).result()
+    def test_dask_lazy(self):
+        tempf = xr.DataArray(self.temp_gt).chunk(10)
 
-        assert np.allclose(out, self.ncl_gt, equal_nan=True)
+        assert isinstance((saturation_vapor_pressure_slope(tempf)).data,
+                          dask.array.Array)

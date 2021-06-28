@@ -35,6 +35,8 @@ GeoCAT-comp routines
 
    geocat.comp.polynomial._get_missing_value
 
+   geocat.comp.heat_index._heat_index
+
    geocat.comp.polynomial._unchunk_ifneeded
 
    geocat.comp.polynomial._ndpolyfit
@@ -52,3 +54,9 @@ GeoCAT-comp routines
    geocat.comp.polynomial._ndpolyval
 
    geocat.comp.relhum._relhum
+
+   geocat.comp.dewtemp._xdewtemp
+
+   geocat.comp.heat_index._xheat_index
+
+   geocat.comp.relhum._xrelhum
