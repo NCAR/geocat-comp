@@ -385,11 +385,11 @@ def time_avg(dset, window, time_dim=None, rolling=False, **rolling_kwargs):
 #'''
 
 
-def clim_avg(
+def calendar_average(
         dset: typing.Union[xr.DataArray, xr.Dataset],
         freq: str,
         time_dim: str = None,
-        climatology: bool = True) -> typing.Union[xr.DataArray, xr.Dataset]:
+        climatology: bool = False) -> typing.Union[xr.DataArray, xr.Dataset]:
     """This function computes averages according to a given time frequency.
 
     Parameters
@@ -399,16 +399,17 @@ def clim_avg(
 
     freq : str
         Frequency alias. Accepted alias:
-
+            - 'hour': for hourly averages
             - 'day': for daily averages
             - 'month': for monthly averages
             - 'season': for metorological seasonal averages (DJF, MAM, JJA, and SON)
+            - 'yearly': for yearly averages
 
     time_dim : `str`, Optional
         Name of the time coordinate for `xarray` objects
 
     climatology : `boolean`
-        Default True. If True, the average for each period (day, month, etc.)
+        Default False. If True, the average for each period (day, month, etc.)
         will be calculated across years, so one number will be returned for
         each period. If False, the average for each period will be calculated
         for it's given year (i.e. the average for Jan-2000 will be independent
