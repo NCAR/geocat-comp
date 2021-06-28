@@ -332,71 +332,57 @@ def month_to_season(
         {time_coord_name: means[time_coord_name].dt.month == months[1]})
 
 
+#TODO: xarray has a bug related to how min_periods works for xr.Dataset.rolling(), therefore the following wrapper function is commented out until that is fixed
+#TODO: time_avg may not belong here as it wraps xarray's rolling and sequential average functionality which can apply to lots of data not just climate data
+'''
 def time_avg(dset, window, time_dim=None, rolling=False, **rolling_kwargs):
-    """Function to take N-d data and compute averages over the time dimension
-    using a specified window size.
+    """Function to compute averages over the time dimension using a specified
+    window size.
 
     Parameters
     ----------
-    dset : `xarray.Dataset`, `xarray.DataArray`, `numpy.ndarray`
+    dset : `xarray.Dataset`, `xarray.DataArray`
         The data on which to operate
+
     window : `int`
         Size of the window used to compute the averages
-    time_dim : `str`, `int`
-        Name of the time coordinate for `xarray` objects. If `None`, then the coordinate with
-        Datetime objects will be used. If `dset` is a numpy array, `time_dim` must be the
-        index of the dimension that is represented by time.
+
+    time_dim : `str`, Optional
+        Name of the coordinate with time data. If `None`, then the coordinate
+        will be infered.
+
     rolling : `boolean`, Optional
         Defaults to `False` and computes a sequential average where the
         stride of the window is equal to the window size. `True` computes a
         rolling average where the window uses a stride of 1.
+
     **rolling_kwargs :
-        Keyword arguments to pass into `xarray.DataArray.rolling`.
+        Keyword arguments to pass into `xarray.DataArray.rolling` and
+        `xarray.Dataset.rolling` depending on the type of `dset`
 
     Returns
     -------
-    computed_dset: same type as dset
+    computed_dset : `xarray.Dataset`, `xarray.DataArray`
         The computed data
     """
 
     min_periods = rolling_kwargs.get('min_periods')
     center = rolling_kwargs.get('center')
 
-    if isinstance(dset, np.ndarray):  # TODO: duck typing for arrays
-        if time_dim is None or not isinstance(time_dim, int):
-            raise ValueError(
-                f'`time_dim` must be the index of the time dimension for {type(dset)} objects'
-            )
-        dset = xr.DataArray(data=dset)
-        try:
-            time_dim = dset.dims[time_dim]
-        except IndexError:
-            raise IndexError('`time_dim` value is out of range') from None
-        if rolling:
-            return np.asarray(dset.rolling({time_dim: window},
-                                           min_periods=min_periods,
-                                           center=center) \
-                              .mean())
-        else:
-            return np.asarray(dset.rolling({time_dim: window},
-                                           min_periods=min_periods,
-                                           center=center) \
-                              .construct('window_dim', stride=window) \
-                              .mean('window_dim'))
+    time_dim = _get_time_coordinate_info(dset, time_dim)
 
+    if rolling:
+        return dset.rolling({time_dim: window},
+                            min_periods=min_periods,
+                            center=center) \
+                   .mean()
     else:
-        time_dim = _get_time_coordinate_info(dset, time_dim)
-        if rolling:
-            return dset.rolling({time_dim: window},
-                                min_periods=min_periods,
-                                center=center) \
-                .mean()
-        else:
-            return dset.rolling({time_dim: window},
-                                min_periods=min_periods,
-                                center=center) \
-                .construct('window_dim', stride=window) \
-                .mean('window_dim')
+        dset = dset.rolling({time_dim: window},
+                            min_periods=min_periods,
+                            center=center) \
+                   .construct('window_dim', stride=window)\
+                   .mean('window_dim')
+#'''
 
 
 def clim_avg(
@@ -439,7 +425,8 @@ def clim_avg(
     each month. This means that the given data must be monotonic and must not
     overlap between months (i.e. hourly, daily, monthly).
     """
-    # TODO: add hourly/day-hour means, checkout the NCL function for this first
+    # TODO: add warning for incomplete years if calculating climatologies
+    # TODO: add functionality for users to select specific seasons or hours for avgs/clims
     freq_dict = {
         'hour': ('%m-%d %H', 'H', '30min'),
         'day': ('%m-%d', 'D', '12H'),
