@@ -285,3 +285,7 @@ dset_encoded = xr.tutorial.open_dataset("air_temperature", decode_cf=False)
 def test_non_datetime_like_objects():
     with pytest.raises(ValueError):
         calendar_average(dset_encoded, 'month')
+
+def test_yearly_climatology_warning():
+    with pytest.warns(UserWarning):
+        calendar_average(daily, 'year', climatology=True)
