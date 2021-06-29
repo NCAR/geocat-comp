@@ -275,3 +275,8 @@ array_expected = day_2_month_avg['data']
 def test_xr_DataArray_support(da, expected):
     result = calendar_average(da, freq='month', climatology=False)
     xr.testing.assert_equal(result, expected)
+
+dset_encoded = xr.tutorial.open_dataset("air_temperature", decode_cf=False)
+def test_non_datetime_like_objects():
+    with pytest.raises(ValueError):
+        calendar_average(dset_encoded, 'month')
