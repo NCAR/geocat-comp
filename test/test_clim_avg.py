@@ -5,7 +5,12 @@ import pandas as pd
 import pytest
 import xarray as xr
 
-from geocat.comp.climatology import calendar_average
+# Import from directory structure if coverage test, or from installed
+# packages otherwise
+if "--cov" in str(sys.argv):
+    from src.geocat.comp import calendar_average
+else:
+    from geocat.comp import calendar_average
 
 
 def _get_dummy_data(start_date, end_date, freq, nlats, nlons):
