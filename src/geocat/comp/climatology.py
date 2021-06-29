@@ -409,11 +409,10 @@ def calendar_average(
         Name of the time coordinate for `xarray` objects
 
     climatology : `boolean`
-        Default False. If True, the average for each period (day, month, etc.)
-        will be calculated across years, so one number will be returned for
-        each period. If False, the average for each period will be calculated
-        for it's given year (i.e. the average for Jan-2000 will be independent
-        of the average for Jan-2001).
+        Default False. If False, the average for each period (day, month, etc.)
+        will be calculated for it's given year (i.e. the average for Jan-2000
+        will be independent of the average for Jan-2001). If True,
+        climatological averages will be calculated across all years provided.
 
     Returns
     -------
@@ -422,9 +421,11 @@ def calendar_average(
 
     Notes
     -----
-    Seasonal averages are weighted averages based on the number of days in
-    each month. This means that the given data must be monotonic and must not
-    overlap between months (i.e. hourly, daily, monthly).
+    Seasonal averages are weighted based on the number of days in each month.
+    This means that the given data must be monotonic (i.e. data every 6 hours,
+    every two days, every month, etc.) and must not cross month boundaries
+    (i.e. don't use weekly averages where the week falls in two
+    different months)
     """
     # TODO: add warning for incomplete years if calculating climatologies
     # TODO: add functionality for users to select specific seasons or hours for avgs/clims
@@ -440,7 +441,7 @@ def calendar_average(
         freq_dict[freq]
     except KeyError:
         raise KeyError(
-            f"contributed: clim_avg: bad period: PERIOD = {freq}. Valid periods include: {list(freq_dict.keys())}"
+            f"contributed: calendar_average: bad period: PERIOD = {freq}. Valid periods include: {list(freq_dict.keys())}"
         )
 
     # If freq is 'season', key is set to monthly in order to calculate monthly

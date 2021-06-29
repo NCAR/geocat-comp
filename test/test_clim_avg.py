@@ -5,7 +5,7 @@ import pandas as pd
 import pytest
 import xarray as xr
 
-from geocat.comp.climatology import clim_avg
+from geocat.comp.climatology import calendar_average
 
 
 def _get_dummy_data(start_date, end_date, freq, nlats, nlons):
@@ -64,9 +64,7 @@ min_2_hour_avg = xr.Dataset(
 
 @pytest.mark.parametrize('dset, expected', [(minute, min_2_hour_avg)])
 def test_30min_to_hourly_avg(dset, expected):
-    result = clim_avg(dset, freq='hour', climatology=False)
-    print(result.time.values)
-    print(expected.time.values)
+    result = calendar_average(dset, freq='hour', climatology=False)
     xr.testing.assert_equal(result, expected)
 
 
@@ -86,7 +84,7 @@ hour_2_day_avg = xr.Dataset(
 
 @pytest.mark.parametrize('dset, expected', [(hourly, hour_2_day_avg)])
 def test_hourly_to_daily_avg(dset, expected):
-    result = clim_avg(dset, freq='day', climatology=False)
+    result = calendar_average(dset, freq='day', climatology=False)
     xr.testing.assert_equal(result, expected)
 
 
@@ -107,7 +105,7 @@ day_2_month_avg = xr.Dataset(
 
 @pytest.mark.parametrize('dset, expected', [(daily, day_2_month_avg)])
 def test_daily_to_monthly_avg(dset, expected):
-    result = clim_avg(dset, freq='month', climatology=False)
+    result = calendar_average(dset, freq='month', climatology=False)
     xr.testing.assert_equal(result, expected)
 
 
@@ -125,7 +123,7 @@ day_2_season_avg = xr.Dataset(
 
 @pytest.mark.parametrize('dset, expected', [(daily, day_2_season_avg)])
 def test_daily_to_seasonal_avg(dset, expected):
-    result = clim_avg(dset, freq='season', climatology=False)
+    result = calendar_average(dset, freq='season', climatology=False)
     xr.testing.assert_equal(result, expected)
 
 
@@ -144,7 +142,7 @@ month_2_season_avg = xr.Dataset(
 
 @pytest.mark.parametrize('dset, expected', [(monthly, month_2_season_avg)])
 def test_monthly_to_seasonal_avg(dset, expected):
-    result = clim_avg(dset, freq='season', climatology=False)
+    result = calendar_average(dset, freq='season', climatology=False)
     xr.testing.assert_allclose(result, expected)
 
 
@@ -170,7 +168,7 @@ month_2_year_avg = xr.Dataset(
 @pytest.mark.parametrize('dset, expected', [(daily, day_2_year_avg),
                                             (monthly, month_2_year_avg)])
 def test_yearly_avg(dset, expected):
-    result = clim_avg(dset, freq='year')
+    result = calendar_average(dset, freq='year')
     xr.testing.assert_allclose(result, expected)
 
 
@@ -190,7 +188,7 @@ min_2_hourly_clim = xr.Dataset(
 
 @pytest.mark.parametrize('dset, expected', [(minute, min_2_hourly_clim)])
 def test_30min_to_hourly_clim(dset, expected):
-    result = clim_avg(dset, freq='hour', climatology=True)
+    result = calendar_average(dset, freq='hour', climatology=True)
     xr.testing.assert_allclose(result, expected)
 
 
@@ -209,7 +207,7 @@ hour_2_day_clim = xr.Dataset(
 
 @pytest.mark.parametrize('dset, expected', [(hourly, hour_2_day_clim)])
 def test_hourly_to_daily_clim(dset, expected):
-    result = clim_avg(dset, freq='day', climatology=True)
+    result = calendar_average(dset, freq='day', climatology=True)
     xr.testing.assert_equal(result, expected)
 
 
@@ -230,7 +228,7 @@ day_2_month_clim = xr.Dataset(
 
 @pytest.mark.parametrize('dset, expected', [(daily, day_2_month_clim)])
 def test_daily_to_monthly_clim(dset, expected):
-    result = clim_avg(dset, freq='month', climatology=True)
+    result = calendar_average(dset, freq='month', climatology=True)
     xr.testing.assert_allclose(result, expected)
 
 
@@ -247,7 +245,7 @@ day_2_season_clim = xr.Dataset(
 
 @pytest.mark.parametrize('dset, expected', [(daily, day_2_season_clim)])
 def test_daily_to_seasonal_clim(dset, expected):
-    result = clim_avg(dset, freq='season', climatology=True)
+    result = calendar_average(dset, freq='season', climatology=True)
     xr.testing.assert_allclose(result, expected)
 
 
@@ -264,7 +262,7 @@ month_2_season_clim = xr.Dataset(
 
 @pytest.mark.parametrize('dset, expected', [(monthly, month_2_season_clim)])
 def test_monthly_to_seasonal_clim(dset, expected):
-    result = clim_avg(dset, freq='season', climatology=True)
+    result = calendar_average(dset, freq='season', climatology=True)
     xr.testing.assert_allclose(result, expected)
 
 
@@ -272,7 +270,7 @@ def test_monthly_to_seasonal_clim(dset, expected):
 @pytest.mark.parametrize('freq', ['TEST', None])
 def test_invalid_freq(freq):
     with pytest.raises(KeyError):
-        clim_avg(monthly, freq=freq)
+        calendar_average(monthly, freq=freq)
 
 
 time_dim = 'my_time'
@@ -283,7 +281,7 @@ custom_time_expected = day_2_month_avg.rename({'time': time_dim})
 @pytest.mark.parametrize('dset, expected, time_dim',
                          [(custom_time, custom_time_expected, time_dim)])
 def test_custom_time_coord(dset, expected, time_dim):
-    result = clim_avg(dset, freq='month', time_dim=time_dim, climatology=False)
+    result = calendar_average(dset, freq='month', time_dim=time_dim, climatology=False)
     xr.testing.assert_allclose(result, expected)
 
 
@@ -293,5 +291,5 @@ array_expected = day_2_month_avg['data']
 
 @pytest.mark.parametrize('da, expected', [(array, array_expected)])
 def test_xr_DataArray_support(da, expected):
-    result = clim_avg(da, freq='month', climatology=False)
+    result = calendar_average(da, freq='month', climatology=False)
     xr.testing.assert_equal(result, expected)
