@@ -120,17 +120,9 @@ day_2_season_avg = xr.Dataset(
         'lon': [-180.0]
     })
 
-
-@pytest.mark.parametrize('dset, expected', [(daily, day_2_season_avg)])
-def test_daily_to_seasonal_avg(dset, expected):
-    result = calendar_average(dset, freq='season', climatology=False)
-    xr.testing.assert_equal(result, expected)
-
-
 season_avg = np.array(
     [0.483333333, 3, 6.010869565, 9, 11.96666667, 15, 18.01086957, 21,
      23]).reshape(9, 1, 1)
-season_avg_time = pd.date_range('01-01-2020', '01-01-2022', freq='3MS')
 month_2_season_avg = xr.Dataset(
     data_vars={'data': (('time', 'lat', 'lon'), season_avg)},
     coords={
@@ -138,10 +130,9 @@ month_2_season_avg = xr.Dataset(
         'lat': [-90.0],
         'lon': [-180.0]
     })
-
-
-@pytest.mark.parametrize('dset, expected', [(monthly, month_2_season_avg)])
-def test_monthly_to_seasonal_avg(dset, expected):
+@pytest.mark.parametrize('dset, expected', [(daily, day_2_season_avg),
+                                            (monthly, month_2_season_avg)])
+def test_daily_monthly_to_seasonal_avg(dset, expected):
     result = calendar_average(dset, freq='season', climatology=False)
     xr.testing.assert_allclose(result, expected)
 
@@ -167,7 +158,7 @@ month_2_year_avg = xr.Dataset(
 
 @pytest.mark.parametrize('dset, expected', [(daily, day_2_year_avg),
                                             (monthly, month_2_year_avg)])
-def test_yearly_avg(dset, expected):
+def test_daily_monthly_to_yearly_avg(dset, expected):
     result = calendar_average(dset, freq='year')
     xr.testing.assert_allclose(result, expected)
 
@@ -242,15 +233,7 @@ day_2_season_clim = xr.Dataset(
         'lon': [-180.0]
     })
 
-
-@pytest.mark.parametrize('dset, expected', [(daily, day_2_season_clim)])
-def test_daily_to_seasonal_clim(dset, expected):
-    result = calendar_average(dset, freq='season', climatology=True)
-    xr.testing.assert_allclose(result, expected)
-
-
 season_clim = np.array([10.04972376, 12.01086957, 9, 15]).reshape(4, 1, 1)
-season_clim_time = ['DJF', 'JJA', 'MAM', 'SON']
 month_2_season_clim = xr.Dataset(
     data_vars={'data': (('season', 'lat', 'lon'), season_clim)},
     coords={
@@ -258,10 +241,9 @@ month_2_season_clim = xr.Dataset(
         'lat': [-90.0],
         'lon': [-180.0]
     })
-
-
-@pytest.mark.parametrize('dset, expected', [(monthly, month_2_season_clim)])
-def test_monthly_to_seasonal_clim(dset, expected):
+@pytest.mark.parametrize('dset, expected', [(daily, day_2_season_clim),
+                                            (monthly, month_2_season_clim)])
+def test_daily_monthly_to_seasonal_clim(dset, expected):
     result = calendar_average(dset, freq='season', climatology=True)
     xr.testing.assert_allclose(result, expected)
 
