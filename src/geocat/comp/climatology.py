@@ -63,12 +63,6 @@ def _setup_clim_anom_input(dset, freq, time_coord_name):
     return data, time_invariant_vars, time_coord_name, time_dot_freq
 
 
-def _avg_groups(dset, group):
-    """Helper function to be used in xarray.core.groupby.DataArrayGroupBy.map()
-    Takes in a group (dset) and groups the data again using a new group."""
-    return dset.groupby(group).mean()
-
-
 def climatology(
         dset: typing.Union[xr.DataArray, xr.Dataset],
         freq: str,
