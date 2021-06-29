@@ -135,6 +135,8 @@ month_2_season_avg = xr.Dataset(
         'lat': [-90.0],
         'lon': [-180.0]
     })
+
+
 @pytest.mark.parametrize('dset, expected', [(daily, day_2_season_avg),
                                             (monthly, month_2_season_avg)])
 def test_daily_monthly_to_seasonal_avg(dset, expected):
@@ -246,6 +248,8 @@ month_2_season_clim = xr.Dataset(
         'lat': [-90.0],
         'lon': [-180.0]
     })
+
+
 @pytest.mark.parametrize('dset, expected', [(daily, day_2_season_clim),
                                             (monthly, month_2_season_clim)])
 def test_daily_monthly_to_seasonal_clim(dset, expected):
@@ -268,7 +272,10 @@ custom_time_expected = day_2_month_avg.rename({'time': time_dim})
 @pytest.mark.parametrize('dset, expected, time_dim',
                          [(custom_time, custom_time_expected, time_dim)])
 def test_custom_time_coord(dset, expected, time_dim):
-    result = calendar_average(dset, freq='month', time_dim=time_dim, climatology=False)
+    result = calendar_average(dset,
+                              freq='month',
+                              time_dim=time_dim,
+                              climatology=False)
     xr.testing.assert_allclose(result, expected)
 
 
@@ -281,10 +288,14 @@ def test_xr_DataArray_support(da, expected):
     result = calendar_average(da, freq='month', climatology=False)
     xr.testing.assert_equal(result, expected)
 
+
 dset_encoded = xr.tutorial.open_dataset("air_temperature", decode_cf=False)
+
+
 def test_non_datetime_like_objects():
     with pytest.raises(ValueError):
         calendar_average(dset_encoded, 'month')
+
 
 def test_yearly_climatology_warning():
     with pytest.warns(UserWarning):

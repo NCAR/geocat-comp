@@ -326,59 +326,6 @@ def month_to_season(
         {time_coord_name: means[time_coord_name].dt.month == months[1]})
 
 
-#TODO: xarray has a bug related to how min_periods works for xr.Dataset.rolling(), therefore the following wrapper function is commented out until that is fixed
-#TODO: time_avg may not belong here as it wraps xarray's rolling and sequential average functionality which can apply to lots of data not just climate data
-'''
-def time_avg(dset, window, time_dim=None, rolling=False, **rolling_kwargs):
-    """Function to compute averages over the time dimension using a specified
-    window size.
-
-    Parameters
-    ----------
-    dset : `xarray.Dataset`, `xarray.DataArray`
-        The data on which to operate
-
-    window : `int`
-        Size of the window used to compute the averages
-
-    time_dim : `str`, Optional
-        Name of the coordinate with time data. If `None`, then the coordinate
-        will be infered.
-
-    rolling : `boolean`, Optional
-        Defaults to `False` and computes a sequential average where the
-        stride of the window is equal to the window size. `True` computes a
-        rolling average where the window uses a stride of 1.
-
-    **rolling_kwargs :
-        Keyword arguments to pass into `xarray.DataArray.rolling` and
-        `xarray.Dataset.rolling` depending on the type of `dset`
-
-    Returns
-    -------
-    computed_dset : `xarray.Dataset`, `xarray.DataArray`
-        The computed data
-    """
-
-    min_periods = rolling_kwargs.get('min_periods')
-    center = rolling_kwargs.get('center')
-
-    time_dim = _get_time_coordinate_info(dset, time_dim)
-
-    if rolling:
-        return dset.rolling({time_dim: window},
-                            min_periods=min_periods,
-                            center=center) \
-                   .mean()
-    else:
-        dset = dset.rolling({time_dim: window},
-                            min_periods=min_periods,
-                            center=center) \
-                   .construct('window_dim', stride=window)\
-                   .mean('window_dim')
-#'''
-
-
 def calendar_average(
         dset: typing.Union[xr.DataArray, xr.Dataset],
         freq: str,
