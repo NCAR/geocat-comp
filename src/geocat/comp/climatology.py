@@ -335,10 +335,10 @@ def calendar_average(
 
     Parameters
     ----------
-    dset : `xarray.Dataset`, `xarray.DataArray`
+    dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
         The data on which to operate. It must be evenly spaced in the time dimension.
 
-    freq : str
+    freq : :class:`str`
         Frequency alias. Accepted alias:
             - 'hour': for hourly averages
             - 'day': for daily averages
@@ -346,10 +346,10 @@ def calendar_average(
             - 'season': for meteorological seasonal averages (DJF, MAM, JJA, and SON)
             - 'yearly': for yearly averages
 
-    time_dim : `str`, Optional
+    time_dim : :class:`str`, Optional
         Name of the time coordinate for `xarray` objects
 
-    climatology : `boolean`
+    climatology : :class:`bool`
         Default False. If False, the average for each period (day, month, etc.)
         will be calculated for it's given year (i.e. the average for Jan-2000
         will be independent of the average for Jan-2001). If True,
@@ -416,7 +416,8 @@ def calendar_average(
 
             # Compute the weights for the months in each season so that the
             # seasonal averages account for months being of different lengths
-            month_length = dset[time_dim].dt.days_in_month.groupby(f"{time_dim}.season")
+            month_length = dset[time_dim].dt.days_in_month.groupby(
+                f"{time_dim}.season")
             weights = month_length / month_length.sum()
             dset = (dset * weights).groupby(f"{time_dim}.season")
             dset = dset.sum(dim=time_dim)
