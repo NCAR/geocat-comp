@@ -421,7 +421,7 @@ def calendar_average(
             # seasonal averages account for months being of different lengths
             month_length = dset[time_dim].dt.days_in_month.groupby(f"{time_dim}.season")
             weights = month_length / month_length.sum()
-            dset = (dset * weights).groupby(time_dim + '.season')
+            dset = (dset * weights).groupby(f"{time_dim}.season")
             dset = dset.sum(dim=time_dim)
         else:
             # Retrieve floor of median year
