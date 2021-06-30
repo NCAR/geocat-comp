@@ -336,14 +336,14 @@ def calendar_average(
     Parameters
     ----------
     dset : `xarray.Dataset`, `xarray.DataArray`
-        The data on which to operate
+        The data on which to operate. It must be evenly spaced in the time dimension.
 
     freq : str
         Frequency alias. Accepted alias:
             - 'hour': for hourly averages
             - 'day': for daily averages
             - 'month': for monthly averages
-            - 'season': for metorological seasonal averages (DJF, MAM, JJA, and SON)
+            - 'season': for meteorological seasonal averages (DJF, MAM, JJA, and SON)
             - 'yearly': for yearly averages
 
     time_dim : `str`, Optional
@@ -368,7 +368,6 @@ def calendar_average(
     (i.e. don't use weekly averages where the week falls in two
     different months)
     """
-    # TODO: add warning for incomplete years if calculating climatologies
     # TODO: add functionality for users to select specific seasons or hours for avgs/clims
     freq_dict = {
         'hour': ('%m-%d %H', 'H', '30min'),
