@@ -386,10 +386,7 @@ def calendar_average(
 
     # If freq is 'season', key is set to monthly in order to calculate monthly
     # averages which are then used to calculate seasonal averages
-    if freq == 'season' or freq == 'year':
-        key = 'month'
-    else:
-        key = freq
+    key = 'month' if freq in {'season', 'year'} else freq
 
     (format, frequency, offset) = freq_dict[key]
 
