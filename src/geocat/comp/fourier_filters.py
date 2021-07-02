@@ -106,9 +106,9 @@ def fourier_filter(signal,
     resolution = frequency / len(signal)
     signal = np.swapaxes(signal, time_axis, 0)
     res_fft = np.fft.fft(signal, axis=0)
-    cfl_index = round(cutoff_frequency_low / resolution)
+    cfl_index = np.floor(cutoff_frequency_low / resolution)
     cfln_index = 1 - cfl_index
-    cfh_index = round(cutoff_frequency_high / resolution)
+    cfh_index = np.ceil(cutoff_frequency_high / resolution)
     cfhn_index = 1 - cfh_index
     if low_pass:
         if cfl_index > 1:
