@@ -1,6 +1,7 @@
 import typing
 
 import cf_xarray
+import cftime
 import numpy as np
 import xarray as xr
 import pandas as pd
@@ -61,6 +62,33 @@ def _setup_clim_anom_input(dset, freq, time_coord_name):
     time_dot_freq = ".".join([time_coord_name, freq])
 
     return data, time_invariant_vars, time_coord_name, time_dot_freq
+
+
+def _calculate_center_of_time_bounds(dset,
+                                     time_dim,
+                                     frequency,
+                                     calendar,
+                                     start=None,
+                                     end=None):
+    """Helper function to determine the time bounds based on the given dataset
+    and frequency and then calculate the averages of them.
+
+    Returns the dataset with the time coordinate changed to the center
+    of the time bounds.
+    """
+    if sum(x is not None for x in [start, end]) == 1:
+        raise ValueError(
+            "Both `start` and `end` must be specified or both left unspecified."
+        )
+    if start is None and end is None:
+        start = dset[time_dim].values[0]
+        end = dset[time_dim].values[-1]
+    time_bounds = xr.cftime_range(start, end, freq=frequency, calendar=calendar)
+    time_bounds = time_bounds.append(time_bounds[-1:].shift(1, freq=frequency))
+    time =  xr.DataArray(np.vstack((time_bounds[:-1], time_bounds[1:])).T,
+                         dims=[time_dim, 'nbd']) \
+        .mean(dim='nbd')
+    return dset.assign_coords({time_dim: time})
 
 
 def climatology(
@@ -330,7 +358,8 @@ def calendar_average(
         dset: typing.Union[xr.DataArray, xr.Dataset],
         freq: str,
         time_dim: str = None,
-        climatology: bool = False) -> typing.Union[xr.DataArray, xr.Dataset]:
+        climatology: bool = False,
+        calendar: str = 'standard') -> typing.Union[xr.DataArray, xr.Dataset]:
     """This function computes averages according to a given time frequency.
 
     Parameters
@@ -354,6 +383,11 @@ def calendar_average(
         will be calculated for it's given year (i.e. the average for Jan-2000
         will be independent of the average for Jan-2001). If True,
         climatological averages will be calculated across all years provided.
+
+    calendar : :class:`str`
+        Alias for the kind of calendar the time dimension of the data is in.
+        Defaults to `'standard'` which is the alias for the Gregorian calendar.
+        A list of accepted aliases can be found `here <http://xarray.pydata.org/en/stable/generated/xarray.cftime_range.html>`_
 
     Returns
     -------
@@ -399,20 +433,9 @@ def calendar_average(
         )
     # Average data across years
     if climatology:
-        if freq == 'month' or freq == 'season':
-            offset_obj = pd.offsets.SemiMonthBegin()
-
-        if freq == 'day':
-            offset_obj = 12 * pd.offsets.Hour()
-
-        if freq == 'hour':
-            offset_obj = 30 * pd.offsets.Minute()
-
         if freq == 'season':
             # Calculate monthly average before calculating seasonal climatologies
-            dset = dset.resample({
-                time_dim: frequency
-            }, loffset=offset).mean().dropna(time_dim)
+            dset = dset.resample({time_dim: frequency}).mean().dropna(time_dim)
 
             # Compute the weights for the months in each season so that the
             # seasonal averages account for months being of different lengths
@@ -432,20 +455,21 @@ def calendar_average(
 
             # Create array of datetimes to set as time coordinate of returned data
             # Offsets are used to ensure the time coordinate of the returned climatology is centered on the period
-            start_day = dset[time_dim].values[0]
-            end_day = dset[time_dim].values[-1]
+            start_time = dset[time_dim].values[0]
+            end_time = dset[time_dim].values[-1]
 
-            time = pd.date_range(f'{median_yr:.0f}-{start_day}',
-                                 f'{median_yr:.0f}-{end_day}',
-                                 freq=frequency) + offset_obj
-            dset = dset.assign_coords({time_dim: time})
+            dset = _calculate_center_of_time_bounds(
+                dset,
+                time_dim,
+                frequency,
+                calendar,
+                start=f'{median_yr:.0f}-{start_time}',
+                end=f'{median_yr:.0f}-{end_time}')
 
     # Average data for each period considering the year of the period
     else:
         # Resample data using given frequency which preserves the year of the data
-        dset = dset.resample({
-            time_dim: frequency
-        }, loffset=offset).mean().dropna(time_dim)
+        dset = dset.resample({time_dim: frequency}).mean().dropna(time_dim)
         if freq == 'season' or freq == 'year':
             key = freq
             (format, frequency, offset) = freq_dict[key]
@@ -454,9 +478,10 @@ def calendar_average(
             month_length = dset[time_dim].dt.days_in_month.resample(
                 {time_dim: frequency})
             weights = month_length.map(lambda group: group / group.sum())
-            dset = (dset * weights).resample({
-                time_dim: frequency
-            },
-                                             loffset=offset).sum()
+            dset = (dset * weights).resample({time_dim: frequency}).sum()
 
+        # Set time coordinates to center of time bounds
+        dset[time_dim] = dset[time_dim].dt.strftime('%Y-%m-%d %H:%M:%S')
+        dset = _calculate_center_of_time_bounds(dset, time_dim, frequency,
+                                                calendar)
     return dset

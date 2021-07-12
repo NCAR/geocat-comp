@@ -1,5 +1,6 @@
 import sys
 
+import cftime
 import numpy as np
 import pandas as pd
 import pytest
@@ -49,13 +50,21 @@ def get_fake_dataset(start_month, nmonths, nlats, nlons):
     return ds
 
 
-def _get_dummy_data(start_date, end_date, freq, nlats, nlons):
+def _get_dummy_data(start_date,
+                    end_date,
+                    freq,
+                    nlats,
+                    nlons,
+                    calendar='standard'):
     """Returns a simple xarray dataset to test with.
 
     Data can be hourly, daily, or monthly.
     """
     # Coordinates
-    time = pd.date_range(start=start_date, end=end_date, freq=freq)
+    time = xr.cftime_range(start=start_date,
+                           end=end_date,
+                           freq=freq,
+                           calendar=calendar)
     lats = np.linspace(start=-90, stop=90, num=nlats, dtype='float32')
     lons = np.linspace(start=-180, stop=180, num=nlons, dtype='float32')
 
@@ -188,28 +197,19 @@ def test_month_to_season_custom_time_coordinate(dataset, time_coordinate,
 
 
 # Test Datasets For calendar_average()
-minute_data = np.arange(48 * 14).reshape(48 * 14, 1, 1)
-minute_2020 = _get_dummy_data('01-01-2020', '1-07-2020T23:30:00', '30min', 1, 1)
-minute_2021 = _get_dummy_data('01-01-2021', '1-07-2021T23:30:00', '30min', 1, 1)
-minute = xr.concat([minute_2020, minute_2021], dim='time') \
-    .update({'data': (('time', 'lat', 'lon'), minute_data)})
+minute = _get_dummy_data('2020-01-01', '2021-12-31 23:30:00', '30min', 1, 1)
 
-hourly_data = np.arange(24 * 62).reshape(1488, 1, 1)
-hourly_2020 = _get_dummy_data('01-01-2020', '1-31-2020T23:00:00', 'H', 1, 1)
-hourly_2021 = _get_dummy_data('01-01-2021', '1-31-2021T23:00:00', 'H', 1, 1)
-hourly = xr.concat([hourly_2020, hourly_2021], dim='time') \
-    .update({'data': (('time', 'lat', 'lon'), hourly_data)})
+hourly = _get_dummy_data('2020-01-01', '2021-12-31 23:00:00', 'H', 1, 1)
 
-daily = _get_dummy_data('01-01-2020', '12-31-2021', 'D', 1, 1)
+daily = _get_dummy_data('2020-01-01', '2021-12-31', 'D', 1, 1)
 
-monthly = _get_dummy_data('01-01-2020', '12-01-2021', 'MS', 1, 1)
+monthly = _get_dummy_data('2020-01-01', '2021-12-01', 'MS', 1, 1)
 
 # Tests w/ expected outputs
-hour_avg = np.arange(0.5, 672.5, 2).reshape(336, 1, 1)
-hour_avg_time = np.concatenate([
-    pd.date_range('01-01-2020T00:30:00', '01-07-2020T23:30:00', freq='H'),
-    pd.date_range('01-01-2021T00:30:00', '01-07-2021T23:30:00', freq='H')
-])
+hour_avg = np.arange(0.5, 35088.5, 2).reshape((365 + 366) * 24, 1, 1)
+hour_avg_time = xr.cftime_range('2020-01-01 00:30:00',
+                                '2021-12-31 23:30:00',
+                                freq='H')
 min_2_hour_avg = xr.Dataset(
     data_vars={'data': (('time', 'lat', 'lon'), hour_avg)},
     coords={
@@ -225,11 +225,10 @@ def test_30min_to_hourly_avg(dset, expected):
     xr.testing.assert_equal(result, expected)
 
 
-day_avg = np.arange(11.5, 1499.5, 24).reshape(62, 1, 1)
-day_avg_time = np.concatenate([
-    pd.date_range('01-01-2020T12:00:00', '01-31-2020T12:00:00', freq='24H'),
-    pd.date_range('01-01-2021T12:00:00', '01-31-2021T12:00:00', freq='24H')
-])
+day_avg = np.arange(11.5, 17555.5, 24).reshape(366 + 365, 1, 1)
+day_avg_time = xr.cftime_range('2020-01-01 12:00:00',
+                               '2021-12-31 12:00:00',
+                               freq='D')
 hour_2_day_avg = xr.Dataset(
     data_vars={'data': (('time', 'lat', 'lon'), day_avg)},
     coords={
@@ -249,8 +248,10 @@ month_avg = np.array([
     15, 45, 75, 105.5, 136, 166.5, 197, 228, 258.5, 289, 319.5, 350, 381, 410.5,
     440, 470.5, 501, 531.5, 562, 593, 623.5, 654, 684.5, 715
 ]).reshape(24, 1, 1)
-month_avg_time = pd.date_range('01-01-2020', '12-31-2021',
-                               freq='MS') + pd.offsets.SemiMonthBegin()
+month_avg_time = xr.cftime_range('2020-01-01', '2022-01-01', freq='MS')
+month_avg_time = xr.DataArray(np.vstack((month_avg_time[:-1], month_avg_time[1:])).T,
+                              dims=['time', 'nbd']) \
+                    .mean(dim='nbd')
 day_2_month_avg = xr.Dataset(
     data_vars={'data': (('time', 'lat', 'lon'), month_avg)},
     coords={
@@ -268,7 +269,10 @@ def test_daily_to_monthly_avg(dset, expected):
 
 season_avg = np.array([29.5, 105.5, 197.5, 289, 379.5, 470.5, 562.5, 654,
                        715]).reshape(9, 1, 1)
-season_avg_time = pd.date_range('01-01-2020', '01-01-2022', freq='3MS')
+season_avg_time = xr.cftime_range('2019-12-01', '2022-03-01', freq='QS-DEC')
+season_avg_time = xr.DataArray(np.vstack((season_avg_time[:-1], season_avg_time[1:])).T,
+                               dims=['time', 'nbd']) \
+                    .mean(dim='nbd')
 day_2_season_avg = xr.Dataset(
     data_vars={'data': (('time', 'lat', 'lon'), season_avg)},
     coords={
@@ -296,7 +300,10 @@ def test_daily_monthly_to_seasonal_avg(dset, expected):
     xr.testing.assert_allclose(result, expected)
 
 
-year_avg_time = pd.to_datetime(['07-01-2020', '07-01-2021'])
+year_avg_time = [
+    cftime.datetime(2020, 7, 2),
+    cftime.datetime(2021, 7, 2, hour=12)
+]
 day_2_year_avg = [[[182.5]], [[548]]]
 day_2_year_avg = xr.Dataset(
     data_vars={'data': (('time', 'lat', 'lon'), day_2_year_avg)},
@@ -323,10 +330,13 @@ def test_daily_monthly_to_yearly_avg(dset, expected):
 
 
 # Climatology Computational Tests
-hour_clim = np.arange(168.5, 504.5, 2).reshape(24 * 7, 1, 1)
-hour_clim_time = pd.date_range('01-01-2020T00:30:00',
-                               '01-07-2020T23:30:00',
-                               freq='H')
+hour_clim = np.concatenate([np.arange(8784.5, 11616.5, 2),
+                            np.arange(2832.5, 2880.5, 2),
+                            np.arange(11640.5, 26328.5, 2)])\
+              .reshape(8784, 1, 1)
+hour_clim_time = xr.cftime_range('2020-01-01 00:30:00',
+                                 '2020-12-31 23:30:00',
+                                 freq='H')
 min_2_hourly_clim = xr.Dataset(
     data_vars={'data': (('time', 'lat', 'lon'), hour_clim)},
     coords={
@@ -339,12 +349,19 @@ min_2_hourly_clim = xr.Dataset(
 @pytest.mark.parametrize('dset, expected', [(minute, min_2_hourly_clim)])
 def test_30min_to_hourly_clim(dset, expected):
     result = calendar_average(dset, freq='hour', climatology=True)
+    print(result.data.values[0])
+    print(result.data.values[-1])
+
     xr.testing.assert_allclose(result, expected)
 
 
-day_clim = np.arange(383.5, 1127.5, 24).reshape(31, 1, 1)
-day_clim_time = np.concatenate(
-    [pd.date_range('01-01-2020T12:00:00', '01-31-2020T12:00:00', freq='24H')])
+day_clim = np.concatenate([np.arange(4403.5, 5819.5, 24),
+                           [1427.5],
+                           np.arange(5831.5, 13175.5, 24)]) \
+             .reshape(366, 1, 1)
+day_clim_time = xr.cftime_range('2020-01-01 12:00:00',
+                                '2020-12-31 12:00:00',
+                                freq='24H')
 
 hour_2_day_clim = xr.Dataset(
     data_vars={'data': (('time', 'lat', 'lon'), day_clim)},
@@ -365,8 +382,10 @@ month_clim = np.array([
     198, 224.5438596, 257.5, 288, 318.5, 349, 379.5, 410.5, 441, 471.5, 502,
     532.5
 ]).reshape(12, 1, 1)
-month_clim_time = pd.date_range('01-01-2020', '12-31-2020',
-                                freq='MS') + pd.offsets.SemiMonthBegin()
+month_clim_time = xr.cftime_range('2020-01-01', '2021-01-01', freq='MS')
+month_clim_time = xr.DataArray(np.vstack(
+    (month_clim_time[:-1], month_clim_time[1:])).T,
+                               dims=['time', 'nbd']).mean(dim='nbd')
 day_2_month_clim = xr.Dataset(
     data_vars={'data': (('time', 'lat', 'lon'), month_clim)},
     coords={
