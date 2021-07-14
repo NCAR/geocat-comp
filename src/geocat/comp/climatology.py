@@ -420,7 +420,7 @@ def calendar_average(
     # averages which are then used to calculate seasonal averages
     key = 'month' if freq in {'season', 'year'} else freq
 
-    (format, frequency, offset) = freq_dict[key]
+    format, frequency, offset = freq_dict[key]
 
     time_dim = _get_time_coordinate_info(dset, time_dim)
 
