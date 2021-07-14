@@ -472,7 +472,7 @@ def calendar_average(
     else:
         # Resample data using given frequency which preserves the year of the data
         dset = dset.resample({time_dim: frequency}).mean().dropna(time_dim)
-        if freq == 'season' or freq == 'year':
+        if freq in ['season', 'year']:
             key = freq
             (format, frequency, offset) = freq_dict[key]
             # Compute the weights for the months in each season so that the
