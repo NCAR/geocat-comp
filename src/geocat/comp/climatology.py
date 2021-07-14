@@ -405,18 +405,16 @@ def calendar_average(
         'year': (None, 'YS', '6MS')
     }
 
-    try:
-        freq_dict[freq]
-    except KeyError:
-        raise KeyError(
-            f"contributed: calendar_average: bad period: PERIOD = {freq}. Valid periods include: {list(freq_dict.keys())}"
+    if freq not in freq_dict:
+    	raise KeyError(
+            f"Received bad period {freq!r}. Expected one of {list(freq_dict.keys())!r}"
         )
 
     # If freq is 'season', key is set to monthly in order to calculate monthly
     # averages which are then used to calculate seasonal averages
     key = 'month' if freq in {'season', 'year'} else freq
 
-    (format, frequency, offset) = freq_dict[key]
+    format, frequency, offset = freq_dict[key]
 
     time_dim = _get_time_coordinate_info(dset, time_dim)
 
@@ -468,7 +466,7 @@ def calendar_average(
     else:
         # Resample data using given frequency which preserves the year of the data
         dset = dset.resample({time_dim: frequency}).mean().dropna(time_dim)
-        if freq == 'season' or freq == 'year':
+        if freq in ['season', 'year']:
             key = freq
             (format, frequency, offset) = freq_dict[key]
             # Compute the weights for the months in each season so that the
