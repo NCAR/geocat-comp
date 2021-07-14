@@ -398,15 +398,15 @@ def calendar_average(
     """
     # TODO: add functionality for users to select specific seasons or hours for avgs/clims
     freq_dict = {
-        'hour': ('%m-%d %H', 'H', '30min'),
-        'day': ('%m-%d', 'D', '12H'),
-        'month': ('%m', 'MS', 'SMS'),
-        'season': (None, 'QS-DEC', 'MS'),
-        'year': (None, 'YS', '6MS')
+        'hour': ('%m-%d %H', 'H'),
+        'day': ('%m-%d', 'D'),
+        'month': ('%m', 'MS'),
+        'season': (None, 'QS-DEC'),
+        'year': (None, 'YS')
     }
 
     if freq not in freq_dict:
-    	raise KeyError(
+        raise KeyError(
             f"Received bad period {freq!r}. Expected one of {list(freq_dict.keys())!r}"
         )
 
@@ -414,13 +414,12 @@ def calendar_average(
     # averages which are then used to calculate seasonal averages
     key = 'month' if freq in {'season', 'year'} else freq
 
-    format, frequency, offset = freq_dict[key]
+    format, frequency = freq_dict[key]
 
     time_dim = _get_time_coordinate_info(dset, time_dim)
 
     # Retrieve calendar name
-    if calendar is None:
-        calendar = xr.coding.times.infer_calendar_name(dset[time_dim])
+    calendar = xr.coding.times.infer_calendar_name(dset[time_dim])
 
     if freq == 'year' and climatology:
         climatology = False
@@ -468,7 +467,7 @@ def calendar_average(
         dset = dset.resample({time_dim: frequency}).mean().dropna(time_dim)
         if freq in ['season', 'year']:
             key = freq
-            (format, frequency, offset) = freq_dict[key]
+            format, frequency = freq_dict[key]
             # Compute the weights for the months in each season so that the
             # seasonal averages account for months being of different lengths
             month_length = dset[time_dim].dt.days_in_month.resample(
