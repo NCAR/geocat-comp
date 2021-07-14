@@ -411,11 +411,9 @@ def calendar_average(
         'year': (None, 'YS', '6MS')
     }
 
-    try:
-        freq_dict[freq]
-    except KeyError:
-        raise KeyError(
-            f"contributed: calendar_average: bad period: PERIOD = {freq}. Valid periods include: {list(freq_dict.keys())}"
+    if freq not in freq_dict:
+    	raise KeyError(
+            f"Received bad period {freq!r}. Expected one of {list(freq_dict.keys())!r}"
         )
 
     # If freq is 'season', key is set to monthly in order to calculate monthly
