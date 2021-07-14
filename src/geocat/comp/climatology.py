@@ -358,8 +358,7 @@ def calendar_average(
         dset: typing.Union[xr.DataArray, xr.Dataset],
         freq: str,
         time_dim: str = None,
-        climatology: bool = False,
-        calendar: str = None) -> typing.Union[xr.DataArray, xr.Dataset]:
+        climatology: bool = False) -> typing.Union[xr.DataArray, xr.Dataset]:
     """This function computes averages according to a given time frequency.
 
     Parameters
@@ -383,11 +382,6 @@ def calendar_average(
         will be calculated for it's given year (i.e. the average for Jan-2000
         will be independent of the average for Jan-2001). If True,
         climatological averages will be calculated across all years provided.
-
-    calendar : :class:`str`, Optional
-        Alias for the kind of calendar the time dimension of the data is in.
-        Defaults to `None`, in which case the calendar is infered from the data.
-        A list of accepted aliases can be found `here <http://xarray.pydata.org/en/stable/generated/xarray.cftime_range.html>`_
 
     Returns
     -------
