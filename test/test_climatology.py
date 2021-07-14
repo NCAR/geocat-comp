@@ -471,3 +471,113 @@ def test_non_datetime_like_objects():
 def test_yearly_climatology_warning():
     with pytest.warns(UserWarning):
         calendar_average(daily, 'year', climatology=True)
+
+
+julian_daily = _get_dummy_data('2020-01-01',
+                               '2021-12-31',
+                               'D',
+                               1,
+                               1,
+                               calendar='julian')
+noleap_daily = _get_dummy_data('2020-01-01',
+                               '2021-12-31',
+                               'D',
+                               1,
+                               1,
+                               calendar='noleap')
+all_leap_daily = _get_dummy_data('2020-01-01',
+                                 '2021-12-31',
+                                 'D',
+                                 1,
+                                 1,
+                                 calendar='all_leap')
+day_360_daily = _get_dummy_data('2020-01-01',
+                                '2021-12-30',
+                                'D',
+                                1,
+                                1,
+                                calendar='360_day')
+
+# Daily -> Monthly Means for Julian Calendar
+julian_month_avg = np.array([
+    15, 45, 75, 105.5, 136, 166.5, 197, 228, 258.5, 289, 319.5, 350, 381, 410.5,
+    440, 470.5, 501, 531.5, 562, 593, 623.5, 654, 684.5, 715
+]).reshape(24, 1, 1)
+julian_month_avg_time = xr.cftime_range('2020-01-01',
+                                        '2022-01-01',
+                                        freq='MS',
+                                        calendar='julian')
+julian_month_avg_time = xr.DataArray(np.vstack((julian_month_avg_time[:-1], julian_month_avg_time[1:])).T,
+                                     dims=['time', 'nbd']) \
+                          .mean(dim='nbd')
+julian_day_2_month_avg = xr.Dataset(
+    data_vars={'data': (('time', 'lat', 'lon'), julian_month_avg)},
+    coords={
+        'time': julian_month_avg_time,
+        'lat': [-90.0],
+        'lon': [-180.0]
+    })
+# Daily -> Monthly Means for NoLeap Calendar
+noleap_month_avg = np.array([
+    15, 44.5, 74, 104.5, 135, 165.5, 196, 227, 257.5, 288, 318.5, 349, 380,
+    409.5, 439, 469.5, 500, 530.5, 561, 592, 622.5, 653, 683.5, 714
+]).reshape(24, 1, 1)
+noleap_month_avg_time = xr.cftime_range('2020-01-01',
+                                        '2022-01-01',
+                                        freq='MS',
+                                        calendar='noleap')
+noleap_month_avg_time = xr.DataArray(np.vstack((noleap_month_avg_time[:-1], noleap_month_avg_time[1:])).T,
+                                     dims=['time', 'nbd']) \
+                          .mean(dim='nbd')
+noleap_day_2_month_avg = xr.Dataset(
+    data_vars={'data': (('time', 'lat', 'lon'), noleap_month_avg)},
+    coords={
+        'time': noleap_month_avg_time,
+        'lat': [-90.0],
+        'lon': [-180.0]
+    })
+# Daily -> Monthly Means for AllLeap Calendar
+all_leap_month_avg = np.array([
+    15, 45, 75, 105.5, 136, 166.5, 197, 228, 258.5, 289, 319.5, 350, 381, 411,
+    441, 471.5, 502, 532.5, 563, 594, 624.5, 655, 685.5, 716
+]).reshape(24, 1, 1)
+all_leap_month_avg_time = xr.cftime_range('2020-01-01',
+                                          '2022-01-01',
+                                          freq='MS',
+                                          calendar='all_leap')
+all_leap_month_avg_time = xr.DataArray(np.vstack((all_leap_month_avg_time[:-1], all_leap_month_avg_time[1:])).T,
+                                     dims=['time', 'nbd']) \
+    .mean(dim='nbd')
+all_leap_day_2_month_avg = xr.Dataset(
+    data_vars={'data': (('time', 'lat', 'lon'), all_leap_month_avg)},
+    coords={
+        'time': all_leap_month_avg_time,
+        'lat': [-90.0],
+        'lon': [-180.0]
+    })
+# Daily -> Monthly Means for 360 Day Calendar
+day_360_leap_month_avg = np.arange(14.5, 734.5, 30).reshape(24, 1, 1)
+day_360_leap_month_avg_time = xr.cftime_range('2020-01-01',
+                                              '2022-01-01',
+                                              freq='MS',
+                                              calendar='360_day')
+day_360_leap_month_avg_time = xr.DataArray(np.vstack((day_360_leap_month_avg_time[:-1], day_360_leap_month_avg_time[1:])).T,
+                                       dims=['time', 'nbd']) \
+    .mean(dim='nbd')
+day_360_leap_day_2_month_avg = xr.Dataset(
+    data_vars={'data': (('time', 'lat', 'lon'), day_360_leap_month_avg)},
+    coords={
+        'time': day_360_leap_month_avg_time,
+        'lat': [-90.0],
+        'lon': [-180.0]
+    })
+
+
+@pytest.mark.parametrize('dset, expected',
+                         [(julian_daily, julian_day_2_month_avg),
+                          (noleap_daily, noleap_day_2_month_avg),
+                          (all_leap_daily, all_leap_day_2_month_avg),
+                          (day_360_daily, day_360_leap_day_2_month_avg)])
+def test_non_standard_calendars(dset, expected):
+    result = calendar_average(dset, freq='month', climatology=False)
+    xr.testing.assert_equal(result, expected)
