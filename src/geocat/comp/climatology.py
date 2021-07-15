@@ -378,7 +378,8 @@ def calendar_average(
     Parameters
     ----------
     dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
-        The data on which to operate. It must be evenly spaced in the time dimension.
+        The data on which to operate. It must be uniformly spaced in the time
+        dimension.
 
     freq : :class:`str`
         Frequency alias. Accepted alias:
@@ -399,9 +400,9 @@ def calendar_average(
     Notes
     -----
     Seasonal averages are weighted based on the number of days in each month.
-    This means that the given data must be monotonic (i.e. data every 6 hours,
-    every two days, every month, etc.) and must not cross month boundaries
-    (i.e. don't use weekly averages where the week falls in two
+    This means that the given data must be uniformly spaced (i.e. data every 6
+    hours, every two days, every month, etc.) and must not cross month
+    boundaries (i.e. don't use weekly averages where the week falls in two
     different months)
     """
     # TODO: add functionality for users to select specific seasons or hours for averages
@@ -418,8 +419,8 @@ def calendar_average(
             f"Received bad period {freq!r}. Expected one of {list(freq_dict.keys())!r}"
         )
 
-    # If freq is 'season', key is set to monthly in order to calculate monthly
-    # averages which are then used to calculate seasonal averages
+    # If freq is 'season' or 'year', key is set to monthly in order to
+    # calculate monthly averages which are then used to calculate seasonal averages
     key = 'month' if freq in {'season', 'year'} else freq
 
     format, frequency = freq_dict[key]
@@ -432,6 +433,8 @@ def calendar_average(
 
     # Group data
     dset = dset.resample({time_dim: frequency}).mean().dropna(time_dim)
+
+    # Weight the data by the number of days in each month
     if freq in ['season', 'year']:
         key = freq
         format, frequency = freq_dict[key]
@@ -442,8 +445,7 @@ def calendar_average(
         weights = month_length.map(lambda group: group / group.sum())
         dset = (dset * weights).resample({time_dim: frequency}).sum()
 
-    # Set time coordinates to center of time bounds
-    dset[time_dim] = dset[time_dim].dt.strftime('%Y-%m-%d %H:%M:%S')
+    # Center the time coordinate by inferring and then averaging the time bounds
     dset = _calculate_center_of_time_bounds(dset, time_dim, frequency, calendar)
     return dset
 
@@ -458,7 +460,8 @@ def climatology_average(
     Parameters
     ----------
     dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
-        The data on which to operate. It must be evenly spaced in the time dimension.
+        The data on which to operate. It must be uniformly spaced in the time
+        dimension.
 
     freq : :class:`str`
         Frequency alias. Accepted alias:
@@ -479,9 +482,9 @@ def climatology_average(
     Notes
     -----
     Seasonal averages are weighted based on the number of days in each month.
-    This means that the given data must be monotonic (i.e. data every 6 hours,
-    every two days, every month, etc.) and must not cross month boundaries
-    (i.e. don't use weekly averages where the week falls in two
+    This means that the given data must be uniformly spaced (i.e. data every 6
+    hours, every two days, every month, etc.) and must not cross month
+    boundaries (i.e. don't use weekly averages where the week falls in two
     different months)
     """
     # TODO: add functionality for users to select specific seasons or hours for climatologies
@@ -528,11 +531,9 @@ def climatology_average(
         dset = dset.groupby(dset[time_dim].dt.strftime(format)).mean().rename(
             {'strftime': time_dim})
 
-        # Create array of datetimes to set as time coordinate of returned data
-        # Offsets are used to ensure the time coordinate of the returned climatology is centered on the period
+        # Center the time coordinate by inferring and then averaging the time bounds
         start_time = dset[time_dim].values[0]
         end_time = dset[time_dim].values[-1]
-
         dset = _calculate_center_of_time_bounds(
             dset,
             time_dim,
