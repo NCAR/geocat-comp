@@ -371,9 +371,9 @@ def month_to_season(
 def calendar_average(
         dset: typing.Union[xr.DataArray, xr.Dataset],
         freq: str,
-        time_dim: str = None,
-        climatology: bool = False) -> typing.Union[xr.DataArray, xr.Dataset]:
-    """This function computes averages according to a given time frequency.
+        time_dim: str = None) -> typing.Union[xr.DataArray, xr.Dataset]:
+    """This function divides the data into time periods (months, seasons, etc)
+    and computes the average for the data in each one.
 
     Parameters
     ----------
@@ -386,16 +386,10 @@ def calendar_average(
             - 'day': for daily averages
             - 'month': for monthly averages
             - 'season': for meteorological seasonal averages (DJF, MAM, JJA, and SON)
-            - 'yearly': for yearly averages
+            - 'year': for yearly averages
 
     time_dim : :class:`str`, Optional
         Name of the time coordinate for `xarray` objects
-
-    climatology : :class:`bool`, Optional
-        Default False. If False, the average for each period (day, month, etc.)
-        will be calculated for it's given year (i.e. the average for Jan-2000
-        will be independent of the average for Jan-2001). If True,
-        climatological averages will be calculated across all years provided.
 
     Returns
     -------
@@ -410,7 +404,7 @@ def calendar_average(
     (i.e. don't use weekly averages where the week falls in two
     different months)
     """
-    # TODO: add functionality for users to select specific seasons or hours for avgs/clims
+    # TODO: add functionality for users to select specific seasons or hours for averages
     freq_dict = {
         'hour': ('%m-%d %H', 'H'),
         'day': ('%m-%d', 'D'),
@@ -430,67 +424,121 @@ def calendar_average(
 
     format, frequency = freq_dict[key]
 
+    # If time_dim is None, infer time dimension name. Confirm dset[time_dim] contain datetimes
     time_dim = _get_time_coordinate_info(dset, time_dim)
 
     # Retrieve calendar name
     calendar = _infer_calendar_name(dset[time_dim])
 
-    if freq == 'year' and climatology:
-        climatology = False
-        warnings.warn(
-            'Cannot compute yearly climatology data since climatologies are averaged over years. To remove warning, set `climatology` to False'
+    # Group data
+    dset = dset.resample({time_dim: frequency}).mean().dropna(time_dim)
+    if freq in ['season', 'year']:
+        key = freq
+        format, frequency = freq_dict[key]
+        # Compute the weights for the months in each season so that the
+        # seasonal/yearly averages account for months being of different lengths
+        month_length = dset[time_dim].dt.days_in_month.resample(
+            {time_dim: frequency})
+        weights = month_length.map(lambda group: group / group.sum())
+        dset = (dset * weights).resample({time_dim: frequency}).sum()
+
+    # Set time coordinates to center of time bounds
+    dset[time_dim] = dset[time_dim].dt.strftime('%Y-%m-%d %H:%M:%S')
+    dset = _calculate_center_of_time_bounds(dset, time_dim, frequency, calendar)
+    return dset
+
+
+def climatology_average(
+        dset: typing.Union[xr.DataArray, xr.Dataset],
+        freq: str,
+        time_dim: str = None) -> typing.Union[xr.DataArray, xr.Dataset]:
+    """This function calculates long term hourly, daily, monthly, or seasonal
+    averages across all years in the given dataset.
+
+    Parameters
+    ----------
+    dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
+        The data on which to operate. It must be evenly spaced in the time dimension.
+
+    freq : :class:`str`
+        Frequency alias. Accepted alias:
+            - 'hour': for hourly averages
+            - 'day': for daily averages
+            - 'month': for monthly averages
+            - 'season': for meteorological seasonal averages (DJF, MAM, JJA, and SON)
+
+    time_dim : :class:`str`, Optional
+        Name of the time coordinate for `xarray` objects
+
+
+    Returns
+    -------
+    computed_dset: same type as dset
+        The computed data
+
+    Notes
+    -----
+    Seasonal averages are weighted based on the number of days in each month.
+    This means that the given data must be monotonic (i.e. data every 6 hours,
+    every two days, every month, etc.) and must not cross month boundaries
+    (i.e. don't use weekly averages where the week falls in two
+    different months)
+    """
+    # TODO: add functionality for users to select specific seasons or hours for climatologies
+    freq_dict = {
+        'hour': ('%m-%d %H', 'H'),
+        'day': ('%m-%d', 'D'),
+        'month': ('%m', 'MS'),
+        'season': (None, 'QS-DEC')
+    }
+
+    if freq not in freq_dict:
+        raise KeyError(
+            f"Received bad period {freq!r}. Expected one of {list(freq_dict.keys())!r}"
         )
-    # Average data across years
-    if climatology:
-        if freq == 'season':
-            # Calculate monthly average before calculating seasonal climatologies
-            dset = dset.resample({time_dim: frequency}).mean().dropna(time_dim)
 
-            # Compute the weights for the months in each season so that the
-            # seasonal averages account for months being of different lengths
-            month_length = dset[time_dim].dt.days_in_month.groupby(
-                f"{time_dim}.season")
-            weights = month_length / month_length.sum()
-            dset = (dset * weights).groupby(f"{time_dim}.season")
-            dset = dset.sum(dim=time_dim)
-        else:
-            # Retrieve floor of median year
-            median_yr = np.median(dset[time_dim].dt.year.values)
+    # If freq is 'season', key is set to monthly in order to calculate monthly
+    # averages which are then used to calculate seasonal averages
+    key = 'month' if freq == 'season' else freq
 
-            # Group data by format then calculate average of groups
-            dset = dset.groupby(
-                dset[time_dim].dt.strftime(format)).mean().rename(
-                    {'strftime': time_dim})
+    format, frequency = freq_dict[key]
 
-            # Create array of datetimes to set as time coordinate of returned data
-            # Offsets are used to ensure the time coordinate of the returned climatology is centered on the period
-            start_time = dset[time_dim].values[0]
-            end_time = dset[time_dim].values[-1]
+    # If time_dim is None, infer time dimension name. Confirm dset[time_dim] contain datetimes
+    time_dim = _get_time_coordinate_info(dset, time_dim)
 
-            dset = _calculate_center_of_time_bounds(
-                dset,
-                time_dim,
-                frequency,
-                calendar,
-                start=f'{median_yr:.0f}-{start_time}',
-                end=f'{median_yr:.0f}-{end_time}')
+    # Retrieve calendar name
+    calendar = _infer_calendar_name(dset[time_dim])
 
-    # Average data for each period considering the year of the period
-    else:
-        # Resample data using given frequency which preserves the year of the data
+    if freq == 'season':
+        # Calculate monthly average before calculating seasonal climatologies
         dset = dset.resample({time_dim: frequency}).mean().dropna(time_dim)
-        if freq in ['season', 'year']:
-            key = freq
-            format, frequency = freq_dict[key]
-            # Compute the weights for the months in each season so that the
-            # seasonal averages account for months being of different lengths
-            month_length = dset[time_dim].dt.days_in_month.resample(
-                {time_dim: frequency})
-            weights = month_length.map(lambda group: group / group.sum())
-            dset = (dset * weights).resample({time_dim: frequency}).sum()
 
-        # Set time coordinates to center of time bounds
-        dset[time_dim] = dset[time_dim].dt.strftime('%Y-%m-%d %H:%M:%S')
-        dset = _calculate_center_of_time_bounds(dset, time_dim, frequency,
-                                                calendar)
+        # Compute the weights for the months in each season so that the
+        # seasonal averages account for months being of different lengths
+        month_length = dset[time_dim].dt.days_in_month.groupby(
+            f"{time_dim}.season")
+        weights = month_length / month_length.sum()
+        dset = (dset * weights).groupby(f"{time_dim}.season")
+        dset = dset.sum(dim=time_dim)
+    else:
+        # Retrieve floor of median year
+        median_yr = np.median(dset[time_dim].dt.year.values)
+
+        # Group data by format then calculate average of groups
+        dset = dset.groupby(dset[time_dim].dt.strftime(format)).mean().rename(
+            {'strftime': time_dim})
+
+        # Create array of datetimes to set as time coordinate of returned data
+        # Offsets are used to ensure the time coordinate of the returned climatology is centered on the period
+        start_time = dset[time_dim].values[0]
+        end_time = dset[time_dim].values[-1]
+
+        dset = _calculate_center_of_time_bounds(
+            dset,
+            time_dim,
+            frequency,
+            calendar,
+            start=f'{median_yr:.0f}-{start_time}',
+            end=f'{median_yr:.0f}-{end_time}')
+
     return dset
