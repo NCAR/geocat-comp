@@ -196,7 +196,7 @@ def test_month_to_season_custom_time_coordinate(dataset, time_coordinate,
                                    decimal=1)
 
 
-# Test Datasets For calendar_average()
+# Test Datasets For calendar_average() and climatology_average()
 minute = _get_dummy_data('2020-01-01', '2021-12-31 23:30:00', '30min', 1, 1)
 
 hourly = _get_dummy_data('2020-01-01', '2021-12-31 23:00:00', 'H', 1, 1)
@@ -205,7 +205,7 @@ daily = _get_dummy_data('2020-01-01', '2021-12-31', 'D', 1, 1)
 
 monthly = _get_dummy_data('2020-01-01', '2021-12-01', 'MS', 1, 1)
 
-# Tests w/ expected outputs
+# Computational Tests for calendar_average()
 hour_avg = np.arange(0.5, 35088.5, 2).reshape((365 + 366) * 24, 1, 1)
 hour_avg_time = xr.cftime_range('2020-01-01 00:30:00',
                                 '2021-12-31 23:30:00',
@@ -220,7 +220,7 @@ min_2_hour_avg = xr.Dataset(
 
 
 @pytest.mark.parametrize('dset, expected', [(minute, min_2_hour_avg)])
-def test_30min_to_hourly_avg(dset, expected):
+def test_30min_to_hourly_calendar_average(dset, expected):
     result = calendar_average(dset, freq='hour')
     xr.testing.assert_equal(result, expected)
 
@@ -239,7 +239,7 @@ hour_2_day_avg = xr.Dataset(
 
 
 @pytest.mark.parametrize('dset, expected', [(hourly, hour_2_day_avg)])
-def test_hourly_to_daily_avg(dset, expected):
+def test_hourly_to_daily_calendar_average(dset, expected):
     result = calendar_average(dset, freq='day')
     xr.testing.assert_equal(result, expected)
 
@@ -262,7 +262,7 @@ day_2_month_avg = xr.Dataset(
 
 
 @pytest.mark.parametrize('dset, expected', [(daily, day_2_month_avg)])
-def test_daily_to_monthly_avg(dset, expected):
+def test_daily_to_monthly_calendar_average(dset, expected):
     result = calendar_average(dset, freq='month')
     xr.testing.assert_equal(result, expected)
 
@@ -295,7 +295,7 @@ month_2_season_avg = xr.Dataset(
 
 @pytest.mark.parametrize('dset, expected', [(daily, day_2_season_avg),
                                             (monthly, month_2_season_avg)])
-def test_daily_monthly_to_seasonal_avg(dset, expected):
+def test_daily_monthly_to_seasonal_calendar_average(dset, expected):
     result = calendar_average(dset, freq='season')
     xr.testing.assert_allclose(result, expected)
 
@@ -324,12 +324,12 @@ month_2_year_avg = xr.Dataset(
 
 @pytest.mark.parametrize('dset, expected', [(daily, day_2_year_avg),
                                             (monthly, month_2_year_avg)])
-def test_daily_monthly_to_yearly_avg(dset, expected):
+def test_daily_monthly_to_yearly_calendar_average(dset, expected):
     result = calendar_average(dset, freq='year')
     xr.testing.assert_allclose(result, expected)
 
 
-# Climatology Computational Tests
+# Computational Tests for climatology_average()
 hour_clim = np.concatenate([np.arange(8784.5, 11616.5, 2),
                             np.arange(2832.5, 2880.5, 2),
                             np.arange(11640.5, 26328.5, 2)])\
@@ -347,11 +347,8 @@ min_2_hourly_clim = xr.Dataset(
 
 
 @pytest.mark.parametrize('dset, expected', [(minute, min_2_hourly_clim)])
-def test_30min_to_hourly_clim(dset, expected):
+def test_30min_to_hourly_climatology_average(dset, expected):
     result = climatology_average(dset, freq='hour')
-    print(result.data.values[0])
-    print(result.data.values[-1])
-
     xr.testing.assert_allclose(result, expected)
 
 
@@ -373,7 +370,7 @@ hour_2_day_clim = xr.Dataset(
 
 
 @pytest.mark.parametrize('dset, expected', [(hourly, hour_2_day_clim)])
-def test_hourly_to_daily_clim(dset, expected):
+def test_hourly_to_daily_climatology_average(dset, expected):
     result = climatology_average(dset, freq='day')
     xr.testing.assert_equal(result, expected)
 
@@ -396,7 +393,7 @@ day_2_month_clim = xr.Dataset(
 
 
 @pytest.mark.parametrize('dset, expected', [(daily, day_2_month_clim)])
-def test_daily_to_monthly_clim(dset, expected):
+def test_daily_to_monthly_climatology_average(dset, expected):
     result = climatology_average(dset, freq='month')
     xr.testing.assert_allclose(result, expected)
 
@@ -423,36 +420,61 @@ month_2_season_clim = xr.Dataset(
 
 @pytest.mark.parametrize('dset, expected', [(daily, day_2_season_clim),
                                             (monthly, month_2_season_clim)])
-def test_daily_monthly_to_seasonal_clim(dset, expected):
+def test_daily_monthly_to_seasonal_climatology_average(dset, expected):
     result = climatology_average(dset, freq='season')
     xr.testing.assert_allclose(result, expected)
 
 
-# Argument Tests
+# Argument Tests for climatology_average() and calendar_average()
 @pytest.mark.parametrize('freq', ['TEST', None])
-def test_invalid_freq(freq):
+def test_invalid_freq_climatology_average(freq):
+    with pytest.raises(KeyError):
+        climatology_average(monthly, freq=freq)
+
+
+@pytest.mark.parametrize('freq', ['TEST', None])
+def test_invalid_freq_calendar_average(freq):
     with pytest.raises(KeyError):
         calendar_average(monthly, freq=freq)
 
 
 time_dim = 'my_time'
 custom_time = daily.rename({'time': time_dim})
+custom_time_expected = day_2_month_clim.rename({'time': time_dim})
+
+
+@pytest.mark.parametrize('dset, expected, time_dim',
+                         [(custom_time, custom_time_expected, time_dim)])
+def test_custom_time_coord_climatology_average(dset, expected, time_dim):
+    result = climatology_average(dset, freq='month', time_dim=time_dim)
+    xr.testing.assert_allclose(result, expected)
+
+
 custom_time_expected = day_2_month_avg.rename({'time': time_dim})
 
 
 @pytest.mark.parametrize('dset, expected, time_dim',
                          [(custom_time, custom_time_expected, time_dim)])
-def test_custom_time_coord(dset, expected, time_dim):
+def test_custom_time_coord_calendar_average(dset, expected, time_dim):
     result = calendar_average(dset, freq='month', time_dim=time_dim)
     xr.testing.assert_allclose(result, expected)
 
 
 array = daily['data']
+array_expected = day_2_month_clim['data']
+
+
+@pytest.mark.parametrize('da, expected', [(array, array_expected)])
+def test_xr_DataArray_support_climatology_average(da, expected):
+    result = climatology_average(da, freq='month')
+    xr.testing.assert_allclose(result, expected)
+
+
 array_expected = day_2_month_avg['data']
 
 
 @pytest.mark.parametrize('da, expected', [(array, array_expected)])
-def test_xr_DataArray_support(da, expected):
+def test_xr_DataArray_support_calendar_average(da, expected):
     result = calendar_average(da, freq='month')
     xr.testing.assert_equal(result, expected)
 
@@ -460,9 +482,29 @@ def test_xr_DataArray_support(da, expected):
 dset_encoded = xr.tutorial.open_dataset("air_temperature", decode_cf=False)
 
 
-def test_non_datetime_like_objects():
+def test_non_datetime_like_objects_climatology_average():
+    with pytest.raises(ValueError):
+        climatology_average(dset_encoded, 'month')
+
+
+def test_non_datetime_like_objects_calendar_average():
     with pytest.raises(ValueError):
         calendar_average(dset_encoded, 'month')
+
+
+time = pd.to_datetime(['2020-01-01', '2020-01-02', '2020-01-04'])
+non_uniform = xr.Dataset(data_vars={'data': (('time'), np.arange(3))},
+                         coords={'time': time})
+
+
+def test_non_uniformly_spaced_data_climatology_average():
+    with pytest.raises(ValueError):
+        climatology_average(non_uniform, freq='day')
+
+
+def test_non_uniformly_spaced_data_calendar_average():
+    with pytest.raises(ValueError):
+        calendar_average(non_uniform, freq='day')
 
 
 julian_daily = _get_dummy_data('2020-01-01',
@@ -489,6 +531,88 @@ day_360_daily = _get_dummy_data('2020-01-01',
                                 1,
                                 1,
                                 calendar='360_day')
+
+# Daily -> Monthly Climatologies for Julian Calendar
+julian_month_clim = np.array([198, 224.54385965, 257.5, 288, 318.5, 349,
+                              379.5, 410.5, 441, 471.5, 502, 532.5])\
+                      .reshape(12, 1, 1)
+julian_month_clim_time = xr.cftime_range('2020-01-01',
+                                         '2021-01-01',
+                                         freq='MS',
+                                         calendar='julian')
+julian_month_clim_time = xr.DataArray(np.vstack((julian_month_clim_time[:-1], julian_month_clim_time[1:])).T,
+                                     dims=['time', 'nbd']) \
+    .mean(dim='nbd')
+julian_day_2_month_clim = xr.Dataset(
+    data_vars={'data': (('time', 'lat', 'lon'), julian_month_clim)},
+    coords={
+        'time': julian_month_clim_time,
+        'lat': [-90.0],
+        'lon': [-180.0]
+    })
+# Daily -> Monthly Climatologies for NoLeap Calendar
+noleap_month_clim = np.array([197.5, 227, 256.5, 287, 317.5, 348,
+                              378.5, 409.5, 440, 470.5, 501, 531.5])\
+                      .reshape(12, 1, 1)
+noleap_month_clim_time = xr.cftime_range('2020-01-01',
+                                         '2021-01-01',
+                                         freq='MS',
+                                         calendar='noleap')
+noleap_month_clim_time = xr.DataArray(np.vstack((noleap_month_clim_time[:-1], noleap_month_clim_time[1:])).T,
+                                     dims=['time', 'nbd']) \
+    .mean(dim='nbd')
+noleap_day_2_month_clim = xr.Dataset(
+    data_vars={'data': (('time', 'lat', 'lon'), noleap_month_clim)},
+    coords={
+        'time': noleap_month_clim_time,
+        'lat': [-90.0],
+        'lon': [-180.0]
+    })
+# Daily -> Monthly Climatologies for AllLeap Calendar
+all_leap_month_clim = np.array([198, 228, 258, 288.5, 319, 349.5,
+                                380, 411, 441.5, 472, 502.5, 533])\
+                        .reshape(12, 1, 1)
+all_leap_month_clim_time = xr.cftime_range('2020-01-01',
+                                           '2021-01-01',
+                                           freq='MS',
+                                           calendar='all_leap')
+all_leap_month_clim_time = xr.DataArray(np.vstack((all_leap_month_clim_time[:-1], all_leap_month_clim_time[1:])).T,
+                                       dims=['time', 'nbd']) \
+    .mean(dim='nbd')
+all_leap_day_2_month_clim = xr.Dataset(
+    data_vars={'data': (('time', 'lat', 'lon'), all_leap_month_clim)},
+    coords={
+        'time': all_leap_month_clim_time,
+        'lat': [-90.0],
+        'lon': [-180.0]
+    })
+# Daily -> Monthly Climatologies for 360 Day Calendar
+day_360_leap_month_clim = np.arange(194.5, 554.5, 30).reshape(12, 1, 1)
+day_360_leap_month_clim_time = xr.cftime_range('2020-01-01',
+                                               '2021-01-01',
+                                               freq='MS',
+                                               calendar='360_day')
+day_360_leap_month_clim_time = xr.DataArray(np.vstack((day_360_leap_month_clim_time[:-1], day_360_leap_month_clim_time[1:])).T,
+                                           dims=['time', 'nbd']) \
+    .mean(dim='nbd')
+day_360_leap_day_2_month_clim = xr.Dataset(
+    data_vars={'data': (('time', 'lat', 'lon'), day_360_leap_month_clim)},
+    coords={
+        'time': day_360_leap_month_clim_time,
+        'lat': [-90.0],
+        'lon': [-180.0]
+    })
+
+
+@pytest.mark.parametrize('dset, expected',
+                         [(julian_daily, julian_day_2_month_clim),
+                          (noleap_daily, noleap_day_2_month_clim),
+                          (all_leap_daily, all_leap_day_2_month_clim),
+                          (day_360_daily, day_360_leap_day_2_month_clim)])
+def test_non_standard_calendars_climatology_average(dset, expected):
+    result = climatology_average(dset, freq='month')
+    xr.testing.assert_allclose(result, expected)
+
 
 # Daily -> Monthly Means for Julian Calendar
 julian_month_avg = np.array([
@@ -570,21 +694,6 @@ day_360_leap_day_2_month_avg = xr.Dataset(
                           (noleap_daily, noleap_day_2_month_avg),
                           (all_leap_daily, all_leap_day_2_month_avg),
                           (day_360_daily, day_360_leap_day_2_month_avg)])
-def test_non_standard_calendars(dset, expected):
+def test_non_standard_calendars_calendar_average(dset, expected):
     result = calendar_average(dset, freq='month')
     xr.testing.assert_equal(result, expected)
-
-
-time = pd.to_datetime(['2020-01-01', '2020-01-02', '2020-01-04'])
-non_uniform = xr.Dataset(data_vars={'data': (('time'), np.arange(3))},
-                         coords={'time': time})
-
-
-def test_non_uniformly_spaced_data_climatology():
-    with pytest.raises(ValueError):
-        climatology_average(non_uniform, freq='day')
-
-
-def test_non_uniformly_spaced_data_calendar():
-    with pytest.raises(ValueError):
-        climatology_average(non_uniform, freq='day')
