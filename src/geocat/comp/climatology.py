@@ -64,26 +64,38 @@ def _setup_clim_anom_input(dset, freq, time_coord_name):
     return data, time_invariant_vars, time_coord_name, time_dot_freq
 
 
-def _calculate_center_of_time_bounds(dset,
-                                     time_dim,
-                                     frequency,
-                                     calendar,
-                                     start=None,
-                                     end=None):
+def _calculate_center_of_time_bounds(dset, time_dim, freq, calendar, start,
+                                     end):
     """Helper function to determine the time bounds based on the given dataset
     and frequency and then calculate the averages of them.
 
     Returns the dataset with the time coordinate changed to the center
     of the time bounds.
+
+    Parameters
+    ----------
+    dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
+        The data on which to operate. It must be uniformly spaced in the time
+        dimension.
+
+    time_dim : :class:`str`, Optional
+        Name of the time coordinate for `xarray` objects
+
+    start: :class:`str`, :class:`cftime.datetime`
+        The starting date of the data. The string representation must be in ISO format
+
+    end: :class:`str`, :class:`cftime.datetime`
+        The ending date of the data. The string representation must be in ISO format
+
+    See `xarray.cftime_range <http://xarray.pydata.org/en/stable/generated/xarray.cftime_range.html>_` for accepted values for `freq` and `calendar`.
+
+    Returns
+    -------
+    computed_dset: same type as dset
+        The data with adjusted time coordinate
     """
-    if sum(x is not None for x in [start, end]) == 1:
-        raise ValueError(
-            "Both `start` and `end` must be specified or both left unspecified."
-        )
-    if start is None and end is None:
-        start = dset[time_dim].values[0]
-        end = dset[time_dim].values[-1]
-    time_bounds = xr.cftime_range(start, end, freq=frequency, calendar=calendar)
+
+    time_bounds = xr.cftime_range(start, end, freq=freq, calendar=calendar)
     time_bounds = time_bounds.append(time_bounds[-1:].shift(1, freq=frequency))
     time =  xr.DataArray(np.vstack((time_bounds[:-1], time_bounds[1:])).T,
                          dims=[time_dim, 'nbd']) \
@@ -451,7 +463,12 @@ def calendar_average(
         dset = (dset * weights).resample({time_dim: frequency}).sum()
 
     # Center the time coordinate by inferring and then averaging the time bounds
-    dset = _calculate_center_of_time_bounds(dset, time_dim, frequency, calendar)
+    dset = _calculate_center_of_time_bounds(dset,
+                                            time_dim,
+                                            frequency,
+                                            calendar,
+                                            start=dset[time_dim].values[0],
+                                            end=dset[time_dim].values[-1])
     return dset
 
 
