@@ -1,5 +1,6 @@
 import numpy as np
 import xarray as xr
+import math as m
 
 
 def fourier_filter(signal,
@@ -106,9 +107,9 @@ def fourier_filter(signal,
     resolution = frequency / len(signal)
     signal = np.swapaxes(signal, time_axis, 0)
     res_fft = np.fft.fft(signal, axis=0)
-    cfl_index = round(cutoff_frequency_low / resolution)
+    cfl_index = m.floor(cutoff_frequency_low / resolution)
     cfln_index = 1 - cfl_index
-    cfh_index = round(cutoff_frequency_high / resolution)
+    cfh_index = m.ceil(cutoff_frequency_high / resolution)
     cfhn_index = 1 - cfh_index
     if low_pass:
         if cfl_index > 1:
