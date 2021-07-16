@@ -96,7 +96,7 @@ def _calculate_center_of_time_bounds(dset, time_dim, freq, calendar, start,
     """
 
     time_bounds = xr.cftime_range(start, end, freq=freq, calendar=calendar)
-    time_bounds = time_bounds.append(time_bounds[-1:].shift(1, freq=frequency))
+    time_bounds = time_bounds.append(time_bounds[-1:].shift(1, freq=freq))
     time =  xr.DataArray(np.vstack((time_bounds[:-1], time_bounds[1:])).T,
                          dims=[time_dim, 'nbd']) \
         .mean(dim='nbd')
