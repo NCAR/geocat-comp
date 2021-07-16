@@ -428,6 +428,11 @@ def calendar_average(
     # If time_dim is None, infer time dimension name. Confirm dset[time_dim] contain datetimes
     time_dim = _get_time_coordinate_info(dset, time_dim)
 
+    # Check if data is uniformly spaced
+    if xr.infer_freq(dset[time_dim]) is None:
+        raise ValueError(
+            f"Data needs to be uniformly spaced in the {time_dim!r} dimension.")
+
     # Retrieve calendar name
     calendar = _infer_calendar_name(dset[time_dim])
 
@@ -508,6 +513,11 @@ def climatology_average(
 
     # If time_dim is None, infer time dimension name. Confirm dset[time_dim] contain datetimes
     time_dim = _get_time_coordinate_info(dset, time_dim)
+
+    # Check if data is uniformly spaced
+    if xr.infer_freq(dset[time_dim]) is None:
+        raise ValueError(
+            f"Data needs to be uniformly spaced in the {time_dim!r} dimension.")
 
     # Retrieve calendar name
     calendar = _infer_calendar_name(dset[time_dim])

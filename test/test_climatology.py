@@ -573,3 +573,18 @@ day_360_leap_day_2_month_avg = xr.Dataset(
 def test_non_standard_calendars(dset, expected):
     result = calendar_average(dset, freq='month')
     xr.testing.assert_equal(result, expected)
+
+
+time = pd.to_datetime(['2020-01-01', '2020-01-02', '2020-01-04'])
+non_uniform = xr.Dataset(data_vars={'data': (('time'), np.arange(3))},
+                         coords={'time': time})
+
+
+def test_non_uniformly_spaced_data_climatology():
+    with pytest.raises(ValueError):
+        climatology_average(non_uniform, freq='day')
+
+
+def test_non_uniformly_spaced_data_calendar():
+    with pytest.raises(ValueError):
+        climatology_average(non_uniform, freq='day')
