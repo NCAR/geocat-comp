@@ -13,6 +13,8 @@ GeoCAT-comp routines
 
    geocat.comp.climatology._contains_datetime_like_objects
 
+   geocat.comp.climatology._calculate_center_of_time_bounds
+
    geocat.comp.climatology._find_time_invariant_vars
 
    geocat.comp.climatology._get_time_coordinate_info
