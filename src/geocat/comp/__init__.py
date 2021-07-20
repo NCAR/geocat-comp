@@ -1,5 +1,5 @@
 # move functions into geocat.comp namespace
-from .climatology import anomaly, climatology, month_to_season
+from .climatology import anomaly, climatology, month_to_season, calendar_average, climatology_average
 from .crop import (actual_saturation_vapor_pressure, max_daylight,
                    psychrometric_constant, saturation_vapor_pressure,
                    saturation_vapor_pressure_slope)
