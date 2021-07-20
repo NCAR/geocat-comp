@@ -16,7 +16,11 @@ GeoCAT-comp routines
 
    geocat.comp.anomaly
 
+   geocat.comp.calendar_average
+
    geocat.comp.climatology
+
+   geocat.comp.climatology_average
 
    geocat.comp.detrend
 
