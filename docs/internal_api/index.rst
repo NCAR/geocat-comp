@@ -57,8 +57,6 @@ GeoCAT-comp routines
 
    geocat.comp.relhum._relhum
 
-   geocat.comp.dewtemp._xdewtemp
-
    geocat.comp.heat_index._xheat_index
 
    geocat.comp.relhum._xrelhum
