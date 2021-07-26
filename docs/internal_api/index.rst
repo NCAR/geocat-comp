@@ -19,6 +19,8 @@ GeoCAT-comp routines
 
    geocat.comp.climatology._get_time_coordinate_info
 
+   geocat.comp.climatology._infer_calendar_name
+
    geocat.comp.climatology._setup_clim_anom_input
 
    geocat.comp.climatology._validate_freq

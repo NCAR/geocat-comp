@@ -87,7 +87,7 @@ def _calculate_center_of_time_bounds(dset, time_dim, freq, calendar, start,
     end: :class:`str`, :class:`cftime.datetime`
         The ending date of the data. The string representation must be in ISO format
 
-    See `xarray.cftime_range <http://xarray.pydata.org/en/stable/generated/xarray.cftime_range.html>_` for accepted values for `freq` and `calendar`.
+    See `xarray.cftime_range <http://xarray.pydata.org/en/stable/generated/xarray.cftime_range.html>`_ for accepted values for `freq` and `calendar`.
 
     Returns
     -------
@@ -106,7 +106,7 @@ def _calculate_center_of_time_bounds(dset, time_dim, freq, calendar, start,
 def _infer_calendar_name(dates):
     """Given an array of datetimes, infer the CF calendar name.
 
-    This code was taken from `xarray/coding/times.py <https://github.com/pydata/xarray/blob/75eefb8e95a70f1667623a8418d81da3f3148a40/xarray/coding/times.py>_`
+    This code was taken from `xarray/coding/times.py <https://github.com/pydata/xarray/blob/75eefb8e95a70f1667623a8418d81da3f3148a40/xarray/coding/times.py>`_
     as the function is considered internal by xarray and could change at
     anytime. It was copied to preserve the version that is compatible with
     functions in climatology.py
