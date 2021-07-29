@@ -21,9 +21,9 @@ def version():
 setup(
     name='geocat.comp',
     version=version(),
-    maintainer='geocat team',
+    maintainer='GeoCAT',
     maintainer_email='geocat@ucar.edu',
-    python_requires='>=3.6',
+    python_requires='>=3.7',
     install_requires=requirements,
     description=
     """GeoCAT-comp is computational component of the GeoCAT project and provides
@@ -35,7 +35,6 @@ setup(
         'Intended Audience :: Science/Research',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
