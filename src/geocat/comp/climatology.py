@@ -74,12 +74,18 @@ def _calculate_center_of_time_bounds(dset, time_dim, freq, calendar, start,
 
     Parameters
     ----------
-    dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
+    dset: :class:`xarray.Dataset`, :class:`xarray.DataArray`
         The data on which to operate. It must be uniformly spaced in the time
         dimension.
 
-    time_dim : :class:`str`, Optional
+    time_dim: :class:`str`
         Name of the time coordinate for `xarray` objects
+
+    freq: :class:`str`
+        Alias for the frequency of the adjusted timestamps (i.e. daily, monthly)
+
+    calendar: :class:`str`
+        Alias for the calendar the time stamps are in (i.e. gregorian, no leap years)
 
     start: :class:`str`, :class:`cftime.datetime`
         The starting date of the data. The string representation must be in ISO format
@@ -87,12 +93,14 @@ def _calculate_center_of_time_bounds(dset, time_dim, freq, calendar, start,
     end: :class:`str`, :class:`cftime.datetime`
         The ending date of the data. The string representation must be in ISO format
 
-    See `xarray.cftime_range <http://xarray.pydata.org/en/stable/generated/xarray.cftime_range.html>`_ for accepted values for `freq` and `calendar`.
-
     Returns
     -------
     computed_dset: same type as dset
         The data with adjusted time coordinate
+
+    Notes
+    -----
+    See `xarray.cftime_range <http://xarray.pydata.org/en/stable/generated/xarray.cftime_range.html>`_ for accepted values for `freq` and `calendar`.
     """
 
     time_bounds = xr.cftime_range(start, end, freq=freq, calendar=calendar)
