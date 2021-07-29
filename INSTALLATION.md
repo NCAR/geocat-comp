@@ -54,7 +54,7 @@ installed.
 
 ### Required dependencies for building and testing GeoCAT-comp
 
-- Python 3.6+
+- Python 3.7+
 - [GeoCAT-datafiles](https://github.com/NCAR/geocat-datafiles)  (For tests only)
 - [GeoCAT-f2py](https://github.com/NCAR/geocat-f2py)
 - [cf_xarray](https://cf-xarray.readthedocs.io/en/latest/)
