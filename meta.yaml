@@ -24,6 +24,7 @@ requirements:
   run:
     - python
     - cf_xarray>=0.3.1
+    - cftime
     - dask
     - eofs
     - geocat-f2py

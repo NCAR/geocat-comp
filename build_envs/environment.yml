@@ -5,6 +5,7 @@ channels:
 dependencies:
   - python
   - cf_xarray>=0.3.1
+  - cftime
   - dask
   - distributed
   - eofs

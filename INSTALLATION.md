@@ -58,6 +58,7 @@ installed.
 - [GeoCAT-datafiles](https://github.com/NCAR/geocat-datafiles)  (For tests only)
 - [GeoCAT-f2py](https://github.com/NCAR/geocat-f2py)
 - [cf_xarray](https://cf-xarray.readthedocs.io/en/latest/)
+- [cftime](https://unidata.github.io/cftime/)
 - [eofs](https://ajdawson.github.io/eofs/latest/index.html)
 - [dask](https://dask.org/)
 - [distributed](https://distributed.readthedocs.io/en/latest/)
