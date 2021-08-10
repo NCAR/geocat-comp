@@ -62,6 +62,7 @@ def showalter_index(pressure, temperature, dewpt):
 
     # Calculate the Showalter index
     shox = Tp500 - ml
+
     return shox
 
 
