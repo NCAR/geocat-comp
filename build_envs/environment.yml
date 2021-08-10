@@ -13,7 +13,7 @@ dependencies:
   - geocat-f2py
   - metpy
   - netcdf4  # for tests
-  - numpy
+  - numpy=1.20.2
   - pip
   - pytest  # for tests
   - pytest-cov  # for tests
