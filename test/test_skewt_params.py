@@ -2,6 +2,7 @@ import sys
 
 import metpy.calc as mpcalc
 import numpy as np
+import numpy.testing as nt
 from metpy.units import units
 
 # Import from directory structure if coverage test, or from installed
@@ -23,10 +24,8 @@ def test_showalter_index():
 
     result = showalter_index(p, tc, tdc)
     expected = 21.353962321924012 * units.delta_degree_Celsius
-    if result == expected:
-        pass
-    else:
-        raise Exception
+
+    nt.assert_equal(result, expected)
 
 
 def test_get_skewt_vars():
@@ -34,7 +33,4 @@ def test_get_skewt_vars():
     result = get_skewt_vars(p, tc, tdc, pro)
     expected = 'Plcl= 747 Tlcl[C]= 6 Shox= 21 Pwat[cm]= 5 Cape[J]= 0'
 
-    if result == expected:
-        pass
-    else:
-        raise Exception
+    nt.assert_equal(result, expected)
