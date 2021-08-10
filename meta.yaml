@@ -1,4 +1,4 @@
-{% set version = "2021.07.1" %}
+{% set version = "2021.08.0" %}
 
 package:
   name: 'geocat-comp'
