@@ -31,14 +31,14 @@ in an existing environment with the following commands:
     conda activate geocat   # or whatever your environment is called
     conda install -c conda-forge matplotlib cartopy jupyter
 
-Please note that the use of the **conda-forge** channel is essential to guarantee
+Please note that the use of the `conda-forge` channel is essential to guarantee
 compatibility between dependency packages.
 
-Also, note that the Conda package manager automatically installs all `required`
+Also, note that the Conda package manager automatically installs all *required*
 dependencies of GeoCAT-comp, meaning it is not necessary to explicitly install
 Python, NumPy, Xarray, or Dask when creating an environment and installing GeoCAT-comp.
 Although packages like Matplotlib are often used with GeoCAT-comp, they are considered
-`optional` dependencies and must be explicitly installed.
+*optional* dependencies and must be explicitly installed.
 
 If you are interested in learning more about how Conda environments work, please visit
 the [managing environments](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html)
@@ -48,7 +48,7 @@ page of the Conda documentation.
 ## Building GeoCAT-comp from source
 
 Building GeoCAT-comp from source code is a fairly straightforward task, but
-doing so should not be necessary for most users. If you are interested in
+doing so should not be necessary for most users. If you *are* interested in
 building GeoCAT-comp from source, you will need the following packages to be
 installed.
 
