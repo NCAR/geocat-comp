@@ -1,11 +1,8 @@
 import typing
 
 import cf_xarray
-import cftime
 import numpy as np
 import xarray as xr
-import pandas as pd
-import warnings
 
 xr.set_options(keep_attrs=True)
 
