@@ -29,8 +29,6 @@ GeoCAT-comp routines
 
    geocat.comp.interpolation._pressure_from_hybrid
 
-   geocat.comp.interpolation._vertical_remap
-
    geocat.comp.meteorology._dewtemp
 
    geocat.comp.meteorology._heat_index
@@ -43,15 +41,15 @@ GeoCAT-comp routines
 
    geocat.comp.meteorology._xrelhum
 
+   geocat.comp.polynomial._check_axis
+
    geocat.comp.polynomial._get_missing_value
 
-   geocat.comp.polynomial._unchunk_ifneeded
+   geocat.comp.polynomial._isvector
 
    geocat.comp.polynomial._ndpolyfit
 
-   geocat.comp.polynomial._check_axis
-
-   geocat.comp.polynomial._isvector
+   geocat.comp.polynomial._ndpolyval
 
    geocat.comp.polynomial._rearrange_axis
 
@@ -59,4 +57,4 @@ GeoCAT-comp routines
 
    geocat.comp.polynomial._to_numpy_ndarray
 
-   geocat.comp.polynomial._ndpolyval
+   geocat.comp.polynomial._unchunk_ifneeded
