@@ -58,7 +58,7 @@ GeoCAT-comp native routines
 
    geocat.comp.meteorology.relhum_water
 
-   geocat.comp.poynomial.detrend
+   geocat.comp.polynomial.detrend
 
    geocat.comp.polynomial.ndpolyfit
 
@@ -75,6 +75,8 @@ GeoCAT-comp routines from GeoCAT-f2py
 .. autosummary::
    :toctree: ./generated/
 
+   geocat.comp.dpres_plevel
+
    geocat.comp.grid_to_triple
 
    geocat.comp.linint1
@@ -90,7 +92,5 @@ GeoCAT-comp routines from GeoCAT-f2py
    geocat.comp.rcm2rgrid
 
    geocat.comp.rgrid2rcm
-
-   geocat.comp.dpres_plevel
 
    geocat.comp.triple_to_grid
