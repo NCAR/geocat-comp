@@ -4,6 +4,7 @@ channels:
   - ncar
 dependencies:
   - python
+  - cftime
   - dask
   - distributed
   - eofs
