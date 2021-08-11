@@ -23,9 +23,9 @@ pro = mpcalc.parcel_profile(p, tc[0], tdc[0])  # Parcel Profile
 def test_showalter_index():
 
     result = showalter_index(p, tc, tdc)
-    expected = 21.353962321924012 * units.delta_degree_Celsius
+    expected = 21.35395610431048 * units.delta_degree_Celsius
 
-    nt.assert_almost_equal(result, expected, 4)
+    nt.assert_equal(result, expected)
 
 
 def test_get_skewt_vars():
@@ -33,4 +33,4 @@ def test_get_skewt_vars():
     result = get_skewt_vars(p, tc, tdc, pro)
     expected = 'Plcl= 747 Tlcl[C]= 6 Shox= 21 Pwat[cm]= 5 Cape[J]= 0'
 
-    nt.assert_almost_equal(result, expected, 4)
+    nt.assert_equal(result, expected)
