@@ -17,15 +17,15 @@ def max_daylight(jday, lat):
 
     Parameters
     ----------
-    jday : numpy.ndarray, xr.DataArray, list, float
+    jday : (:class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`)
         Day of year. Must be 1D
 
-    lat : numpy.ndarray, xr.DataArray, list, float
+    lat : (:class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`)
         Latitude in degrees. Must be 1D
 
     Returns
     -------
-    sunmax : numpy.ndarray, xr.DataArray, float
+    sunmax : (:class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`float`)
         Calculated maximum sunlight in hours/day
 
     Examples
@@ -115,12 +115,12 @@ def psychrometric_constant(pressure):
 
     Parameters
     ----------
-    pressure : numpy.ndarray, xr.DataArray, list, float
+    pressure : (:class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`)
         pressure in kPa/C
 
     Returns
     -------
-    psy_const : numpy.ndarray, xr.DataArray
+    psy_const : (:class:`numpy.ndarray`, :class:`xarray.DataArray`)
         the computed psychrometric constant. Same shape as pressure.
 
     Examples
@@ -171,15 +171,15 @@ def saturation_vapor_pressure(temperature, tfill=np.NAN):
 
     Parameters
     ----------
-    temperature : numpy.ndarray, xr.DataArray, list, float
+    temperature : (:class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`)
         Temperature in Fahrenheit
 
-    tfill : float, np.NAN, Optional
+    tfill : (:class:`float`, :class:`numpy.nan`, Optional)
         An optional parameter for a fill value in the return value
 
     Returns
     -------
-    svp : numpy.ndarray, xr.DataArray
+    svp : (:class:`numpy.ndarray`, :class:`xarry.DataArray`)
         the computed actual saturation vapor pressure in kPa.
         Same shape as temperature.
 
@@ -234,15 +234,15 @@ def actual_saturation_vapor_pressure(tdew, tfill=np.NAN):
 
     Parameters
     ----------
-    tdew : numpy.ndarray, xr.DataArray, list, float
+    tdew : (:class:`numpy.ndarray`, :class:`xarry.DataArray`, :class:`list`, :class:`float`)
         Dew point temperatures in Fahrenheit
 
-    tfill : float, np.NAN, Optional
+    tfill : (:class:`float`, :class:`numpy.nan`, Optional)
         An optional parameter for a fill value in the return value
 
     Returns
     -------
-    asvp : numpy.ndarray, xr.DataArray
+    asvp : (:class:`numpy.ndarray`, :class:`xarry.DataArray`)
         the computed actual saturation vapor pressure in kPa.
         Same shape as tdew.
 
@@ -279,15 +279,15 @@ def saturation_vapor_pressure_slope(temperature, tfill=np.NAN):
 
     Parameters
     ----------
-    temperature : numpy.ndarray, xr.DataArray, list, float
+    temperature : (:class:`numpy.ndarray`, :class:`xarry.DataArray`, :class:`list`, :class:`float`)
         Temperature in Fahrenheit
 
-    tfill : float, np.NAN, Optional
+    tfill : (:class:`float`, :class:`numpy.nan`, Optional)
         An optional parameter for a fill value in the return value
 
     Returns
     -------
-    svp_slope : numpy.ndarray, xr.DataArray
+    svp_slope : (:class:`numpy.ndarray`, :class:`xarry.DataArray`)
         The computed slopes of the saturation vapor pressure curve.
         Will be the same shape as temperature.
 

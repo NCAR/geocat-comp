@@ -40,20 +40,20 @@ def heat_index(temperature, relative_humidity, alternate_coeffs=False):
 
     Parameters
     ----------
-    temperature : numpy.ndarray, xr.DataArray, list, float
+    temperature : (:class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`)
         temperature(s) in Fahrenheit
 
-    relative_humidity : numpy.ndarray, xr.DataArray, list, float
+    relative_humidity : (:class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`)
         relative humidity as a percentage. Must be the same shape as
         temperature
 
-    alternate_coeffs : Boolean, Optional
+    alternate_coeffs : (:class:`boolean`, Optional)
         flag to use alternate set of coefficients appropriate for
         temperatures from 70F to 115F and humidities between 0% and 80%
 
     Returns
     -------
-    heatindex : numpy.ndarray, xr.DataArray
+    heatindex : (:class:`numpy.ndarray`, :class:`xarray.DataArray`)
         Calculated heat index. Same shape as temperature
 
     Examples
@@ -140,20 +140,20 @@ def _heat_index(temperature, relative_humidity, alternate_coeffs=False):
 
     Parameters
     ----------
-    temperature : numpy.ndarray
+    temperature : (:class:`numpy.ndarray`)
         temperature(s) in Fahrenheit
 
-    relative_humidity : numpy.ndarray, xr.DataArray, list, float
+    relative_humidity : (:class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`)
         relative humidity as a percentage. Must be the same shape as
         temperature
 
-    alternate_coeffs : Boolean, Optional
+    alternate_coeffs : (:class:`boolean`, Optional)
         flag to use alternate set of coefficients appropriate for
         temperatures from 70F to 115F and humidities between 0% and 80%
 
     Returns
     -------
-    heatindex : numpy.ndarray
+    heatindex : (:class:`numpy.ndarray`)
         Calculated heat index. Same shape as temperature
     """
     # Default coefficients for (t>=80F) and (40<gh<100)
@@ -213,23 +213,23 @@ def _xheat_index(temperature, relative_humidity, alternate_coeffs=False):
 
     Parameters
     ----------
-    temperature : xr.DataArray
+    temperature : (:class:`xarray.DataArray`)
         temperature(s) in Fahrenheit
 
-    relative_humidity : xr.DataArray
+    relative_humidity : (:class:`xarray.DataArray`)
         relative humidity as a percentage. Must be the same shape as
         temperature
 
-    alternate_coeffs : Boolean, Optional
+    alternate_coeffs : (:class:`boolean`, Optional)
         flag to use alternate set of coefficients appropriate for
         temperatures from 70F to 115F and humidities between 0% and 80%
 
     Returns
     -------
-    heatindex : xr.DataArray
+    heatindex : (:class:`xarray.DataArray`)
         Calculated heat index. Same shape as temperature
 
-    eqtype : int
+    eqtype : (:class:`int`)
         version of equations used, for xarray attrs output
     """
     # Default coefficients for (t>=80F) and (40<gh<100)

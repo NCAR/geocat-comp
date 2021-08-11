@@ -18,11 +18,11 @@ def showalter_index(pressure, temperature, dewpt):
     Parameters
     ----------
 
-        pressure : `pint.Quantity`
+        pressure : (:class:`pint.Quantity`)
             Atmospheric pressure level(s) of interest, in order from highest
             to lowest pressure
 
-        temperature : `pint.Quantity`
+        temperature : (:class:`pint.Quantity`)
             Parcel temperature for corresponding pressure
 
         dewpt (:class: `pint.Quantity`):
@@ -32,7 +32,7 @@ def showalter_index(pressure, temperature, dewpt):
      Returns
      -------
 
-     `pint.Quantity`
+     :class:`pint.Quantity`
         Showalter index in delta degrees celsius
     """
 

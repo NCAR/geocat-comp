@@ -14,18 +14,18 @@ def relhum(temperature, mixing_ratio, pressure):
 
         Args:
 
-            temperature (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+            temperature (:class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`):
                 Temperature in Kelvin
 
-            mixing_ratio (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+            mixing_ratio (:class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`):
                 Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-            pressure (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+            pressure (:class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`):
                 Pressure in Pa. Must have the same dimensions as temperature
 
         Returns:
 
-            relative_humidity (:class:`numpy.ndarray` or :class:`xr.DataArray`):
+            relative_humidity (:class:`numpy.ndarray` or :class:`xarray.DataArray`):
                 Relative humidity. Will have the same dimensions as temperature
     """
 
@@ -195,10 +195,10 @@ def _relhum(t, w, p):
          t (:class:`numpy.ndarray`, :obj:`list`, or :obj:`float`):
              Temperature in Kelvin
 
-         w (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+         w (:class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`):
              Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-         p (:class:`numpy.ndarray`, :class:`xr.DataArray`, :obj:`list`, or :obj:`float`):
+         p (:class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`):
              Pressure in Pa. Must have the same dimensions as temperature
 
      Returns:
@@ -266,18 +266,18 @@ def _xrelhum(t, w, p):
 
     Args:
 
-         t (:class:`xr.DataArray`):
+         t (:class:`xarray.DataArray`):
              Temperature in Kelvin
 
-         w (:class:`xr.DataArray`):
+         w (:class:`xarray.DataArray`):
              Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-         p (:class:`xr.DataArray`):
+         p (:class:`xarray.DataArray`):
              Pressure in Pa. Must have the same dimensions as temperature
 
      Returns:
 
-         rh (:class:`xr.DataArray`):
+         rh (:class:`xarray.DataArray`):
              Relative humidity. Will have the same dimensions as temperature
     """
 
