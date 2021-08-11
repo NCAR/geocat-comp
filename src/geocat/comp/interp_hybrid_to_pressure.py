@@ -44,17 +44,17 @@ def interp_hybrid_to_pressure(data,
         One-dimensional arrays containing the hybrid A and B coefficients. Must have the same
         dimension size as the `lev_dim` dimension of data.
 
-    p0 :
-        Scalar numeric value equal to surface reference pressure (Pa).
+    p0 : (:class:`float`, Optional)
+        Scalar numeric value equal to surface reference pressure (Pa). Defaults to 100000 Pa.
 
-    new_levels : (:class:`numpy.ndarray`)
+    new_levels : (:class:`numpy.ndarray`, Optional)
         A one-dimensional array of output pressure levels (Pa). If not given, the mandatory
         list of 21 pressure levels is used.
 
-    lev_dim : (:class:`str`)
+    lev_dim : (:class:`str`, Optional)
         String that is the name of level dimension in data. Defaults to "lev".
 
-    method : (:class:`str`)
+    method : (:class:`str`, Optional)
         String that is the interpolation method; can be either "linear" or "log". Defaults to "linear".
     """
 

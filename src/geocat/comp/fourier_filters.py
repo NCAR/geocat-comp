@@ -25,25 +25,25 @@ def fourier_filter(signal,
         sample frequency of dataset
 
     cutoff_frequency_low : (:class:`float`, Optional)
-        low frequency for cutting fourier transform, used by low_pass, band_pass, band_block
+        low frequency for cutting fourier transform, used by low_pass, band_pass, band_block. Defaults to 0.
 
     cutoff_frequency_high : (:class:`float`, Optional)
-        high frequency for cutting fourier transform, used by low_pass, band_pass, band_block
+        high frequency for cutting fourier transform, used by low_pass, band_pass, band_block. Defaults to 0.
 
     time_axis : (:class:`int`, Optional)
-        the time axis of the data set
+        the time axis of the data set. Defaults to 0.
 
     low_pass : (:class:`boolean`, Optional)
-        runs a low_pass filter on the data if set to True
+        runs a low_pass filter on the data if set to True. Defaults to False.
 
     high_pass : (:class:`boolean`, Optional)
-        runs a high_pass filter on the data if set to True
+        runs a high_pass filter on the data if set to True. Defaults to False.
 
     band_pass : (:class:`boolean`, Optional)
-        runs a band_pass filter on the data if set to True
+        runs a band_pass filter on the data if set to True. Defaults to False.
 
     band_block : (:class:`boolean`, Optional)
-        runs a band_block filter on the data if set to True
+        runs a band_block filter on the data if set to True. Defaults to False.
 
     Returns
     -------
@@ -160,11 +160,11 @@ def fourier_low_pass(signal, frequency, cutoff_frequency_low, time_axis=0):
     frequency : (:class:`float`)
         sample frequency of dataset
 
-    cutoff_frequency_low : (:class:`float`, Optional)
+    cutoff_frequency_low : (:class:`float`)
         low frequency for cutting fourier transform
 
     time_axis : (:class:`int`, Optional)
-        the time axis of the data set
+        the time axis of the data set. Defaults to 0.
 
     Returns
     -------
@@ -190,11 +190,11 @@ def fourier_high_pass(signal, frequency, cutoff_frequency_high, time_axis=0):
     frequency : (:class:`float`)
         sample frequency of dataset
 
-    cutoff_frequency_high : (:class:`float`, Optional)
+    cutoff_frequency_high : (:class:`float`)
         high frequency for cutting fourier transform
 
     time_axis : (:class:`int`, Optional)
-        the time axis of the data set
+        the time axis of the data set. Defaults to 0.
 
     Returns
     -------
@@ -224,14 +224,14 @@ def fourier_band_pass(signal,
     frequency : (:class:`float`)
         sample frequency of dataset
 
-    cutoff_frequency_low : (:class:`float`, Optional)
+    cutoff_frequency_low : (:class:`float`)
         low frequency for cutting fourier transform
 
-    cutoff_frequency_high : (:class:`float`, Optional)
+    cutoff_frequency_high : (:class:`float`)
         high frequency for cutting fourier transform
 
     time_axis : (:class:`int`, Optional)
-        the time axis of the data set
+        the time axis of the data set. Defaults to 0.
 
     Returns
     -------
@@ -262,14 +262,14 @@ def fourier_band_block(signal,
     frequency : (:class:`float`)
         sample frequency of dataset
 
-    cutoff_frequency_low : (:class:`float`, Optional)
+    cutoff_frequency_low : (:class:`float`)
         low frequency for cutting fourier transform
 
-    cutoff_frequency_high : (:class:`float`, Optional)
+    cutoff_frequency_high : (:class:`float`)
         high frequency for cutting fourier transform
 
     time_axis : (:class:`int`, Optional)
-        the time axis of the data set
+        the time axis of the data set. Defaults to 0.
 
     Returns
     -------

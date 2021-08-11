@@ -49,7 +49,8 @@ def heat_index(temperature, relative_humidity, alternate_coeffs=False):
 
     alternate_coeffs : (:class:`boolean`, Optional)
         flag to use alternate set of coefficients appropriate for
-        temperatures from 70F to 115F and humidities between 0% and 80%
+        temperatures from 70F to 115F and humidities between 0% and 80%.
+        Defaults to False.
 
     Returns
     -------
@@ -149,7 +150,8 @@ def _heat_index(temperature, relative_humidity, alternate_coeffs=False):
 
     alternate_coeffs : (:class:`boolean`, Optional)
         flag to use alternate set of coefficients appropriate for
-        temperatures from 70F to 115F and humidities between 0% and 80%
+        temperatures from 70F to 115F and humidities between 0% and 80%.
+        Defaults to False.
 
     Returns
     -------
@@ -222,7 +224,8 @@ def _xheat_index(temperature, relative_humidity, alternate_coeffs=False):
 
     alternate_coeffs : (:class:`boolean`, Optional)
         flag to use alternate set of coefficients appropriate for
-        temperatures from 70F to 115F and humidities between 0% and 80%
+        temperatures from 70F to 115F and humidities between 0% and 80%.
+        Defaults to False.
 
     Returns
     -------
