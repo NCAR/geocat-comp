@@ -2,10 +2,8 @@ import sys
 from unittest import TestCase
 
 import geocat.datafiles as gdf
-import matplotlib.pyplot as plt
 import numpy as np
 import numpy.testing as nt
-import pytest
 import xarray as xr
 
 # Import from directory structure if coverage test, or from installed
