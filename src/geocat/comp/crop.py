@@ -179,7 +179,7 @@ def saturation_vapor_pressure(temperature, tfill=np.NAN):
 
     Returns
     -------
-    svp : (:class:`numpy.ndarray`, :class:`xarry.DataArray`)
+    svp : (:class:`numpy.ndarray`, :class:`xarray.DataArray`)
         the computed actual saturation vapor pressure in kPa.
         Same shape as temperature.
 
@@ -234,7 +234,7 @@ def actual_saturation_vapor_pressure(tdew, tfill=np.NAN):
 
     Parameters
     ----------
-    tdew : (:class:`numpy.ndarray`, :class:`xarry.DataArray`, :class:`list`, :class:`float`)
+    tdew : (:class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`)
         Dew point temperatures in Fahrenheit
 
     tfill : (:class:`float`, :class:`numpy.nan`, Optional)
@@ -242,7 +242,7 @@ def actual_saturation_vapor_pressure(tdew, tfill=np.NAN):
 
     Returns
     -------
-    asvp : (:class:`numpy.ndarray`, :class:`xarry.DataArray`)
+    asvp : (:class:`numpy.ndarray`, :class:`xarray.DataArray`)
         the computed actual saturation vapor pressure in kPa.
         Same shape as tdew.
 
@@ -279,7 +279,7 @@ def saturation_vapor_pressure_slope(temperature, tfill=np.NAN):
 
     Parameters
     ----------
-    temperature : (:class:`numpy.ndarray`, :class:`xarry.DataArray`, :class:`list`, :class:`float`)
+    temperature : (:class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`)
         Temperature in Fahrenheit
 
     tfill : (:class:`float`, :class:`numpy.nan`, Optional)
@@ -287,7 +287,7 @@ def saturation_vapor_pressure_slope(temperature, tfill=np.NAN):
 
     Returns
     -------
-    svp_slope : (:class:`numpy.ndarray`, :class:`xarry.DataArray`)
+    svp_slope : (:class:`numpy.ndarray`, :class:`xarray.DataArray`)
         The computed slopes of the saturation vapor pressure curve.
         Will be the same shape as temperature.
 
