@@ -183,7 +183,7 @@ def saturation_vapor_pressure(temperature, tfill=np.NAN):
         the computed actual saturation vapor pressure in kPa.
         Same shape as temperature.
 
-     Examples
+    Examples
     --------
     >>> import numpy as np
     >>> from geocat.comp import saturation_vapor_pressure

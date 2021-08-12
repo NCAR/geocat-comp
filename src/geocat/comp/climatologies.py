@@ -405,6 +405,7 @@ def calendar_average(
 
     freq : (:class:`str`)
         Frequency alias. Accepted alias:
+
             - 'hour': for hourly averages
             - 'day': for daily averages
             - 'month': for monthly averages

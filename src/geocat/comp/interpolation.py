@@ -28,9 +28,10 @@ def interp_hybrid_to_pressure(data,
 
     Notes
     -----
-    ACKNOWLEDGEMENT: We'd like to thank to Brian Medeiros (https://github.com/brianpm), Matthew Long
-    (https://github.com/matt-long), and Deepak Cherian (https://github.com/dcherian) at NCAR for their
-    great contributions since the code implemented here is mostly based on their work.
+    ACKNOWLEDGEMENT: We'd like to thank to [Brian Medeiros](https://github.com/brianpm),
+    [Matthew Long](https://github.com/matt-long), and [Deepak Cherian](https://github.com/dcherian)
+    at NCAR for their great contributions since the code implemented here is mostly
+    based on their work.
 
     Parameters
     ----------

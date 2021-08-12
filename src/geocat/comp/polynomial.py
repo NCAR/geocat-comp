@@ -89,26 +89,26 @@ def ndpolyfit(x: Iterable,
         Axis to fit the polynomial to. Default is 0.
 
     kwargs : (:class:`dict`, Optional)
-        Extra parameter controlling the method behavior:
+        Extra parameters controlling the method behavior:
 
-        rcond : (:class:`float`, Optional)
-            Relative condition number of the fit. Refer to `numpy.polyfit` for further details.
+            rcond : (:class:`float`, Optional)
+                Relative condition number of the fit. Refer to `numpy.polyfit` for further details.
 
-        full : (:class:`boolean`, Optional)
-            Switch determining nature of return value. Refer to `numpy.polyfit` for further details.
+            full : (:class:`boolean`, Optional)
+                Switch determining nature of return value. Refer to `numpy.polyfit` for further details.
 
-        w : (:class:`array_like`, Optional)
-            Weights applied to the y-coordinates of the sample points. Refer to `numpy.polyfit` for further details.
+            w : (:class:`array_like`, Optional)
+                Weights applied to the y-coordinates of the sample points. Refer to `numpy.polyfit` for further details.
 
-        cov : (:class:`boolean`, Optional)
-            Determines whether to return the covariance matrix. Refer to `numpy.polyfit` for further details.
+            cov : (:class:`boolean`, Optional)
+                Determines whether to return the covariance matrix. Refer to `numpy.polyfit` for further details.
 
-        missing_value : (:class:`number` or :class:`numpy.nan`, Optional)
-            The value to be treated as missing. Default is `numpy.nan`
+            missing_value : (:class:`number` or :class:`numpy.nan`, Optional)
+                The value to be treated as missing. Default is `numpy.nan`
 
-        meta : (:class:`boolean`, Optional)
-            If set to `True` and the input, i.e. `y`, is of type `xarray.DataArray`, the attributes associated to the
-            input are transferred to the output.
+            meta : (:class:`boolean`, Optional)
+                If set to `True` and the input, i.e. `y`, is of type `xarray.DataArray`, the attributes associated to the
+                input are transferred to the output.
 
     Returns
     -------
@@ -689,13 +689,13 @@ def detrend(data: Iterable, deg=1, axis=0, **kwargs):
         the axis along which the data is detrended. Default value is 0.
 
     kwargs : (:class:`dict`, Optional)
-        providing further arguments to control the behavior of the method. It currently accepts the following parameter:
 
-        return_info (:class:`boolean`)
-            If set to true, the fitted polynomial is returned as part of the attributes. Default value is `True`.
+        providing further arguments to control the behavior of the method. It currently accepts the following parameters:
+            return_info (:class:`boolean`)
+                If set to true, the fitted polynomial is returned as part of the attributes. Default value is `True`.
 
-        missing_value (:class:`numeric`)
-            A value that must be ignored. Default is NaN.
+            missing_value (:class:`numeric`)
+                A value that must be ignored. Default is NaN.
 
     Returns
     -------
