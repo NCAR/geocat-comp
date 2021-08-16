@@ -645,7 +645,7 @@ def relhum(temperature, mixing_ratio, pressure):
     if xr.DataArray in in_types:
 
         # check all inputs are xarray.DataArray
-        if not all(x == xarray.DataArray for x in in_types):
+        if not all(x == xr.DataArray for x in in_types):
             raise TypeError(
                 "relhum: if using xarray, all inputs must be xarray")
 
