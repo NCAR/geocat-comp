@@ -5,6 +5,32 @@ import numpy as np
 from metpy.units import units
 
 
+def showalter_index(pressure, temperature, dewpt):
+    """Calculate Showalter Index from pressure temperature and 850 hPa lcl.
+    Showalter Index derived from [Galway1956]_:
+
+    SI = T500 - Tp500
+    where:
+    T500 is the measured temperature at 500 hPa
+    Tp500 is the temperature of the lifted parcel at 500 hPa
+    Parameters
+    ----------
+        pressure : `pint.Quantity`
+            Atmospheric pressure level(s) of interest, in order from highest
+            to lowest pressure
+        temperature : `pint.Quantity`
+            Parcel temperature for corresponding pressure
+        dewpt (:class: `pint.Quantity`):
+            Parcel dew point temperatures for corresponding pressure
+     Returns
+     -------
+     `pint.Quantity`
+        Showalter index in delta degrees celsius
+    """
+    shox = mpcalc.showalter_index(pressure, temperature, dewpt)
+    return shox
+
+
 def get_skewt_vars(p, tc, tdc, pro):
     """This function processes the dataset values and returns a string element
     which can be used as a subtitle to replicate the styles of NCL Skew-T
@@ -44,7 +70,7 @@ def get_skewt_vars(p, tc, tdc, pro):
     tlcl = lcl[1].magnitude
 
     # Showalter index
-    shox = mpcalc.showalter_index(p, tc, tdc)
+    shox = showalter_index(p, tc, tdc)
     shox = shox[0].magnitude
 
     # Place calculated values in iterable list
