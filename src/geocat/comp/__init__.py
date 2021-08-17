@@ -12,7 +12,7 @@ from .fourier_filters import (fourier_band_block, fourier_band_pass,
 from .interpolation import interp_hybrid_to_pressure
 from .polynomial import detrend, ndpolyfit, ndpolyval
 from .meteorology import dewtemp, heat_index, relhum, relhum_ice, relhum_water
-from .skewt_params import get_skewt_vars, showalter_index
+from .skewt_params import get_skewt_vars
 
 # bring all functions from geocat.f2py into the geocat.comp namespace
 try:

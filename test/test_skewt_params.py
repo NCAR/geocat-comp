@@ -1,16 +1,16 @@
 import sys
-
 import metpy.calc as mpcalc
 import numpy as np
 import numpy.testing as nt
 from metpy.units import units
+from metpy.testing import assert_almost_equal
 
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
 if "--cov" in str(sys.argv):
-    from src.geocat.comp import get_skewt_vars, showalter_index
+    from src.geocat.comp import get_skewt_vars
 else:
-    from geocat.comp import get_skewt_vars, showalter_index
+    from geocat.comp import get_skewt_vars
 
 p_upper = np.arange(1000, 200, -50) * units.hPa
 p_lower = np.arange(175, 0, -25) * units.hPa
@@ -19,18 +19,19 @@ tc = np.linspace(30, -30, 23) * units.degC  # Env temp in degC
 tdc = np.linspace(10, -30, 23) * units.degC  # DewPt temp in degC
 pro = mpcalc.parcel_profile(p, tc[0], tdc[0])  # Parcel Profile
 
-
 def test_showalter_index():
 
-    result = showalter_index(p, tc, tdc)
-    expected = 21.35395610431048 * units.delta_degree_Celsius
-
-    nt.assert_equal(result, expected)
+    result = mpcalc.showalter_index(p, tc, tdc)
+    expected = [14.82771069] * units.delta_degree_Celsius
+    assert_almost_equal(result, expected, 4)
 
 
 def test_get_skewt_vars():
 
     result = get_skewt_vars(p, tc, tdc, pro)
-    expected = 'Plcl= 747 Tlcl[C]= 6 Shox= 21 Pwat[cm]= 5 Cape[J]= 0'
-
+    expected = 'Plcl= 747 Tlcl[C]= 6 Shox= 15 Pwat[cm]= 5 Cape[J]= 0'
     nt.assert_equal(result, expected)
+
+test_showalter_index()
+test_get_skewt_vars()
+
