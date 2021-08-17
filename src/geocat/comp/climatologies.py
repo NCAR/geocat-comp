@@ -215,10 +215,10 @@ def anomaly(
 
     Parameters
     ----------
-    dset : (:class:`xarray.Dataset`, :class:`xarray.DataArray`)
+    dset :
         The data on which to operate
 
-    freq : (:class:`str`)
+    freq :
         Anomaly frequency alias. Accepted alias:
 
             - 'day': for daily anomalies
@@ -226,7 +226,7 @@ def anomaly(
             - 'year': for annual anomalies
             - 'season': for seasonal anomalies
 
-    time_coord_name : (:class:`str`, Optional)
+    time_coord_name :
          Name for time coordinate to use. Defaults to None and infers the name
          from the data.
 
