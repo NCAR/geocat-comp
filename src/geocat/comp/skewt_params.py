@@ -4,6 +4,7 @@ import metpy.calc as mpcalc
 import numpy as np
 from metpy.units import units
 
+
 def get_skewt_vars(p, tc, tdc, pro):
     """This function processes the dataset values and returns a string element
     which can be used as a subtitle to replicate the styles of NCL Skew-T
@@ -61,4 +62,3 @@ def get_skewt_vars(p, tc, tdc, pro):
     joined = ' '.join(lst)
 
     return joined
-

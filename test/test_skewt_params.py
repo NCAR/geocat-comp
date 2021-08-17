@@ -19,6 +19,7 @@ tc = np.linspace(30, -30, 23) * units.degC  # Env temp in degC
 tdc = np.linspace(10, -30, 23) * units.degC  # DewPt temp in degC
 pro = mpcalc.parcel_profile(p, tc[0], tdc[0])  # Parcel Profile
 
+
 def test_showalter_index():
 
     result = mpcalc.showalter_index(p, tc, tdc)
@@ -32,6 +33,6 @@ def test_get_skewt_vars():
     expected = 'Plcl= 747 Tlcl[C]= 6 Shox= 15 Pwat[cm]= 5 Cape[J]= 0'
     nt.assert_equal(result, expected)
 
+
 test_showalter_index()
 test_get_skewt_vars()
-
