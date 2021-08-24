@@ -399,11 +399,11 @@ def calendar_average(
 
     Parameters
     ----------
-    dset : (:class:`xarray.Dataset`, :class:`xarray.DataArray`)
+    dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
         The data on which to operate. It must be uniformly spaced in the time
         dimension.
 
-    freq : (:class:`str`)
+    freq : :class:`str`
         Frequency alias. Accepted alias:
 
             - 'hour': for hourly averages
@@ -412,14 +412,14 @@ def calendar_average(
             - 'season': for meteorological seasonal averages (DJF, MAM, JJA, and SON)
             - 'year': for yearly averages
 
-    time_dim : (:class:`str`, Optional)
+    time_dim : :class:`str`, Optional
         Name of the time coordinate for `xarray` objects. Defaults to None and
         infers the name from the data.
 
     Returns
     -------
-    computed_dset : (same type as dset)
-        The computed data
+    computed_dset : (:class:`xarray.Dataset`, :class:`xarray.DataArray`)
+        The computed data with the same type as `dset`
 
     Notes
     -----
