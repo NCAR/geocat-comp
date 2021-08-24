@@ -2,10 +2,12 @@ from itertools import chain
 
 import metpy.calc as mpcalc
 import numpy as np
+import pint.quantity
 from metpy.units import units
 
 
-def showalter_index(pressure, temperature, dewpt):
+def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
+                    dewpt: pint.Quantity) -> pint.Quantity:
     """Calculate Showalter Index from pressure temperature and 850 hPa lcl.
 
     Showalter Index derived from [Galway1956]_:

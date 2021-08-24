@@ -4,7 +4,11 @@ import xarray as xr
 import warnings
 
 
-def _dewtemp(tk, rh):
+def _dewtemp(
+    tk: typing.Union[np.ndarray, xr.DataArray, list,
+                     float], rh: typing.Union[np.ndarray, xr.DataArray, list,
+                                              float]
+) -> typing.Union[np.ndarray, xr.DataArray, list, float]:
     """This function calculates the dew point temperature given temperature and
     relative humidity using equations from John Dutton's "Ceaseless Wind" (pp
     273-274)
@@ -32,7 +36,10 @@ def _dewtemp(tk, rh):
     return tdk
 
 
-def _heat_index(temperature, relative_humidity, alternate_coeffs=False):
+def _heat_index(temperature: np.ndarray,
+                relative_humidity: typing.Union[np.ndarray, xr.DataArray, list,
+                                                float],
+                alternate_coeffs: boolean = False) -> np.ndarray:
     """Compute the 'heat index' as calculated by the National Weather Service.
 
     Internal function for heat_index
@@ -119,7 +126,11 @@ def _nws_eqn(coeffs, temp, rel_hum):
     return heatindex
 
 
-def _relhum(t, w, p):
+def _relhum(
+        t: typing.Union[np.ndarray, list, float],
+        w: typing.Union[np.ndarray, xr.DataArray, list,
+                        float], p: typing.Union[np.ndarray, xr.DataArray, list,
+                                                float]) -> np.ndarray:
     """Calculates relative humidity with respect to ice, given temperature,
     mixing ratio, and pressure.
 
@@ -193,7 +204,9 @@ def _relhum(t, w, p):
     return rh
 
 
-def _relhum_ice(t, w, p):
+def _relhum_ice(t: typing.Union[np.ndarray, list, float],
+                w: typing.Union[np.ndarray, list, float],
+                p: typing.Union[np.ndarray, list, float]) -> np.ndarray:
     """Calculates relative humidity with respect to ice, given temperature,
     mixing ratio, and pressure.
 
@@ -236,7 +249,9 @@ def _relhum_ice(t, w, p):
     return rh
 
 
-def _relhum_water(t, w, p):
+def _relhum_water(t: typing.Union[np.ndarray, list, float],
+                  w: typing.Union[np.ndarray, list, float],
+                  p: typing.Union[np.ndarray, list, float]) -> np.ndarray:
     """Calculates relative humidity with respect to water, given temperature,
     mixing ratio, and pressure.
 
@@ -283,7 +298,9 @@ def _relhum_water(t, w, p):
     return rh
 
 
-def _xheat_index(temperature, relative_humidity, alternate_coeffs=False):
+def _xheat_index(temperature: xr.DataArray,
+                 relative_humidity: xr.DataArray,
+                 alternate_coeffs: boolean = False) -> tuple(xr.DataArray, int):
     """Compute the 'heat index' as calculated by the National Weather Service.
 
     Internal function for heat_index for dask
@@ -361,7 +378,7 @@ def _xheat_index(temperature, relative_humidity, alternate_coeffs=False):
     return heatindex, eqtype
 
 
-def _xrelhum(t, w, p):
+def _xrelhum(t: xr.DataArray, w: xr.DataArray, p: xr.DataArray) -> xr.DataArray:
     """Calculates relative humidity with respect to ice, given temperature,
     mixing ratio, and pressure.
 
@@ -437,7 +454,10 @@ def _xrelhum(t, w, p):
     return rh
 
 
-def dewtemp(temperature, relative_humidity):
+def dewtemp(
+    temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
+    relative_humidity: typing.Union[np.ndarray, xr.DataArray, list, float]
+) -> typing.Union[np.ndarray, float]:
     """This function calculates the dew point temperature given temperature and
     relative humidity using equations from John Dutton's "Ceaseless Wind" (pp
     273-274)
@@ -491,7 +511,11 @@ def dewtemp(temperature, relative_humidity):
     return dew_pnt_temp
 
 
-def heat_index(temperature, relative_humidity, alternate_coeffs=False):
+def heat_index(
+    temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
+    relative_humidity: typing.Union[np.ndarray, xr.DataArray, list, float],
+    alternate_coeffs: boolean = False
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """Compute the 'heat index' as calculated by the National Weather Service.
 
     The heat index calculation in this funtion is described at:
@@ -606,7 +630,11 @@ def heat_index(temperature, relative_humidity, alternate_coeffs=False):
     return heatindex
 
 
-def relhum(temperature, mixing_ratio, pressure):
+def relhum(
+    temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
+    mixing_ratio: typing.Union[np.ndarray, xr.DataArray, list, float],
+    pressure: typing.Union[np.ndarray, xr.DataArray, list, float]
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """This function calculates the relative humidity given temperature, mixing
     ratio, and pressure.
 
@@ -669,7 +697,9 @@ def relhum(temperature, mixing_ratio, pressure):
     return relative_humidity
 
 
-def relhum_ice(temperature, mixing_ratio, pressure):
+def relhum_ice(temperature: typing.Union[np.ndarray, list, float],
+               mixing_ratio: typing.Union[np.ndarray, list, float],
+               pressure: typing.Union[np.ndarray, list, float]) -> np.ndarray:
     """Calculates relative humidity with respect to ice, given temperature,
     mixing ratio, and pressure.
 
@@ -725,7 +755,9 @@ def relhum_ice(temperature, mixing_ratio, pressure):
     return relative_humidity
 
 
-def relhum_water(temperature, mixing_ratio, pressure):
+def relhum_water(temperature: typing.Union[np.ndarray, list, float],
+                 mixing_ratio: typing.Union[np.ndarray, list, float],
+                 pressure: typing.Union[np.ndarray, list, float]) -> np.ndarray:
     """Calculates relative humidity with respect to water, given temperature,
     mixing ratio, and pressure.
 

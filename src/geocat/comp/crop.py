@@ -1,3 +1,4 @@
+import typing
 import warnings
 
 import numpy as np
@@ -6,7 +7,11 @@ import xarray as xr
 from .comp_util import _is_duck_array
 
 
-def max_daylight(jday, lat):
+def max_daylight(
+    jday: typing.Union[np.ndarray, xr.DataArray, list,
+                       float], lat: typing.Union[np.ndarray, xr.DataArray, list,
+                                                 float]
+) -> typing.Union[np.ndarray, xr.DataArray, float]:
     """Computes maximum number of daylight hours as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
 
@@ -92,7 +97,9 @@ def max_daylight(jday, lat):
     return dlm
 
 
-def psychrometric_constant(pressure):
+def psychrometric_constant(
+    pressure: typing.Union[np.ndarray, xr.DataArray, list, float]
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """Compute psychrometric constant [kPa / C] as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
 
@@ -154,7 +161,10 @@ def psychrometric_constant(pressure):
     return psy_const
 
 
-def saturation_vapor_pressure(temperature, tfill=np.NAN):
+def saturation_vapor_pressure(
+    temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
+    tfill: typing.Union[float, np.nan] = np.NAN
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """Compute saturation vapor pressure as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56
     entitled:
@@ -219,7 +229,10 @@ def saturation_vapor_pressure(temperature, tfill=np.NAN):
     return svp
 
 
-def actual_saturation_vapor_pressure(tdew, tfill=np.NAN):
+def actual_saturation_vapor_pressure(
+    tdew: typing.Union[np.ndarray, xr.DataArray, list, float],
+    tfill: typing.Union[float, np.nan] = np.NAN
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """ Compute 'actual' saturation vapor pressure [kPa] as described in the
     Food and Agriculture Organization (FAO) Irrigation and Drainage Paper 56
     entitled:
@@ -269,7 +282,10 @@ def actual_saturation_vapor_pressure(tdew, tfill=np.NAN):
     return asvp
 
 
-def saturation_vapor_pressure_slope(temperature, tfill=np.NAN):
+def saturation_vapor_pressure_slope(
+    temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
+    tfill: typing.Union[float, np.nan] = np.NAN
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """Compute the slope [kPa/C] of saturation vapor pressure curve as
     described in the Food and Agriculture Organization (FAO) Irrigation and
     Drainage Paper 56 entitled:

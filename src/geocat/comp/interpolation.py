@@ -16,14 +16,14 @@ def _pressure_from_hybrid(psfc, hya, hyb, p0=100000.):
     return hya * p0 + hyb * psfc
 
 
-def interp_hybrid_to_pressure(data,
-                              ps,
-                              hyam,
-                              hybm,
-                              p0=100000.,
-                              new_levels=__pres_lev_mandatory__,
-                              lev_dim=None,
-                              method='linear'):
+def interp_hybrid_to_pressure(data: xr.DataArray,
+                              ps: xr.DataArray,
+                              hyam: xr.DataArray,
+                              hybm: xr.DataArray,
+                              p0: float = 100000.,
+                              new_levels: np.ndarray = __pres_lev_mandatory__,
+                              lev_dim: str = None,
+                              method: str = 'linear') -> xr.DataArray:
     """Interpolate data from hybrid-sigma levels to isobaric levels.
 
     Notes
@@ -57,6 +57,11 @@ def interp_hybrid_to_pressure(data,
 
     method : (:class:`str`, Optional)
         String that is the interpolation method; can be either "linear" or "log". Defaults to "linear".
+
+    Returns
+    -------
+    output : (:class:`xarray.DataArray`)
+        Interpolated data with isobaric levels
     """
 
     # Determine the level dimension and then the interpolation axis

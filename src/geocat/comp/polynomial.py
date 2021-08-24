@@ -259,16 +259,16 @@ def ndpolyfit(x: Iterable,
                           missing_value)
 
 
-def _ndpolyfit(x: np.ndarray,
-               y: np.ndarray,
+def _ndpolyfit(x: Iterable,
+               y: Iterable,
                axis: int = 0,
                deg: int = 1,
-               rcond=None,
-               full=False,
-               w=None,
-               cov=False,
-               missing_value=np.nan,
-               xarray_output=True) -> (np.ndarray, xr.DataArray):
+               rcond: float = None,
+               full: boolean = False,
+               w: Iterable = None,
+               cov: boolean = False,
+               missing_value: typing.Union[number, np.nan] = np.nan,
+               xarray_output: boolean = True) -> (np.ndarray, xr.DataArray):
     """An extension to `numpy.polyfit` function to support multi-dimensional
     arrays, Dask arrays, and missing values.
 
@@ -441,7 +441,8 @@ def _check_axis(axis, ndim) -> int:
     return int(axis)
 
 
-def _rearrange_axis(data: np.ndarray, axis: int = 0) -> tuple:
+def _rearrange_axis(data: np.ndarray,
+                    axis: int = 0) -> tuple(np.ndarray, tuple):
     """rearranges the `numpy.ndarray` as a two-dimensional array of size (n,
 
     -1), where n is the number of elements of the dimension defined by `axis`.
@@ -496,7 +497,10 @@ def _to_numpy_ndarray(data: Iterable) -> np.ndarray:
     return data
 
 
-def ndpolyval(p: Iterable, x: Iterable, axis: int = 0, **kwargs):
+def ndpolyval(p: Iterable,
+              x: Iterable,
+              axis: int = 0,
+              **kwargs) -> xr.DataArray:
     """Extended version of `numpy.polyval` to support multi-dimensional outputs
     provided by `geocat.comp.ndpolyfit`.
 
@@ -669,7 +673,7 @@ def _ndpolyval(p: np.ndarray,
     return y
 
 
-def detrend(data: Iterable, deg=1, axis=0, **kwargs):
+def detrend(data: Iterable, deg=1, axis=0, **kwargs) -> xr.DataArray:
     """Estimates and removes the trend of the leftmost dimension from all grid
     points. This method, at the minimum, provides all the functionality that is
     provided by NCL's 'dtrend', 'dtrend_quadratic', 'dtrend_quadratic_msg_n',

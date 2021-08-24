@@ -1,6 +1,7 @@
 import typing
 
 import cf_xarray
+import cftime
 import numpy as np
 import xarray as xr
 
@@ -61,8 +62,13 @@ def _setup_clim_anom_input(dset, freq, time_coord_name):
     return data, time_invariant_vars, time_coord_name, time_dot_freq
 
 
-def _calculate_center_of_time_bounds(dset, time_dim, freq, calendar, start,
-                                     end):
+def _calculate_center_of_time_bounds(
+    dset: typing.Union[xr.Dataset,
+                       xr.DataArray], time_dim: str, freq: str, calendar: str,
+    start: typing.Union[str,
+                        cftime.datetime], end: typing.Union[str,
+                                                            cftime.datetime]
+) -> typing.Union[xr.Dataset, xr.DataArray]:
     """Helper function to determine the time bounds based on the given dataset
     and frequency and then calculate the averages of them.
 
@@ -92,7 +98,7 @@ def _calculate_center_of_time_bounds(dset, time_dim, freq, calendar, start,
 
     Returns
     -------
-    computed_dset: (same type as dset)
+    computed_dset: (:class:`xarray.Dataset`, :class:`xarray.DataArray`)
         The data with adjusted time coordinate
 
     Notes
@@ -512,7 +518,7 @@ def climatology_average(
 
     Returns
     -------
-    computed_dset : (same type as dset)
+    computed_dset : (:class:`xarray.Dataset`, :class:`xarray.DataArray`)
         The computed data
 
     Notes
