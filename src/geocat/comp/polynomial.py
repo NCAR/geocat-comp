@@ -1,4 +1,5 @@
 import dask.array as da
+import numbers
 import numpy as np
 import typing
 import xarray as xr
@@ -266,7 +267,8 @@ def _ndpolyfit(x: typing.Iterable,
                full: bool = False,
                w: typing.Iterable = None,
                cov: bool = False,
-               missing_value: typing.Union[number, type(np.nan)] = type(np.nan),
+               missing_value: typing.Union[numbers.Number,
+                                           type(np.nan)] = type(np.nan),
                xarray_output: bool = True) -> (np.ndarray, xr.DataArray):
     """An extension to `numpy.polyfit` function to support multi-dimensional
     arrays, Dask arrays, and missing values.
@@ -441,7 +443,7 @@ def _check_axis(axis, ndim) -> int:
 
 
 def _rearrange_axis(data: np.ndarray,
-                    axis: int = 0) -> tuple(np.ndarray, tuple):
+                    axis: int = 0) -> tuple([np.ndarray, tuple]):
     """rearranges the `numpy.ndarray` as a two-dimensional array of size (n,
 
     -1), where n is the number of elements of the dimension defined by `axis`.

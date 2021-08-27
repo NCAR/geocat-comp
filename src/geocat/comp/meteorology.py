@@ -301,7 +301,7 @@ def _relhum_water(t: typing.Union[np.ndarray, list, float],
 
 def _xheat_index(temperature: xr.DataArray,
                  relative_humidity: xr.DataArray,
-                 alternate_coeffs: bool = False) -> tuple(xr.DataArray, int):
+                 alternate_coeffs: bool = False) -> tuple([xr.DataArray, int]):
     """Compute the 'heat index' as calculated by the National Weather Service.
 
     Internal function for heat_index for dask
