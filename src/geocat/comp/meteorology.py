@@ -40,7 +40,7 @@ def _dewtemp(
 def _heat_index(temperature: np.ndarray,
                 relative_humidity: typing.Union[np.ndarray, xr.DataArray, list,
                                                 float],
-                alternate_coeffs: boolean = False) -> np.ndarray:
+                alternate_coeffs: bool = False) -> np.ndarray:
     """Compute the 'heat index' as calculated by the National Weather Service.
 
     Internal function for heat_index
@@ -54,7 +54,7 @@ def _heat_index(temperature: np.ndarray,
         relative humidity as a percentage. Must be the same shape as
         temperature
 
-    alternate_coeffs : (:class:`boolean`, Optional)
+    alternate_coeffs : (:class:`bool`, Optional)
         flag to use alternate set of coefficients appropriate for
         temperatures from 70F to 115F and humidities between 0% and 80%
 
@@ -301,7 +301,7 @@ def _relhum_water(t: typing.Union[np.ndarray, list, float],
 
 def _xheat_index(temperature: xr.DataArray,
                  relative_humidity: xr.DataArray,
-                 alternate_coeffs: boolean = False) -> tuple(xr.DataArray, int):
+                 alternate_coeffs: bool = False) -> tuple(xr.DataArray, int):
     """Compute the 'heat index' as calculated by the National Weather Service.
 
     Internal function for heat_index for dask
@@ -315,7 +315,7 @@ def _xheat_index(temperature: xr.DataArray,
         relative humidity as a percentage. Must be the same shape as
         temperature
 
-    alternate_coeffs : (:class:`boolean`, Optional)
+    alternate_coeffs : (:class:`bool`, Optional)
         flag to use alternate set of coefficients appropriate for
         temperatures from 70F to 115F and humidities between 0% and 80%
 
@@ -513,9 +513,9 @@ def dewtemp(
 
 
 def heat_index(
-    temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
-    relative_humidity: typing.Union[np.ndarray, xr.DataArray, list, float],
-    alternate_coeffs: boolean = False
+        temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
+        relative_humidity: typing.Union[np.ndarray, xr.DataArray, list, float],
+        alternate_coeffs: bool = False
 ) -> typing.Union[np.ndarray, xr.DataArray]:
     """Compute the 'heat index' as calculated by the National Weather Service.
 
@@ -545,7 +545,7 @@ def heat_index(
         relative humidity as a percentage. Must be the same shape as
         temperature
 
-    alternate_coeffs : (:class:`boolean`, Optional)
+    alternate_coeffs : (:class:`bool`, Optional)
         flag to use alternate set of coefficients appropriate for
         temperatures from 70F to 115F and humidities between 0% and 80%
 

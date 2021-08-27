@@ -10,10 +10,10 @@ def fourier_filter(
         cutoff_frequency_low: float = 0,
         cutoff_frequency_high: float = 0,
         time_axis: int = 0,
-        low_pass: boolean = False,
-        high_pass: boolean = False,
-        band_pass: boolean = False,
-        band_block: boolean = False) -> typing.Union[np.ndarray, xr.DataArray]:
+        low_pass: bool = False,
+        high_pass: bool = False,
+        band_pass: bool = False,
+        band_block: bool = False) -> typing.Union[np.ndarray, xr.DataArray]:
     """Filter a dataset by frequency. This function allowes for low_pass, high_
     pass, band_pass, or band_block filtering of the data's freqency
     representation.
@@ -35,16 +35,16 @@ def fourier_filter(
     time_axis : :class:`int`, Optional
         the time axis of the data set. Defaults to 0.
 
-    low_pass : :class:`boolean`, Optional
+    low_pass : :class:`bool`, Optional
         runs a low_pass filter on the data if set to True. Defaults to False.
 
-    high_pass : :class:`boolean`, Optional
+    high_pass : :class:`bool`, Optional
         runs a high_pass filter on the data if set to True. Defaults to False.
 
-    band_pass : :class:`boolean`, Optional
+    band_pass : :class:`bool`, Optional
         runs a band_pass filter on the data if set to True. Defaults to False.
 
-    band_block : :class:`boolean`, Optional
+    band_block : :class:`bool`, Optional
         runs a band_block filter on the data if set to True. Defaults to False.
 
     Returns

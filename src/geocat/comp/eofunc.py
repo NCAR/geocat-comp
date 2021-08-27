@@ -102,7 +102,7 @@ def eofunc_eofs(data,
         of the weights can can match the rightmost parts of the shape of the input array dataset). If the input array
         dataset does not require weighting then the value None may be used. Defaults to None (no weighting).
 
-    center : (:class:`boolean`, Optional)
+    center : (:class:`bool`, Optional)
         (From `eofs` package): If True, the mean along the first axis of dataset (the time-mean) will be removed prior
         to analysis. If False, the mean along the first axis will not be removed. Defaults to True (mean is removed).
 
@@ -115,12 +115,12 @@ def eofunc_eofs(data,
         (From `eofs` package): ‘Delta degrees of freedom’. The divisor used to normalize the covariance matrix is
         N - ddof where N is the number of samples. Defaults to 1.
 
-    vfscaled : (:class:`boolean`, Optional)
+    vfscaled : (:class:`bool`, Optional)
         (From `eofs` package): If True, scale the errors by the sum of the eigenvalues. This yields typical errors
         with the same scale as the values returned by Eof.varianceFraction. If False then no scaling is done.
         Defaults to False.
 
-    meta : (:class:`boolean`, Optional)
+    meta : (:class:`bool`, Optional)
         If set to True and the input array is an Xarray, the metadata from the input array will be copied to the
         output array. Defaults to False.
 
@@ -254,7 +254,7 @@ def eofunc_pcs(data,
         of the weights can can match the rightmost parts of the shape of the input array dataset). If the input array
         dataset does not require weighting then the value None may be used. Defaults to None (no weighting).
 
-    center : (:class:`boolean`, Optional)
+    center : (:class:`bool`, Optional)
         (From `eofs` package): If True, the mean along the first axis of dataset (the time-mean) will be removed prior
         to analysis. If False, the mean along the first axis will not be removed. Defaults to True (mean is removed).
 
@@ -267,7 +267,7 @@ def eofunc_pcs(data,
         (From `eofs` package): ‘Delta degrees of freedom’. The divisor used to normalize the covariance matrix is
         N - ddof where N is the number of samples. Defaults to 1.
 
-    meta : (:class:`boolean`, Optional)
+    meta : (:class:`bool`, Optional)
         If set to True and the input array is an Xarray, the metadata from the input array will be copied to the
         output array. Defaults to False.
 

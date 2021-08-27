@@ -93,19 +93,19 @@ def ndpolyfit(x: typing.Iterable,
             rcond : (:class:`float`, Optional)
                 Relative condition number of the fit. Refer to `numpy.polyfit` for further details.
 
-            full : (:class:`boolean`, Optional)
+            full : (:class:`bool`, Optional)
                 Switch determining nature of return value. Refer to `numpy.polyfit` for further details.
 
             w : (:class:`array_like`, Optional)
                 Weights applied to the y-coordinates of the sample points. Refer to `numpy.polyfit` for further details.
 
-            cov : (:class:`boolean`, Optional)
+            cov : (:class:`bool`, Optional)
                 Determines whether to return the covariance matrix. Refer to `numpy.polyfit` for further details.
 
             missing_value : (:class:`number` or :class:`numpy.nan`, Optional)
                 The value to be treated as missing. Default is `numpy.nan`
 
-            meta : (:class:`boolean`, Optional)
+            meta : (:class:`bool`, Optional)
                 If set to `True` and the input, i.e. `y`, is of type `xarray.DataArray`, the attributes associated to the
                 input are transferred to the output.
 
@@ -263,11 +263,11 @@ def _ndpolyfit(x: typing.Iterable,
                axis: int = 0,
                deg: int = 1,
                rcond: float = None,
-               full: boolean = False,
+               full: bool = False,
                w: typing.Iterable = None,
-               cov: boolean = False,
+               cov: bool = False,
                missing_value: typing.Union[number, type(np.nan)] = type(np.nan),
-               xarray_output: boolean = True) -> (np.ndarray, xr.DataArray):
+               xarray_output: bool = True) -> (np.ndarray, xr.DataArray):
     """An extension to `numpy.polyfit` function to support multi-dimensional
     arrays, Dask arrays, and missing values.
 
@@ -292,19 +292,19 @@ def _ndpolyfit(x: typing.Iterable,
     rcond : (:class:`float`, Optional)
         Relative condition number of the fit. Defaults to None. Refer to `numpy.polyfit` for further details.
 
-    full : (:class:`boolean`, Optional)
+    full : (:class:`bool`, Optional)
         Switch determining nature of return value. Defaults to False. Refer to `numpy.polyfit` for further details.
 
     w : (:class:`array_like`, Optional)
         Weights applied to the y-coordinates of the sample points. Defaults to None. Refer to `numpy.polyfit` for further details.
 
-    cov : (:class:`boolean`, Optional)
+    cov : (:class:`bool`, Optional)
         Determines whether to return the covariance matrix. Defaults to False. Refer to `numpy.polyfit` for further details.
 
     missing_value : (:class:`number` or :class:`numpy.nan`, Optional)
         The value to be treated as missing. Default is `numpy.nan`
 
-    xarray_output : (:class:`boolean`, Optional)
+    xarray_output : (:class:`bool`, Optional)
         Determines the type of the output. If set to `True` the output would be of type `xarray.DataArray`
         and the some extra information are attached to the output as attributes. Otherwise, the output
         would be of type `numpy.ndarray` containing only the coefficients of the fitted polynomial. Defaults to True.
@@ -694,7 +694,7 @@ def detrend(data: typing.Iterable, deg=1, axis=0, **kwargs) -> xr.DataArray:
     kwargs : (:class:`dict`, Optional)
 
         providing further arguments to control the behavior of the method. It currently accepts the following parameters:
-            return_info (:class:`boolean`)
+            return_info (:class:`bool`)
                 If set to true, the fitted polynomial is returned as part of the attributes. Default value is `True`.
 
             missing_value (:class:`numeric`)
