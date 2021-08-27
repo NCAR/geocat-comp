@@ -1,11 +1,10 @@
-from typing import Any, Iterable
-
 import dask.array as da
 import numpy as np
+import typing
 import xarray as xr
 
 
-def _get_missing_value(data: xr.DataArray, args: dict) -> Any:
+def _get_missing_value(data: xr.DataArray, args: dict) -> typing.Any:
     """Attempts to extract `missing_value` or `_FillValue` from either `data`
     or `dict`. If not found, returns `numpy.nan`
 
@@ -62,8 +61,8 @@ def _unchunk_ifneeded(data: da.Array, axis: int) -> da.Array:
         raise TypeError("data must be a dask array.")
 
 
-def ndpolyfit(x: Iterable,
-              y: Iterable,
+def ndpolyfit(x: typing.Iterable,
+              y: typing.Iterable,
               deg: int,
               axis: int = 0,
               **kwargs) -> (xr.DataArray, da.Array):
@@ -259,13 +258,13 @@ def ndpolyfit(x: Iterable,
                           missing_value)
 
 
-def _ndpolyfit(x: Iterable,
-               y: Iterable,
+def _ndpolyfit(x: typing.Iterable,
+               y: typing.Iterable,
                axis: int = 0,
                deg: int = 1,
                rcond: float = None,
                full: boolean = False,
-               w: Iterable = None,
+               w: typing.Iterable = None,
                cov: boolean = False,
                missing_value: typing.Union[number, type(np.nan)] = type(np.nan),
                xarray_output: boolean = True) -> (np.ndarray, xr.DataArray):
@@ -479,7 +478,7 @@ def _reverse_rearrange_axis(data: np.ndarray, axis,
     return np.moveaxis(data.reshape((data.shape[0], *trailing_shape)), 0, axis)
 
 
-def _isvector(input: Iterable) -> bool:
+def _isvector(input: typing.Iterable) -> bool:
     if isinstance(input, np.ndarray):
         return (input.size != 1) and ((input.ndim == 1) or
                                       ((input.ndim == 2) and
@@ -488,7 +487,7 @@ def _isvector(input: Iterable) -> bool:
         return _isvector(np.asarray(input))
 
 
-def _to_numpy_ndarray(data: Iterable) -> np.ndarray:
+def _to_numpy_ndarray(data: typing.Iterable) -> np.ndarray:
     if isinstance(data, xr.DataArray):
         data = data.data
     elif not isinstance(data, np.ndarray):
@@ -497,8 +496,8 @@ def _to_numpy_ndarray(data: Iterable) -> np.ndarray:
     return data
 
 
-def ndpolyval(p: Iterable,
-              x: Iterable,
+def ndpolyval(p: typing.Iterable,
+              x: typing.Iterable,
               axis: int = 0,
               **kwargs) -> xr.DataArray:
     """Extended version of `numpy.polyval` to support multi-dimensional outputs
@@ -673,7 +672,7 @@ def _ndpolyval(p: np.ndarray,
     return y
 
 
-def detrend(data: Iterable, deg=1, axis=0, **kwargs) -> xr.DataArray:
+def detrend(data: typing.Iterable, deg=1, axis=0, **kwargs) -> xr.DataArray:
     """Estimates and removes the trend of the leftmost dimension from all grid
     points. This method, at the minimum, provides all the functionality that is
     provided by NCL's 'dtrend', 'dtrend_quadratic', 'dtrend_quadratic_msg_n',

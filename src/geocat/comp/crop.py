@@ -1,9 +1,7 @@
+import numpy as np
 import typing
 import warnings
-
-import numpy as np
 import xarray as xr
-
 from .comp_util import _is_duck_array
 
 

@@ -1,6 +1,7 @@
-import numpy as np
-import xarray as xr
 import math as m
+import numpy as np
+import typing
+import xarray as xr
 
 
 def fourier_filter(
