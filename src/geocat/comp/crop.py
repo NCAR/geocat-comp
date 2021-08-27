@@ -161,7 +161,7 @@ def psychrometric_constant(
 
 def saturation_vapor_pressure(
     temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
-    tfill: typing.Union[float, np.nan] = np.nan
+    tfill: typing.Union[float] = np.nan
 ) -> typing.Union[np.ndarray, xr.DataArray]:
     """Compute saturation vapor pressure as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56
@@ -229,7 +229,7 @@ def saturation_vapor_pressure(
 
 def actual_saturation_vapor_pressure(
     tdew: typing.Union[np.ndarray, xr.DataArray, list, float],
-    tfill: typing.Union[float, np.nan] = np.nan
+    tfill: typing.Union[float] = np.nan
 ) -> typing.Union[np.ndarray, xr.DataArray]:
     """ Compute 'actual' saturation vapor pressure [kPa] as described in the
     Food and Agriculture Organization (FAO) Irrigation and Drainage Paper 56
@@ -282,7 +282,7 @@ def actual_saturation_vapor_pressure(
 
 def saturation_vapor_pressure_slope(
     temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
-    tfill: typing.Union[float, np.nan] = np.nan
+    tfill: typing.Union[float] = np.nan
 ) -> typing.Union[np.ndarray, xr.DataArray]:
     """Compute the slope [kPa/C] of saturation vapor pressure curve as
     described in the Food and Agriculture Organization (FAO) Irrigation and

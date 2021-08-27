@@ -267,7 +267,7 @@ def _ndpolyfit(x: typing.Iterable,
                full: bool = False,
                w: typing.Iterable = None,
                cov: bool = False,
-               missing_value: typing.Union[numbers.Number, np.nan] = np.nan,
+               missing_value: typing.Union[numbers.Number] = np.nan,
                xarray_output: bool = True) -> (np.ndarray, xr.DataArray):
     """An extension to `numpy.polyfit` function to support multi-dimensional
     arrays, Dask arrays, and missing values.
