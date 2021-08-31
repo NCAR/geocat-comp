@@ -1,3 +1,18 @@
+"""Testing for Showalter Index only. While MetPy handles all five parameters,
+the Showalter Index was contributed to MetPy by the GeoCAT team because of the
+skewt_params function. Additionally, a discrepancy between NCL and MetPy
+calculations of CAPE has been identified. After validating the CAPE value by
+hand using the method outlined in Hobbs 2006, it was determined that the MetPy
+calculation was closer to the CAPE value than the NCL calculation. To overcome
+any issues with validating the dataset, it was decided that skewt_params would
+only test against the Showalter Index for validation and not against all five
+parameters.
+
+Citation:
+Hobbs, P. V., and J. M. Wallace, 2006:
+Atmospheric Science: An Introductory Survey. 2nd ed. Academic Press,
+pg 345
+"""
 import sys
 import metpy.calc as mpcalc
 import numpy as np
@@ -37,21 +52,6 @@ NCL_shox = int(Shox[0])  # Convert to int
 
 
 def test_shox_vals():
-    """Testing for Showalter Index only. While MetPy handles all five
-    parameters, the Showalter Index was contributed to MetPy by the GeoCAT team
-    because of the skewt_params function. Additionally, a discrepency between
-    NCL and MetPy calculations of CAPE has been identified. After validating
-    the CAPE value by hand using the method outlined in Hobbs 2006, it was
-    determined that the MetPy calculation was closer to the CAPE value than the
-    NCL calculation. To overcome any issues with validating the dataset, it was
-    decided that skewt_params would only test against the Showalter Index for
-    validation and not against all five paramters.
-
-    Citation:
-    Hobbs, P. V., and J. M. Wallace, 2006:
-    Atmospheric Science: An Introductory Survey. 2nd ed. Academic Press,
-    pg 345
-    """
 
     # Showalter index
     shox = showalter_index(p, tc, tdc)
@@ -65,7 +65,7 @@ def test_shox_vals():
 
 
 def test_get_skewt_vars():
-    """With resepct to the note in test_vars, the MetPy calculated values for
+    """With respect to the note in test_vars, the MetPy calculated values for
     Plcl, Tlcl, Pwat, and CAPE along with the tested value for Showalter Index
     are pre-defined in this test.
 
@@ -76,7 +76,3 @@ def test_get_skewt_vars():
     expected = 'Plcl= 927 Tlcl[C]= 24 Shox= 3 Pwat[cm]= 5 Cape[J]= 2958'
     result = get_skewt_vars(p, tc, tdc, pro)
     nt.assert_equal(result, expected)
-
-
-test_shox_vals()
-test_get_skewt_vars()
