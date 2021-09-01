@@ -20,15 +20,15 @@ def max_daylight(
 
     Parameters
     ----------
-    jday : (:class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`)
+    jday : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         Day of year. Must be 1D
 
-    lat : (:class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`)
+    lat : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         Latitude in degrees. Must be 1D
 
     Returns
     -------
-    sunmax : (:class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`float`)
+    sunmax : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`float`
         Calculated maximum sunlight in hours/day
 
     Examples
@@ -120,12 +120,12 @@ def psychrometric_constant(
 
     Parameters
     ----------
-    pressure : (:class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`)
+    pressure : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         pressure in kPa/C
 
     Returns
     -------
-    psy_const : (:class:`numpy.ndarray`, :class:`xarray.DataArray`)
+    psy_const : :class:`numpy.ndarray`, :class:`xarray.DataArray`
         the computed psychrometric constant. Same shape as pressure.
 
     Examples
@@ -179,15 +179,15 @@ def saturation_vapor_pressure(
 
     Parameters
     ----------
-    temperature : (:class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`)
+    temperature : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         Temperature in Fahrenheit
 
-    tfill : (:class:`float`, :class:`numpy.nan`, Optional)
+    tfill : :class:`float`, :class:`numpy.nan`, Optional
         An optional parameter for a fill value in the return value
 
     Returns
     -------
-    svp : (:class:`numpy.ndarray`, :class:`xarray.DataArray`)
+    svp : :class:`numpy.ndarray`, :class:`xarray.DataArray`
         the computed actual saturation vapor pressure in kPa.
         Same shape as temperature.
 
@@ -245,15 +245,15 @@ def actual_saturation_vapor_pressure(
 
     Parameters
     ----------
-    tdew : (:class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`)
+    tdew : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         Dew point temperatures in Fahrenheit
 
-    tfill : (:class:`float`, :class:`numpy.nan`, Optional)
+    tfill : :class:`float`, :class:`numpy.nan`, Optional
         An optional parameter for a fill value in the return value
 
     Returns
     -------
-    asvp : (:class:`numpy.ndarray`, :class:`xarray.DataArray`)
+    asvp : :class:`numpy.ndarray`, :class:`xarray.DataArray`
         the computed actual saturation vapor pressure in kPa.
         Same shape as tdew.
 
@@ -293,15 +293,15 @@ def saturation_vapor_pressure_slope(
 
     Parameters
     ----------
-    temperature : (:class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`)
+    temperature : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         Temperature in Fahrenheit
 
-    tfill : (:class:`float`, :class:`numpy.nan`, Optional)
+    tfill : :class:`float`, :class:`numpy.nan`, Optional
         An optional parameter for a fill value in the return value
 
     Returns
     -------
-    svp_slope : (:class:`numpy.ndarray`, :class:`xarray.DataArray`)
+    svp_slope : :class:`numpy.ndarray`, :class:`xarray.DataArray`
         The computed slopes of the saturation vapor pressure curve.
         Will be the same shape as temperature.
 

@@ -193,21 +193,21 @@ def fourier_high_pass(
 
     Parameters
     ----------
-    signal : (:class:`numpy.ndarray`, :class:`xarray.DataArray`)
+    signal : :class:`numpy.ndarray`, :class:`xarray.DataArray`
         n-dimensional dataset
 
-    frequency : (:class:`float`)
+    frequency : :class:`float`
         sample frequency of dataset
 
-    cutoff_frequency_high : (:class:`float`)
+    cutoff_frequency_high : :class:`float`
         high frequency for cutting fourier transform
 
-    time_axis : (:class:`int`, Optional)
+    time_axis : :class:`int`, Optional
         the time axis of the data set. Defaults to 0.
 
     Returns
     -------
-    return_signal : (:class:`numpy.ndarray`, :class:`xarray.DataArray`)
+    return_signal : :class:`numpy.ndarray`, :class:`xarray.DataArray`
         signal with specified filters applied
     """
     return fourier_filter(signal,
@@ -228,24 +228,24 @@ def fourier_band_pass(
 
     Parameters
     ----------
-    signal : (:class:`numpy.ndarray`, :class:`xarray.DataArray`)
+    signal : :class:`numpy.ndarray`, :class:`xarray.DataArray`
         n-dimensional dataset
 
-    frequency : (:class:`float`)
+    frequency : :class:`float`
         sample frequency of dataset
 
-    cutoff_frequency_low : (:class:`float`)
+    cutoff_frequency_low : :class:`float`
         low frequency for cutting fourier transform
 
-    cutoff_frequency_high : (:class:`float`)
+    cutoff_frequency_high : :class:`float`
         high frequency for cutting fourier transform
 
-    time_axis : (:class:`int`, Optional)
+    time_axis : :class:`int`, Optional
         the time axis of the data set. Defaults to 0.
 
     Returns
     -------
-    return_signal : (:class:`numpy.ndarray`, :class:`xarray.DataArray`)
+    return_signal : :class:`numpy.ndarray`, :class:`xarray.DataArray`
         signal with specified filters applied
     """
     return fourier_filter(signal,
@@ -267,24 +267,24 @@ def fourier_band_block(
 
     Parameters
     ----------
-    signal : (:class:`numpy.ndarray`, :class:`xarray.DataArray`)
+    signal : :class:`numpy.ndarray`, :class:`xarray.DataArray`
         n-dimensional dataset
 
-    frequency : (:class:`float`)
+    frequency : :class:`float`
         sample frequency of dataset
 
-    cutoff_frequency_low : (:class:`float`)
+    cutoff_frequency_low : :class:`float`
         low frequency for cutting fourier transform
 
-    cutoff_frequency_high : (:class:`float`)
+    cutoff_frequency_high : :class:`float`
         high frequency for cutting fourier transform
 
-    time_axis : (:class:`int`, Optional)
+    time_axis : :class:`int`, Optional
         the time axis of the data set. Defaults to 0.
 
     Returns
     -------
-    return_signal : (:class:`numpy.ndarray`, :class:`xarray.DataArray`)
+    return_signal : :class:`numpy.ndarray`, :class:`xarray.DataArray`
         signal with specified filters applied
     """
     return fourier_filter(signal,
