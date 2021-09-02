@@ -16,15 +16,15 @@ def _dewtemp(
 
     Parameters
     ----------
-    tk :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
+    tk : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
         Temperature in Kelvin
 
-    rh :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
+    rh : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
         Relative humidity. Must be the same dimensions as temperature
 
     Returns
     -------
-    tdk :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
+    tdk : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
         Dewpoint temperature in Kelvin. Same size as input variable temperature
     """
 
@@ -142,13 +142,13 @@ def _relhum(
 
     Parameters
     ----------
-    t :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
+    t : :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
         Temperature in Kelvin
 
-    w :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
+    w : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
         Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-    p :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
+    p : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
         Pressure in Pa. Must have the same dimensions as temperature
 
     Returns
@@ -218,18 +218,18 @@ def _relhum_ice(t: typing.Union[np.ndarray, list, float],
 
     Parameters
     ----------
-    t :class:`numpy.ndarray`, :obj:`list`, :obj:`float`
+    t : :class:`numpy.ndarray`, :obj:`list`, :obj:`float`
         Temperature in Kelvin
 
-    w :class:`numpy.ndarray`, :obj:`list`, :obj:`float`
+    w : :class:`numpy.ndarray`, :obj:`list`, :obj:`float`
         Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-    p :class:`numpy.ndarray`, :obj:`list`, :obj:`float`
+    p : :class:`numpy.ndarray`, :obj:`list`, :obj:`float`
         Pressure in Pa. Must have the same dimensions as temperature
 
     Returns
     -------
-    rh :class:`numpy.ndarray`
+    rh : :class:`numpy.ndarray`
         Relative humidity. Will have the same dimensions as temperature
     """
 
@@ -267,13 +267,13 @@ def _relhum_water(t: typing.Union[np.ndarray, list, float],
 
     Parameters
     ----------
-    t :class:`numpy.ndarray`, :obj:`list`, :obj:`float`
+    t : :class:`numpy.ndarray`, :obj:`list`, :obj:`float`
         Temperature in Kelvin
 
-    w :class:`numpy.ndarray`, :obj:`list`, :obj:`float`
+    w : :class:`numpy.ndarray`, :obj:`list`, :obj:`float`
         Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-    p :class:`numpy.ndarray`, :obj:`list`, :obj:`float`
+    p : :class:`numpy.ndarray`, :obj:`list`, :obj:`float`
         Pressure in Pa. Must have the same dimensions as temperature
 
     Returns
@@ -390,18 +390,18 @@ def _xrelhum(t: xr.DataArray, w: xr.DataArray, p: xr.DataArray) -> xr.DataArray:
 
     Parameters
     ----------
-    t :class:`xarray.DataArray`
+    t : :class:`xarray.DataArray`
         Temperature in Kelvin
 
-    w :class:`xarray.DataArray`
+    w : :class:`xarray.DataArray`
         Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-    p :class:`xarray.DataArray`
+    p : :class:`xarray.DataArray`
         Pressure in Pa. Must have the same dimensions as temperature
 
     Returns
     -------
-    rh :class:`xarray.DataArray`
+    rh : :class:`xarray.DataArray`
         Relative humidity. Will have the same dimensions as temperature
     """
 
@@ -465,15 +465,15 @@ def dewtemp(
 
     Parameters
     ----------
-    temperature :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
+    temperature : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
         Temperature in Kelvin
 
-    relative_humidity :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
+    relative_humidity : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
         Relative humidity. Must be the same dimensions as temperature
 
     Returns
     -------
-    dew_pnt_temp :class:`numpy.ndarray` or :obj:`float`
+    dew_pnt_temp : :class:`numpy.ndarray` or :obj:`float`
         Dewpoint temperature in Kelvin. Same size as input variable temperature
     """
 
@@ -646,18 +646,18 @@ def relhum(
 
     Parameters
     ----------
-    temperature :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
+    temperature : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
         Temperature in Kelvin
 
-    mixing_ratio :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
+    mixing_ratio : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
         Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-    pressure :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
+    pressure : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
         Pressure in Pa. Must have the same dimensions as temperature
 
     Returns
     -------
-    relative_humidity :class:`numpy.ndarray` or :class:`xarray.DataArray`
+    relative_humidity : :class:`numpy.ndarray` or :class:`xarray.DataArray`
         Relative humidity. Will have the same dimensions as temperature
     """
 
@@ -711,18 +711,18 @@ def relhum_ice(temperature: typing.Union[np.ndarray, list, float],
 
     Parameters
     ----------
-    temperature :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
+    temperature : :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
         Temperature in Kelvin
 
-    mixing_ratio :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
+    mixing_ratio : :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
         Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-    pressure :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
+    pressure : :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
         Pressure in Pa. Must have the same dimensions as temperature
 
     Returns
     -------
-    relative_humidity :class:`numpy.ndarray`
+    relative_humidity : :class:`numpy.ndarray`
         Relative humidity. Will have the same dimensions as temperature
     """
 
@@ -772,18 +772,18 @@ def relhum_water(temperature: typing.Union[np.ndarray, list, float],
 
     Parameters
     ----------
-     temperature :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
+     temperature : :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
          Temperature in Kelvin
 
-     mixing_ratio :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
+     mixing_ratio : :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
          Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-     pressure :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
+     pressure : :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
          Pressure in Pa. Must have the same dimensions as temperature
 
      Returns
      -------
-         relative_humidity :class:`numpy.ndarray`
+         relative_humidity : :class:`numpy.ndarray`
              Relative humidity. Will have the same dimensions as temperature
     """
 

@@ -27,7 +27,7 @@ def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
     temperature : :class:`pint.Quantity`
         Parcel temperature for corresponding pressure
 
-    dewpt : :class: `pint.Quantity`
+    dewpt : :class:`pint.Quantity`
         Parcel dew point temperatures for corresponding pressure
 
     Returns
@@ -73,21 +73,21 @@ def get_skewt_vars(p, tc, tdc, pro):
 
     Parameters
     ----------
-    p :class: `pint.quantity.build_quantity_class.<locals>.Quantity`:
+    p : :class:`pint.quantity.build_quantity_class.<locals>.Quantity`
         Pressure level input from dataset
 
-    tc :class: `pint.quantity.build_quantity_class.<locals>.Quantity`:
+    tc : :class:`pint.quantity.build_quantity_class.<locals>.Quantity`
         Temperature for parcel from dataset
 
-    tdc :class: `pint.quantity.build_quantity_class.<locals>.Quantity`:
+    tdc : :class:`pint.quantity.build_quantity_class.<locals>.Quantity`
         Dew point temperature for parcel from dataset
 
-    pro :class: `pint.quantity.build_quantity_class.<locals>.Quantity`:
+    pro : :class:`pint.quantity.build_quantity_class.<locals>.Quantity`
         Parcel profile temperature converted to degC
 
     Returns
     -------
-    joined :class: 'str')
+    joined : :class:`str`
         A string element with the format "Plcl=<value> Tlcl[C]=<value> Shox=<value> Pwat[cm]=<value> Cape[J]=<value>" where:
 
         - Cape  -  Convective Available Potential Energy [J]

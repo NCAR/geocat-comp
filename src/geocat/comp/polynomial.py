@@ -91,22 +91,22 @@ def ndpolyfit(x: typing.Iterable,
     kwargs : :class:`dict`, Optional
         Extra parameters controlling the method behavior:
 
-            rcond : :class:`float`, Optional
+            * rcond : :class:`float`, Optional
                 Relative condition number of the fit. Refer to `numpy.polyfit` for further details.
 
-            full : :class:`bool`, Optional
+            * full : :class:`bool`, Optional
                 Switch determining nature of return value. Refer to `numpy.polyfit` for further details.
 
-            w : :class:`array_like`, Optional
+            * w : :class:`array_like`, Optional
                 Weights applied to the y-coordinates of the sample points. Refer to `numpy.polyfit` for further details.
 
-            cov : :class:`bool`, Optional
+            * cov : :class:`bool`, Optional
                 Determines whether to return the covariance matrix. Refer to `numpy.polyfit` for further details.
 
-            missing_value : :class:`number` or :class:`numpy.nan`, Optional
+            * missing_value : :class:`number` or :class:`numpy.nan`, Optional
                 The value to be treated as missing. Default is `numpy.nan`
 
-            meta : :class:`bool`, Optional
+            * meta : :class:`bool`, Optional
                 If set to `True` and the input, i.e. `y`, is of type `xarray.DataArray`, the attributes associated to the
                 input are transferred to the output.
 
@@ -693,12 +693,12 @@ def detrend(data: typing.Iterable, deg=1, axis=0, **kwargs) -> xr.DataArray:
         the axis along which the data is detrended. Default value is 0.
 
     kwargs : :class:`dict`, Optional
-
         providing further arguments to control the behavior of the method. It currently accepts the following parameters:
-            return_info :class:`bool`
+
+            * return_info : :class:`bool`
                 If set to true, the fitted polynomial is returned as part of the attributes. Default value is `True`.
 
-            missing_value :class:`numeric`
+            * missing_value : :class:`numeric`
                 A value that must be ignored. Default is NaN.
 
     Returns
