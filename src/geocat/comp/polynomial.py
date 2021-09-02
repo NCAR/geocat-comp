@@ -693,13 +693,14 @@ def detrend(data: typing.Iterable, deg=1, axis=0, **kwargs) -> xr.DataArray:
         the axis along which the data is detrended. Default value is 0.
 
     kwargs : :class:`dict`, Optional
-        providing further arguments to control the behavior of the method. It currently accepts the following parameters:
+        See below
 
-            * return_info : :class:`bool`
-                If set to true, the fitted polynomial is returned as part of the attributes. Default value is `True`.
+    :Keyword Arguments:
+        * return_info : :class:`bool`
+            If set to true, the fitted polynomial is returned as part of the attributes. Default value is `True`.
 
-            * missing_value : :class:`numeric`
-                A value that must be ignored. Default is NaN.
+        * missing_value : :class:`numeric`
+            A value that must be ignored. Default is NaN.
 
     Returns
     -------
