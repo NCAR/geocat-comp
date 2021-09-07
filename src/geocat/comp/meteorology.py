@@ -762,29 +762,29 @@ def relhum_water(temperature: typing.Union[np.ndarray, list, float],
     """Calculates relative humidity with respect to water, given temperature,
     mixing ratio, and pressure.
 
-     Definition of mixing ratio if,
-     es  - is the saturation mixing ratio
-     ep  - is the ratio of the molecular weights of water vapor to dry air
-     p   - is the atmospheric pressure
-     rh  - is the relative humidity (given as a percent)
+    Definition of mixing ratio if,
+    es  - is the saturation mixing ratio
+    ep  - is the ratio of the molecular weights of water vapor to dry air
+    p   - is the atmospheric pressure
+    rh  - is the relative humidity (given as a percent)
 
-     rh =  100*  q / ( (ep*es)/(p-es) )
+    rh =  100*  q / ( (ep*es)/(p-es) )
 
     Parameters
     ----------
-     temperature : :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
-         Temperature in Kelvin
+    temperature : :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
+        Temperature in Kelvin
 
-     mixing_ratio : :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
-         Mixing ratio in kg/kg. Must have the same dimensions as temperature
+    mixing_ratio : :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
+        Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-     pressure : :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
-         Pressure in Pa. Must have the same dimensions as temperature
+    pressure : :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
+        Pressure in Pa. Must have the same dimensions as temperature
 
-     Returns
-     -------
-         relative_humidity : :class:`numpy.ndarray`
-             Relative humidity. Will have the same dimensions as temperature
+    Returns
+    -------
+    relative_humidity : :class:`numpy.ndarray`
+        Relative humidity. Will have the same dimensions as temperature
     """
 
     # If xarray input, pull data and store metadata
