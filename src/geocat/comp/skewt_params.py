@@ -66,23 +66,24 @@ def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
     return shox
 
 
-def get_skewt_vars(p, tc, tdc, pro):
+def get_skewt_vars(p: pint.Quantity, tc: pint.Quantity, tdc: pint.Quantity,
+                   pro: pint.Quantity) -> str:
     """This function processes the dataset values and returns a string element
     which can be used as a subtitle to replicate the styles of NCL Skew-T
     Diagrams.
 
     Parameters
     ----------
-    p : :class:`pint.quantity.build_quantity_class.<locals>.Quantity`
+    p : :class:`pint.Quantity`
         Pressure level input from dataset
 
-    tc : :class:`pint.quantity.build_quantity_class.<locals>.Quantity`
+    tc : :class:`pint.Quantity`
         Temperature for parcel from dataset
 
-    tdc : :class:`pint.quantity.build_quantity_class.<locals>.Quantity`
+    tdc : :class:`pint.Quantity`
         Dew point temperature for parcel from dataset
 
-    pro : :class:`pint.quantity.build_quantity_class.<locals>.Quantity`
+    pro : :class:`pint.Quantity`
         Parcel profile temperature converted to degC
 
     Returns
