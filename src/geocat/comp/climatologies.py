@@ -141,14 +141,6 @@ def climatology(
     computed_dset : xr.Dataset, xr.DataArray
        The computed climatology data
 
-    `clmDayTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayTLL.shtml>`_
-    `clmDayTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayTLLL.shtml>`_
-    `clmMonLLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonLLLT.shtml>`_
-    `clmMonLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonLLT.shtml>`_
-    `clmMonTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonTLL.shtml>`_
-    `clmMonTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonTLLL.shtml>`_
-    `month_to_season <https://www.ncl.ucar.edu/Document/Functions/Contributed/month_to_season.shtml>`_
-
     Examples
     --------
     >>> import xarray as xr
