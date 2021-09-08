@@ -141,8 +141,6 @@ def climatology(
     computed_dset : xr.Dataset, xr.DataArray
        The computed climatology data
 
-    Note
-    ----
     `clmDayTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayTLL.shtml>`_
     `clmDayTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayTLLL.shtml>`_
     `clmMonLLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonLLLT.shtml>`_
