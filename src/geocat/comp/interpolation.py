@@ -16,46 +16,52 @@ def _pressure_from_hybrid(psfc, hya, hyb, p0=100000.):
     return hya * p0 + hyb * psfc
 
 
-def interp_hybrid_to_pressure(data,
-                              ps,
-                              hyam,
-                              hybm,
-                              p0=100000.,
-                              new_levels=__pres_lev_mandatory__,
-                              lev_dim=None,
-                              method='linear'):
+def interp_hybrid_to_pressure(data: xr.DataArray,
+                              ps: xr.DataArray,
+                              hyam: xr.DataArray,
+                              hybm: xr.DataArray,
+                              p0: float = 100000.,
+                              new_levels: np.ndarray = __pres_lev_mandatory__,
+                              lev_dim: str = None,
+                              method: str = 'linear') -> xr.DataArray:
     """Interpolate data from hybrid-sigma levels to isobaric levels.
 
     Notes
     -----
-    ACKNOWLEDGEMENT: We'd like to thank to Brian Medeiros (https://github.com/brianpm), Matthew Long
-    (https://github.com/matt-long), and Deepak Cherian (https://github.com/dcherian) at NCAR for their
-    great contributions since the code implemented here is mostly based on their work.
+    ACKNOWLEDGEMENT: We'd like to thank to [Brian Medeiros](https://github.com/brianpm),
+    [Matthew Long](https://github.com/matt-long), and [Deepak Cherian](https://github.com/dcherian)
+    at NCAR for their great contributions since the code implemented here is mostly
+    based on their work.
 
     Parameters
     ----------
-    data : xarray.DataArray
+    data : :class:`xarray.DataArray`
         Multidimensional data array, which holds hybrid-sigma levels and has a `lev_dim` coordinate.
 
-    ps : xarray.DataArray
+    ps : :class:`xarray.DataArray`
         A multi-dimensional array of surface pressures (Pa), same time/space shape as data.
 
-    hyam, hybm : xarray.DataArray
+    hyam, hybm : :class:`xarray.DataArray`
         One-dimensional arrays containing the hybrid A and B coefficients. Must have the same
         dimension size as the `lev_dim` dimension of data.
 
-    p0 :
-        Scalar numeric value equal to surface reference pressure (Pa).
+    p0 : :class:`float`, Optional
+        Scalar numeric value equal to surface reference pressure (Pa). Defaults to 100000 Pa.
 
-    new_levels : np.ndarray
+    new_levels : :class:`numpy.ndarray`, Optional
         A one-dimensional array of output pressure levels (Pa). If not given, the mandatory
         list of 21 pressure levels is used.
 
-    lev_dim : str
+    lev_dim : :class:`str`, Optional
         String that is the name of level dimension in data. Defaults to "lev".
 
-    method : str
+    method : :class:`str`, Optional
         String that is the interpolation method; can be either "linear" or "log". Defaults to "linear".
+
+    Returns
+    -------
+    output : :class:`xarray.DataArray`
+        Interpolated data with isobaric levels
     """
 
     # Determine the level dimension and then the interpolation axis

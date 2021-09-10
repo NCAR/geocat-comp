@@ -1,12 +1,15 @@
-import warnings
-
 import numpy as np
+import typing
+import warnings
 import xarray as xr
-
 from .comp_util import _is_duck_array
 
 
-def max_daylight(jday, lat):
+def max_daylight(
+    jday: typing.Union[np.ndarray, xr.DataArray, list,
+                       float], lat: typing.Union[np.ndarray, xr.DataArray, list,
+                                                 float]
+) -> typing.Union[np.ndarray, xr.DataArray, float]:
     """Computes maximum number of daylight hours as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
 
@@ -17,15 +20,15 @@ def max_daylight(jday, lat):
 
     Parameters
     ----------
-    jday : numpy.ndarray, xr.DataArray, list, float
+    jday : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         Day of year. Must be 1D
 
-    lat : numpy.ndarray, xr.DataArray, list, float
+    lat : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         Latitude in degrees. Must be 1D
 
     Returns
     -------
-    sunmax : numpy.ndarray, xr.DataArray, float
+    sunmax : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`float`
         Calculated maximum sunlight in hours/day
 
     Examples
@@ -92,7 +95,9 @@ def max_daylight(jday, lat):
     return dlm
 
 
-def psychrometric_constant(pressure):
+def psychrometric_constant(
+    pressure: typing.Union[np.ndarray, xr.DataArray, list, float]
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """Compute psychrometric constant [kPa / C] as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
 
@@ -115,12 +120,12 @@ def psychrometric_constant(pressure):
 
     Parameters
     ----------
-    pressure : numpy.ndarray, xr.DataArray, list, float
+    pressure : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         pressure in kPa/C
 
     Returns
     -------
-    psy_const : numpy.ndarray, xr.DataArray
+    psy_const : :class:`numpy.ndarray`, :class:`xarray.DataArray`
         the computed psychrometric constant. Same shape as pressure.
 
     Examples
@@ -154,7 +159,10 @@ def psychrometric_constant(pressure):
     return psy_const
 
 
-def saturation_vapor_pressure(temperature, tfill=np.NAN):
+def saturation_vapor_pressure(
+    temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
+    tfill: typing.Union[float] = np.nan
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """Compute saturation vapor pressure as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56
     entitled:
@@ -171,19 +179,19 @@ def saturation_vapor_pressure(temperature, tfill=np.NAN):
 
     Parameters
     ----------
-    temperature : numpy.ndarray, xr.DataArray, list, float
+    temperature : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         Temperature in Fahrenheit
 
-    tfill : float, np.NAN, Optional
+    tfill : :class:`float`, :class:`numpy.nan`, Optional
         An optional parameter for a fill value in the return value
 
     Returns
     -------
-    svp : numpy.ndarray, xr.DataArray
+    svp : :class:`numpy.ndarray`, :class:`xarray.DataArray`
         the computed actual saturation vapor pressure in kPa.
         Same shape as temperature.
 
-     Examples
+    Examples
     --------
     >>> import numpy as np
     >>> from geocat.comp import saturation_vapor_pressure
@@ -219,7 +227,10 @@ def saturation_vapor_pressure(temperature, tfill=np.NAN):
     return svp
 
 
-def actual_saturation_vapor_pressure(tdew, tfill=np.NAN):
+def actual_saturation_vapor_pressure(
+    tdew: typing.Union[np.ndarray, xr.DataArray, list, float],
+    tfill: typing.Union[float] = np.nan
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """ Compute 'actual' saturation vapor pressure [kPa] as described in the
     Food and Agriculture Organization (FAO) Irrigation and Drainage Paper 56
     entitled:
@@ -234,15 +245,15 @@ def actual_saturation_vapor_pressure(tdew, tfill=np.NAN):
 
     Parameters
     ----------
-    tdew : numpy.ndarray, xr.DataArray, list, float
+    tdew : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         Dew point temperatures in Fahrenheit
 
-    tfill : float, np.NAN, Optional
+    tfill : :class:`float`, :class:`numpy.nan`, Optional
         An optional parameter for a fill value in the return value
 
     Returns
     -------
-    asvp : numpy.ndarray, xr.DataArray
+    asvp : :class:`numpy.ndarray`, :class:`xarray.DataArray`
         the computed actual saturation vapor pressure in kPa.
         Same shape as tdew.
 
@@ -269,7 +280,10 @@ def actual_saturation_vapor_pressure(tdew, tfill=np.NAN):
     return asvp
 
 
-def saturation_vapor_pressure_slope(temperature, tfill=np.NAN):
+def saturation_vapor_pressure_slope(
+    temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
+    tfill: typing.Union[float] = np.nan
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """Compute the slope [kPa/C] of saturation vapor pressure curve as
     described in the Food and Agriculture Organization (FAO) Irrigation and
     Drainage Paper 56 entitled:
@@ -279,15 +293,15 @@ def saturation_vapor_pressure_slope(temperature, tfill=np.NAN):
 
     Parameters
     ----------
-    temperature : numpy.ndarray, xr.DataArray, list, float
+    temperature : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         Temperature in Fahrenheit
 
-    tfill : float, np.NAN, Optional
+    tfill : :class:`float`, :class:`numpy.nan`, Optional
         An optional parameter for a fill value in the return value
 
     Returns
     -------
-    svp_slope : numpy.ndarray, xr.DataArray
+    svp_slope : :class:`numpy.ndarray`, :class:`xarray.DataArray`
         The computed slopes of the saturation vapor pressure curve.
         Will be the same shape as temperature.
 

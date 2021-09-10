@@ -1,7 +1,7 @@
-import typing
-
 import cf_xarray
+import cftime
 import numpy as np
+import typing
 import xarray as xr
 
 xr.set_options(keep_attrs=True)
@@ -61,8 +61,13 @@ def _setup_clim_anom_input(dset, freq, time_coord_name):
     return data, time_invariant_vars, time_coord_name, time_dot_freq
 
 
-def _calculate_center_of_time_bounds(dset, time_dim, freq, calendar, start,
-                                     end):
+def _calculate_center_of_time_bounds(
+    dset: typing.Union[xr.Dataset,
+                       xr.DataArray], time_dim: str, freq: str, calendar: str,
+    start: typing.Union[str,
+                        cftime.datetime], end: typing.Union[str,
+                                                            cftime.datetime]
+) -> typing.Union[xr.Dataset, xr.DataArray]:
     """Helper function to determine the time bounds based on the given dataset
     and frequency and then calculate the averages of them.
 
@@ -75,21 +80,29 @@ def _calculate_center_of_time_bounds(dset, time_dim, freq, calendar, start,
         The data on which to operate. It must be uniformly spaced in the time
         dimension.
 
-    time_dim : :class:`str`, Optional
+    time_dim : :class:`str`
         Name of the time coordinate for `xarray` objects
 
-    start: :class:`str`, :class:`cftime.datetime`
+    freq : :class:`str`
+        Alias for the frequency of the adjusted timestamps (i.e. daily, monthly)
+
+    calendar : :class:`str`
+        Alias for the calendar the time stamps are in (i.e. gregorian, no leap years)
+
+    start : :class:`str`, :class:`cftime.datetime`
         The starting date of the data. The string representation must be in ISO format
 
-    end: :class:`str`, :class:`cftime.datetime`
+    end : :class:`str`, :class:`cftime.datetime`
         The ending date of the data. The string representation must be in ISO format
-
-    See `xarray.cftime_range <http://xarray.pydata.org/en/stable/generated/xarray.cftime_range.html>_` for accepted values for `freq` and `calendar`.
 
     Returns
     -------
-    computed_dset: same type as dset
+    computed_dset: :class:`xarray.Dataset`, :class:`xarray.DataArray`
         The data with adjusted time coordinate
+
+    Notes
+    -----
+    See `xarray.cftime_range <http://xarray.pydata.org/en/stable/generated/xarray.cftime_range.html>`_ for accepted values for `freq` and `calendar`.
     """
 
     time_bounds = xr.cftime_range(start, end, freq=freq, calendar=calendar)
@@ -103,7 +116,7 @@ def _calculate_center_of_time_bounds(dset, time_dim, freq, calendar, start,
 def _infer_calendar_name(dates):
     """Given an array of datetimes, infer the CF calendar name.
 
-    This code was taken from `xarray/coding/times.py <https://github.com/pydata/xarray/blob/75eefb8e95a70f1667623a8418d81da3f3148a40/xarray/coding/times.py>_`
+    This code was taken from `xarray/coding/times.py <https://github.com/pydata/xarray/blob/75eefb8e95a70f1667623a8418d81da3f3148a40/xarray/coding/times.py>`_
     as the function is considered internal by xarray and could change at
     anytime. It was copied to preserve the version that is compatible with
     functions in climatologies.py
@@ -122,10 +135,10 @@ def climatology(
 
     Parameters
     ----------
-    dset : xr.Dataset, xr.DataArray
+    dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
         The data on which to operate
 
-    freq : str
+    freq : :class:`str`
         Climatology frequency alias. Accepted alias:
 
             - 'day': for daily climatologies
@@ -133,12 +146,13 @@ def climatology(
             - 'year': for annual climatologies
             - 'season': for seasonal climatologies
 
-    time_coord_name: str, Optional
-         Name for time coordinate to use
+    time_coord_name : :class:`str`, Optional
+         Name for time coordinate to use. Defaults to None and infers the name
+         from the data.
 
     Returns
     -------
-    computed_dset : xr.Dataset, xr.DataArray
+    computed_dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
        The computed climatology data
 
     Examples
@@ -206,10 +220,10 @@ def anomaly(
 
     Parameters
     ----------
-    dset : xr.Dataset, xr.DataArray
+    dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
         The data on which to operate
 
-    freq : str
+    freq : :class:`str`
         Anomaly frequency alias. Accepted alias:
 
             - 'day': for daily anomalies
@@ -217,12 +231,13 @@ def anomaly(
             - 'year': for annual anomalies
             - 'season': for seasonal anomalies
 
-    time_coord_name: str, Optional
-         Name for time coordinate to use
+    time_coord_name : :class:`str`
+         Name for time coordinate to use. Defaults to None and infers the name
+         from the data.
 
     Returns
     -------
-    computed_dset : xr.Dataset, xr.DataArray
+    computed_dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
        The computed anomaly data
 
     Examples
@@ -295,9 +310,10 @@ def month_to_season(
 
     Parameters
     ----------
-    dset : xr.Dataset, xr.DataArray
+    dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
         The data on which to operate
-    season : str
+
+    season : :class:`str`
         A string representing the season to calculate: e.g., "JFM", "JJA".
         Valid values are:
 
@@ -313,12 +329,14 @@ def month_to_season(
          - SON {September, October, November}
          - OND {October, November, Decmber}
          - NDJ {November, Decmber, January}
-    time_coord_name: str, Optional
-        Name for time coordinate to use
+
+    time_coord_name : :class:`str`, Optional
+        Name for time coordinate to use. Defaults to None and infers the name
+        from the data.
 
     Returns
     -------
-    computed_dset : xr.Dataset, xr.DataArray
+    computed_dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
        The computed data
 
     Notes
@@ -392,6 +410,7 @@ def calendar_average(
 
     freq : :class:`str`
         Frequency alias. Accepted alias:
+
             - 'hour': for hourly averages
             - 'day': for daily averages
             - 'month': for monthly averages
@@ -399,12 +418,13 @@ def calendar_average(
             - 'year': for yearly averages
 
     time_dim : :class:`str`, Optional
-        Name of the time coordinate for `xarray` objects
+        Name of the time coordinate for `xarray` objects. Defaults to None and
+        infers the name from the data.
 
     Returns
     -------
-    computed_dset: same type as dset
-        The computed data
+    computed_dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
+        The computed data with the same type as `dset`
 
     Notes
     -----
@@ -484,18 +504,20 @@ def climatology_average(
 
     freq : :class:`str`
         Frequency alias. Accepted alias:
+
             - 'hour': for hourly averages
             - 'day': for daily averages
             - 'month': for monthly averages
             - 'season': for meteorological seasonal averages (DJF, MAM, JJA, and SON)
 
     time_dim : :class:`str`, Optional
-        Name of the time coordinate for `xarray` objects
+        Name of the time coordinate for `xarray` objects. Defaults to None and
+        infers the name from the data.
 
 
     Returns
     -------
-    computed_dset: same type as dset
+    computed_dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
         The computed data
 
     Notes
