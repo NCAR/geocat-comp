@@ -200,7 +200,9 @@ def climatology(
     * season   (season) object 'DJF' 'JJA' 'MAM' 'SON'
     Dimensions without coordinates: lat, lon
 
-    .. admonition:: Related NCL Functions:
+    See Also
+    --------
+    Related NCL Functions:
     - `clmDayTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayTLL.shtml>`_
     - `clmDayTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayTLLL.shtml>`_
     - `clmMonLLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonLLLT.shtml>`_
