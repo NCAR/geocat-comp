@@ -2,57 +2,71 @@ from itertools import chain
 
 import metpy.calc as mpcalc
 import numpy as np
+import pint.quantity
 from metpy.units import units
 
 
-def showalter_index(pressure, temperature, dewpt):
+def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
+                    dewpt: pint.Quantity) -> pint.Quantity:
     """Calculate Showalter Index from pressure temperature and 850 hPa lcl.
     Showalter Index derived from [Galway1956]_:
 
     shox = T500 - Tp500
     where:
-    T500 is the measured temperature at 500 hPa
-    Tp500 is the temperature of the lifted parcel at 500 hPa
+    - T500 is the measured temperature at 500 hPa
+    - Tp500 is the temperature of the lifted parcel at 500 hPa
+
     Parameters
     ----------
-        pressure : `pint.Quantity`
-            Atmospheric pressure level(s) of interest, in order from highest
-            to lowest pressure
-        temperature : `pint.Quantity`
-            Parcel temperature for corresponding pressure
-        dewpt (:class: `pint.Quantity`):
-            Parcel dew point temperatures for corresponding pressure
+    pressure : :class:`pint.Quantity`
+        Atmospheric pressure level(s) of interest, in order from highest
+        to lowest pressure
+
+    temperature : :class:`pint.Quantity`
+        Parcel temperature for corresponding pressure
+
+    dewpt : :class:`pint.Quantity`
+        Parcel dew point temperatures for corresponding pressure
+
     Returns
     -------
-        `pint.Quantity`
-        Showalter index in delta degrees celsius
+    shox : :class:`pint.Quantity`
+       Showalter index in delta degrees celsius
     """
     shox = mpcalc.showalter_index(pressure, temperature, dewpt)
     return shox
 
 
-def get_skewt_vars(p, tc, tdc, pro):
+def get_skewt_vars(p: pint.Quantity, tc: pint.Quantity, tdc: pint.Quantity,
+                   pro: pint.Quantity) -> str:
     """This function processes the dataset values and returns a string element
     which can be used as a subtitle to replicate the styles of NCL Skew-T
     Diagrams.
 
-    Args:
+    Parameters
+    ----------
+    p : :class:`pint.Quantity`
+        Pressure level input from dataset
 
-        p (:class: `pint.quantity.build_quantity_class.<locals>.Quantity`):
-            Pressure level input from dataset
+    tc : :class:`pint.Quantity`
+        Temperature for parcel from dataset
 
-        tc (:class: `pint.quantity.build_quantity_class.<locals>.Quantity`):
-            Temperature for parcel from dataset
+    tdc : :class:`pint.Quantity`
+        Dew point temperature for parcel from dataset
 
-        tdc (:class: `pint.quantity.build_quantity_class.<locals>.Quantity`):
-            Dew point temperature for parcel from dataset
+    pro : :class:`pint.Quantity`
+        Parcel profile temperature converted to degC
 
-        pro (:class: `pint.quantity.build_quantity_class.<locals>.Quantity`):
-            Parcel profile temperature converted to degC
+    Returns
+    -------
+    joined : :class:`str`
+        A string element with the format "Plcl=<value> Tlcl[C]=<value> Shox=<value> Pwat[cm]=<value> Cape[J]=<value>" where:
 
-
-    Returns:
-        :class: 'str'
+        - Cape  -  Convective Available Potential Energy [J]
+        - Pwat  -  Precipitable Water [cm]
+        - Shox  -  Showalter Index (stability)
+        - Plcl  -  Pressure of the lifting condensation level [hPa]
+        - Tlcl  -  Temperature at the lifting condensation level [C]
     """
 
     # CAPE
