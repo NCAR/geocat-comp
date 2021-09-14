@@ -200,6 +200,8 @@ def climatology(
     * season   (season) object 'DJF' 'JJA' 'MAM' 'SON'
     Dimensions without coordinates: lat, lon
 
+
+
     See Also
     --------
     Related NCL Functions:
