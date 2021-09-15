@@ -298,6 +298,17 @@ def anomaly(
     * time     (time) datetime64[ns] 2000-01-31 2000-02-29 ... 2001-12-31
         season   (time) <U3 'DJF' 'DJF' 'MAM' 'MAM' ... 'SON' 'SON' 'SON' 'DJF'
     Dimensions without coordinates: lat, lon
+
+
+    See Also
+    --------
+    Related NCL Functions:
+    `clmDayAnomTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcDayAnomTLL.shtml>`_,
+    `clmDayAnomTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomTLLL.shtml>`_,
+    `clmMonAnomLLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomLLLT.shtml>`_,
+    `clmMonAnomLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomLLT.shtml>`_,
+    `clmMonAnomTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomTLL.shtml>`_,
+    `clmMonAnomTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomTLLL.shtml>`_,
     """
 
     data, time_invariant_vars, time_coord_name, time_dot_freq = _setup_clim_anom_input(
