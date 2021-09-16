@@ -2,92 +2,71 @@ from itertools import chain
 
 import metpy.calc as mpcalc
 import numpy as np
+import pint.quantity
 from metpy.units import units
 
 
-def showalter_index(pressure, temperature, dewpt):
+def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
+                    dewpt: pint.Quantity) -> pint.Quantity:
     """Calculate Showalter Index from pressure temperature and 850 hPa lcl.
-
     Showalter Index derived from [Galway1956]_:
-    SI = T500 - Tp500
 
+    shox = T500 - Tp500
     where:
-    T500 is the measured temperature at 500 hPa
-    Tp500 is the temperature of the lifted parcel at 500 hPa
+    - T500 is the measured temperature at 500 hPa
+    - Tp500 is the temperature of the lifted parcel at 500 hPa
 
     Parameters
     ----------
+    pressure : :class:`pint.Quantity`
+        Atmospheric pressure level(s) of interest, in order from highest
+        to lowest pressure
 
-        pressure : `pint.Quantity`
-            Atmospheric pressure level(s) of interest, in order from highest
-            to lowest pressure
+    temperature : :class:`pint.Quantity`
+        Parcel temperature for corresponding pressure
 
-        temperature : `pint.Quantity`
-            Parcel temperature for corresponding pressure
+    dewpt : :class:`pint.Quantity`
+        Parcel dew point temperatures for corresponding pressure
 
-        dewpt (:class: `pint.Quantity`):
-            Parcel dew point temperatures for corresponding pressure
-
-
-     Returns
-     -------
-
-     `pint.Quantity`
-        Showalter index in delta degrees celsius
+    Returns
+    -------
+    shox : :class:`pint.Quantity`
+       Showalter index in delta degrees celsius
     """
-
-    # find the measured temperature and dew point temperature at 850 hPa.
-    idx850 = np.where(pressure == 850 * units.hPa)
-    T850 = temperature[idx850]
-    Td850 = dewpt[idx850]
-
-    # find the parcel profile temperature at 500 hPa.
-    idx500 = np.where(pressure == 500 * units.hPa)
-    Tp500 = temperature[idx500]
-
-    # Calculate lcl at the 850 hPa level
-    lcl_calc = mpcalc.lcl(850 * units.hPa, T850[0], Td850[0])
-    lcl_calc = lcl_calc[0]
-
-    # Define start and end heights for dry and moist lapse rate calculations
-    p_strt = 1000 * units.hPa
-    p_end = 500 * units.hPa
-
-    # Calculate parcel temp when raised dry adiabatically from surface to lcl
-    dl = mpcalc.dry_lapse(lcl_calc, temperature[0], p_strt)
-    dl = (dl.magnitude - 273.15) * units.degC  # Change units to C
-
-    # Calculate parcel temp when raised moist adiabatically from lcl to 500mb
-    ml = mpcalc.moist_lapse(p_end, dl, lcl_calc)
-
-    # Calculate the Showalter index
-    shox = Tp500 - ml
-
+    shox = mpcalc.showalter_index(pressure, temperature, dewpt)
     return shox
 
 
-def get_skewt_vars(p, tc, tdc, pro):
+def get_skewt_vars(p: pint.Quantity, tc: pint.Quantity, tdc: pint.Quantity,
+                   pro: pint.Quantity) -> str:
     """This function processes the dataset values and returns a string element
     which can be used as a subtitle to replicate the styles of NCL Skew-T
     Diagrams.
 
-    Args:
+    Parameters
+    ----------
+    p : :class:`pint.Quantity`
+        Pressure level input from dataset
 
-        p (:class: `pint.quantity.build_quantity_class.<locals>.Quantity`):
-            Pressure level input from dataset
+    tc : :class:`pint.Quantity`
+        Temperature for parcel from dataset
 
-        tc (:class: `pint.quantity.build_quantity_class.<locals>.Quantity`):
-            Temperature for parcel from dataset
+    tdc : :class:`pint.Quantity`
+        Dew point temperature for parcel from dataset
 
-        tdc (:class: `pint.quantity.build_quantity_class.<locals>.Quantity`):
-            Dew point temperature for parcel from dataset
+    pro : :class:`pint.Quantity`
+        Parcel profile temperature converted to degC
 
-        pro (:class: `pint.quantity.build_quantity_class.<locals>.Quantity`):
-            Parcel profile temperature converted to degC
+    Returns
+    -------
+    joined : :class:`str`
+        A string element with the format "Plcl=<value> Tlcl[C]=<value> Shox=<value> Pwat[cm]=<value> Cape[J]=<value>" where:
 
-
-    Returns:
-        :class: 'str'
+        - Cape  -  Convective Available Potential Energy [J]
+        - Pwat  -  Precipitable Water [cm]
+        - Shox  -  Showalter Index (stability)
+        - Plcl  -  Pressure of the lifting condensation level [hPa]
+        - Tlcl  -  Temperature at the lifting condensation level [C]
     """
 
     # CAPE

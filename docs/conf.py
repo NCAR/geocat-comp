@@ -59,6 +59,7 @@ intersphinx_mapping = {
     'numpy': ('http://docs.scipy.org/doc/numpy/', None),
     'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
     'xarray': ('http://xarray.pydata.org/en/stable/', None),
+    'pint': ('https://pint.readthedocs.io/en/stable/', None),
 }
 
 napoleon_use_admonition_for_examples = True
@@ -257,3 +258,5 @@ html_static_path = ['_static']
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'geocat-compdoc'
+
+autodoc_typehints = 'none'

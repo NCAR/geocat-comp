@@ -19,6 +19,8 @@ GeoCAT-comp routines
 
    geocat.comp.climatologies._get_time_coordinate_info
 
+   geocat.comp.climatologies._infer_calendar_name
+
    geocat.comp.climatologies._setup_clim_anom_input
 
    geocat.comp.climatologies._validate_freq
@@ -28,6 +30,8 @@ GeoCAT-comp routines
    geocat.comp.eofunc._generate_eofs_solver
 
    geocat.comp.interpolation._pressure_from_hybrid
+
+   geocat.comp.interpolation._vertical_remap
 
    geocat.comp.meteorology._dewtemp
 
