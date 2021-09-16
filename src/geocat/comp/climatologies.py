@@ -569,7 +569,6 @@ def climatology_average(
     Related GeoCAT Functions:
     `calendar_average <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.climatologies.calendar_average.html#geocat.comp.climatologies.calendar_average>`_
 
-
     Related NCL Functions:
     `clmDayHourTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayHourTLL.shtml>`_,
     `clmDauHourTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayHourTLLL.shtml>`_,
