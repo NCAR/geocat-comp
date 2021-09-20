@@ -85,7 +85,7 @@ def _heat_index(temperature: np.ndarray,
                         (relative_humidity * 0.094)) + temperature) * 0.5
 
     # http://ehp.niehs.nih.gov/1206273/
-    heatindex = np.where(temperature < 40, temperature, heatindex)
+    heatindex = xr.where(temperature < 40, temperature, heatindex)
 
     # if all t values less than critical, return hi
     # otherwise perform calculation
@@ -93,20 +93,22 @@ def _heat_index(temperature: np.ndarray,
     if not all(temperature.ravel() < crit[0]):
         eqtype = 1
 
-        heatindex = np.where(heatindex > crit[0],
+        heatindex = xr.where(heatindex > crit[0],
                              _nws_eqn(coeffs, temperature, relative_humidity),
                              heatindex)
 
         # adjustments
-        heatindex = np.where(
-            np.logical_and(relative_humidity < 13,
-                           np.logical_and(temperature > 80, temperature < 112)),
+        heatindex = xr.where(
+            xr.ufuncs.logical_and(
+                relative_humidity < 13,
+                xr.ufuncs.logical_and(temperature > 80, temperature < 112)),
             heatindex - ((13 - relative_humidity) / 4) * np.sqrt(
                 (17 - abs(temperature - 95)) / 17), heatindex)
 
-        heatindex = np.where(
-            np.logical_and(relative_humidity > 85,
-                           np.logical_and(temperature > 80, temperature < 87)),
+        heatindex = xr.where(
+            xr.ufuncs.logical_and(
+                relative_humidity > 85,
+                xr.ufuncs.logical_and(temperature > 80, temperature < 87)),
             heatindex + ((relative_humidity - 85.0) / 10.0) *
             ((87.0 - temperature) / 5.0), heatindex)
 
