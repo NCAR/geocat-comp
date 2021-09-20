@@ -739,6 +739,16 @@ def detrend(data: typing.Iterable, deg=1, axis=0, **kwargs) -> xr.DataArray:
         >>> y_trend = ndpolyval(p, x, axis=1)
         >>> y_detrended = detrend(y, x=x, axis=1)
         >>> np.testing.assert_almost_equal(y_detrended + y_trend, y)
+
+    See Also
+    --------
+    Related NCL Functions:
+    `dtrend <https://www.ncl.ucar.edu/Document/Functions/Built-in/dtrend.shtml>`_,
+    `dtrend_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/dtrend_n.shtml>`_,
+    `dtrend_msg <https://www.ncl.ucar.edu/Document/Functions/Built-in/dtrend_msg.shtml>`_,
+    `dtrend_msg_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/dtrend_msg_n.shtml>`_,
+    `dtrend_quadratic <https://www.ncl.ucar.edu/Document/Functions/Built-in/dtrend_quadratic.shtml>`_,
+    `dtrend_quadratic_msg_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/dtrend_quadratic_msg_n.shtml>`_
     """
     if (int(deg) != deg) or (deg < 0):
         raise ValueError("deg must be non-negative integer value.")

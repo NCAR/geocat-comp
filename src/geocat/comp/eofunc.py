@@ -151,6 +151,15 @@ def eofunc_eofs(data,
             (From `eofs` package): Fractional EOF mode variances.
 
             The fraction of the total variance explained by each EOF mode, values between 0 and 1 inclusive..
+
+    See Also
+    --------
+    Related NCL Functions:
+    `eofunc <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc.shtml>`_,
+    `eofunc_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_Wrap.shtml>`_,
+    `eofunc_north <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_north.shtml>`_,
+    `eofunc_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc_n.shtml>`_,
+    `eofunc_n_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_n_Wrap.shtml>`_
     """
 
     data, solver = _generate_eofs_solver(data,
@@ -273,6 +282,14 @@ def eofunc_pcs(data,
 
     Returns
     -------
+
+    See Also
+    --------
+    Related NCL Functions:
+    `eofunc_ts <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc_ts.shtml>`_,
+    `eofunc_ts_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_ts_Wrap.shtml>`_,
+    `eofunc_ts_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc_ts_n.shtml>`_,
+    `eofunc_ts_n_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_ts_n_Wrap.shtml>`_
     """
 
     data, solver = _generate_eofs_solver(data,
