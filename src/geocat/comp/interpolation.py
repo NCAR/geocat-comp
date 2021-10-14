@@ -248,7 +248,7 @@ def interp_sigma_to_hybrid(data: xr.DataArray,
 
     See Also
     --------
-    Related NCL Functions:
+    Related NCL Function:
     `sigma2hybrid <https://www.ncl.ucar.edu/Document/Functions/Built-in/sigma2hybrid.shtml>`_
     """
 
