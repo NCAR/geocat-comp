@@ -41,6 +41,12 @@ def max_daylight(
     array([[12.18035083, 12.37238906],
            [12.37577081, 12.77668231],
            [12.16196585, 12.33440805]])
+
+
+    See Also
+    --------
+    Related NCL Functions:
+    `daylight_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/daylight_fao56.shtml>_`
     """
 
     x_out = False
@@ -135,6 +141,12 @@ def psychrometric_constant(
     >>> pressure = np.array([60, 80, 100])
     >>> psychrometric_constant(pressure)
     array([0.0398844, 0.0531792, 0.066474 ])
+
+
+    See Also
+    --------
+    Related NCL Functions:
+    `psychro_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/psychro_fao56.shtml>_`
     """
 
     # Constant
@@ -198,6 +210,16 @@ def saturation_vapor_pressure(
     >>> temp = np.array([50, 60, 70])
     >>> saturation_vapor_pressure(temp)
     array([1.22796262, 1.76730647, 2.50402976])
+
+
+    See Also
+    --------
+    Related GeoCAT Functions:
+    `actual_saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.actual_saturation_vapor_pressure.html#geocat.comp.crop.actual_saturation_vapor_pressure>_`,
+    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure_slope.html#geocat.comp.crop.saturation_vapor_pressure_slope>_`
+
+    Related NCL Functions:
+    `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>_`
     """
 
     in_type = type(temperature)
@@ -264,6 +286,16 @@ def actual_saturation_vapor_pressure(
     >>> temp = np.array([50, 60, 70])
     >>> actual_saturation_vapor_pressure(temp)
     array([1.22796262, 1.76730647, 2.50402976])
+
+
+    See Also
+    --------
+    Related GeoCAT Functions:
+    `saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure.html#geocat.comp.crop.saturation_vapor_pressure>_`,
+    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure_slope.html#geocat.comp.crop.saturation_vapor_pressure_slope>_`
+
+    Related NCL Functions:
+    `satvpr_tdew_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_tdew_fao56.shtml>_`
     """
 
     in_type = type(tdew)
@@ -312,6 +344,16 @@ def saturation_vapor_pressure_slope(
     >>> temp = np.array([50, 60, 70])
     >>> saturation_vapor_pressure_slope(temp)
     array([0.08224261, 0.11322096, 0.153595  ])
+
+
+    See Also
+    --------
+    Related GeoCAT Functions:
+    `actual_saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.actual_saturation_vapor_pressure.html#geocat.comp.crop.actual_saturation_vapor_pressure>_`,
+    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure_slope.html#geocat.comp.crop.saturation_vapor_pressure_slope>_`
+
+    Related NCL Functions:
+    `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>_`
     """
 
     in_type = type(temperature)

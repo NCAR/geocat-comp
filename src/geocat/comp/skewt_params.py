@@ -67,6 +67,12 @@ def get_skewt_vars(p: pint.Quantity, tc: pint.Quantity, tdc: pint.Quantity,
         - Shox  -  Showalter Index (stability)
         - Plcl  -  Pressure of the lifting condensation level [hPa]
         - Tlcl  -  Temperature at the lifting condensation level [C]
+
+    See Also
+    --------
+    Related NCL Functions:
+    `skewT_PlotData <https://www.ncl.ucar.edu/Document/Functions/Skewt_func/skewT_PlotData.shtml>`_,
+    `skewt_BackGround <https://www.ncl.ucar.edu/Document/Functions/Skewt_func/skewT_BackGround.shtml>_
     """
 
     # CAPE

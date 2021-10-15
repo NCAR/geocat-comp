@@ -199,6 +199,18 @@ def climatology(
     Coordinates:
     * season   (season) object 'DJF' 'JJA' 'MAM' 'SON'
     Dimensions without coordinates: lat, lon
+
+
+    See Also
+    --------
+    Related NCL Functions:
+    `clmDayTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayTLL.shtml>`_,
+    `clmDayTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayTLLL.shtml>`_,
+    `clmMonLLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonLLLT.shtml>`_,
+    `clmMonLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonLLT.shtml>`_,
+    `clmMonTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonTLL.shtml>`_,
+    `clmMonTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonTLLL.shtml>`_,
+    `month_to_season <https://www.ncl.ucar.edu/Document/Functions/Contributed/month_to_season.shtml>`_
     """
     data, time_invariant_vars, time_coord_name, time_dot_freq = _setup_clim_anom_input(
         dset, freq, time_coord_name)
@@ -285,6 +297,17 @@ def anomaly(
     * time     (time) datetime64[ns] 2000-01-31 2000-02-29 ... 2001-12-31
         season   (time) <U3 'DJF' 'DJF' 'MAM' 'MAM' ... 'SON' 'SON' 'SON' 'DJF'
     Dimensions without coordinates: lat, lon
+
+
+    See Also
+    --------
+    Related NCL Functions:
+    `clmDayAnomTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcDayAnomTLL.shtml>`_,
+    `clmDayAnomTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomTLLL.shtml>`_,
+    `clmMonAnomLLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomLLLT.shtml>`_,
+    `clmMonAnomLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomLLT.shtml>`_,
+    `clmMonAnomTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomTLL.shtml>`_,
+    `clmMonAnomTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomTLLL.shtml>`_
     """
 
     data, time_invariant_vars, time_coord_name, time_dot_freq = _setup_clim_anom_input(
@@ -346,6 +369,12 @@ def month_to_season(
     If a calculated season's timestamp falls outside the original range of monthly values, then the calculated mean
     is dropped.  For example, if the monthly data's time range is [Jan-2000, Dec-2003] and the season is "DJF", the
     seasonal mean computed from the single month of Dec-2003 is dropped.
+
+
+    See Also
+    --------
+    Related NCL Functions:
+    `month_to_season <https://www.ncl.ucar.edu/Document/Functions/Contributed/month_to_season.shtml>`_
     """
 
     time_coord_name = _get_time_coordinate_info(dset, time_coord_name)
@@ -433,6 +462,12 @@ def calendar_average(
     hours, every two days, every month, etc.) and must not cross month
     boundaries (i.e. don't use weekly averages where the week falls in two
     different months)
+
+
+    See Also
+    --------
+    Related GeoCAT Functions:
+    `climatology_average <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.climatologies.climatology_average.html#geocat.comp.climatologies.climatology_average>`_
     """
     # TODO: add functionality for users to select specific seasons or hours for averages
     freq_dict = {
@@ -527,6 +562,23 @@ def climatology_average(
     hours, every two days, every month, etc.) and must not cross month
     boundaries (i.e. don't use weekly averages where the week falls in two
     different months)
+
+
+    See Also
+    --------
+    Related GeoCAT Functions:
+    `calendar_average <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.climatologies.calendar_average.html#geocat.comp.climatologies.calendar_average>`_
+
+    Related NCL Functions:
+    `clmDayHourTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayHourTLL.shtml>`_,
+    `clmDauHourTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayHourTLLL.shtml>`_,
+    `clmDayTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayTLL.shtml>`_,
+    `clmDayTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayTLLL.shtml>`_,
+    `clmMonLLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonLLLT.shtml>`_,
+    `clmMonLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonLLT.shtml>`_,
+    `clmMonTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonTLL.shtml>`_,
+    `clmMonTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonTLLL.shtml>`_,
+    `month_to_season <https://www.ncl.ucar.edu/Document/Functions/Contributed/month_to_season.shtml>`_
     """
     # TODO: add functionality for users to select specific seasons or hours for climatologies
     freq_dict = {
