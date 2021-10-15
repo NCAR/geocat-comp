@@ -31,10 +31,10 @@ def _dewtemp(
     See Also
     --------
     Related GeoCAT Functions:
-    `dewtemp <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.dewtemp.html#geocat.comp.meteorology.dewtemp>`_,
+    `dewtemp <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.dewtemp.html#geocat.comp.meteorology.dewtemp>`_
 
     Related NCL Functions:
-    `dewtemp_trh <https://www.ncl.ucar.edu/Document/Functions/Built-in/dewtemp_trh.shtml>`_,
+    `dewtemp_trh <https://www.ncl.ucar.edu/Document/Functions/Built-in/dewtemp_trh.shtml>`_
     """
 
     gc = 461.5  # gas constant for water vapor [j/{kg-k}]
@@ -77,10 +77,10 @@ def _heat_index(temperature: np.ndarray,
     --------
     Related GeoCAT Functions:
     `heat_index <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.heat_index.html#geocat.comp.meteorology.heat_index>`_,
-    `_xheat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xheat_index.html#geocat.comp.meteorology._xheat_index>`_,
+    `_xheat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xheat_index.html#geocat.comp.meteorology._xheat_index>`_
 
     Related NCL Functions:
-    `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`_,
+    `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`_
     """
     # Default coefficients for (t>=80F) and (40<gh<100)
     coeffs = [
@@ -161,7 +161,7 @@ def _nws_eqn(coeffs, temp, rel_hum):
     --------
     Related GeoCAT Functions:
     `heat_index <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.heat_index.html#geocat.comp.meteorology.heat_index>`_,
-    `_heat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._heat_index.html#geocat.comp.meteorology._heat_index>`_,
+    `_heat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._heat_index.html#geocat.comp.meteorology._heat_index>`_
 
     Related NCL Functions:
     `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`_,
@@ -215,13 +215,13 @@ def _relhum(
     `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`_,
     `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`_,
     `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`_,
-    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`,
+    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`_
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`_,
     `relhum_ttd <https://www.ncl.ucar.edu/Document/Functions/Contributed/relhum_ttd.shtml>`_,
     `relhum_ice <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_ice.shtml>`_,
-    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`_,
+    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`_
     """
 
     table = np.asarray([
@@ -306,13 +306,13 @@ def _relhum_ice(t: typing.Union[np.ndarray, list, float],
     `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`_,
     `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`_,
     `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`_,
-    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`,
+    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`_
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`_,
     `relhum_ttd <https://www.ncl.ucar.edu/Document/Functions/Contributed/relhum_ttd.shtml>`_,
     `relhum_ice <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_ice.shtml>`_,
-    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`_,
+    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`_
     """
 
     # Define data variables
@@ -369,13 +369,13 @@ def _relhum_water(t: typing.Union[np.ndarray, list, float],
     `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`_,
     `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`_,
     `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`_,
-    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`,
+    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`_
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`_,
     `relhum_ttd <https://www.ncl.ucar.edu/Document/Functions/Contributed/relhum_ttd.shtml>`_,
     `relhum_ice <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_ice.shtml>`_,
-    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`_,
+    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`_
     """
 
     # Define data variables
@@ -427,7 +427,7 @@ def _xheat_index(temperature: xr.DataArray,
     --------
     Related GeoCAT Functions:
     `heat_index <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.heat_index.html#geocat.comp.meteorology.heat_index>`_,
-    `_heat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._heat_index.html#geocat.comp.meteorology._heat_index>`_,
+    `_heat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._heat_index.html#geocat.comp.meteorology._heat_index>`_
 
     Related NCL Functions:
     `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`_,
@@ -515,13 +515,13 @@ def _xrelhum(t: xr.DataArray, w: xr.DataArray, p: xr.DataArray) -> xr.DataArray:
     Related GeoCAT Functions:
     `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`_,
     `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`_,
-    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`_,
+    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`_
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`_,
     `relhum_ttd <https://www.ncl.ucar.edu/Document/Functions/Contributed/relhum_ttd.shtml>`_,
     `relhum_ice <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_ice.shtml>`_,
-    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`_,
+    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`_
     """
 
     table = da.from_array([
@@ -598,10 +598,10 @@ def dewtemp(
     See Also
     --------
     Related GeoCAT Functions:
-    `_dewtemp <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._dewtemp.html#geocat.comp.meteorology._dewtemp>`_,
+    `_dewtemp <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._dewtemp.html#geocat.comp.meteorology._dewtemp>`_
 
     Related NCL Functions:
-    `dewtemp_trh <https://www.ncl.ucar.edu/Document/Functions/Built-in/dewtemp_trh.shtml>`_,
+    `dewtemp_trh <https://www.ncl.ucar.edu/Document/Functions/Built-in/dewtemp_trh.shtml>`_
     """
 
     inputs = [temperature, relative_humidity]
@@ -696,10 +696,10 @@ def heat_index(
     --------
     Related GeoCAT Functions:
     `_heat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._heat_index.html#geocat.comp.meteorology._heat_index>`_,
-    `_xheat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xheat_index.html#geocat.comp.meteorology._xheat_index>`_,
+    `_xheat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xheat_index.html#geocat.comp.meteorology._xheat_index>`_
 
     Related NCL Functions:
-    `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`_,
+    `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`_
     """
 
     inputs = [temperature, relative_humidity]
@@ -803,13 +803,13 @@ def relhum(
     Related GeoCAT Functions:
     `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`_,
     `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`_,
-    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`_,
+    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`_
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`_,
     `relhum_ttd <https://www.ncl.ucar.edu/Document/Functions/Contributed/relhum_ttd.shtml>`_,
     `relhum_ice <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_ice.shtml>`_,
-    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`_,
+    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`_
     """
 
     inputs = [temperature, mixing_ratio, pressure]
@@ -879,16 +879,16 @@ def relhum_ice(temperature: typing.Union[np.ndarray, list, float],
     See Also
     --------
     Related GeoCAT Functions:
-    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`,
+    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`_,
     `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`_,
     `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`_,
-    `_relhum_ice <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._relhum_ice.html#geocat.comp.meteorology._relhum_ice>,
+    `_relhum_ice <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._relhum_ice.html#geocat.comp.meteorology._relhum_ice>_
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`_,
     `relhum_ttd <https://www.ncl.ucar.edu/Document/Functions/Contributed/relhum_ttd.shtml>`_,
     `relhum_ice <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_ice.shtml>`_,
-    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`_,
+    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`_
     """
 
     # If xarray input, pull data and store metadata
@@ -954,16 +954,16 @@ def relhum_water(temperature: typing.Union[np.ndarray, list, float],
     See Also
     --------
     Related GeoCAT Functions:
-    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`,
+    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>_`,
     `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`_,
     `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`_,
-    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._relhum_water.html#geocat.comp.meteorology._relhum_water>`,
+    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._relhum_water.html#geocat.comp.meteorology._relhum_water>`_
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`_,
     `relhum_ttd <https://www.ncl.ucar.edu/Document/Functions/Contributed/relhum_ttd.shtml>`_,
     `relhum_ice <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_ice.shtml>`_,
-    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`_,
+    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`_
     """
 
     # If xarray input, pull data and store metadata
