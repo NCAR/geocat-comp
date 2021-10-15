@@ -96,6 +96,12 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
     -------
     output : :class:`xarray.DataArray`
         Interpolated data with isobaric levels
+
+    See Also
+    --------
+    Related NCL Functions:
+    `vinth2p <https://www.ncl.ucar.edu/Document/Functions/Built-in/vinth2p.shtml>`_,
+    `vinth2p_ecmwf <https://www.ncl.ucar.edu/Document/Functions/Built-in/vinth2p_ecmwf.shtml>`_
     """
 
     # Determine the level dimension and then the interpolation axis
