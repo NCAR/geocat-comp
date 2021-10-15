@@ -29,7 +29,11 @@ GeoCAT-comp routines
 
    geocat.comp.eofunc._generate_eofs_solver
 
+   geocat.comp.interpolation._func_interpolate
+
    geocat.comp.interpolation._pressure_from_hybrid
+
+   geocat.comp.interpolation._sigma_from_hybrid
 
    geocat.comp.interpolation._vertical_remap
 
