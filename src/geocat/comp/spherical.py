@@ -14,7 +14,7 @@ def harmonic_decomposition(
     input_phi: InputData,
     harms: Harms = None,
     max_harm: int = None,
-):
+) -> list:
     results = []
 
     # if no harmonic info provided by the user:
@@ -32,6 +32,8 @@ def harmonic_decomposition(
         results.append(
             np.sum(np.multiply(input_data, ss.sph_harm(m, n, theta, phi)),
                    axis=(0, 1)))
+
+    return results
 
 
 # ''' todo
