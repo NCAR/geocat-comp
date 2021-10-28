@@ -24,7 +24,7 @@ def harmonic_decomposition(
     # in the case of max_harm, provide full set up to max_harm
     if harms is None and max_harm is not None:
         harms = []
-        for n in range(max_n):
+        for n in range(max_harm):
             for m in range(n + 1):
                 harms.append([m, n])
 
