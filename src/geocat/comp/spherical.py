@@ -5,18 +5,17 @@ import scipy.special as ss
 import xarray as xr
 
 Harms = Union[list[list]]  # , list[tuple], tuple[list], tuple[tuple]]
-InputData = Union[np.array, xr.DataArray]
+ValidData = Union[np.array, xr.DataArray]
 
 
 def harmonic_decomposition(
-    input_data: InputData,
-    input_theta: InputData,
-    input_phi: InputData,
+    input_data: ValidData,
+    input_scale: ValidData,
+    input_theta: ValidData,
+    input_phi: ValidData,
     harms: Harms = None,
     max_harm: int = None,
-) -> list[InputData]:
-    results = []
-
+) -> list[ValidData]:
     # if no harmonic info provided by the user:
     if max_harm is None and harms is None:
         max_harm = 24  # 300 total harmonics
@@ -28,10 +27,13 @@ def harmonic_decomposition(
             for m in range(n + 1):
                 harms.append([m, n])
 
-    for m, n in harms:
+    results = []
+    input_data_scaled = np.multiply(demo_data, scale_phi).persist()
+    for harm in harms:
         results.append(
-            np.sum(np.multiply(input_data,
-                               ss.sph_harm(m, n, input_theta, input_phi)),
+            np.sum(np.multiply(
+                input_data_scaled,
+                ss.sph_harm(harm[0], harm[1], input_theta, input_phi)),
                    axis=(0, 1)))
 
     return results
@@ -39,8 +41,8 @@ def harmonic_decomposition(
 
 # ''' todo
 # def harmonic_recomposition(
-#         input_data: InputData,
-#         input_theta: InputData,
-#         input_phi: InputData,
+#         input_data: ValidData,
+#         input_theta: ValidData,
+#         input_phi: ValidData,
 #         harms: Harms,
 # ):
