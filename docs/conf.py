@@ -260,3 +260,8 @@ html_static_path = ['_static']
 htmlhelp_basename = 'geocat-compdoc'
 
 autodoc_typehints = 'none'
+
+
+# Allow for changes to be made to the css in the theme_overrides file
+def setup(app):
+    app.add_css_file('theme_overrides.css')

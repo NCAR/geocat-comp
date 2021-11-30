@@ -29,7 +29,11 @@ GeoCAT-comp routines
 
    geocat.comp.eofunc._generate_eofs_solver
 
+   geocat.comp.interpolation._func_interpolate
+
    geocat.comp.interpolation._pressure_from_hybrid
+
+   geocat.comp.interpolation._sigma_from_hybrid
 
    geocat.comp.interpolation._vertical_remap
 
@@ -40,6 +44,10 @@ GeoCAT-comp routines
    geocat.comp.meteorology._nws_eqn
 
    geocat.comp.meteorology._relhum
+
+   geocat.comp.meteorology._relhum_ice
+
+   geocat.comp.meteorology._relhum_water
 
    geocat.comp.meteorology._xheat_index
 
