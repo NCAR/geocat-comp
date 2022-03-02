@@ -72,6 +72,6 @@ def harmonic_recomposition(
 
     for harm, value in zip(harms, input_data):
         sphere = ss.sph_harm(harm[0], harm[1], input_theta, input_phi)
-        results += sphere.real * value.real + sphere.imag * value.imag * 1j
+        results += sphere.real * value.real + sphere.imag * value.imag
 
     return results
