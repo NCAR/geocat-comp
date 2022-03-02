@@ -64,6 +64,7 @@ def harmonic_recomposition(
             for m in range(n + 1):
                 harms.append([m, n])
 
+    # xarray and numpy has different fast initializations in chunked case
     if type(input_theta) is xr.DataArray:
         results = xr.DataArray(np.zeros(input_theta.shape, dtype=complex),
                                dims=input_theta.dims).chunk(input_theta.chunks)
