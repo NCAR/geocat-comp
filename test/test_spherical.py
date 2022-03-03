@@ -7,11 +7,9 @@ from typing import Union
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
 if "--cov" in str(sys.argv):
-    from src.geocat.comp import (fourier_band_block, fourier_band_pass,
-                                 fourier_high_pass, fourier_low_pass)
+    from src.geocat.comp import harmonic_decomposition, harmonic_recomposition
 else:
-    from geocat.comp import (fourier_band_block, fourier_band_pass,
-                             fourier_high_pass, fourier_low_pass)
+    from geocat.comp import harmonic_decomposition, harmonic_recomposition
 
 start = time.perf_counter()
 num_phi = 2000
@@ -21,12 +19,8 @@ phi = np.linspace(ma.pi / (2 * num_phi), ma.pi - ma.pi / (2 * num_phi),
 theta = np.linspace(0, ma.tau - ma.tau / num_theta, num_theta)  #[:-1]
 chunkshape = (1000, 1000)
 theta, phi = np.meshgrid(theta, phi)
-# theta = np.expand_dims(np.array(theta),axis=(2))
-# phi = np.expand_dims(np.array(phi),axis=(2))
 phi_coord = np.linspace(90 - 90 / (num_phi), 90 / (num_phi) - 90, num_phi)
 theta_coord = np.linspace(0, 360 - 360 / num_theta, num_theta)
-# theta = xr.DataArray(theta, dims=['lat','lon'],coords={'lat':phi_coord,'lon':theta_coord}).chunk(chunkshape)
-# phi = xr.DataArray(phi, dims=['lat','lon'],coords={'lat':phi_coord,'lon':theta_coord}).chunk(chunkshape)
 theta = xr.DataArray(theta, dims=['lat', 'lon']).chunk(chunkshape)
 phi = xr.DataArray(phi, dims=['lat', 'lon']).chunk(chunkshape)
 
