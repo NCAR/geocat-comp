@@ -12,8 +12,8 @@ else:
     from geocat.comp import harmonic_decomposition, harmonic_recomposition
 
 start = time.perf_counter()
-num_phi = 2000
-num_theta = 4000
+num_phi = 1000
+num_theta = 2000
 phi = np.linspace(ma.pi / (2 * num_phi), ma.pi - ma.pi / (2 * num_phi),
                   num_phi)  #[1:-1]
 theta = np.linspace(0, ma.tau - ma.tau / num_theta, num_theta)  #[:-1]
@@ -31,15 +31,20 @@ demo_data = xr.DataArray(np.zeros(theta.shape), dims=['lat',
                                                       'lon']).chunk(chunkshape)
 
 harms = []
-for n in [2, 3, 5, 7, 11, 13, 17, 19, 23]:
-    for m in [2, 3, 5, 7, 11, 13, 17, 19, 23]:
+demo_results = []
+for n in [0, 2, 3, 5, 7, 11, 13, 17, 19, 23]:
+    for m in [0, 2, 3, 5, 7, 11, 13, 17, 19, 23]:
         if m <= n:
             harms.append([m, n])
 
 for m, n in harms:
     if m in [5, 11, 17, 23]:
         demo_data += ss.sph_harm(m, n, theta, phi).imag
+        demo_results.append(xr.DataArray(np.asarray([1j])))
     else:
         demo_data += ss.sph_harm(m, n, theta, phi).real
+        demo_results.append(xr.DataArray(np.asarray([1])))
 
 demo_data = demo_data.compute().chunk(chunkshape)
+
+results = harmonic_decomposition(demo_data, scale_phi, theta, phi, max_harm=23)
