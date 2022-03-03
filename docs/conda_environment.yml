@@ -13,5 +13,6 @@ dependencies:
   - metpy
   - netcdf4  # for tests
   - numpy
+  - pip
   - pytest  # for tests
   - xarray
