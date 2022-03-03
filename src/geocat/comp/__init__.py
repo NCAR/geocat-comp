@@ -13,6 +13,7 @@ from .interpolation import interp_hybrid_to_pressure, interp_sigma_to_hybrid
 from .polynomial import detrend, ndpolyfit, ndpolyval
 from .meteorology import dewtemp, heat_index, relhum, relhum_ice, relhum_water
 from .skewt_params import get_skewt_vars, showalter_index
+from .spherical import harmonic_decomposition, harmonic_recomposition
 
 # bring all functions from geocat.f2py into the geocat.comp namespace
 try:
