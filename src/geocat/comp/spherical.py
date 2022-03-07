@@ -6,6 +6,7 @@ import xarray as xr
 
 DataA = Union[np.array, xr.DataArray]
 Harms = Union[list[list], DataA]
+default_max_harm = 23  # 300 harmonics from 0,0 to 23,23
 
 
 def harmonic_decomposition(
@@ -18,7 +19,7 @@ def harmonic_decomposition(
 ) -> DataA:
     # if no harmonic info provided by the user:
     if max_harm is None and harms is None:
-        max_harm = 24  # 300 total harmonics
+        max_harm = default_max_harm
 
     # in the case of max_harm, provide full set up to max_harm
     if harms is None and max_harm is not None:
@@ -59,7 +60,7 @@ def harmonic_recomposition(
 ) -> DataA:
     # if no harmonic info provided by the user:
     if max_harm is None and harms is None:
-        max_harm = 24  # 300 total harmonics
+        max_harm = default_max_harm
 
     # in the case of max_harm, provide full set up to max_harm
     if harms is None and max_harm is not None:
