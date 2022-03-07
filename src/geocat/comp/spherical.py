@@ -29,7 +29,7 @@ def harmonic_decomposition(
                 harms.append([m, n])
 
     results = []
-    scale0 = 1 / (np.sum(scale_phi, axis=(0, 1)) * ss.sph_harm(0, 0, 0, 0)**2)
+    scale0 = 1 / (np.sum(input_scale, axis=(0, 1)) * ss.sph_harm(0, 0, 0, 0)**2)
     scale0 = scale0.compute().persist()
     scale1 = scale0 * 2
     input_data_scaled = np.multiply(demo_data, input_scale).persist()
