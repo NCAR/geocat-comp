@@ -48,11 +48,13 @@ for n in range(max_harm + 1):
 
 test_harmonics_np = np.array(test_harmonics)
 test_data_np = test_data
-test_data_xr = xr.DataArray(test_data_np, dims=['lat',
-                                                'lon']).chunk(data_chunkshape)
+test_data_xr = xr.DataArray(test_data_np,
+                            dims=['lat',
+                                  'lon']).chunk(data_chunkshape).persist()
 test_results_np = np.array(test_results)
 test_results_xr = xr.DataArray(test_results_np,
-                               dims=['har']).chunk(results_chunkshape)
+                               dims=['har'
+                                    ]).chunk(results_chunkshape).persist()
 
 
 def test_decomposition_np():
@@ -76,4 +78,6 @@ def test_recomposition_np():
 
 def test_recomposition_xr():
     data_xr = harmonic_recomposition(test_results_xr, theta_xr, phi_xr)
+    print(data_xr.data)
+    print(test_data_xr.data)
     np.testing.assert_almost_equal(data_xr.data, test_data_xr.data, decimal=3)
