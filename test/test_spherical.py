@@ -24,14 +24,11 @@ phi = np.linspace(ma.pi / (2 * num_phi), ma.pi - ma.pi / (2 * num_phi), num_phi)
 theta_np, phi_np = np.meshgrid(theta, phi)
 # phi_coord = np.linspace(90-90/num_phi, 90/num_phi-90, num_phi)
 # theta_coord = np.linspace(0, 360-360/num_theta, num_theta)
-theta_xr = xr.DataArray(theta_np,
-                        dims=['lat', 'lon']).chunk(data_chunkshape).persist()
-phi_xr = xr.DataArray(phi_np, dims=['lat',
-                                    'lon']).chunk(data_chunkshape).persist()
+theta_xr = xr.DataArray(theta_np, dims=['lat', 'lon']).chunk(data_chunkshape)
+phi_xr = xr.DataArray(phi_np, dims=['lat', 'lon']).chunk(data_chunkshape)
 scale_phi_np = np.sin(phi_np)  # area weighting for data points.
-scale_phi_xr = xr.DataArray(scale_phi_np,
-                            dims=['lat',
-                                  'lon']).chunk(data_chunkshape).persist()
+scale_phi_xr = xr.DataArray(scale_phi_np, dims=['lat',
+                                                'lon']).chunk(data_chunkshape)
 
 test_data = np.zeros(theta_np.shape)
 test_results = []
@@ -50,14 +47,17 @@ for n in range(max_harm + 1):
                 test_results[-1] = 1
 
 test_harmonics_np = np.array(test_harmonics)
+test_harmonics_xr = xr.DataArray(test_harmonics_np,
+                                 dims=['har', 'm,n'
+                                      ]).chunk(results_chunkshape).compute()
 test_data_np = test_data
 test_data_xr = xr.DataArray(test_data_np,
                             dims=['lat',
-                                  'lon']).chunk(data_chunkshape).persist()
+                                  'lon']).chunk(data_chunkshape).compute()
 test_results_np = np.array(test_results)
 test_results_xr = xr.DataArray(test_results_np,
                                dims=['har'
-                                    ]).chunk(results_chunkshape).persist()
+                                    ]).chunk(results_chunkshape).compute()
 
 
 def test_decomposition_np():
