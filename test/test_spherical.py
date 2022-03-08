@@ -24,11 +24,14 @@ phi = np.linspace(ma.pi / (2 * num_phi), ma.pi - ma.pi / (2 * num_phi), num_phi)
 theta_np, phi_np = np.meshgrid(theta, phi)
 # phi_coord = np.linspace(90-90/num_phi, 90/num_phi-90, num_phi)
 # theta_coord = np.linspace(0, 360-360/num_theta, num_theta)
-theta_xr = xr.DataArray(theta_np, dims=['lat', 'lon']).chunk(data_chunkshape)
-phi_xr = xr.DataArray(phi_np, dims=['lat', 'lon']).chunk(data_chunkshape)
+theta_xr = xr.DataArray(theta_np,
+                        dims=['lat', 'lon']).chunk(data_chunkshape).persist()
+phi_xr = xr.DataArray(phi_np, dims=['lat',
+                                    'lon']).chunk(data_chunkshape).persist()
 scale_phi_np = np.sin(phi_np)  # area weighting for data points.
-scale_phi_xr = xr.DataArray(scale_phi_np, dims=['lat',
-                                                'lon']).chunk(data_chunkshape)
+scale_phi_xr = xr.DataArray(scale_phi_np,
+                            dims=['lat',
+                                  'lon']).chunk(data_chunkshape).persist()
 
 test_data = np.zeros(theta_np.shape)
 test_results = []
