@@ -4,19 +4,18 @@ import numpy as np
 import scipy.special as ss
 import xarray as xr
 
-DataA = Union[np.array, xr.DataArray]
-Harms = Union[list[list], np.array, xr.DataArray]
+SupportedTypes = Union[np.array, xr.DataArray]
 default_max_harm = 23  # 300 harmonics from 0,0 to 23,23
 
 
 def harmonic_decomposition(
-    input_data: DataA,
-    input_scale: DataA,
-    input_theta: DataA,
-    input_phi: DataA,
-    harms: Harms = None,
+    input_data: SupportedTypes,
+    input_scale: SupportedTypes,
+    input_theta: SupportedTypes,
+    input_phi: SupportedTypes,
+    harms: SupportedTypes = None,
     max_harm: int = None,
-) -> DataA:
+) -> SupportedTypes:
     # if no harmonic info provided by the user:
     if max_harm is None and harms is None:
         max_harm = default_max_harm
@@ -56,12 +55,12 @@ def harmonic_decomposition(
 
 
 def harmonic_recomposition(
-    input_data: DataA,
-    input_theta: DataA,
-    input_phi: DataA,
-    harms: Harms = None,
+    input_data: SupportedTypes,
+    input_theta: SupportedTypes,
+    input_phi: SupportedTypes,
+    harms: SupportedTypes = None,
     max_harm: int = None,
-) -> DataA:
+) -> SupportedTypes:
     # if no harmonic info provided by the user:
     if max_harm is None and harms is None:
         max_harm = default_max_harm
