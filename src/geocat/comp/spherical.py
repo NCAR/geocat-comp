@@ -30,12 +30,12 @@ def harmonic_decomposition(
 
     results = []
     scale0 = 1 / (np.sum(input_scale, axis=(0, 1)) * ss.sph_harm(0, 0, 0, 0)**2)
-    if input_scale is xr.DataArray:
-        scale0 = scale0.compute().persist()
+    # if input_scale is xr.DataArray:
+    #     scale0 = scale0.persist()
     scale1 = scale0 * 2
     input_data_scaled = np.multiply(input_data, input_scale)
-    if input_data is xr.DataArray:
-        input_data_scaled = input_data_scaled.persist()
+    # if input_data is xr.DataArray:
+    #     input_data_scaled = input_data_scaled.persist()
 
     for harm in harms:
         results.append(
@@ -83,4 +83,4 @@ def harmonic_recomposition(
         sphere = ss.sph_harm(harm[0], harm[1], input_theta, input_phi)
         results += sphere.real * value.real + sphere.imag * value.imag
 
-    return results
+    return results.real
