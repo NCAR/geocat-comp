@@ -5,7 +5,7 @@ import scipy.special as ss
 import xarray as xr
 
 DataA = Union[np.array, xr.DataArray]
-Harms = Union[list[list], DataA]
+Harms = Union[list[list], np.array, xr.DataArray]
 default_max_harm = 23  # 300 harmonics from 0,0 to 23,23
 
 
