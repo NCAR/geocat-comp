@@ -58,30 +58,38 @@ def harmonic_decomposition(
 
 
 def harmonic_recomposition(
-    input_data: SupportedTypes,
-    input_theta: SupportedTypes,
-    input_phi: SupportedTypes,
-    harms: SupportedTypes = None,
+    data: SupportedTypes,
+    theta: SupportedTypes,
+    phi: SupportedTypes,
     max_harm: int = default_max_harm,
+    chunk_size: dict = {},
 ) -> SupportedTypes:
-    # if no harmonic info provided by the user:
-    if max_harm is None and harms is None:
-        max_harm = default_max_harm
 
-        # in the case of max_harm, provide full set up to max_harm
-        harms = []
-        for n in range(max_harm + 1):
-            for m in range(n + 1):
-                harms.append([m, n])
+    mlist = []
+    nlist = []
+    for nvalue in range(max_harm + 1):
+        for mvalue in range(nvalue + 1):
+            mlist.append(mvalue)
+            nlist.append(nvalue)
 
-    # return same data type as input
-    results = np.zeros(input_theta.shape, dtype=complex)
-    if type(input_theta) is xr.DataArray:
-        results = xr.DataArray(results,
-                               dims=input_theta.dims).chunk(input_theta.chunks)
+    m = np.array(mlist)
+    n = np.array(nlist)
 
-    for harm, value in zip(harms, input_data):
-        sphere = ss.sph_harm(harm[0], harm[1], input_theta, input_phi)
-        results += sphere.real * value.real + sphere.imag * value.imag
+    # if numpy, change dimensions to allow for broadcast in ss.sph_harm
+    if type(data) is np.ndarray:
+        m = np.expand_dims(m, axis=(1, 2))
+        n = np.expand_dims(n, axis=(1, 2))
+        theta = np.expand_dims(theta, axis=(0))
+        phi = np.expand_dims(phi, axis=(0))
+
+    # if xarray, set dims and chunks for broadcast in ss.sphere_harm
+    if type(data) is xr.DataArray:
+        m = xr.DataArray(m, dims=['har']).chunk((chunk_size))
+        n = xr.DataArray(n, dims=['har']).chunk((chunk_size))
+        theta = xr.DataArray(theta, dims=theta.dims).chunk((chunk_size))
+        phi = xr.DataArray(phi, dims=phi.dims).chunk((chunk_size))
+        data = xr.DataArray(data, dims=['har']).chunk((chunk_size))
+
+    results = np.sum(np.multiply(data, ss.sph_harm(m, n, theta, phi)), axis=(0))
 
     return results.real
