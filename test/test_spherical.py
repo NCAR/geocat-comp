@@ -77,9 +77,9 @@ def test_decomposition_xr():
 
 def test_recomposition_np():
     data_np = harmonic_recomposition(test_results_np, theta_np, phi_np)
-    np.testing.assert_almost_equal(data_np, test_data_np, decimal=2)
+    np.testing.assert_almost_equal(data_np, test_data_np, decimal=3)
 
 
 def test_recomposition_xr():
     data_xr = harmonic_recomposition(test_results_xr, theta_xr, phi_xr)
-    np.testing.assert_almost_equal(data_xr.data, test_data_xr.data, decimal=2)
+    np.testing.assert_almost_equal(data_xr.data, test_data_xr.data, decimal=3)
