@@ -48,7 +48,8 @@ def harmonic_decomposition(
         n = xr.DataArray(n, dims=['har']).chunk((chunk_size))
         scale_mul = xr.DataArray(scale_mul, dims=['har']).chunk((chunk_size))
         data_scaled = \
-            xr.DataArray(np.multiply(data, scale), dims=data.dims).chunk((chunk_size))
+            xr.DataArray(np.multiply(data, scale),
+                         dims=data.dims).chunk((chunk_size))
         theta = xr.DataArray(theta, dims=data.dims).chunk((chunk_size))
         phi = xr.DataArray(phi, dims=data.dims).chunk((chunk_size))
 
