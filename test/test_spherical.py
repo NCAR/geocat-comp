@@ -17,17 +17,13 @@ from src.geocat.comp import harmonic_decomposition, harmonic_recomposition
 max_harm = 23
 num_phi = 360
 num_theta = 720
-data_chunkshape = (180, 180)
-results_chunkshape = (100,)
 
 theta = np.linspace(0, ma.tau - ma.tau / num_theta, num_theta)
 phi = np.linspace(ma.pi / (2 * num_phi), ma.pi - ma.pi / (2 * num_phi), num_phi)
 theta_np, phi_np = np.meshgrid(theta, phi)
-# phi_coord = np.linspace(90-90/num_phi, 90/num_phi-90, num_phi)
-# theta_coord = np.linspace(0, 360-360/num_theta, num_theta)
 theta_xr = xr.DataArray(theta_np, dims=['lat', 'lon']).chunk(data_chunkshape)
 phi_xr = xr.DataArray(phi_np, dims=['lat', 'lon']).chunk(data_chunkshape)
-scale_phi_np = np.sin(phi_np)  # area weighting for data points.
+scale_phi_np = np.sin(phi_np)
 scale_phi_xr = xr.DataArray(scale_phi_np, dims=['lat',
                                                 'lon']).chunk(data_chunkshape)
 
@@ -48,29 +44,26 @@ for n in range(max_harm + 1):
                 test_results[-1] = 1
 
 test_harmonics_np = np.array(test_harmonics)
-test_harmonics_xr = xr.DataArray(test_harmonics_np,
-                                 dims=['har', 'm,n'
-                                      ]).chunk(results_chunkshape).compute()
+test_harmonics_xr = xr.DataArray(test_harmonics_np, dims=['har',
+                                                          'm,n']).compute()
 test_data_np = test_data
-test_data_xr = xr.DataArray(test_data_np,
-                            dims=['lat',
-                                  'lon']).chunk(data_chunkshape).compute()
+test_data_xr = xr.DataArray(test_data_np, dims=['lat', 'lon']).compute()
 test_results_np = np.array(test_results)
-test_results_xr = xr.DataArray(test_results_np,
-                               dims=['har'
-                                    ]).chunk(results_chunkshape).compute()
+test_results_xr = xr.DataArray(test_results_np, dims=['har']).compute()
 
 
 def test_decomposition_np():
     results_np = harmonic_decomposition(test_data_np, scale_phi_np, theta_np,
                                         phi_np)
-    np.testing.assert_almost_equal(results_np, test_results_np)
+    np.testing.assert_almost_equal(results_np, test_results_np, decimal=3)
 
 
 def test_decomposition_xr():
     results_xr = harmonic_decomposition(test_data_xr, scale_phi_xr, theta_xr,
                                         phi_xr)
-    np.testing.assert_almost_equal(results_xr.data, test_results_xr.data)
+    np.testing.assert_almost_equal(results_xr.values,
+                                   test_results_xr.values,
+                                   decimal=3)
 
 
 def test_recomposition_np():
@@ -80,4 +73,4 @@ def test_recomposition_np():
 
 def test_recomposition_xr():
     data_xr = harmonic_recomposition(test_results_xr, theta_xr, phi_xr)
-    np.testing.assert_almost_equal(data_xr.data, test_data_xr.data)
+    np.testing.assert_almost_equal(data_xr.values, test_data_xr.values)
