@@ -43,7 +43,8 @@ def harmonic_decomposition(
     if type(data) is xr.DataArray:
         m = xr.DataArray(m, dims=['har']).chunk((chunk_size))
         n = xr.DataArray(n, dims=['har']).chunk((chunk_size))
-        input_data_scaled = xr.DataArray(input_data_scaled,
+        input_data_scaled = \
+            xr.DataArray(input_data_scaled,
                                          dims=['lat', 'lon']).chunk(
                                              (chunk_size))
         theta = xr.DataArray(theta, dims=['lat', 'lon']).chunk((chunk_size))
