@@ -9,48 +9,60 @@ default_max_harm = 23  # 300 harmonics from 0,0 to 23,23
 
 
 def harmonic_decomposition(
-    input_data: SupportedTypes,
-    input_scale: SupportedTypes,
-    input_theta: SupportedTypes,
-    input_phi: SupportedTypes,
-    harms: SupportedTypes = None,
-    max_harm: int = None,
+    data: SupportedTypes,
+    scale: SupportedTypes,
+    theta: SupportedTypes,
+    phi: SupportedTypes,
+    max_harm: int = default_max_harm,
+    chunk_size={},
 ) -> SupportedTypes:
-    # if no harmonic info provided by the user:
-    if max_harm is None and harms is None:
-        max_harm = default_max_harm
 
-    # in the case of max_harm, provide full set up to max_harm
-    if harms is None and max_harm is not None:
-        harms = []
-        for n in range(max_harm + 1):
-            for m in range(n + 1):
-                harms.append([m, n])
+    mlist = []
+    nlist = []
+    for nvalue in range(max_harm + 1):
+        for mvalue in range(n + 1):
+            mlist.append(mvalue)
+            nlist.append(nvalue)
 
-    results = []
-    scale0 = 1 / (np.sum(input_scale, axis=(0, 1)) * ss.sph_harm(0, 0, 0, 0)**2)
-    # if input_scale is xr.DataArray:
-    #     scale0 = scale0.persist()
-    scale1 = scale0 * 2
-    input_data_scaled = np.multiply(input_data, input_scale)
-    # if input_data is xr.DataArray:
-    #     input_data_scaled = input_data_scaled.persist()
+    m = np.array(mlist)
+    n = np.array(nlist)
+    theta = theta
+    phi = phi
+    scale0 = 1 / (np.sum(scale, axis=(0, 1)) * ss.sph_harm(0, 0, 0, 0)**2)
+    input_data_scaled = np.multiply(data, scale)
 
-    for harm in harms:
-        results.append(
-            np.sum(np.multiply(
+    # if numpy, change dimensions to allow for broadcast in ss.sph_harm
+    if type(data) is np.array:
+        m = np.expand_dims(m, axis=(0, 1))
+        n = np.expand_dims(n, axis=(0, 1))
+        theta = np.expand_dims(theta, axis=(2))
+        phi = np.expand_dims(phi, axis=(2))
+        input_data_scaled = np.expand_dims(input_data_scaled, axis=(2))
+
+    # if xarray, set dims and chunks for
+    if type(data) is xr.DataArray:
+        m = xr.DataArray(m, dims=['har']).chunk((chunk_size))
+        n = xr.DataArray(n, dims=['har']).chunk((chunk_size))
+        input_data_scaled = xr.DataArray(input_data_scaled,
+                                         dims=['lat', 'lon']).chunk(
+                                             (chunk_size))
+        theta = xr.DataArray(theta, dims=['lat', 'lon']).chunk((chunk_size))
+        phi = xr.DataArray(phi, dims=['lat', 'lon']).chunk((chunk_size))
+
+    results = \
+        np.sum(
+            np.multiply(
                 input_data_scaled,
-                ss.sph_harm(harm[0], harm[1], input_theta, input_phi)),
-                   axis=(0, 1)))
-        if harm[0] == 0:
-            results[-1] = results[-1] * scale0
-        else:
-            results[-1] = results[-1] * scale1
+                ss.sph_harm(m, n, theta, phi)),
+            axis=(0, 1))
+    # results = results * scale0
 
     # return same data type as input
-    results = np.asarray(results)
-    if type(input_data) is xr.DataArray:
-        results = xr.DataArray(results)
+
+    # if type(input_data) is np.array:
+    #     results = np.asarray(results)
+    # if type(input_data) is xr.DataArray:
+    #     results = xr.DataArray(results)
     return results
 
 
@@ -59,14 +71,13 @@ def harmonic_recomposition(
     input_theta: SupportedTypes,
     input_phi: SupportedTypes,
     harms: SupportedTypes = None,
-    max_harm: int = None,
+    max_harm: int = default_max_harm,
 ) -> SupportedTypes:
     # if no harmonic info provided by the user:
     if max_harm is None and harms is None:
         max_harm = default_max_harm
 
-    # in the case of max_harm, provide full set up to max_harm
-    if harms is None and max_harm is not None:
+        # in the case of max_harm, provide full set up to max_harm
         harms = []
         for n in range(max_harm + 1):
             for m in range(n + 1):
