@@ -16,7 +16,6 @@ def harmonic_decomposition(
     max_harm: int = default_max_harm,
     chunk_size: dict = {},
 ) -> SupportedTypes:
-
     scale_val = 1 / (np.sum(scale, axis=(0, 1)) * ss.sph_harm(0, 0, 0, 0)**2)
     scale_mul = []
     mlist = []
@@ -64,7 +63,6 @@ def harmonic_recomposition(
     max_harm: int = default_max_harm,
     chunk_size: dict = {},
 ) -> SupportedTypes:
-
     mlist = []
     nlist = []
     for nvalue in range(max_harm + 1):
@@ -91,6 +89,9 @@ def harmonic_recomposition(
         phi = xr.DataArray(phi, dims=phi.dims).chunk((chunk_size))
         data = xr.DataArray(data, dims=['har']).chunk((chunk_size))
 
-    results = np.sum(np.multiply(ss.sph_harm(m, n, theta, phi), data), axis=(0))
+    results = np.sum(np.multiply(ss.sph_harm(m, n, theta, phi).real, data.real),
+                     axis=(0)) + np.sum(np.multiply(
+                         ss.sph_harm(m, n, theta, phi).imag, data.imag),
+                                        axis=(0))
 
     return results.real

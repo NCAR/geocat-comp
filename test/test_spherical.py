@@ -5,12 +5,14 @@ import xarray as xr
 import sys
 from typing import Union
 
+from src.geocat.comp import harmonic_decomposition, harmonic_recomposition
+
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
-if "--cov" in str(sys.argv):
-    from src.geocat.comp import harmonic_decomposition, harmonic_recomposition
-else:
-    from geocat.comp import harmonic_decomposition, harmonic_recomposition
+# if "--cov" in str(sys.argv):
+#     from src.geocat.comp import harmonic_decomposition, harmonic_recomposition
+# else:
+#     from geocat.comp import harmonic_decomposition, harmonic_recomposition
 
 max_harm = 23
 num_phi = 360
@@ -75,9 +77,9 @@ def test_decomposition_xr():
 
 def test_recomposition_np():
     data_np = harmonic_recomposition(test_results_np, theta_np, phi_np)
-    np.testing.assert_almost_equal(data_np, test_data_np, decimal=3)
+    np.testing.assert_almost_equal(data_np, test_data_np, decimal=2)
 
 
 def test_recomposition_xr():
     data_xr = harmonic_recomposition(test_results_xr, theta_xr, phi_xr)
-    np.testing.assert_almost_equal(data_xr.data, test_data_xr.data, decimal=3)
+    np.testing.assert_almost_equal(data_xr.data, test_data_xr.data, decimal=2)
