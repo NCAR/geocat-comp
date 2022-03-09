@@ -20,7 +20,7 @@ def harmonic_decomposition(
     mlist = []
     nlist = []
     for nvalue in range(max_harm + 1):
-        for mvalue in range(n + 1):
+        for mvalue in range(nvalue + 1):
             mlist.append(mvalue)
             nlist.append(nvalue)
 
@@ -50,14 +50,6 @@ def harmonic_decomposition(
 
     results = np.sum(np.multiply(data_scaled, ss.sph_harm(m, n, theta, phi)),
                      axis=(0, 1))
-    # results = results * scale0
-
-    # return same data type as input
-
-    # if type(input_data) is np.array:
-    #     results = np.asarray(results)
-    # if type(input_data) is xr.DataArray:
-    #     results = xr.DataArray(results)
     return results
 
 
