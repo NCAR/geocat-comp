@@ -91,6 +91,6 @@ def harmonic_recomposition(
         phi = xr.DataArray(phi, dims=phi.dims).chunk((chunk_size))
         data = xr.DataArray(data, dims=['har']).chunk((chunk_size))
 
-    results = np.sum(np.multiply(data, ss.sph_harm(m, n, theta, phi)), axis=(0))
+    results = np.sum(np.multiply(ss.sph_harm(m, n, theta, phi), data), axis=(0))
 
     return results.real
