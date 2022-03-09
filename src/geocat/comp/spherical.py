@@ -40,19 +40,19 @@ def harmonic_decomposition(
         n = np.expand_dims(n, axis=(0, 1))
         theta = np.expand_dims(theta, axis=(2))
         phi = np.expand_dims(phi, axis=(2))
-        data_scaled = np.expand_dims(np.multiply(data, scale), axis=(2))
+        scale_dat = np.expand_dims(np.multiply(data, scale), axis=(2))
 
     # if xarray, set dims and chunks for broadcast in ss.sphere_harm
     if type(data) is xr.DataArray:
         m = xr.DataArray(m, dims=['har']).chunk((chunk_size))
         n = xr.DataArray(n, dims=['har']).chunk((chunk_size))
         scale_mul = xr.DataArray(scale_mul, dims=['har']).chunk((chunk_size))
-        data_scaled = xr.DataArray(np.multiply(data, scale),
-                                   dims=data.dims).chunk((chunk_size))
+        scale_dat = xr.DataArray(np.multiply(data, scale),
+                                 dims=data.dims).chunk((chunk_size))
         theta = xr.DataArray(theta, dims=data.dims).chunk((chunk_size))
         phi = xr.DataArray(phi, dims=data.dims).chunk((chunk_size))
 
-    results = np.sum(np.multiply(data_scaled, ss.sph_harm(m, n, theta, phi)),
+    results = np.sum(np.multiply(scale_dat, ss.sph_harm(m, n, theta, phi)),
                      axis=(0, 1)) * scale_mul * scale_val
     return results
 
@@ -79,6 +79,7 @@ def harmonic_recomposition(
     if type(data) is np.ndarray:
         m = np.expand_dims(m, axis=(1, 2))
         n = np.expand_dims(n, axis=(1, 2))
+        data = np.expand_dims(data, axis=(1, 2))
         theta = np.expand_dims(theta, axis=(0))
         phi = np.expand_dims(phi, axis=(0))
 
