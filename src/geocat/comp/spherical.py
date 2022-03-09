@@ -29,7 +29,7 @@ def harmonic_decomposition(
     theta = theta
     phi = phi
     scale0 = 1 / (np.sum(scale, axis=(0, 1)) * ss.sph_harm(0, 0, 0, 0)**2)
-    input_data_scaled = np.multiply(data, scale)
+    data_scaled = np.multiply(data, scale)
 
     # if numpy, change dimensions to allow for broadcast in ss.sph_harm
     if type(data) is np.array:
@@ -37,24 +37,21 @@ def harmonic_decomposition(
         n = np.expand_dims(n, axis=(0, 1))
         theta = np.expand_dims(theta, axis=(2))
         phi = np.expand_dims(phi, axis=(2))
-        input_data_scaled = np.expand_dims(input_data_scaled, axis=(2))
+        data_scaled = np.expand_dims(data_scaled, axis=(2))
 
     # if xarray, set dims and chunks for
     if type(data) is xr.DataArray:
         m = xr.DataArray(m, dims=['har']).chunk((chunk_size))
         n = xr.DataArray(n, dims=['har']).chunk((chunk_size))
-        input_data_scaled = \
-            xr.DataArray(
-                input_data_scaled,
-                dims=['lat', 'lon']
-            ).chunk((chunk_size))
+        data_scaled = \
+            xr.DataArray(data_scaled,dims=['lat', 'lon']).chunk((chunk_size))
         theta = xr.DataArray(theta, dims=['lat', 'lon']).chunk((chunk_size))
         phi = xr.DataArray(phi, dims=['lat', 'lon']).chunk((chunk_size))
 
     results = \
         np.sum(
             np.multiply(
-                input_data_scaled,
+                data_scaled,
                 ss.sph_harm(m, n, theta, phi)),
             axis=(0, 1))
     # results = results * scale0
