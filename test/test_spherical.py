@@ -64,22 +64,20 @@ test_results_xr = xr.DataArray(test_results_np,
 def test_decomposition_np():
     results_np = harmonic_decomposition(test_data_np, scale_phi_np, theta_np,
                                         phi_np)
-    np.testing.assert_almost_equal(results_np, test_results_np, decimal=3)
+    np.testing.assert_almost_equal(results_np, test_results_np)
 
 
 def test_decomposition_xr():
     results_xr = harmonic_decomposition(test_data_xr, scale_phi_xr, theta_xr,
                                         phi_xr)
-    np.testing.assert_almost_equal(results_xr.data,
-                                   test_results_xr.data,
-                                   decimal=3)
+    np.testing.assert_almost_equal(results_xr.data, test_results_xr.data)
 
 
 def test_recomposition_np():
     data_np = harmonic_recomposition(test_results_np, theta_np, phi_np)
-    np.testing.assert_almost_equal(data_np, test_data_np, decimal=3)
+    np.testing.assert_almost_equal(data_np, test_data_np)
 
 
 def test_recomposition_xr():
     data_xr = harmonic_recomposition(test_results_xr, theta_xr, phi_xr)
-    np.testing.assert_almost_equal(data_xr.data, test_data_xr.data, decimal=3)
+    np.testing.assert_almost_equal(data_xr.data, test_data_xr.data)
