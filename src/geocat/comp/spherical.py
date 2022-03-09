@@ -46,15 +46,14 @@ def harmonic_decomposition(
     if type(data) is xr.DataArray:
         m = xr.DataArray(m, dims=['har']).chunk((chunk_size))
         n = xr.DataArray(n, dims=['har']).chunk((chunk_size))
-        scale_multiplier = xr.DataArray(scale_results, dims=['har']).chunk(
-            (chunk_size))
+        scale_mul = xr.DataArray(scale_mul, dims=['har']).chunk((chunk_size))
         data_scaled = \
             xr.DataArray(data_scaled, dims=['lat', 'lon']).chunk((chunk_size))
         theta = xr.DataArray(theta, dims=['lat', 'lon']).chunk((chunk_size))
         phi = xr.DataArray(phi, dims=['lat', 'lon']).chunk((chunk_size))
 
     results = np.sum(np.multiply(data_scaled, ss.sph_harm(m, n, theta, phi)),
-                     axis=(0, 1))  #*scale1
+                     axis=(0, 1)) * scale_mul * scale_val
     return results
 
 
