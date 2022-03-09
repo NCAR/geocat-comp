@@ -4,7 +4,7 @@ import numpy as np
 import scipy.special as ss
 import xarray as xr
 
-SupportedTypes = Union[np.array, xr.DataArray]
+SupportedTypes = Union[np.ndarray, xr.DataArray]
 default_max_harm = 23  # 300 harmonics from 0,0 to 23,23
 
 
@@ -14,7 +14,7 @@ def harmonic_decomposition(
     theta: SupportedTypes,
     phi: SupportedTypes,
     max_harm: int = default_max_harm,
-    chunk_size={},
+    chunk_size: dict = {},
 ) -> SupportedTypes:
 
     scale_val = 1 / (np.sum(scale, axis=(0, 1)) * ss.sph_harm(0, 0, 0, 0)**2)
@@ -29,10 +29,10 @@ def harmonic_decomposition(
                 scale_mul.append(1)
             else:
                 scale_mul.append(2)
+
     m = np.array(mlist)
     n = np.array(nlist)
     scale_mul = np.array(scale_mul)
-    data_scaled = np.multiply(data, scale)
 
     # if numpy, change dimensions to allow for broadcast in ss.sph_harm
     if type(data) is np.ndarray:
@@ -40,17 +40,17 @@ def harmonic_decomposition(
         n = np.expand_dims(n, axis=(0, 1))
         theta = np.expand_dims(theta, axis=(2))
         phi = np.expand_dims(phi, axis=(2))
-        data_scaled = np.expand_dims(data_scaled, axis=(2))
+        data_scaled = np.expand_dims(np.multiply(data, scale), axis=(2))
 
-    # if xarray, set dims and chunks for
+    # if xarray, set dims and chunks for broadcast in ss.sphere_harm
     if type(data) is xr.DataArray:
         m = xr.DataArray(m, dims=['har']).chunk((chunk_size))
         n = xr.DataArray(n, dims=['har']).chunk((chunk_size))
         scale_mul = xr.DataArray(scale_mul, dims=['har']).chunk((chunk_size))
         data_scaled = \
-            xr.DataArray(data_scaled, dims=['lat', 'lon']).chunk((chunk_size))
-        theta = xr.DataArray(theta, dims=['lat', 'lon']).chunk((chunk_size))
-        phi = xr.DataArray(phi, dims=['lat', 'lon']).chunk((chunk_size))
+            xr.DataArray(np.multiply(data, scale), dims=data.dims).chunk((chunk_size))
+        theta = xr.DataArray(theta, dims=data.dims).chunk((chunk_size))
+        phi = xr.DataArray(phi, dims=data.dims).chunk((chunk_size))
 
     results = np.sum(np.multiply(data_scaled, ss.sph_harm(m, n, theta, phi)),
                      axis=(0, 1)) * scale_mul * scale_val
