@@ -21,11 +21,10 @@ num_theta = 720
 theta = np.linspace(0, ma.tau - ma.tau / num_theta, num_theta)
 phi = np.linspace(ma.pi / (2 * num_phi), ma.pi - ma.pi / (2 * num_phi), num_phi)
 theta_np, phi_np = np.meshgrid(theta, phi)
-theta_xr = xr.DataArray(theta_np, dims=['lat', 'lon']).chunk(data_chunkshape)
-phi_xr = xr.DataArray(phi_np, dims=['lat', 'lon']).chunk(data_chunkshape)
+theta_xr = xr.DataArray(theta_np, dims=['lat', 'lon'])
+phi_xr = xr.DataArray(phi_np, dims=['lat', 'lon'])
 scale_phi_np = np.sin(phi_np)
-scale_phi_xr = xr.DataArray(scale_phi_np, dims=['lat',
-                                                'lon']).chunk(data_chunkshape)
+scale_phi_xr = xr.DataArray(scale_phi_np, dims=['lat', 'lon'])
 
 test_data = np.zeros(theta_np.shape)
 test_results = []
