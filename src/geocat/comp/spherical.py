@@ -122,6 +122,7 @@ def harmonic_recomposition(
 def scale_voronoi(
     theta: SupportedTypes,
     phi: SupportedTypes,
+    chunk_size: dict = {},
 ) -> SupportedTypes:
     theta_1d = theta_np.reshape((theta.shape[0] * theta.shape[1],))
     phi_1d = phi_np.reshape((phi.shape[0] * phi.shape[1],))
