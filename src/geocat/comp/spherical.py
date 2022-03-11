@@ -38,9 +38,10 @@ def decomposition(
 
     scale_val = 1 / (np.sum(scale, axis=(0, 1)) *
                      sspecial.sph_harm(0, 0, 0, 0)**2)
-    scale_mul = []
+
     mlist = []
     nlist = []
+    scale_mul = []
     for nvalue in range(max_harm + 1):
         for mvalue in range(nvalue + 1):
             mlist.append(mvalue)
@@ -49,10 +50,10 @@ def decomposition(
                 scale_mul.append(1)
             else:
                 scale_mul.append(2)
-
     m = np.array(mlist)
     n = np.array(nlist)
     scale_mul = np.array(scale_mul)
+    scale_res = np.array(scale_mul * scale_val)
 
     # if numpy, change dimensions to allow for broadcast in ss.sph_harm
     if type(data) is np.ndarray:
@@ -66,7 +67,7 @@ def decomposition(
     if type(data) is xr.DataArray:
         m = xr.DataArray(m, dims=['har']).chunk((chunk_size))
         n = xr.DataArray(n, dims=['har']).chunk((chunk_size))
-        scale_mul = xr.DataArray(scale_mul, dims=['har']).chunk((chunk_size))
+        scale_res = xr.DataArray(scale_res, dims=['har']).chunk((chunk_size))
         scale_dat = xr.DataArray(
             np.multiply(data, scale),
             dims=data.dims,
@@ -77,7 +78,7 @@ def decomposition(
     results = np.sum(
         np.multiply(scale_dat, sspecial.sph_harm(m, n, theta, phi)),
         axis=(0, 1),
-    ) * scale_mul * scale_val
+    ) * scale_res
     return results
 
 
@@ -88,13 +89,13 @@ def recomposition(
     max_harm: int = default_max_harm,
     chunk_size: dict = {},
 ) -> SupportedTypes:
+
     mlist = []
     nlist = []
     for nvalue in range(max_harm + 1):
         for mvalue in range(nvalue + 1):
             mlist.append(mvalue)
             nlist.append(nvalue)
-
     m = np.array(mlist)
     n = np.array(nlist)
 
@@ -110,9 +111,9 @@ def recomposition(
     if type(data) is xr.DataArray:
         m = xr.DataArray(m, dims=['har']).chunk((chunk_size))
         n = xr.DataArray(n, dims=['har']).chunk((chunk_size))
+        data = xr.DataArray(data, dims=['har']).chunk((chunk_size))
         theta = xr.DataArray(theta, dims=theta.dims).chunk((chunk_size))
         phi = xr.DataArray(phi, dims=phi.dims).chunk((chunk_size))
-        data = xr.DataArray(data, dims=['har']).chunk((chunk_size))
 
     results = np.sum(
         np.multiply(sspecial.sph_harm(m, n, theta, phi).real, data.real),
@@ -130,22 +131,27 @@ def scale_voronoi(
     phi: SupportedTypes,
     chunk_size: dict = {},
 ) -> SupportedTypes:
+
     if type(theta) is xr.DataArray:
         theta = theta.to_numpy()
         phi = phi.to_numpy()
 
     theta_1d = theta.reshape((theta.shape[0] * theta.shape[1],))
     phi_1d = phi.reshape((phi.shape[0] * phi.shape[1],))
+
     data_locs_3d = np.zeros((len(phi_1d), 3))
     data_locs_3d[:, 0] = np.sin(phi_1d) * np.sin(theta_1d)
     data_locs_3d[:, 1] = np.sin(phi_1d) * np.cos(theta_1d)
     data_locs_3d[:, 2] = np.cos(phi_1d)
+
     scale = np.array(
         sspatial.SphericalVoronoi(
             data_locs_3d,
             radius=1.0,
             center=np.array([0, 0, 0]),
         )).reshape(theta.shape)
+
     if type(theta) is xr.DataArray:
         scale = xr.DataArray(scale, dims=theta.dims).chunk(chunk_size)
+
     return scale
