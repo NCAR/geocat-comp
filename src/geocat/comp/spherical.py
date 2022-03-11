@@ -114,11 +114,13 @@ def recomposition(
         phi = xr.DataArray(phi, dims=phi.dims).chunk((chunk_size))
         data = xr.DataArray(data, dims=['har']).chunk((chunk_size))
 
-    results = np.sum(np.multiply(
-        sspecial.sph_harm(m, n, theta, phi).real, data.real),
-                     axis=(0)) + np.sum(np.multiply(
-                         sspecial.sph_harm(m, n, theta, phi).imag, data.imag),
-                                        axis=(0))
+    results = np.sum(
+        np.multiply(sspecial.sph_harm(m, n, theta, phi).real, data.real),
+        axis=(0),
+    ) + np.sum(
+        np.multiply(sspecial.sph_harm(m, n, theta, phi).imag, data.imag),
+        axis=(0),
+    )
 
     return results.real
 
