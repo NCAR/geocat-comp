@@ -8,9 +8,9 @@ from typing import Union
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
 if "--cov" in str(sys.argv):
-    from src.geocat.comp import harmonic_decomposition, harmonic_recomposition
+    from src.geocat.comp import decomposition, recomposition, scale_voronoi
 else:
-    from geocat.comp import harmonic_decomposition, harmonic_recomposition
+    from geocat.comp import decomposition, recomposition, scale_voronoi
 
 max_harm = 23
 num_phi = 360
