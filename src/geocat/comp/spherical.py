@@ -67,14 +67,22 @@ def decomposition(
         m = xr.DataArray(m, dims=['har']).chunk((chunk_size))
         n = xr.DataArray(n, dims=['har']).chunk((chunk_size))
         scale_mul = xr.DataArray(scale_mul, dims=['har']).chunk((chunk_size))
-        scale_dat = xr.DataArray(np.multiply(data, scale),
-                                 dims=data.dims).chunk((chunk_size))
+        scale_dat = xr.DataArray(
+            np.multiply(data, scale),
+            dims=data.dims,
+        ).chunk((chunk_size))
         theta = xr.DataArray(theta, dims=data.dims).chunk((chunk_size))
         phi = xr.DataArray(phi, dims=data.dims).chunk((chunk_size))
 
-    results = np.sum(np.multiply(scale_dat, sspecial.sph_harm(m, n, theta,
-                                                              phi)),
-                     axis=(0, 1)) * scale_mul * scale_val
+    results = np.sum(
+        np.multiply(scale_dat, sspecial.sph_harm(
+            m,
+            n,
+            theta,
+            phi,
+        )),
+        axis=(0, 1),
+    ) * scale_mul * scale_val
     return results
 
 
@@ -114,7 +122,12 @@ def recomposition(
     results = np.sum(np.multiply(
         sspecial.sph_harm(m, n, theta, phi).real, data.real),
                      axis=(0)) + np.sum(np.multiply(
-                         sspecial.sph_harm(m, n, theta, phi).imag, data.imag),
+                         sspecial.sph_harm(
+                             m,
+                             n,
+                             theta,
+                             phi,
+                         ).imag, data.imag),
                                         axis=(0))
 
     return results.real
