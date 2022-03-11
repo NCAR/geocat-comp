@@ -75,12 +75,7 @@ def decomposition(
         phi = xr.DataArray(phi, dims=data.dims).chunk((chunk_size))
 
     results = np.sum(
-        np.multiply(scale_dat, sspecial.sph_harm(
-            m,
-            n,
-            theta,
-            phi,
-        )),
+        np.multiply(scale_dat, sspecial.sph_harm(m, n, theta, phi)),
         axis=(0, 1),
     ) * scale_mul * scale_val
     return results
