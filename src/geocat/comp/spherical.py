@@ -26,9 +26,21 @@ def decomposition(
         2-dimensional dataset
 
     scale : :class:`numpy.ndarray`, :class:`xarray.DataArray`
-        2-dimensional array containing the weighting of each point in the data. This is usually the area of the voronoi cell centered on the corresponding datapoint.
+        2-dimensional array containing the weighting of each point in the data.
+        This is usually the area of the voronoi cell centered on the corresponding datapoint.
+        the geocat.comp.spherical.scale_voronoi(theta,phi) function can provide a scale array.
 
+    theta : :class:`numpy.ndarray`, :class:`xarray.DataArray`
+        2-dimensional array containing the theta (longitude in radians) values for each datapoint in data.
 
+    phi : :class:`numpy.ndarray`, :class:`xarray.DataArray`
+        2-dimensional array containing the theta (latitude in radians) values for each datapoint in data.
+        Phi is zero at the top of the sphere and pi at the bottom, phi = (lat_degrees-90)*(-1)*pi/180
+
+    max_harm: :class: `int`, Optional
+        The maximum harmonic value for both m and n.
+        The total of harmonics calculated is (max_harm+1)*(max_harm+2)/2
+        Defaults to 23, for 300 total harmonics.
 
     Returns
     -------
@@ -53,7 +65,6 @@ def decomposition(
     m = np.array(mlist)
     n = np.array(nlist)
     scale_mul = np.array(scale_mul)
-    scale_res = np.array(scale_mul * scale_val)
 
     # if numpy, change dimensions to allow for broadcast in ss.sph_harm
     if type(data) is np.ndarray:
@@ -61,13 +72,17 @@ def decomposition(
         n = np.expand_dims(n, axis=(0, 1))
         theta = np.expand_dims(theta, axis=(2))
         phi = np.expand_dims(phi, axis=(2))
+        scale_res = scale_mul * scale_val
         scale_dat = np.expand_dims(np.multiply(data, scale), axis=(2))
 
     # if xarray, set dims and chunks for broadcast in ss.sphere_harm
     if type(data) is xr.DataArray:
         m = xr.DataArray(m, dims=['har']).chunk((chunk_size))
         n = xr.DataArray(n, dims=['har']).chunk((chunk_size))
-        scale_res = xr.DataArray(scale_res, dims=['har']).chunk((chunk_size))
+        scale_res = xr.DataArray(
+            scale_mul,
+            dims=['har'],
+        ).chunk((chunk_size)) * scale_val
         scale_dat = xr.DataArray(
             np.multiply(data, scale),
             dims=data.dims,
