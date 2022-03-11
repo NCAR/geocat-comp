@@ -135,10 +135,11 @@ def scale_voronoi(
     data_locs_3d[:, 0] = np.sin(phi_1d) * np.sin(theta_1d)
     data_locs_3d[:, 1] = np.sin(phi_1d) * np.cos(theta_1d)
     data_locs_3d[:, 2] = np.cos(phi_1d)
-    sv = sspatial.SphericalVoronoi(data_locs_3d,
-                                   radius=1.0,
-                                   center=np.array([0, 0, 0]))
-    scale = np.array(sv.calculate_areas()).reshape(theta.shape)
+    scale = np.array(
+        sspatial.SphericalVoronoi(data_locs_3d,
+                                  radius=1.0,
+                                  center=np.array([0, 0,
+                                                   0]))).reshape(theta.shape)
     if type(theta) is xr.DataArray:
         scale = xr.DataArray(scale, dims=theta.dims).chunk(chunk_size)
     return scale
