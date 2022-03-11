@@ -190,22 +190,12 @@ def scale_voronoi(
 
     Parameters
     ----------
-    data : :class:`numpy.ndarray`, :class:`xarray.DataArray`
-        1-dimensional array of spherical harmonics.
-        These must by in the same order output by geocat.comp.spherical.decomposition.
-
     theta : :class:`numpy.ndarray`, :class:`xarray.DataArray`
         2-dimensional array containing the theta (longitude in radians) values for each datapoint in data.
 
     phi : :class:`numpy.ndarray`, :class:`xarray.DataArray`
         2-dimensional array containing the theta (latitude in radians) values for each datapoint in data.
         Phi is zero at the top of the sphere and pi at the bottom, phi = (lat_degrees-90)*(-1)*pi/180
-
-    max_harm: :class: `int`, Optional
-        The maximum harmonic value for both m and n.
-        The total of harmonics calculated is (max_harm+1)*(max_harm+2)/2
-        The number of total harmonics must equal the number of harmoncs in the input data.
-        Defaults to 23, for 300 total harmonics.
 
     chunk_size: :class: `int`, Optional
         The size of the each edge of the dask chunks if using xarray.DataArray inputs.
@@ -216,7 +206,7 @@ def scale_voronoi(
     Returns
     -------
     scale : :class:`numpy.ndarray`, :class:`xarray.DataArray`
-        2-dimensional array containing the area of the spherical voronoi cell for each theta phi pair.
+        2-dimensional array containing the area of the spherical voronoi cell for each theta and phi pair.
     """
 
     if type(theta) is xr.DataArray:
