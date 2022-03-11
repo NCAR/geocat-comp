@@ -5,7 +5,7 @@ import xarray as xr
 import sys
 from typing import Union
 
-from src.geocat.comp import harmonic_decomposition, harmonic_recomposition
+from src.geocat.comp import decomposition, recomposition, scale_voronoi
 
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
@@ -23,8 +23,8 @@ phi = np.linspace(ma.pi / (2 * num_phi), ma.pi - ma.pi / (2 * num_phi), num_phi)
 theta_np, phi_np = np.meshgrid(theta, phi)
 theta_xr = xr.DataArray(theta_np, dims=['lat', 'lon'])
 phi_xr = xr.DataArray(phi_np, dims=['lat', 'lon'])
-scale_phi_np = np.sin(phi_np)
-scale_phi_xr = xr.DataArray(scale_phi_np, dims=['lat', 'lon'])
+test_scale_np = np.sin(phi_np)
+test_scale_xr = xr.DataArray(test_scale_np, dims=['lat', 'lon'])
 
 test_data = np.zeros(theta_np.shape)
 test_results = []
@@ -52,24 +52,36 @@ test_results_xr = xr.DataArray(test_results_np, dims=['har']).compute()
 
 
 def test_decomposition_np():
-    results_np = harmonic_decomposition(test_data_np, scale_phi_np, theta_np,
-                                        phi_np)
+    results_np = decomposition(test_data_np, test_scale_np, theta_np, phi_np)
     np.testing.assert_almost_equal(results_np, test_results_np, decimal=3)
 
 
 def test_decomposition_xr():
-    results_xr = harmonic_decomposition(test_data_xr, scale_phi_xr, theta_xr,
-                                        phi_xr)
-    np.testing.assert_almost_equal(results_xr.values,
-                                   test_results_xr.values,
+    results_xr = decomposition(test_data_xr, test_scale_xr, theta_xr, phi_xr)
+    np.testing.assert_almost_equal(results_xr.to_numpy(),
+                                   test_results_xr.to_numpy(),
                                    decimal=3)
 
 
 def test_recomposition_np():
-    data_np = harmonic_recomposition(test_results_np, theta_np, phi_np)
+    data_np = recomposition(test_results_np, theta_np, phi_np)
     np.testing.assert_almost_equal(data_np, test_data_np)
 
 
 def test_recomposition_xr():
-    data_xr = harmonic_recomposition(test_results_xr, theta_xr, phi_xr)
-    np.testing.assert_almost_equal(data_xr.values, test_data_xr.values)
+    data_xr = recomposition(test_results_xr, theta_xr, phi_xr)
+    np.testing.assert_almost_equal(data_xr.to_numpy(), test_data_xr.to_numpy())
+
+
+def test_scale_voronoi_np():
+    scale_np = scale_voronoi(theta_np, phi_np)
+    np.testing.assert_almost_equal(
+        scale_np / np.sum(scale_np, axis=(0, 1)),
+        test_scale_np / np.sum(test_scale_np, axis=(0, 1)))
+
+
+def test_scale_voronoi_xr():
+    scale_xr = scale_voronoi(theta_xr, phi_xr)
+    np.testing.assert_almost_equal(
+        scale_xr / np.sum(scale_xr, axis=(0, 1)),
+        test_scale_xr / np.sum(test_scale_xr, axis=(0, 1)))

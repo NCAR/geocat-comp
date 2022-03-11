@@ -9,7 +9,7 @@ SupportedTypes = Union[np.ndarray, xr.DataArray]
 default_max_harm = 23  # 300 harmonics from 0,0 to 23,23
 
 
-def harmonic_decomposition(
+def decomposition(
     data: SupportedTypes,
     scale: SupportedTypes,
     theta: SupportedTypes,
@@ -36,7 +36,8 @@ def harmonic_decomposition(
         the spherical harmonic decomposition of the input data
     """
 
-    scale_val = 1 / (np.sum(scale, axis=(0, 1)) * ss.sph_harm(0, 0, 0, 0)**2)
+    scale_val = 1 / (np.sum(scale, axis=(0, 1)) *
+                     sspecial.sph_harm(0, 0, 0, 0)**2)
     scale_mul = []
     mlist = []
     nlist = []
@@ -77,7 +78,7 @@ def harmonic_decomposition(
     return results
 
 
-def harmonic_recomposition(
+def recomposition(
     data: SupportedTypes,
     theta: SupportedTypes,
     phi: SupportedTypes,
@@ -113,7 +114,7 @@ def harmonic_recomposition(
     results = np.sum(np.multiply(
         sspecial.sph_harm(m, n, theta, phi).real, data.real),
                      axis=(0)) + np.sum(np.multiply(
-                         ss.sph_harm(m, n, theta, phi).imag, data.imag),
+                         sspecial.sph_harm(m, n, theta, phi).imag, data.imag),
                                         axis=(0))
 
     return results.real
@@ -124,8 +125,12 @@ def scale_voronoi(
     phi: SupportedTypes,
     chunk_size: dict = {},
 ) -> SupportedTypes:
-    theta_1d = theta_np.reshape((theta.shape[0] * theta.shape[1],))
-    phi_1d = phi_np.reshape((phi.shape[0] * phi.shape[1],))
+    if type(theta) is xr.DataArray:
+        theta = theta.to_numpy()
+        phi = phi.to_numpy()
+
+    theta_1d = theta.reshape((theta.shape[0] * theta.shape[1],))
+    phi_1d = phi.reshape((phi.shape[0] * phi.shape[1],))
     data_locs_3d = np.zeros((len(phi_1d), 3))
     data_locs_3d[:, 0] = np.sin(phi_1d) * np.sin(theta_1d)
     data_locs_3d[:, 1] = np.sin(phi_1d) * np.cos(theta_1d)
