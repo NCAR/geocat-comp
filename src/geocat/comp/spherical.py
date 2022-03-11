@@ -17,8 +17,7 @@ def decomposition(
     max_harm: int = default_max_harm,
     chunk_size: int = 'auto',
 ) -> SupportedTypes:
-    """Calculate the spherical harmonics of a dataset. This function allows for
-    the use of any 2d grid.
+    """Calculate the spherical harmonics of a dataset.
 
     Parameters
     ----------
@@ -110,8 +109,7 @@ def recomposition(
     max_harm: int = default_max_harm,
     chunk_size: int = 'auto',
 ) -> SupportedTypes:
-    """Calculate a dataset from spherical harmonics. This function allows for
-    the use of any 2d grid.
+    """Calculate a dataset from spherical harmonics.
 
     Parameters
     ----------
@@ -185,8 +183,7 @@ def scale_voronoi(
     phi: SupportedTypes,
     chunk_size: int = 'auto',
 ) -> SupportedTypes:
-    """Calculate a dataset from spherical harmonics. This function allows for
-    the use of any 2d grid.
+    """Calculate the area weighting for dataset.
 
     Parameters
     ----------
