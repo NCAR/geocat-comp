@@ -1,7 +1,8 @@
 from typing import Union
 
 import numpy as np
-import scipy.special as ss
+import scipy.special as sspecial
+import scipy.spatial as sspatial
 import xarray as xr
 
 SupportedTypes = Union[np.ndarray, xr.DataArray]
@@ -16,6 +17,25 @@ def harmonic_decomposition(
     max_harm: int = default_max_harm,
     chunk_size: dict = {},
 ) -> SupportedTypes:
+    """Calculate the spherical harmonics of a dataset. This function allows for
+    the use of any 2d grid.
+
+    Parameters
+    ----------
+    data : :class:`numpy.ndarray`, :class:`xarray.DataArray`
+        2-dimensional dataset
+
+    scale : :class:`numpy.ndarray`, :class:`xarray.DataArray`
+        2-dimensional array containing the weighting of each point in the data. This is usually the area of the voronoi cell centered on the corresponding datapoint.
+
+
+
+    Returns
+    -------
+    decomposition : :class:`numpy.ndarray`, :class:`xarray.DataArray`
+        the spherical harmonic decomposition of the input data
+    """
+
     scale_val = 1 / (np.sum(scale, axis=(0, 1)) * ss.sph_harm(0, 0, 0, 0)**2)
     scale_mul = []
     mlist = []
@@ -51,7 +71,8 @@ def harmonic_decomposition(
         theta = xr.DataArray(theta, dims=data.dims).chunk((chunk_size))
         phi = xr.DataArray(phi, dims=data.dims).chunk((chunk_size))
 
-    results = np.sum(np.multiply(scale_dat, ss.sph_harm(m, n, theta, phi)),
+    results = np.sum(np.multiply(scale_dat, sspecial.sph_harm(m, n, theta,
+                                                              phi)),
                      axis=(0, 1)) * scale_mul * scale_val
     return results
 
@@ -89,9 +110,29 @@ def harmonic_recomposition(
         phi = xr.DataArray(phi, dims=phi.dims).chunk((chunk_size))
         data = xr.DataArray(data, dims=['har']).chunk((chunk_size))
 
-    results = np.sum(np.multiply(ss.sph_harm(m, n, theta, phi).real, data.real),
+    results = np.sum(np.multiply(
+        sspecial.sph_harm(m, n, theta, phi).real, data.real),
                      axis=(0)) + np.sum(np.multiply(
                          ss.sph_harm(m, n, theta, phi).imag, data.imag),
                                         axis=(0))
 
     return results.real
+
+
+def scale_voronoi(
+    theta: SupportedTypes,
+    phi: SupportedTypes,
+) -> SupportedTypes:
+    theta_1d = theta_np.reshape((theta.shape[0] * theta.shape[1],))
+    phi_1d = phi_np.reshape((phi.shape[0] * phi.shape[1],))
+    data_locs_3d = np.zeros((len(phi_1d), 3))
+    data_locs_3d[:, 0] = np.sin(phi_1d) * np.sin(theta_1d)
+    data_locs_3d[:, 1] = np.sin(phi_1d) * np.cos(theta_1d)
+    data_locs_3d[:, 2] = np.cos(phi_1d)
+    sv = sspatial.SphericalVoronoi(data_locs_3d,
+                                   radius=1.0,
+                                   center=np.array([0, 0, 0]))
+    scale = np.array(sv.calculate_areas()).reshape(theta.shape)
+    if type(theta) is xr.DataArray:
+        scale = xr.DataArray(scale, dims=theta.dims).chunk(chunk_size)
+    return scale
