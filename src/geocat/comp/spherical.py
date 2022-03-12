@@ -223,7 +223,7 @@ def scale_voronoi(
             data_locs_3d,
             radius=1.0,
             center=np.array([0, 0, 0]),
-        )).reshape(theta.shape)
+        ).calculate_areas()).reshape(theta.shape)
 
     if type(theta) is xr.DataArray:
         scale = xr.DataArray(scale, dims=theta.dims).chunk(chunk_size)
