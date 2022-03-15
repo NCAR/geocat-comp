@@ -24,14 +24,19 @@ class Test_Spherical(unittest.TestCase):
         num_theta = 720
 
         theta = np.linspace(0, ma.tau - ma.tau / num_theta, num_theta)
-        phi = np.linspace(ma.pi / (2 * num_phi), ma.pi - ma.pi / (2 * num_phi),
-                          num_phi)
+        phi = np.linspace(
+            ma.pi / (2 * num_phi),
+            ma.pi - ma.pi / (2 * num_phi),
+            num_phi,
+        )
         cls.theta_np, cls.phi_np = np.meshgrid(theta, phi)
         cls.theta_xr = xr.DataArray(cls.theta_np, dims=['lat', 'lon'])
         cls.phi_xr = xr.DataArray(cls.phi_np, dims=['lat', 'lon'])
         cls.test_scale_np = np.sin(phi_np)
-        cls.test_scale_xr = xr.DataArray(cls.test_scale_np,
-                                         dims=['lat', 'lon']).compute()
+        cls.test_scale_xr = xr.DataArray(
+            cls.test_scale_np,
+            dims=['lat', 'lon'],
+        ).compute()
 
         test_data = np.zeros(cls.theta_np.shape)
         test_results = []
