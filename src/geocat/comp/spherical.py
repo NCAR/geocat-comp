@@ -53,11 +53,17 @@ def decomposition(
         the spherical harmonic decomposition of the input data
     """
 
+    # scale_val is the inverse of the total sphere area times the magnitude of
+    # the first harmoninc. This is used to scale the output so that the output
+    # is unaffected by the surface area of the original sphere.
     scale_val = 1 / (np.sum(scale, axis=(0, 1)) *
                      sspecial.sph_harm(0, 0, 0, 0)**2)
 
-    mlist = []
-    nlist = []
+    mlist = []  # ordered list of the m harmonics sspecial.sphere(m,n,theta,phi)
+    nlist = []  # ordered list of the n harmonics sspecial.sphere(m,n,theta,phi)
+    # the real value of the output varies on a factor of two when m is 0,
+    # due to m=0 being a symmetric case with no imaginary component,
+    # this accounts for that difference in output sum.
     scale_mul = []
     for nvalue in range(max_harm + 1):
         for mvalue in range(nvalue + 1):
@@ -142,8 +148,8 @@ def recomposition(
         the spherical harmonic recomposition of the input data
     """
 
-    mlist = []
-    nlist = []
+    mlist = []  # ordered list of the m harmonics sspecial.sphere(m,n,theta,phi)
+    nlist = []  # ordered list of the n harmonics sspecial.sphere(m,n,theta,phi)
     for nvalue in range(max_harm + 1):
         for mvalue in range(nvalue + 1):
             mlist.append(mvalue)
