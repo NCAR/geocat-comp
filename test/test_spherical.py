@@ -49,12 +49,20 @@ class Test_Spherical(unittest.TestCase):
                 if n in [0, 2, 3, 5, 7, 11, 13, 17, 19, 23
                         ] and m in [0, 2, 3, 5, 7, 11, 13, 17, 19, 23]:
                     if m in [2, 5, 11, 17, 23]:
-                        test_data += ss.sph_harm(m, n, cls.theta_np,
-                                                 cls.phi_np).imag
+                        test_data += ss.sph_harm(
+                            m,
+                            n,
+                            cls.theta_np,
+                            cls.phi_np,
+                        ).imag
                         test_results[-1] = 1j
                     else:
-                        test_data += ss.sph_harm(m, n, cls.theta_np,
-                                                 cls.phi_np).real
+                        test_data += ss.sph_harm(
+                            m,
+                            n,
+                            cls.theta_np,
+                            cls.phi_np,
+                        ).real
                         test_results[-1] = 1
 
         cls.test_harmonics_np = np.array(test_harmonics)
