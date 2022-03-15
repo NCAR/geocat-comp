@@ -71,38 +71,69 @@ class Test_Spherical(unittest.TestCase):
         ).compute()
 
     def test_decomposition_np(self):
-        results_np = decomposition(self.test_data_np, self.test_scale_np,
-                                   self.theta_np, self.phi_np)
-        np.testing.assert_almost_equal(results_np,
-                                       self.test_results_np,
-                                       decimal=3)
+        results_np = decomposition(
+            self.test_data_np,
+            self.test_scale_np,
+            self.theta_np,
+            self.phi_np,
+        )
+        np.testing.assert_almost_equal(
+            results_np,
+            self.test_results_np,
+            decimal=3,
+        )
 
     def test_decomposition_xr(self):
-        results_xr = decomposition(self.test_data_xr, self.test_scale_xr,
-                                   self.theta_xr, self.phi_xr)
-        np.testing.assert_almost_equal(results_xr.to_numpy(),
-                                       self.test_results_xr.to_numpy(),
-                                       decimal=3)
+        results_xr = decomposition(
+            self.test_data_xr,
+            self.test_scale_xr,
+            self.theta_xr,
+            self.phi_xr,
+        )
+        np.testing.assert_almost_equal(
+            results_xr.to_numpy(),
+            self.test_results_xr.to_numpy(),
+            decimal=3,
+        )
 
     def test_recomposition_np(self):
-        data_np = recomposition(self.test_results_np, self.theta_np,
-                                self.phi_np)
-        np.testing.assert_almost_equal(data_np, self.test_data_np)
+        data_np = recomposition(
+            self.test_results_np,
+            self.theta_np,
+            self.phi_np,
+        )
+        np.testing.assert_almost_equal(
+            data_np,
+            self.test_data_np,
+        )
 
     def test_recomposition_xr(self):
-        data_xr = recomposition(self.test_results_xr, self.theta_xr,
-                                self.phi_xr)
-        np.testing.assert_almost_equal(data_xr.to_numpy(),
-                                       self.test_data_xr.to_numpy())
+        data_xr = recomposition(
+            self.test_results_xr,
+            self.theta_xr,
+            self.phi_xr,
+        )
+        np.testing.assert_almost_equal(
+            data_xr.to_numpy(),
+            self.test_data_xr.to_numpy(),
+        )
 
     def test_scale_voronoi_np(self):
-        scale_np = scale_voronoi(self.theta_np, self.phi_np)
+        scale_np = scale_voronoi(
+            self.theta_np,
+            self.phi_np,
+        )
         np.testing.assert_almost_equal(
             scale_np / np.sum(scale_np, axis=(0, 1)),
-            self.test_scale_np / np.sum(self.test_scale_np, axis=(0, 1)))
+            self.test_scale_np / np.sum(self.test_scale_np, axis=(0, 1)),
+        )
 
     def test_scale_voronoi_xr(self):
-        scale_xr = scale_voronoi(self.theta_xr, self.phi_xr)
+        scale_xr = scale_voronoi(
+            self.theta_xr,
+            self.phi_xr,
+        )
         np.testing.assert_almost_equal(
             scale_xr / np.sum(scale_xr, axis=(0, 1)),
-            self.test_scale_xr / np.sum(self.test_scale_xr, axis=(0, 1)))
+            self.test_scale_xr / np.sum(self.test_scale_xr, axis=(0, 1)),
+        )
