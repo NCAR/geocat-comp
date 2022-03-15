@@ -123,7 +123,7 @@ def ndpolyfit(x: typing.Iterable,
 
         >>> import numpy as np
         >>> from geocat.comp.polynomial import ndpolyfit
-        >>> x = np.arange(10, dtype=np.float)
+        >>> x = np.arange(10, dtype=float)
         >>> y = 2*x + 3
         >>> p = ndpolyfit(x, y, deg=1)
         >>> print(p)
@@ -187,7 +187,7 @@ def ndpolyfit(x: typing.Iterable,
 
         >>> import numpy as np
         >>> from geocat.comp.polynomial import ndpolyfit
-        >>> x = np.arange(10, dtype=np.float)
+        >>> x = np.arange(10, dtype=float)
         >>> y = 4*x*x + 3*x + 2
         >>> y[7:] = np.nan
         >>> print(y)
@@ -766,9 +766,9 @@ def detrend(data: typing.Iterable, deg=1, axis=0, **kwargs) -> xr.DataArray:
 
     x = kwargs.get("x", None)
     if x is None:
-        x = np.arange(data_shape[axis], dtype=np.float)
+        x = np.arange(data_shape[axis], dtype=float)
     elif not isinstance(x, np.ndarray):
-        x = np.asarray(x).astype(np.float)
+        x = np.asarray(x).astype(float)
 
     x = x.reshape((-1,))
 
