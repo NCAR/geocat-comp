@@ -18,38 +18,38 @@ else:
 class test_internal_ndpolyfit(TestCase):
 
     def test_01(self):
-        x = np.arange(10).astype(dtype=np.float)
-        y = np.arange(10).astype(dtype=np.float)
+        x = np.arange(10).astype(dtype=float)
+        y = np.arange(10).astype(dtype=float)
 
         p = _ndpolyfit(x, y)
 
         np.testing.assert_almost_equal(p, [1.0, 0.0])
 
     def test_02(self):
-        x = np.arange(10).astype(dtype=np.float).reshape((-1, 1))
-        y = np.arange(10).astype(dtype=np.float)
+        x = np.arange(10).astype(dtype=float).reshape((-1, 1))
+        y = np.arange(10).astype(dtype=float)
 
         p = _ndpolyfit(x, y)
 
         np.testing.assert_almost_equal(p, [1.0, 0.0])
 
     def test_03(self):
-        x = np.arange(10).astype(dtype=np.float).reshape((1, -1))
-        y = np.arange(10).astype(dtype=np.float)
+        x = np.arange(10).astype(dtype=float).reshape((1, -1))
+        y = np.arange(10).astype(dtype=float)
 
         p = _ndpolyfit(x, y)
 
         np.testing.assert_almost_equal(p, [1.0, 0.0])
 
     def test_04(self):
-        x = np.arange(10).astype(dtype=np.float).reshape((2, 5))
-        y = np.arange(10).astype(dtype=np.float)
+        x = np.arange(10).astype(dtype=float).reshape((2, 5))
+        y = np.arange(10).astype(dtype=float)
 
         with self.assertRaises(ValueError):
             p = _ndpolyfit(x, y)
 
     def test_05(self):
-        x = np.arange(10).astype(dtype=np.float)
+        x = np.arange(10).astype(dtype=float)
         for i in range(50):
             expected_p = np.random.randint(-10, 10, size=2)
             while expected_p[0] == 0:
@@ -62,8 +62,8 @@ class test_internal_ndpolyfit(TestCase):
             np.testing.assert_almost_equal(expected_p, actual_p)
 
     def test_06(self):
-        x = np.arange(-10, 10).astype(dtype=np.float)
-        y = np.arange(-10, 10).astype(dtype=np.float)
+        x = np.arange(-10, 10).astype(dtype=float)
+        y = np.arange(-10, 10).astype(dtype=float)
 
         y = np.moveaxis(np.tile(y, (4, 3, 1)), 2, 0)
 
@@ -75,8 +75,8 @@ class test_internal_ndpolyfit(TestCase):
         np.testing.assert_almost_equal(actual_p, expected_p)
 
     def test_07(self):
-        x = np.arange(-10, 10).astype(dtype=np.float)
-        y = np.arange(-10, 10).astype(dtype=np.float)
+        x = np.arange(-10, 10).astype(dtype=float)
+        y = np.arange(-10, 10).astype(dtype=float)
 
         axis = 1
         y = np.moveaxis(np.tile(y, (4, 3, 1)), 2, axis)
@@ -89,8 +89,8 @@ class test_internal_ndpolyfit(TestCase):
         np.testing.assert_almost_equal(actual_p, expected_p)
 
     def test_08(self):
-        x = np.arange(-10, 10).astype(dtype=np.float)
-        y = np.arange(-10, 10).astype(dtype=np.float)
+        x = np.arange(-10, 10).astype(dtype=float)
+        y = np.arange(-10, 10).astype(dtype=float)
 
         axis = 1
         y = np.moveaxis(np.tile(y, (4, 3, 1)), 2, axis)
@@ -103,7 +103,7 @@ class test_internal_ndpolyfit(TestCase):
         np.testing.assert_almost_equal(actual_p, expected_p)
 
     def test_09(self):
-        x = np.arange(-10, 10).astype(dtype=np.float)
+        x = np.arange(-10, 10).astype(dtype=float)
         max_dim = 6
         max_dim_size = 11
 
@@ -126,8 +126,8 @@ class test_internal_ndpolyfit(TestCase):
             np.testing.assert_almost_equal(expected_p, actual_p)
 
     def test_10(self):
-        x = np.arange(10).astype(dtype=np.float)
-        y = np.arange(10).astype(dtype=np.float)
+        x = np.arange(10).astype(dtype=float)
+        y = np.arange(10).astype(dtype=float)
 
         y[5] = np.nan
         p = _ndpolyfit(x, y)
@@ -135,8 +135,8 @@ class test_internal_ndpolyfit(TestCase):
         np.testing.assert_almost_equal(p, [1.0, 0.0])
 
     def test_11(self):
-        x = np.arange(10).astype(dtype=np.float)
-        y = np.arange(10).astype(dtype=np.float)
+        x = np.arange(10).astype(dtype=float)
+        y = np.arange(10).astype(dtype=float)
 
         for i in range(20):
             idx = np.random.randint(0, 10)
@@ -146,7 +146,7 @@ class test_internal_ndpolyfit(TestCase):
             np.testing.assert_almost_equal(p, [1.0, 0.0])
 
     def test_12(self):
-        x = np.arange(10).astype(dtype=np.float)
+        x = np.arange(10).astype(dtype=float)
         for i in range(50):
             expected_p = np.random.randint(-10, 10, size=2)
             while expected_p[0] == 0:
@@ -159,9 +159,9 @@ class test_internal_ndpolyfit(TestCase):
             np.testing.assert_almost_equal(expected_p, actual_p)
 
     def test_13(self):
-        x = np.arange(10).astype(dtype=np.float)
-        y = np.concatenate((np.arange(10).astype(dtype=np.float).reshape(
-            (-1, 1)), np.arange(10).astype(dtype=np.float).reshape((-1, 1))),
+        x = np.arange(10).astype(dtype=float)
+        y = np.concatenate((np.arange(10).astype(dtype=float).reshape(
+            (-1, 1)), np.arange(10).astype(dtype=float).reshape((-1, 1))),
                            axis=1)
 
         y[4, 0] = np.nan
@@ -170,9 +170,9 @@ class test_internal_ndpolyfit(TestCase):
         np.testing.assert_almost_equal(p, [[1.0, 1.0], [0.0, 0.0]])
 
     def test_14(self):
-        x = np.arange(10).astype(dtype=np.float)
-        y = np.concatenate((np.arange(10).astype(dtype=np.float).reshape(
-            (-1, 1)), np.arange(10).astype(dtype=np.float).reshape((-1, 1))),
+        x = np.arange(10).astype(dtype=float)
+        y = np.concatenate((np.arange(10).astype(dtype=float).reshape(
+            (-1, 1)), np.arange(10).astype(dtype=float).reshape((-1, 1))),
                            axis=1)
 
         y[4, :] = np.nan
@@ -181,7 +181,7 @@ class test_internal_ndpolyfit(TestCase):
         np.testing.assert_almost_equal(p, [[1.0, 1.0], [0.0, 0.0]])
 
     def test_15(self):
-        x = np.arange(-10, 10).astype(dtype=np.float)
+        x = np.arange(-10, 10).astype(dtype=float)
         max_dim = 6
         max_dim_size = 11
 
@@ -205,9 +205,9 @@ class test_internal_ndpolyfit(TestCase):
             np.testing.assert_almost_equal(expected_p, actual_p)
 
     def test_16(self):
-        x = np.arange(10).astype(dtype=np.float)
-        y = np.concatenate((np.arange(10).astype(dtype=np.float).reshape(
-            (-1, 1)), np.arange(10).astype(dtype=np.float).reshape((-1, 1))),
+        x = np.arange(10).astype(dtype=float)
+        y = np.concatenate((np.arange(10).astype(dtype=float).reshape(
+            (-1, 1)), np.arange(10).astype(dtype=float).reshape((-1, 1))),
                            axis=1)
 
         p = _ndpolyfit(x, y, missing_value=5)
@@ -217,32 +217,32 @@ class test_internal_ndpolyfit(TestCase):
 class test_ndpolyfit(TestCase):
 
     def test_00(self):
-        x = np.arange(10).astype(dtype=np.float).tolist()
-        y = np.arange(10).astype(dtype=np.float).tolist()
+        x = np.arange(10).astype(dtype=float).tolist()
+        y = np.arange(10).astype(dtype=float).tolist()
 
         p = ndpolyfit(x, y, deg=1)
 
         np.testing.assert_almost_equal(p, [1.0, 0.0])
 
     def test_01(self):
-        x = np.arange(10).astype(dtype=np.float)
-        y = np.arange(10).astype(dtype=np.float)
+        x = np.arange(10).astype(dtype=float)
+        y = np.arange(10).astype(dtype=float)
 
         p = ndpolyfit(x, y, deg=1)
 
         np.testing.assert_almost_equal(p, [1.0, 0.0])
 
     def test_02(self):
-        x = xr.DataArray(np.arange(10).astype(dtype=np.float))
-        y = xr.DataArray(np.arange(10).astype(dtype=np.float))
+        x = xr.DataArray(np.arange(10).astype(dtype=float))
+        y = xr.DataArray(np.arange(10).astype(dtype=float))
 
         p = ndpolyfit(x, y, deg=1)
 
         np.testing.assert_almost_equal(p, [1.0, 0.0])
 
     def test_03(self):
-        x = xr.DataArray(np.arange(10).astype(dtype=np.float))
-        y = xr.DataArray(np.arange(10).astype(dtype=np.float))
+        x = xr.DataArray(np.arange(10).astype(dtype=float))
+        y = xr.DataArray(np.arange(10).astype(dtype=float))
         y.attrs["attr1"] = 1
         y.attrs["attr2"] = 2
 
@@ -256,8 +256,8 @@ class test_ndpolyfit(TestCase):
         self.assertEqual(2, p.attrs["attr2"])
 
     def test_04(self):
-        x = xr.DataArray(np.arange(10).astype(dtype=np.float))
-        y = xr.DataArray(np.arange(10).astype(dtype=np.float))
+        x = xr.DataArray(np.arange(10).astype(dtype=float))
+        y = xr.DataArray(np.arange(10).astype(dtype=float))
         y.attrs["attr1"] = 1
         y.attrs["attr2"] = 2
 
@@ -269,17 +269,17 @@ class test_ndpolyfit(TestCase):
         self.assertFalse("attr2" in p.attrs)
 
     def test_05(self):
-        x = np.arange(10).astype(dtype=np.float)
-        y = np.arange(10).astype(dtype=np.float)
+        x = np.arange(10).astype(dtype=float)
+        y = np.arange(10).astype(dtype=float)
 
         p = ndpolyfit(x, y, deg=1, meta=False)
 
         np.testing.assert_almost_equal(p, [1.0, 0.0])
 
     def test_6(self):
-        x = np.arange(10).astype(dtype=np.float)
-        y = np.concatenate((np.arange(10).astype(dtype=np.float).reshape(
-            (-1, 1)), np.arange(10).astype(dtype=np.float).reshape((-1, 1))),
+        x = np.arange(10).astype(dtype=float)
+        y = np.concatenate((np.arange(10).astype(dtype=float).reshape(
+            (-1, 1)), np.arange(10).astype(dtype=float).reshape((-1, 1))),
                            axis=1)
 
         y[5, :] = 999
@@ -288,7 +288,7 @@ class test_ndpolyfit(TestCase):
         np.testing.assert_almost_equal(p, [[1.0, 1.0], [0.0, 0.0]])
 
     def test_7(self):
-        x = xr.DataArray(np.arange(-10, 10).astype(dtype=np.float))
+        x = xr.DataArray(np.arange(-10, 10).astype(dtype=float))
         max_dim = 6
         max_dim_size = 11
 
@@ -313,7 +313,7 @@ class test_ndpolyfit(TestCase):
             np.testing.assert_almost_equal(expected_p, actual_p)
 
     def test_8(self):
-        x = xr.DataArray(np.arange(-10, 10).astype(dtype=np.float))
+        x = xr.DataArray(np.arange(-10, 10).astype(dtype=float))
         max_dim = 3
         max_dim_size = 5
 

@@ -287,7 +287,8 @@ def interp_sigma_to_hybrid(data: xr.DataArray,
 
         for idx, (d, s) in enumerate(zip(data_stacked, sigma_stacked)):
             output[idx, :] = xr.DataArray(
-                _vertical_remap(func_interpolate, s, sig_coords, d))
+                _vertical_remap(func_interpolate, s.data, sig_coords.data,
+                                d.data))
 
         # Make output shape same as data shape
         output = output.unstack().transpose(*data.dims)
@@ -296,7 +297,8 @@ def interp_sigma_to_hybrid(data: xr.DataArray,
 
         output = data[:len(hyam)].copy()
         output[:len(hyam)] = xr.DataArray(
-            _vertical_remap(func_interpolate, sigma, sig_coords, data))
+            _vertical_remap(func_interpolate, sigma.data, sig_coords.data,
+                            data.data))
 
     # Set output dims and coords
     output = output.rename({lev_dim: 'hlev'})
