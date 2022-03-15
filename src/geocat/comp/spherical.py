@@ -45,7 +45,7 @@ def decomposition(
         The size of the each edge of the dask chunks if using xarray.DataArray inputs.
         Some arrays will be 2d, and others 1d, and the final calculation operates on a 3d array.
         thus the chunks used in the largest calculation scale at chunk_size^3
-        A chunk size of 256 is reccomended. Defaults to 'auto'
+        A chunk size of 256 is recommended. Defaults to 'auto'
 
     Returns
     -------
@@ -134,7 +134,7 @@ def recomposition(
         The size of the each edge of the dask chunks if using xarray.DataArray inputs.
         Some arrays will be 2d, and others 1d, and the final calculation operates on a 3d array.
         thus the chunks used in the largest calculation scale at chunk_size^3
-        A chunk size of 256 is reccomended. Defaults to 'auto'
+        A chunk size of 256 is recommended. Defaults to 'auto'
 
     Returns
     -------
@@ -198,7 +198,7 @@ def scale_voronoi(
         The size of the each edge of the dask chunks if using xarray.DataArray inputs.
         Some arrays will be 2d, and others 1d, and the final calculation operates on a 3d array.
         thus the chunks used in the largest calculation scale at chunk_size^3
-        A chunk size of 256 is reccomended. Defaults to 'auto'
+        A chunk size of 256 is recommended. Defaults to 'auto'
 
     Returns
     -------
