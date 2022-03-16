@@ -118,16 +118,14 @@ def _heat_index(temperature: np.ndarray,
 
         # adjustments
         heatindex = xr.where(
-            xr.ufuncs.logical_and(
-                relative_humidity < 13,
-                xr.ufuncs.logical_and(temperature > 80, temperature < 112)),
+            np.logical_and(relative_humidity < 13,
+                           np.logical_and(temperature > 80, temperature < 112)),
             heatindex - ((13 - relative_humidity) / 4) * np.sqrt(
                 (17 - abs(temperature - 95)) / 17), heatindex)
 
         heatindex = xr.where(
-            xr.ufuncs.logical_and(
-                relative_humidity > 85,
-                xr.ufuncs.logical_and(temperature > 80, temperature < 87)),
+            np.logical_and(relative_humidity > 85,
+                           np.logical_and(temperature > 80, temperature < 87)),
             heatindex + ((relative_humidity - 85.0) / 10.0) *
             ((87.0 - temperature) / 5.0), heatindex)
 
@@ -468,16 +466,14 @@ def _xheat_index(temperature: xr.DataArray,
 
         # adjustments
         heatindex = xr.where(
-            xr.ufuncs.logical_and(
-                relative_humidity < 13,
-                xr.ufuncs.logical_and(temperature > 80, temperature < 112)),
+            np.logical_and(relative_humidity < 13,
+                           np.logical_and(temperature > 80, temperature < 112)),
             heatindex - ((13 - relative_humidity) / 4) * np.sqrt(
                 (17 - abs(temperature - 95)) / 17), heatindex)
 
         heatindex = xr.where(
-            xr.ufuncs.logical_and(
-                relative_humidity > 85,
-                xr.ufuncs.logical_and(temperature > 80, temperature < 87)),
+            np.logical_and(relative_humidity > 85,
+                           np.logical_and(temperature > 80, temperature < 87)),
             heatindex + ((relative_humidity - 85.0) / 10.0) *
             ((87.0 - temperature) / 5.0), heatindex)
 
