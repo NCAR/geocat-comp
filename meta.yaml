@@ -30,6 +30,7 @@ requirements:
     - geocat-f2py
     - metpy
     - numpy
+    - scipy
     - xarray
 
 test:
