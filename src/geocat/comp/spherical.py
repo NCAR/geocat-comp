@@ -54,7 +54,7 @@ def decomposition(
     """
 
     # scale_val is the inverse of the total sphere area times the magnitude of
-    # the first harmoninc. This is used to scale the output so that the output
+    # the first harmonic. This is used to scale the output so that the output
     # is unaffected by the surface area of the original sphere.
     scale_val = 1 / (np.sum(scale, axis=(0, 1)) *
                      sspecial.sph_harm(0, 0, 0, 0)**2)
