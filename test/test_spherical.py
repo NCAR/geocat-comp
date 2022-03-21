@@ -4,7 +4,6 @@ import math as ma
 import xarray as xr
 import sys
 import unittest
-from typing import Union
 
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
