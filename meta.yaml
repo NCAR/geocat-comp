@@ -13,8 +13,8 @@ build:
 source:
   # url: https://github.com/NCAR/geocat-comp/archive/v{{ version }}.tar.gz   # For building from a specific tag's tarball
   # sha256: b50e2cf8ecf693ce13260c6f1fa587e71915d8e794ca5aeb3ca1682d2e5f314c
-  # git_tag: v{{ version }}   # For building from a specific tag
-  git_rev: main # For building from main branch for debugging purposes
+  git_tag: v{{ version }}   # For building from a specific tag
+  # git_rev: main # For building from main branch for debugging purposes
   git_url: https://github.com/NCAR/geocat-comp.git
 
 requirements:
