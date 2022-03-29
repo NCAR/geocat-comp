@@ -70,6 +70,12 @@ GeoCAT-comp native routines
 
    geocat.comp.skewt_params.showalter_index
 
+   geocat.comp.spherical.decomposition
+
+   geocat.comp.spherical.recomposition
+
+   geocat.comp.spherical.scale_voronoi
+
 
 GeoCAT-comp routines from GeoCAT-f2py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
