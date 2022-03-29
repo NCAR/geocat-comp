@@ -48,6 +48,7 @@ page of the Conda documentation.
 
 Installing GeoCAT-comp in a Pre-existing Conda Environment
 ----------------------------------------------------------
+
 If you started a project and later decided to use GeoCAT-comp, you will need to install it in your pre-existing environment.
 
 1.  Make sure your conda is up to date by running this command from the
