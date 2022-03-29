@@ -46,6 +46,24 @@ If you are interested in learning more about how Conda environments work, please
 visit the `managing environments <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html>`_
 page of the Conda documentation.
 
+Updating GeoCAT-comp with Conda
+-------------------------------
+
+It is important to keep your version of `geocat-comp` up to date. This can be done as follows:
+
+1.  Make sure your conda is up to date by running this command from the
+    terminal::
+
+    conda update conda
+
+2.  Activate the conda environment you want to update. In this example,
+    the environment is called `geocat`::
+
+    conda activate geocat
+
+3. Update `geocat-comp`::
+
+    conda update geocat-comp
 
 Building GeoCAT-comp from source
 --------------------------------
