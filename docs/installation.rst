@@ -5,8 +5,8 @@ This installation guide includes only the GeoCAT-comp installation and build ins
 Please refer to `GeoCAT Contributor's Guide <https://geocat.ucar.edu/pages/contributing.html>`_ for installation of
 the whole GeoCAT project.
 
-Installing GeoCAT-comp via Conda
---------------------------------
+Installing GeoCAT-comp via Conda in a New Environment
+----------------------------------------------------
 
 The easiest way to install GeoCAT-comp is using
 `Conda <http://conda.pydata.org/docs/>`_::
