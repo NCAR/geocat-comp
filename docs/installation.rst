@@ -6,7 +6,7 @@ Please refer to `GeoCAT Contributor's Guide <https://geocat.ucar.edu/pages/contr
 the whole GeoCAT project.
 
 Installing GeoCAT-comp via Conda in a New Environment
-----------------------------------------------------
+-----------------------------------------------------
 
 The easiest way to install GeoCAT-comp is using
 `Conda <http://conda.pydata.org/docs/>`_::
@@ -80,6 +80,12 @@ It is important to keep your version of :code:`geocat-comp` up to date. This can
 3. Update :code:`geocat-comp`::
 
     conda update geocat-comp
+
+
+Installing GeoCAT-comp via PyPi
+-------------------------------
+GeoCAT-comp is distributed also in PyPI; therefore, the above Conda installation instructions should, in theory,
+apply to PyPI installation through using :code:`pip install` commands instead of :code:`conda install` wherever they occur.
 
 Building GeoCAT-comp from source
 --------------------------------
