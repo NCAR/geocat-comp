@@ -63,22 +63,23 @@ def gradient_sphere(data, longitude, latitude):
     )
 
     lonpad = np.pad(longitude, ((0, 0), (1, 1)), mode='wrap')
-    latpad = np.pad(latitude, ((0, 0), (1, 1)), mode='wrap')
     lonpad = np.pad(
         lonpad,
         ((1, 1), (0, 0)),
         mode='constant',
         constant_values=np.nan,
     )
+
+    latpad = np.pad(latitude, ((0, 0), (1, 1)), mode='wrap')
     latpad = np.pad(
         latpad,
         ((1, 1), (0, 0)),
         mode='constant',
         constant_values=np.nan,
     )
+
     lonpad[:, 0] = lonpad[:, 0] - 360
     lonpad[:, -1] = lonpad[:, -1] + 360
-
     arclonpad = arc_lon_wgs84(lonpad, latpad)
     arclatpad = arc_lat_wgs84(latpad)
 
