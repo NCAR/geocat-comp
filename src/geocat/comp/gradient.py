@@ -4,9 +4,10 @@ import numpy as np
 import xarray as xr
 
 SupportedTypes = Union[np.ndarray, xr.DataArray]
+d2r = 1.745329251994330e-02
 
 
-def rad_wgs84(lat):
+def rad_lat_wgs84(lat):
     return \
         3.046775254824756e-70 * lat ** 32 + \
         4.322852948553110e-65 * lat ** 30 - \
@@ -27,7 +28,7 @@ def rad_wgs84(lat):
         6378137.0
 
 
-def _arc_wgs84(lat):
+def arc_lat_wgs84(lat):
     return \
         1.611401811060038e-73 * lat ** 33 + \
         2.433807001025704e-68 * lat ** 31 - \
@@ -48,5 +49,61 @@ def _arc_wgs84(lat):
         111319.4907932736 * lat
 
 
-def arc_wgs84(lat1, lat2):
-    return abs(_arcwgs84(lat1) - _arcwgs84(lat2))
+def arc_lon_wgs84(lon, lat):
+    return rad_lat_wgs84(lat) * np.cos(lat * d2r) * lon * d2r
+
+
+def gradient_sphere(data, longitude, latitude):
+    datapad = np.pad(data, ((0, 0), (1, 1)), mode='wrap')
+    datapad = np.pad(datapad, ((1, 1), (0, 0)),
+                     mode='constant',
+                     constant_values=np.nan)
+
+    lonpad = np.pad(longitude, ((0, 0), (1, 1)), mode='wrap')
+    latpad = np.pad(latitude, ((0, 0), (1, 1)), mode='wrap')
+    lonpad = np.pad(lonpad, ((1, 1), (0, 0)),
+                    mode='constant',
+                    constant_values=np.nan)
+    latpad = np.pad(latpad, ((1, 1), (0, 0)),
+                    mode='constant',
+                    constant_values=np.nan)
+    lonpad[:, 0] = lonpad[:, 0] - 360
+    lonpad[:, -1] = lonpad[:, -1] + 360
+
+    arclonpad = arc_lon_wgs84(lonpad, latpad)
+    arclatpad = arc_lat_wgs84(latpad)
+
+    lonresult = np.zeros(data.shape)
+    latresult = np.zeros(data.shape)
+
+    for latloc in range(1, datapad.shape[0] - 1):
+        for lonloc in range(1, datapad.shape[1] - 1):
+            lonbac = (datapad[latloc, lonloc] - datapad[latloc, lonloc - 1]) / (
+                arclonpad[latloc, lonloc] - arclonpad[latloc, lonloc - 1])
+            lonfor = (datapad[latloc, lonloc + 1] - datapad[latloc, lonloc]) / (
+                arclonpad[latloc, lonloc + 1] - arclonpad[latloc, lonloc])
+            if not np.isnan(lonbac) and not np.isnan(lonfor):
+                longrad = (lonbac + lonfor) / 2
+            elif not np.isnan(lonbac):
+                longrad = lonbac
+            elif not np.isnan(lonfor):
+                longrad = lonfor
+            else:
+                longrad = np.nan
+            lonresult[latloc - 1, lonloc - 1] = longrad
+
+            latbac = (datapad[latloc, lonloc] - datapad[latloc - 1, lonloc]) / (
+                arclatpad[latloc, lonloc] - arclatpad[latloc - 1, lonloc])
+            latfor = (datapad[latloc + 1, lonloc] - datapad[latloc, lonloc]) / (
+                arclatpad[latloc + 1, lonloc] - arclatpad[latloc, lonloc])
+            if not np.isnan(latbac) and not np.isnan(latfor):
+                latgrad = (latbac + latfor) / 2
+            elif not np.isnan(latbac):
+                latgrad = latbac
+            elif not np.isnan(latfor):
+                latgrad = latfor
+            else:
+                latgrad = np.nan
+            latresult[latloc - 1, lonloc - 1] = latgrad
+
+    return [lonresult, latresult]
