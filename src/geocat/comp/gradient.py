@@ -8,6 +8,15 @@ d2r = 1.745329251994330e-02
 
 
 def rad_lat_wgs84(lat):
+    '''
+    based on the taylor series expansion of
+    radius = sqrt(0.5*(a^2+b^2+(-a^2+b^2)*cos(2*t*pi/180)))
+    where a in the minor axis and b is the major axis.
+    it has an accuracy from 0 µm at the equator to 66µm at the poles.
+
+    note: this doesn't need to be a taylor series, though the taylor series
+    was a step for the arc_lat_wgs84 function to avoid the eliptic integral.
+    '''
     return \
         3.046775254824756e-70 * lat ** 32 + \
         4.322852948553110e-65 * lat ** 30 - \
@@ -29,6 +38,13 @@ def rad_lat_wgs84(lat):
 
 
 def arc_lat_wgs84(lat):
+    '''
+    based on the taylor series expansion of
+    radius = sqrt(0.5*(a^2+b^2+(-a^2+b^2)*cos(2*t*pi/180)))
+    out the the 32nd order.
+    The taylor series was integrated to give a fast way to calcuate distance
+    along a latitude relative to the prime meridian.
+    '''
     return \
         1.611401811060038e-73 * lat ** 33 + \
         2.433807001025704e-68 * lat ** 31 - \
@@ -50,6 +66,7 @@ def arc_lat_wgs84(lat):
 
 
 def arc_lon_wgs84(lon, lat):
+    """this uses."""
     return rad_lat_wgs84(lat) * np.cos(lat * d2r) * lon * d2r
 
 
