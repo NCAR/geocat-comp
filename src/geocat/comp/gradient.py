@@ -55,18 +55,27 @@ def arc_lon_wgs84(lon, lat):
 
 def gradient_sphere(data, longitude, latitude):
     datapad = np.pad(data, ((0, 0), (1, 1)), mode='wrap')
-    datapad = np.pad(datapad, ((1, 1), (0, 0)),
-                     mode='constant',
-                     constant_values=np.nan)
+    datapad = np.pad(
+        datapad,
+        ((1, 1), (0, 0)),
+        mode='constant',
+        constant_values=np.nan,
+    )
 
     lonpad = np.pad(longitude, ((0, 0), (1, 1)), mode='wrap')
     latpad = np.pad(latitude, ((0, 0), (1, 1)), mode='wrap')
-    lonpad = np.pad(lonpad, ((1, 1), (0, 0)),
-                    mode='constant',
-                    constant_values=np.nan)
-    latpad = np.pad(latpad, ((1, 1), (0, 0)),
-                    mode='constant',
-                    constant_values=np.nan)
+    lonpad = np.pad(
+        lonpad,
+        ((1, 1), (0, 0)),
+        mode='constant',
+        constant_values=np.nan,
+    )
+    latpad = np.pad(
+        latpad,
+        ((1, 1), (0, 0)),
+        mode='constant',
+        constant_values=np.nan,
+    )
     lonpad[:, 0] = lonpad[:, 0] - 360
     lonpad[:, -1] = lonpad[:, -1] + 360
 
@@ -78,10 +87,10 @@ def gradient_sphere(data, longitude, latitude):
 
     for latloc in range(1, datapad.shape[0] - 1):
         for lonloc in range(1, datapad.shape[1] - 1):
-            lonbac = (datapad[latloc, lonloc] - datapad[latloc, lonloc - 1]) / (
-                arclonpad[latloc, lonloc] - arclonpad[latloc, lonloc - 1])
-            lonfor = (datapad[latloc, lonloc + 1] - datapad[latloc, lonloc]) / (
-                arclonpad[latloc, lonloc + 1] - arclonpad[latloc, lonloc])
+            lonbac = (datapad[latloc, lonloc] - datapad[latloc, lonloc - 1]) / \
+                     (arclonpad[latloc, lonloc] - arclonpad[latloc, lonloc - 1])
+            lonfor = (datapad[latloc, lonloc + 1] - datapad[latloc, lonloc]) / \
+                     (arclonpad[latloc, lonloc + 1] - arclonpad[latloc, lonloc])
             if not np.isnan(lonbac) and not np.isnan(lonfor):
                 longrad = (lonbac + lonfor) / 2
             elif not np.isnan(lonbac):
@@ -92,10 +101,10 @@ def gradient_sphere(data, longitude, latitude):
                 longrad = np.nan
             lonresult[latloc - 1, lonloc - 1] = longrad
 
-            latbac = (datapad[latloc, lonloc] - datapad[latloc - 1, lonloc]) / (
-                arclatpad[latloc, lonloc] - arclatpad[latloc - 1, lonloc])
-            latfor = (datapad[latloc + 1, lonloc] - datapad[latloc, lonloc]) / (
-                arclatpad[latloc + 1, lonloc] - arclatpad[latloc, lonloc])
+            latbac = (datapad[latloc, lonloc] - datapad[latloc - 1, lonloc]) / \
+                     (arclatpad[latloc, lonloc] - arclatpad[latloc - 1, lonloc])
+            latfor = (datapad[latloc + 1, lonloc] - datapad[latloc, lonloc]) / \
+                     (arclatpad[latloc + 1, lonloc] - arclatpad[latloc, lonloc])
             if not np.isnan(latbac) and not np.isnan(latfor):
                 latgrad = (latbac + latfor) / 2
             elif not np.isnan(latbac):
