@@ -70,7 +70,7 @@ def arc_lon_wgs84(lon, lat):
     return rad_lat_wgs84(lat) * np.cos(lat * d2r) * lon * d2r
 
 
-def gradient_sphere(data, longitude, latitude):
+def gradient_sphere(data, longitude, latitude, wrap_longitude=True):
     datapad = np.pad(data, ((0, 0), (1, 1)), mode='wrap')
     datapad = np.pad(
         datapad,
@@ -79,15 +79,31 @@ def gradient_sphere(data, longitude, latitude):
         constant_values=np.nan,
     )
 
-    lonpad = np.pad(longitude, ((0, 0), (1, 1)), mode='wrap')
+    if wrap_longitude:
+        latpad = np.pad(latitude, ((0, 0), (1, 1)), mode='wrap')
+        lonpad = np.pad(longitude, ((0, 0), (1, 1)), mode='wrap')
+        lonpad[:, 0] = lonpad[:, 0] - 360
+        lonpad[:, -1] = lonpad[:, -1] + 360
+    else:
+        latpad = np.pad(
+            latitude,
+            ((0, 0), (1, 1)),
+            mode='constant',
+            constant_values=np.nan,
+        )
+        lonpad = np.pad(
+            longitude,
+            ((0, 0), (1, 1)),
+            mode='constant',
+            constant_values=np.nan,
+        )
+
     lonpad = np.pad(
         lonpad,
         ((1, 1), (0, 0)),
         mode='constant',
         constant_values=np.nan,
     )
-
-    latpad = np.pad(latitude, ((0, 0), (1, 1)), mode='wrap')
     latpad = np.pad(
         latpad,
         ((1, 1), (0, 0)),
@@ -95,8 +111,6 @@ def gradient_sphere(data, longitude, latitude):
         constant_values=np.nan,
     )
 
-    lonpad[:, 0] = lonpad[:, 0] - 360
-    lonpad[:, -1] = lonpad[:, -1] + 360
     arclonpad = arc_lon_wgs84(lonpad, latpad)
     arclatpad = arc_lat_wgs84(latpad)
 
