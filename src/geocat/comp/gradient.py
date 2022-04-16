@@ -70,7 +70,12 @@ def arc_lon_wgs84(lon, lat):
     return rad_lat_wgs84(lat) * np.cos(lat * d2r) * lon * d2r
 
 
-def gradient_sphere(data, longitude, latitude, wrap_longitude=True):
+def gradient_sphere(
+    data,
+    longitude,
+    latitude,
+    wrap_longitude=True,
+):
     datapad = np.pad(data, ((0, 0), (1, 1)), mode='wrap')
     datapad = np.pad(
         datapad,
