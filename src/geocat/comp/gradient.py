@@ -12,12 +12,19 @@ def rad_lat_wgs84(lat: SupportedTypes,):
     based on the taylor series expansion of
     radius = sqrt(0.5*(a^2+b^2+(-a^2+b^2)*cos(2*t*pi/180)))
     where a in the minor axis and b is the major axis.
-    it has an accuracy from 0 µm at the equator to 66µm at the poles.
-
+    it has an accuracy from exact at the equator to 0.14 nm at the poles.
     note: this doesn't need to be a taylor series, though the taylor series
     was a step for the arc_lat_wgs84 function to avoid the eliptic integral.
     '''
     return \
+        8.059930932988491e-107 * lat ** 48 - \
+        1.265818114330774e-102 * lat ** 46 - \
+        9.109515657866300e-98 * lat ** 44 + \
+        7.498218361578425e-93 * lat ** 42 - \
+        2.272716269375060e-88 * lat ** 40 - \
+        2.713793944213188e-84 * lat ** 38 + \
+        6.148328717907100e-79 * lat ** 36 - \
+        2.849931857995167e-74 * lat ** 34 + \
         3.046775254824756e-70 * lat ** 32 + \
         4.322852948553110e-65 * lat ** 30 - \
         3.097819637843901e-60 * lat ** 28 + \
@@ -43,9 +50,18 @@ def arc_lat_wgs84(lat: SupportedTypes,):
     radius = sqrt(0.5*(a^2+b^2+(-a^2+b^2)*cos(2*t*pi/180)))
     out the the 32nd order.
     The taylor series was integrated to give a fast way to calcuate distance
-    along a latitude relative to the prime meridian.
+    along a latitude relative to the equator.
+    a numerical estimate for the total error from pole to pole is 2.91mm
     '''
     return \
+        2.870863923754849e-110 * lat ** 49 - \
+        4.700573154565538e-106 * lat ** 47 -\
+        3.533134255372094e-101 * lat ** 45 + \
+        3.043455777745075e-96 * lat ** 43 - \
+        9.674727283960286e-92 * lat ** 41 - \
+        1.214477937107781e-87 * lat ** 39 + \
+        2.900231881686501e-82 * lat ** 37 - \
+        1.421162696557004e-77 * lat ** 35 + \
         1.611401811060038e-73 * lat ** 33 + \
         2.433807001025704e-68 * lat ** 31 - \
         1.864384562528083e-63 * lat ** 29 + \
