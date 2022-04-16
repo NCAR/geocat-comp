@@ -9,76 +9,76 @@ d2r = 1.745329251994330e-02
 
 def rad_lat_wgs84(lat: SupportedTypes,):
     '''
-    based on the taylor series expansion of
-    radius = sqrt(0.5*(a^2+b^2+(-a^2+b^2)*cos(2*t*pi/180)))
-    where a in the minor axis and b is the major axis.
-    it has an accuracy from exact at the equator to 0.14 nm at the poles.
-    note: this doesn't need to be a taylor series, though the taylor series
-    was a step for the arc_lat_wgs84 function to avoid the eliptic integral.
+    The radius calculation for the wgs84 ellipsoid uses a taylor series from
+    radius = ((a*cos(lat))**2+(b*sin(lat))**2)**(1/2)
+    The taylor series is the radius of the elipsoid for a given latitude
+    This is accurate to within floating point error.
+
+    note: This doesn't need to be a taylor series, though the taylor series
+    was a step for the arc_lat_wgs84 function to avoid the eliptic integral
     '''
     return \
-        8.059930932988491e-107 * lat ** 48 - \
-        1.265818114330774e-102 * lat ** 46 - \
-        9.109515657866300e-98 * lat ** 44 + \
-        7.498218361578425e-93 * lat ** 42 - \
-        2.272716269375060e-88 * lat ** 40 - \
-        2.713793944213188e-84 * lat ** 38 + \
-        6.148328717907100e-79 * lat ** 36 - \
-        2.849931857995167e-74 * lat ** 34 + \
-        3.046775254824756e-70 * lat ** 32 + \
-        4.322852948553110e-65 * lat ** 30 - \
-        3.097819637843901e-60 * lat ** 28 + \
-        8.206577043612313e-56 * lat ** 26 + \
-        2.185012848730189e-51 * lat ** 24 - \
-        3.144459267034150e-46 * lat ** 22 + \
-        1.339705312896690e-41 * lat ** 20 - \
-        3.647292571651390e-38 * lat ** 18 - \
-        3.193974017793312e-32 * lat ** 16 + \
-        2.097559357089568e-27 * lat ** 14 - \
-        3.932346603086970e-23 * lat ** 12 - \
-        4.673469447172801e-18 * lat ** 10 + \
-        5.230533973007157e-13 * lat ** 8 - \
-        2.614991987936281e-08 * lat ** 6 + \
-        6.570167359753477e-04 * lat ** 4 - \
-        6.503227445533897e+00 * lat ** 2 + \
+        8.05993093298849335845093e-107 * lat ** 48 - \
+        1.26581811433077485833316e-102 * lat ** 46 - \
+        9.10951565786630085206383e-98 * lat ** 44 + \
+        7.49821836157842689028464e-93 * lat ** 42 - \
+        2.27271626937506094190001e-88 * lat ** 40 - \
+        2.71379394421318726884417e-84 * lat ** 38 + \
+        6.14832871790710039645791e-79 * lat ** 36 - \
+        2.84993185799516722577218e-74 * lat ** 34 + \
+        3.04677525482475781021008e-70 * lat ** 32 + \
+        4.32285294855311071974471e-65 * lat ** 30 - \
+        3.09781963784390194038817e-60 * lat ** 28 + \
+        8.20657704361231447958419e-56 * lat ** 26 + \
+        2.18501284873018898427381e-51 * lat ** 24 - \
+        3.14445926703415013437784e-46 * lat ** 22 + \
+        1.33970531289669032782347e-41 * lat ** 20 - \
+        3.64729257165139301286738e-38 * lat ** 18 - \
+        3.19397401779331194046889e-32 * lat ** 16 + \
+        2.09755935708956809813879e-27 * lat ** 14 - \
+        3.93234660308697071375021e-23 * lat ** 12 - \
+        4.67346944717280103014443e-18 * lat ** 10 + \
+        5.23053397300715692655636e-13 * lat ** 8 - \
+        2.61499198793628148606271e-08 * lat ** 6 + \
+        6.57016735975347744792879e-04 * lat ** 4 - \
+        6.50322744553389692456410e+00 * lat ** 2 + \
         6378137.0
 
 
 def arc_lat_wgs84(lat: SupportedTypes,):
     '''
-    based on the taylor series expansion of
-    radius = sqrt(0.5*(a^2+b^2+(-a^2+b^2)*cos(2*t*pi/180)))
-    out the the 32nd order.
-    The taylor series was integrated to give a fast way to calcuate distance
-    along a latitude relative to the equator.
-    a numerical estimate for the total error from pole to pole is 2.91mm
+    The arc length calculation for the wgs84 ellipsoid uses a taylor series from
+    radius = ((a*cos(lat))**2+(b*sin(lat))**2)**(1/2)
+    The integral of the radius taylor series gives an arc length taylor series
+    The taylor series is the distance from the equator to a given latitude
+    This is accurate to within floating point error.
     '''
     return \
-        2.870863923754849e-110 * lat ** 49 - \
-        4.700573154565538e-106 * lat ** 47 -\
-        3.533134255372094e-101 * lat ** 45 + \
-        3.043455777745075e-96 * lat ** 43 - \
-        9.674727283960286e-92 * lat ** 41 - \
-        1.214477937107781e-87 * lat ** 39 + \
-        2.900231881686501e-82 * lat ** 37 - \
-        1.421162696557004e-77 * lat ** 35 + \
-        1.611401811060038e-73 * lat ** 33 + \
-        2.433807001025704e-68 * lat ** 31 - \
-        1.864384562528083e-63 * lat ** 29 + \
-        5.304881101096931e-59 * lat ** 27 + \
-        1.525426736348904e-54 * lat ** 25 - \
-        2.386137713243196e-49 * lat ** 23 + \
-        1.113441367452766e-44 * lat ** 21 - \
-        3.350382324149892e-41 * lat ** 19 - \
-        3.279138990214426e-35 * lat ** 17 + \
-        2.440621135815228e-30 * lat ** 15 - \
-        5.279415042575557e-26 * lat ** 13 - \
-        7.415220849502234e-21 * lat ** 11 + \
-        1.014333771848834e-15 * lat ** 9 - \
-        6.520031443251421e-11 * lat ** 7 + \
-        2.293421056695219e-06 * lat ** 5 - \
-        3.783424364354224e-02 * lat ** 3 + \
-        111319.4907932736 * lat
+        2.87086392375485020807270e-110 * lat ** 49 - \
+        4.70057315456554051027470e-106 * lat ** 47 - \
+        3.53313425537209421651981e-101 * lat ** 45 + \
+        3.04345577774507517984383e-96 * lat ** 43 - \
+        9.67472728396028867902680e-92 * lat ** 41 - \
+        1.21447793710778038581080e-87 * lat ** 39 + \
+        2.90023188168650132848542e-82 * lat ** 37 - \
+        1.42116269655700431839954e-77 * lat ** 35 + \
+        1.61140181106003861674601e-73 * lat ** 33 + \
+        2.43380700102570413214524e-68 * lat ** 31 - \
+        1.86438456252808355807529e-63 * lat ** 29 + \
+        5.30488110109693238696142e-59 * lat ** 27 + \
+        1.52542673634890397698471e-54 * lat ** 25 - \
+        2.38613771324319612960829e-49 * lat ** 23 + \
+        1.11344136745276656534003e-44 * lat ** 21 - \
+        3.35038232414989498944290e-41 * lat ** 19 - \
+        3.27913899021442625628565e-35 * lat ** 17 + \
+        2.44062113581522849116351e-30 * lat ** 15 - \
+        5.27941504257555801373336e-26 * lat ** 13 - \
+        7.41522084950223435244285e-21 * lat ** 11 + \
+        1.01433377184883444985903e-15 * lat ** 9 - \
+        6.52003144325142154116932e-11 * lat ** 7 + \
+        2.29342105669521921399609e-06 * lat ** 5 - \
+        3.78342436435422366967231e-02 * lat ** 3 + \
+        111319.490793273572647713 * lat
 
 
 def arc_lon_wgs84(
