@@ -4,7 +4,7 @@ import numpy as np
 import xarray as xr
 
 SupportedTypes = Union[np.ndarray, xr.DataArray]
-d2r = 1.745329251994330e-02
+d2r = 1.74532925199432957692369e-02
 
 
 def rad_lat_wgs84(lat: SupportedTypes,):
@@ -85,11 +85,19 @@ def arc_lon_wgs84(
     lon: SupportedTypes,
     lat: SupportedTypes,
 ):
-    """this uses."""
+    '''
+    The arc length calculation for the wgs84 ellipsoid uses a taylor series from
+    radius = ((a*cos(lat))**2+(b*sin(lat))**2)**(1/2)
+    The taylor series is the radius of the elipsoid for a given latitude
+    This is accurate to within floating point error.
+
+    note: This doesn't need to be a taylor series, though the taylor series
+    was a step for the arc_lat_wgs84 function to avoid the eliptic integral
+    '''
     return rad_lat_wgs84(lat) * np.cos(lat * d2r) * lon * d2r
 
 
-def gradient_sphere(
+def grad_wgs84(
     data: SupportedTypes,
     longitude: SupportedTypes,
     latitude: SupportedTypes,
