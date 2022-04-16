@@ -7,7 +7,7 @@ SupportedTypes = Union[np.ndarray, xr.DataArray]
 d2r = 1.745329251994330e-02
 
 
-def rad_lat_wgs84(lat):
+def rad_lat_wgs84(lat: SupportedTypes,):
     '''
     based on the taylor series expansion of
     radius = sqrt(0.5*(a^2+b^2+(-a^2+b^2)*cos(2*t*pi/180)))
@@ -37,7 +37,7 @@ def rad_lat_wgs84(lat):
         6378137.0
 
 
-def arc_lat_wgs84(lat):
+def arc_lat_wgs84(lat: SupportedTypes,):
     '''
     based on the taylor series expansion of
     radius = sqrt(0.5*(a^2+b^2+(-a^2+b^2)*cos(2*t*pi/180)))
@@ -65,16 +65,19 @@ def arc_lat_wgs84(lat):
         111319.4907932736 * lat
 
 
-def arc_lon_wgs84(lon, lat):
+def arc_lon_wgs84(
+    lon: SupportedTypes,
+    lat: SupportedTypes,
+):
     """this uses."""
     return rad_lat_wgs84(lat) * np.cos(lat * d2r) * lon * d2r
 
 
 def gradient_sphere(
-    data,
-    longitude,
-    latitude,
-    wrap_longitude=True,
+    data: SupportedTypes,
+    longitude: SupportedTypes,
+    latitude: SupportedTypes,
+    wrap_longitude: bool = True,
 ):
     datapad = np.pad(data, ((0, 0), (1, 1)), mode='wrap')
     datapad = np.pad(
