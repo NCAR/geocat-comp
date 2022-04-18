@@ -52,6 +52,8 @@ def arc_lat_wgs84(lat: SupportedTypes,):
     The integral of the radius taylor series gives an arc length taylor series
     The taylor series is the distance from the equator to a given latitude
     This is accurate to within floating point error.
+
+    note: This needs to be a taylor series to avoid the eliptic integral
     '''
     return \
         2.87086392358719396475614e-110 * lat ** 49 - \
