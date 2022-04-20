@@ -156,6 +156,7 @@ def grad_wgs84(
     lonresult = np.zeros(data.shape)
     latresult = np.zeros(data.shape)
 
+    #this can be refactored to use slices for a speed improvement
     for latloc in range(1, datapad.shape[0] - 1):
         for lonloc in range(1, datapad.shape[1] - 1):
             lonbac = (datapad[latloc, lonloc] - datapad[latloc, lonloc - 1]) / \
