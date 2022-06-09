@@ -40,7 +40,6 @@ def dlincyc(xi, fi):
 def _linint1(xi, fi, xo, icycx, xmsg, shape):
 
     if xmsg != None:
-        np.where(xi == xmsg, np.nan, xi)
         np.where(fi == xmsg, np.nan, fi)
 
     fo = np.empty(len(xo))
@@ -50,6 +49,9 @@ def _linint1(xi, fi, xo, icycx, xmsg, shape):
     if icycx:
         xi, fi = dlincyc(xi, fi)
 
+    # rows = len(np.shape(fi))
+    # fi = fi[rows-1]
+    # fo = interpolate.interpolate_1d(xo, xi, fi)
     f = interpolate.interp1d(xi, fi)
     fo = f(xo)
 
@@ -190,7 +192,7 @@ def linint1a(fi: supported_types,
 
     # xi should be coming as xarray input's associated coords or assigned
     # as coords while xarray being initiated from numpy input above
-    xi = fi.coords[fi.dims[-1]]
+    xi = fi.coords[fi.dims[-1]].values
 
     # If input data is already chunked
     if fi.chunks is not None:
