@@ -105,6 +105,7 @@ def grad_wgs84(
     latitude: SupportedTypes,
     wrap_longitude: bool = True,
 ):
+    #look into dynamically creating tuples for pad values based on dims
     if wrap_longitude:
         datapad = np.pad(data, ((0, 0), (1, 1)), mode='wrap')
         lonpad = np.pad(longitude, ((0, 0), (1, 1)), mode='wrap')
@@ -157,6 +158,7 @@ def grad_wgs84(
     latresult = np.zeros(data.shape)
 
     #this can be refactored to use slices for a speed improvement
+    #need specific nan_average function to return appropriate results
     for latloc in range(1, datapad.shape[0] - 1):
         for lonloc in range(1, datapad.shape[1] - 1):
             lonbac = (datapad[latloc, lonloc] - datapad[latloc, lonloc - 1]) / \
