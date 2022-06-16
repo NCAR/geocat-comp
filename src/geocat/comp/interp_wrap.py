@@ -231,7 +231,7 @@ def interp_wrap(data_in: supported_types,
                                 
     # if input is xarray.DataArray then rename dims so that it is accepted by xarray.interp
     else:
-        og_dims = data_in.dims
+        og_dims = data_in.dims # save original dims to use at the end
         dim_t = list(data_in.dims)
         if is_two_d:
             dim_t[-1] = "y"
@@ -248,8 +248,6 @@ def interp_wrap(data_in: supported_types,
         data_in = xr.DataArray(data_in.values,
                         dims=dim_t,
                         coords=coords)
-
-    """ CHUNKING TBD
 
     # If input data is already chunked
     if data_in.chunks is not None:
@@ -282,31 +280,7 @@ def interp_wrap(data_in: supported_types,
         ]
         in_chunks = dict(in_chunks)
         data_in = data_in.chunk(in_chunks)
-    
-    generate output shape and chunks
-    t_chunks = in_chunks
-    t_shape = list(data_in.values.shape)
-    t_shape[-1] = len(lon_out)+1
-    t_chunks.update({data_in.dims[-1]: len(lon_out)+1})
-    if is_two_d:
-        t_shape[-2] = len(lat_out)
-        t_chunks.update({data_in.dims[-2]: len(lat_out)})
-    
-    template = xr.DataArray(np.empty(t_shape),
-                            dims = data_in.dims
-                            ).chunk(t_chunks)
 
-    
-    # pre work to be done function call
-    data_in.map_blocks(pre, 
-                    kwargs={
-                        "icycx": icycx,
-                        "msg_py": msg_py
-                    }
-                    ).compute()
-    
-    """
-    
     data_in = _pre(data_in, icycx, msg_py, is_two_d)
 
     # interpolate
@@ -316,16 +290,7 @@ def interp_wrap(data_in: supported_types,
         data_in = data_in.interp(x=lon_out, assume_sorted=assume_sorted, method=method)
 
     data_in = _post(data_in, msg_py=msg_py)
-    
-    """ CHUNKING TBD
-    # post work to be done function call
-    data_in.map_blocks(post, 
-                    kwargs={
-                        "msg_py": msg_py
-                    }
-                    ).compute()
-    """
-    
+
     # if input was numpy.ndarray return np array of data
     if not is_input_xr:
         return data_in.values
