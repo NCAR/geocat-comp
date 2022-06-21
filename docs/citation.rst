@@ -35,8 +35,8 @@ Please find DOIs for all the GeoCAT-comp versions `here
 <https://zenodo.org/search?page=1&size=20&q=conceptrecid:%226607205%22&sort=-version&all_versions=True>`_.
 
 Please note: The DOI minting service, Zenodo, might be suggesting their own citation text (as
-they are the publisher of such DOIs). We prefer the text we recommend here to be used; however, either
-way is acceptable.
+they are the publisher of such DOIs) in their website. We prefer the text we recommend here to be used;
+however, either way is acceptable.
 
 For further information, please refer to
 `GeoCAT homepage - Citation <https://geocat.ucar.edu/pages/citation.html>`_.
