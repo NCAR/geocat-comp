@@ -14,13 +14,13 @@ reproducibility purposes.
 If you would like to cite GeoCAT-comp as a whole (without referring to a specific version), use
 the following text:
 
-**Visualization & Analysis Systems Technologies. (Year).
+**Visualization & Analysis Systems Technologies. (2019).
 Geoscience Community Analysis Toolkit: GeoCAT-comp [Software].
 Boulder, CO: UCAR/NCAR - Computational and Informational System Lab. doi:10.5281/zenodo.6607205.**
 
 Instead, if you would like to cite a specific version of GeoCAT-comp, use the following text:
 
-**Visualization & Analysis Systems Technologies. (Year).
+**Visualization & Analysis Systems Technologies. (\<Year\>).
 Geoscience Community Analysis Toolkit: GeoCAT-comp (v\<version\>) [Software].
 Boulder, CO, USA: UCAR/NCAR - Computational and Informational System Lab. doi:\<DOI\>.**
 
