@@ -9,12 +9,11 @@ from .errors import (AttributeError, ChunkError, CoordinateError,
 from .fourier_filters import (fourier_band_block, fourier_band_pass,
                               fourier_filter, fourier_high_pass,
                               fourier_low_pass)
-from .interpolation import interp_hybrid_to_pressure, interp_sigma_to_hybrid
+from .interpolation import interp_hybrid_to_pressure, interp_sigma_to_hybrid, interp_wrap
 from .polynomial import detrend, ndpolyfit, ndpolyval
 from .meteorology import dewtemp, heat_index, relhum, relhum_ice, relhum_water
 from .skewt_params import get_skewt_vars, showalter_index
 from .spherical import decomposition, recomposition, scale_voronoi
-from .interp_wrap import interp_wrap
 
 # bring all functions from geocat.f2py into the geocat.comp namespace
 try:
