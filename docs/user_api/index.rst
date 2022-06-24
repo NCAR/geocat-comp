@@ -50,6 +50,8 @@ GeoCAT-comp native routines
 
    geocat.comp.interpolation.interp_sigma_to_hybrid
 
+   geocat.comp.interpolation.interp_wrap
+
    geocat.comp.meteorology.dewtemp
 
    geocat.comp.meteorology.heat_index

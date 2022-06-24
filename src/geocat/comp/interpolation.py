@@ -1,5 +1,5 @@
 import typing
-#from .errors import ChunkError, CoordinateError
+from .errors import ChunkError, CoordinateError
 
 import cf_xarray
 import metpy.interpolate
@@ -311,9 +311,11 @@ def interp_sigma_to_hybrid(data: xr.DataArray,
 
     return output
 
+
 """""""""""""""""
 INTERP FUNCTION
 """""""""""""""""
+
 
 def _pre(data_in, cyclic, missing_val, is_2D_coords):
     """
@@ -347,13 +349,13 @@ def _pre(data_in, cyclic, missing_val, is_2D_coords):
     
     """
     # replace msg_py with np.nan
-    if missing_val != None :
+    if missing_val != None:
         data_in = xr.DataArray(np.where(data_in.values == missing_val, np.nan, data_in.values),
-                            dims = data_in.dims,
-                            coords = data_in.coords)
+                               dims=data_in.dims,
+                               coords=data_in.coords)
 
     # add cyclic points and create new data array
-    if cyclic :
+    if cyclic:
         lon = data_in.coords[data_in.dims[-1]].values
         delta_coord = np.diff(lon)
         new_coord = np.append(lon, lon[-1] + delta_coord[0])
@@ -362,7 +364,7 @@ def _pre(data_in, cyclic, missing_val, is_2D_coords):
         else:
             temp = np.pad(data_in.values, (0, 1), "wrap")
         temp = xr.DataArray(temp,
-                                dims = data_in.dims)
+                            dims=data_in.dims)
         if not is_2D_coords:
             data_in = temp.assign_coords({data_in.dims[-1]: new_coord})
         if is_2D_coords:
@@ -370,6 +372,7 @@ def _pre(data_in, cyclic, missing_val, is_2D_coords):
             data_in = data_in.assign_coords({data_in.dims[-1]: new_coord})
 
     return data_in
+
 
 def _post(data_in, missing_val):
     """
@@ -391,22 +394,21 @@ def _post(data_in, missing_val):
     if missing_val != None:
         x = np.where(data_in.values == np.nan, missing_val, data_in.values)
         data_in = xr.DataArray(np.where(np.isnan(data_in.values), missing_val, data_in.values),
-                            dims = data_in.dims,
-                            coords = data_in.coords)
-        
+                               dims=data_in.dims,
+                               coords=data_in.coords)
+
     return data_in
 
 
 def interp_wrap(data_in: supported_types,
-            lon_out: supported_types,
-            lat_out: supported_types = None,
-            lon_in: supported_types = None,
-            lat_in: supported_types = None,
-            cyclic: bool = False,
-            missing_val: np.number = None,
-            assume_sorted: bool = False,
-            method: str = "linear") -> supported_types:
-
+                lon_out: supported_types,
+                lat_out: supported_types = None,
+                lon_in: supported_types = None,
+                lat_in: supported_types = None,
+                cyclic: bool = False,
+                missing_val: np.number = None,
+                assume_sorted: bool = False,
+                method: str = "linear") -> supported_types:
     """ Multidimensional interpolation of variables
 
     Parameters
@@ -466,7 +468,7 @@ def interp_wrap(data_in: supported_types,
     >>> import numpy as np
     >>> import geocat.comp
     >>> da = xr.DataArray(data = [[1, 2, 3, 4, 5, 99], [2, 4, 6, 8, 10, 12]],
-                        dims = ("lat", "lon"),
+                            dims = ("lat", "lon"),
                         coords={"lat": [0, 1], "lon": [0, 50, 100, 250, 300, 350]},
                         )                      
     >>> do = interp_wrap(da, lon_out=[0, 50, 360], lat_out=[0, 1], icycx=1, msg_py=99)
@@ -490,48 +492,48 @@ def interp_wrap(data_in: supported_types,
     is_input_xr = True
     is_2D_coords = False
 
-    if(lat_out is not None):
+    if lat_out is not None:
         is_2D_coords = True
 
     # If the input is numpy.ndarray, convert it to xarray.DataArray
     if not isinstance(data_in, xr.DataArray):
         is_input_xr = False
 
-        if (lon_in is None):
+        if lon_in is None:
             raise CoordinateError(
                 "Argument lon_in must be provided explicitly unless data_in is an xarray.DataArray."
             )
-        
+
         if is_2D_coords:
-            if lat_in is None:    
+            if lat_in is None:
                 raise CoordinateError(
                     "Argument lat_in must be provided explicitly unless data_in is an xarray.DataArray"
                 )
             else:
                 data_in = xr.DataArray(data_in,
-                                    dims = ["lat", "lon"],
-                                    coords={
-                                        "lat": lat_in,
-                                        "lon": lon_in
-                                    })
+                                       dims=["lat", "lon"],
+                                       coords={
+                                           "lat": lat_in,
+                                           "lon": lon_in
+                                       })
         else:
             data_in = xr.DataArray(data_in,
-                                dims = ["lon"],
-                                coords = {
-                                    "lon": lon_in
-                                })
-                                
+                                   dims=["lon"],
+                                   coords={
+                                       "lon": lon_in
+                                   })
+
     if data_in.chunks is not None:
 
         # Ensure rightmost dimension of input is not chunked
         if list(data_in.chunks)[-1:] != [lon_in.shape]:
-            raise Exception(
+            raise ChunkError(
                 "DataArray data_in must be unchunked along the last dimension")
 
         # If 2d ensure last two dimensions are not chunked
         if is_2D_coords:
             if list(data_in.chunks)[-2:] != [lat_in.shape]:
-                raise Exception(
+                raise ChunkError(
                     "DataArray data_in must be unchunked along the last two dimensions"
                 )
 
@@ -539,15 +541,15 @@ def interp_wrap(data_in: supported_types,
 
     # interpolate
     if is_2D_coords:
-        coords={
-            data_in.dims[-1]: lon_out, 
+        coords = {
+            data_in.dims[-1]: lon_out,
             data_in.dims[-2]: lat_out
         }
     else:
-        coords={
+        coords = {
             data_in.dims[-1]: lon_out
         }
-    
+
     data_in = data_in.interp(coords, assume_sorted=assume_sorted, method=method)
 
     data_in = _post(data_in, missing_val=missing_val)

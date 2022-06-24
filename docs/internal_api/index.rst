@@ -37,6 +37,12 @@ GeoCAT-comp routines
 
    geocat.comp.interpolation._vertical_remap
 
+   geocat.comp.interpolation._pre
+
+   geocat.comp.interpolation._post
+
+   geocat.comp.interpolation.interp_wrap
+
    geocat.comp.meteorology._dewtemp
 
    geocat.comp.meteorology._heat_index
