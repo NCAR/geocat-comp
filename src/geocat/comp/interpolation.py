@@ -312,15 +312,9 @@ def interp_sigma_to_hybrid(data: xr.DataArray,
     return output
 
 
-"""""""""""""""""
-INTERP FUNCTION
-"""""""""""""""""
-
-
 def _pre(data_in, cyclic, missing_val, is_2D_coords):
-    """
-    Helper Function: Handling missing data functionality and 
-    adding cyclic point if required
+    """Helper Function: Handling missing data functionality and adding cyclic
+    point if required.
 
     Parameters
     ----------
@@ -333,24 +327,24 @@ def _pre(data_in, cyclic, missing_val, is_2D_coords):
 
     missing_val : :class:`int`, :class:`float`, Optional
         Provides an alternative to NaN
-    
+
     is_2D_coords : :class:'bool'
         Informs if interpolation is 1-dimensional or 2-dimensional
 
     Returns
     -------
     data_in : :class:`xarray.DataArray`
-       The data input with cyclic points added (if icycx is true) 
+       The data input with cyclic points added (if icycx is true)
        and missing_val values replaced with np.nan
-    
+
     Notes
     -------
     Adding cyclic point adapted from cartopy.add_cyclic_point - https://scitools.org.uk/cartopy/docs/latest/reference/generated/cartopy.util.add_cyclic_point.html
-    
     """
     # replace msg_py with np.nan
-    if missing_val != None:
-        data_in = xr.DataArray(np.where(data_in.values == missing_val, np.nan, data_in.values),
+    if missing_val is not None:
+        data_in = xr.DataArray(np.where(data_in.values == missing_val, np.nan,
+                                        data_in.values),
                                dims=data_in.dims,
                                coords=data_in.coords)
 
@@ -360,23 +354,25 @@ def _pre(data_in, cyclic, missing_val, is_2D_coords):
         delta_coord = np.diff(lon)
         new_coord = np.append(lon, lon[-1] + delta_coord[0])
         if is_2D_coords:
-            temp = np.pad(data_in.values, ((0, 0), (0, 1,)), "wrap")
+            temp = np.pad(data_in.values, ((0, 0), (
+                0,
+                1,
+            )), "wrap")
         else:
             temp = np.pad(data_in.values, (0, 1), "wrap")
-        temp = xr.DataArray(temp,
-                            dims=data_in.dims)
+        temp = xr.DataArray(temp, dims=data_in.dims)
         if not is_2D_coords:
             data_in = temp.assign_coords({data_in.dims[-1]: new_coord})
         if is_2D_coords:
-            data_in = temp.assign_coords({data_in.dims[-2]: data_in.coords[data_in.dims[-2]].values})
+            data_in = temp.assign_coords(
+                {data_in.dims[-2]: data_in.coords[data_in.dims[-2]].values})
             data_in = data_in.assign_coords({data_in.dims[-1]: new_coord})
 
     return data_in
 
 
 def _post(data_in, missing_val):
-    """
-    Helper Function: Handling missing data functionality 
+    """Helper Function: Handling missing data functionality.
 
     Parameters
     ----------
@@ -391,9 +387,10 @@ def _post(data_in, missing_val):
     data_in : :class:`xarray.DataArray`
        The data input with np.nan values replaced with missing_val
     """
-    if missing_val != None:
+    if missing_val is not None:
         x = np.where(data_in.values == np.nan, missing_val, data_in.values)
-        data_in = xr.DataArray(np.where(np.isnan(data_in.values), missing_val, data_in.values),
+        data_in = xr.DataArray(np.where(np.isnan(data_in.values), missing_val,
+                                        data_in.values),
                                dims=data_in.dims,
                                coords=data_in.coords)
 
@@ -406,23 +403,23 @@ def interp_wrap(data_in: supported_types,
                 lon_in: supported_types = None,
                 lat_in: supported_types = None,
                 cyclic: bool = False,
-                missing_val: np.number = None,
+                missing_val: [np.float, np.int] = None,
                 assume_sorted: bool = False,
                 method: str = "linear") -> supported_types:
-    """ Multidimensional interpolation of variables
+    """Multidimensional interpolation of variables.
 
     Parameters
     ----------
     data_in : :class:`xarray.DataArray`, :class:`numpy.ndarray`
-        1 or multi-dimensional array containing values to be interpolated. If xarray.DataArray 
-        provided, must have associated coords. If 1d interpolation, last dimension must be 
-        same length as lon_in or associated coord. If 2d interpolation, last dimension must 
-        be same length as lon_in or associated coord and second to last must be same length 
-        as lat_in or associated coord 
+        1 or multi-dimensional array containing values to be interpolated. If xarray.DataArray
+        provided, must have associated coords. If 1d interpolation, last dimension must be
+        same length as lon_in or associated coord. If 2d interpolation, last dimension must
+        be same length as lon_in or associated coord and second to last must be same length
+        as lat_in or associated coord
 
     lon_out : :class:`numpy.ndarray`
-        1D array containing coordinate values for output data. Will perform 1D or 2D 
-        interpolation depending on presence of lat_out. Does not perform extrapolation, 
+        1D array containing coordinate values for output data. Will perform 1D or 2D
+        interpolation depending on presence of lat_out. Does not perform extrapolation,
         returns missing values if any surrounding points contain missing values.
 
     lat_out : :class:'numpy.ndarray', Optional
@@ -431,23 +428,23 @@ def interp_wrap(data_in: supported_types,
         contain missing values
 
     lon_in : :class:'numpy.ndarray', Optional
-        If data_in is not a DataArray, can provide input coordinates as np array. Must be same 
+        If data_in is not a DataArray, can provide input coordinates as np array. Must be same
         length as data_in. If 2D, must be same length as data_in[0].
 
     lat_in : :class:'numpy.ndarray', Optional
-        If data_in is not a DataArray, can provide input coordinates as np array. Must be 
+        If data_in is not a DataArray, can provide input coordinates as np array. Must be
         present if input is 2D. Must be same length as data_in.
 
     cyclic: :class:'np.number', Optional
         Set as true if lon values are cyclical but do not fully wrap around the globe
-         (0, 1.5, 3, ..., 354, 355.5) If true, all inputs (data_in, lon_in, lat_in) 
+         (0, 1.5, 3, ..., 354, 355.5) If true, all inputs (data_in, lon_in, lat_in)
          must be monotonically in/decreasing. Default is false
 
-    msg_py : :class:'np.number', Optional
+    missing_val : :class:'np.number', Optional
         Provide a number to represent missing data. Alternative to using np.nan
 
     assume_sorted: :class:'bool', Optional
-        Set as true if array is sorted. Else xarray.interp will assume it is unsorted 
+        Set as true if array is sorted. Else xarray.interp will assume it is unsorted
         and sort the values. Default is false
 
     method: :class:'str', Optional
@@ -458,7 +455,7 @@ def interp_wrap(data_in: supported_types,
     Returns
     -------
     data_in : :class:`numpy.ndarray`, :class:`xarray.DataArray`
-       Returns same data type as input data_in. Shape will be the same as input array except 
+       Returns same data type as input data_in. Shape will be the same as input array except
        for last two dimensions which will be equal to len(lat_out) x len(lon_out)
 
     Examples
@@ -470,7 +467,7 @@ def interp_wrap(data_in: supported_types,
     >>> da = xr.DataArray(data = [[1, 2, 3, 4, 5, 99], [2, 4, 6, 8, 10, 12]],
                             dims = ("lat", "lon"),
                         coords={"lat": [0, 1], "lon": [0, 50, 100, 250, 300, 350]},
-                        )                      
+                        )
     >>> do = interp_wrap(da, lon_out=[0, 50, 360], lat_out=[0, 1], icycx=1, msg_py=99)
     >>> print(do)
     <xarray.DataArray (lat: 2, lon: 3)>
@@ -486,7 +483,6 @@ def interp_wrap(data_in: supported_types,
     https://scitools.org.uk/cartopy/docs/latest/reference/generated/cartopy.util.add_cyclic_point.html
     https://www.ncl.ucar.edu/Document/Functions/Built-in/linint1.shtml
     https://www.ncl.ucar.edu/Document/Functions/Built-in/linint2.shtml
-
     """
 
     is_input_xr = True
@@ -519,9 +515,7 @@ def interp_wrap(data_in: supported_types,
         else:
             data_in = xr.DataArray(data_in,
                                    dims=["lon"],
-                                   coords={
-                                       "lon": lon_in
-                                   })
+                                   coords={"lon": lon_in})
 
     if data_in.chunks is not None:
 
@@ -541,14 +535,9 @@ def interp_wrap(data_in: supported_types,
 
     # interpolate
     if is_2D_coords:
-        coords = {
-            data_in.dims[-1]: lon_out,
-            data_in.dims[-2]: lat_out
-        }
+        coords = {data_in.dims[-1]: lon_out, data_in.dims[-2]: lat_out}
     else:
-        coords = {
-            data_in.dims[-1]: lon_out
-        }
+        coords = {data_in.dims[-1]: lon_out}
 
     data_in = data_in.interp(coords, assume_sorted=assume_sorted, method=method)
 

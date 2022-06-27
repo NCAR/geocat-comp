@@ -12,11 +12,10 @@ import xarray as xr
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
 if "--cov" in str(sys.argv):
-    from src.geocat.comp import interp_hybrid_to_pressure, interp_sigma_to_hybrid, ChunkError, CoordinateError
+    from src.geocat.comp import interp_wrap, interp_hybrid_to_pressure, interp_sigma_to_hybrid, ChunkError, CoordinateError
 else:
-    from geocat.comp import interp_hybrid_to_pressure, interp_sigma_to_hybrid, ChunkError, CoordinateError
+    from geocat.comp import interp_wrap, interp_hybrid_to_pressure, interp_sigma_to_hybrid, ChunkError, CoordinateError
 
-from src.geocat.comp import interp_wrap
 # Global input data
 
 # Open the netCDF data file "atmos.nc" and read in common variables
@@ -200,56 +199,79 @@ class Test_interp_sigma_to_hybrid(TestCase):
                                         p0=_p0,
                                         method="wrong_method")
 
+
 class Test_interp_manually_calc(unittest.TestCase):
 
     @classmethod
     def setUp(cls):
-        cls.data_in = np.asarray(
-            [0.8273209, 0.97402306, 0.49829999, 0.97088771, 0.14578397, 0.18818199, 0.69280023, 0.37583487, 0.72259201,
-             0.34248486])
+        cls.data_in = np.asarray([
+            0.8273209, 0.97402306, 0.49829999, 0.97088771, 0.14578397,
+            0.18818199, 0.69280023, 0.37583487, 0.72259201, 0.34248486
+        ])
         cls.lon_in = np.arange(0, 360, 36)
         cls.lon_out = np.arange(0, 360 - 35, 18)
 
-        cls.data_out = np.asarray(
-            [0.8273209, 0.90067198, 0.97402306, 0.736161525, 0.49829999, 0.73459385, 0.97088771, 0.55833584, 0.14578397,
-             0.16698298, 0.18818199, 0.44049111, 0.69280023, 0.53431755, 0.37583487, 0.54921344, 0.72259201,
-             0.532538435, 0.34248486])
+        cls.data_out = np.asarray([
+            0.8273209, 0.90067198, 0.97402306, 0.736161525, 0.49829999,
+            0.73459385, 0.97088771, 0.55833584, 0.14578397, 0.16698298,
+            0.18818199, 0.44049111, 0.69280023, 0.53431755, 0.37583487,
+            0.54921344, 0.72259201, 0.532538435, 0.34248486
+        ])
 
-        cls.data_in_2d = np.asarray([[0.8273209, 0.97402306, 0.49829999, 0.97088771, 0.14578397, 0.18818199, 0.69280023,
-                                      0.37583487, 0.72259201, 0.34248486],
-                                     [2.8273209, 2.97402306, 2.49829999, 2.97088771, 2.14578397, 2.18818199, 2.69280023,
-                                      2.37583487, 2.72259201, 2.34248486],
-                                     [4.8273209, 4.97402306, 4.49829999, 4.97088771, 4.14578397, 4.18818199, 4.69280023,
-                                      4.37583487, 4.72259201, 4.34248486]])
+        cls.data_in_2d = np.asarray([[
+            0.8273209, 0.97402306, 0.49829999, 0.97088771, 0.14578397,
+            0.18818199, 0.69280023, 0.37583487, 0.72259201, 0.34248486
+        ],
+                                     [
+                                         2.8273209, 2.97402306, 2.49829999,
+                                         2.97088771, 2.14578397, 2.18818199,
+                                         2.69280023, 2.37583487, 2.72259201,
+                                         2.34248486
+                                     ],
+                                     [
+                                         4.8273209, 4.97402306, 4.49829999,
+                                         4.97088771, 4.14578397, 4.18818199,
+                                         4.69280023, 4.37583487, 4.72259201,
+                                         4.34248486
+                                     ]])
         cls.lat_in = np.asarray([0, 2, 4])
         cls.lat_out = np.asarray([0, 1, 2, 3, 4])
 
-        cls.data_out_2d = np.asarray([[0.8273209, 0.90067198, 0.97402306, 0.736161525, 0.49829999, 0.73459385,
-                                       0.97088771, 0.55833584, 0.14578397, 0.16698298, 0.18818199, 0.44049111,
-                                       0.69280023, 0.53431755, 0.37583487, 0.54921344, 0.72259201, 0.532538435,
-                                       0.34248486],
-                                      [1.8273209, 1.90067198, 1.97402306, 1.736161525, 1.49829999, 1.73459385,
-                                       1.97088771, 1.55833584, 1.14578397, 1.16698298, 1.18818199, 1.44049111,
-                                       1.69280023, 1.53431755, 1.37583487, 1.54921344, 1.72259201, 1.532538435,
-                                       1.34248486],
-                                      [2.8273209, 2.90067198, 2.97402306, 2.736161525, 2.49829999, 2.73459385,
-                                       2.97088771, 2.55833584, 2.14578397, 2.16698298, 2.18818199, 2.44049111,
-                                       2.69280023, 2.53431755, 2.37583487, 2.54921344, 2.72259201, 2.532538435,
-                                       2.34248486],
-                                      [3.8273209, 3.90067198, 3.97402306, 3.736161525, 3.49829999, 3.73459385,
-                                       3.97088771, 3.55833584, 3.14578397, 3.16698298, 3.18818199, 3.44049111,
-                                       3.69280023, 3.53431755, 3.37583487, 3.54921344, 3.72259201, 3.532538435,
-                                       3.34248486],
-                                      [4.8273209, 4.90067198, 4.97402306, 4.736161525, 4.49829999, 4.73459385,
-                                       4.97088771, 4.55833584, 4.14578397, 4.16698298, 4.18818199, 4.44049111,
-                                       4.69280023, 4.53431755, 4.37583487, 4.54921344, 4.72259201, 4.532538435,
-                                       4.34248486]])
+        cls.data_out_2d = np.asarray(
+            [[
+                0.8273209, 0.90067198, 0.97402306, 0.736161525, 0.49829999,
+                0.73459385, 0.97088771, 0.55833584, 0.14578397, 0.16698298,
+                0.18818199, 0.44049111, 0.69280023, 0.53431755, 0.37583487,
+                0.54921344, 0.72259201, 0.532538435, 0.34248486
+            ],
+             [
+                 1.8273209, 1.90067198, 1.97402306, 1.736161525, 1.49829999,
+                 1.73459385, 1.97088771, 1.55833584, 1.14578397, 1.16698298,
+                 1.18818199, 1.44049111, 1.69280023, 1.53431755, 1.37583487,
+                 1.54921344, 1.72259201, 1.532538435, 1.34248486
+             ],
+             [
+                 2.8273209, 2.90067198, 2.97402306, 2.736161525, 2.49829999,
+                 2.73459385, 2.97088771, 2.55833584, 2.14578397, 2.16698298,
+                 2.18818199, 2.44049111, 2.69280023, 2.53431755, 2.37583487,
+                 2.54921344, 2.72259201, 2.532538435, 2.34248486
+             ],
+             [
+                 3.8273209, 3.90067198, 3.97402306, 3.736161525, 3.49829999,
+                 3.73459385, 3.97088771, 3.55833584, 3.14578397, 3.16698298,
+                 3.18818199, 3.44049111, 3.69280023, 3.53431755, 3.37583487,
+                 3.54921344, 3.72259201, 3.532538435, 3.34248486
+             ],
+             [
+                 4.8273209, 4.90067198, 4.97402306, 4.736161525, 4.49829999,
+                 4.73459385, 4.97088771, 4.55833584, 4.14578397, 4.16698298,
+                 4.18818199, 4.44049111, 4.69280023, 4.53431755, 4.37583487,
+                 4.54921344, 4.72259201, 4.532538435, 4.34248486
+             ]])
 
         cls.data_in_1d_xr = xr.DataArray(cls.data_in,
                                          dims=["lon"],
-                                         coords={
-                                             "lon": cls.lon_in
-                                         })
+                                         coords={"lon": cls.lon_in})
 
         cls.data_in_2d_xr = xr.DataArray(cls.data_in_2d,
                                          dims=["x", "y"],
@@ -261,18 +283,26 @@ class Test_interp_manually_calc(unittest.TestCase):
         cls.msg_py = 55.55
 
     def test_numpy_1d(self):
-        np.testing.assert_almost_equal(self.data_out,
-                                       interp_wrap(self.data_in, lon_in=self.lon_in, lon_out=self.lon_out), 10)
+        np.testing.assert_almost_equal(
+            self.data_out,
+            interp_wrap(self.data_in, lon_in=self.lon_in, lon_out=self.lon_out),
+            10)
 
     def test_numpy_1d_cyclic(self):
         x = np.append(self.lon_out, self.lon_in[-1] + 1)
         # calculate cyclic point using linear interp formula
         x_x1 = x[-1] - self.lon_in[-1]
         y2_y1 = self.data_in[0] - self.data_in[-1]
-        x2_x1 = self.lon_in[-1] + (abs(self.lon_in[-1] - self.lon_in[-2])) - self.lon_in[-1]
+        x2_x1 = self.lon_in[-1] + (abs(self.lon_in[-1] -
+                                       self.lon_in[-2])) - self.lon_in[-1]
         cyclic_point = self.data_in[-1] + (x_x1 * y2_y1) / x2_x1
         odata = np.append(self.data_out, cyclic_point)
-        nt.assert_almost_equal(odata, interp_wrap(self.data_in, lon_out=x, lon_in=self.lon_in, cyclic=True), 7)
+        nt.assert_almost_equal(
+            odata,
+            interp_wrap(self.data_in,
+                        lon_out=x,
+                        lon_in=self.lon_in,
+                        cyclic=True), 7)
 
     def test_numpy_1d_msg(self):
         rand = random.randint(1, len(self.data_in) - 2)
@@ -282,8 +312,12 @@ class Test_interp_manually_calc(unittest.TestCase):
         odata[rand * 2] = self.msg_py
         odata[rand * 2 - 1] = self.msg_py
         odata[rand * 2 + 1] = self.msg_py
-        np.testing.assert_almost_equal(odata, interp_wrap(idata, lon_out=self.lon_out, lon_in=self.lon_in,
-                                                          missing_val=self.msg_py), 10)
+        np.testing.assert_almost_equal(
+            odata,
+            interp_wrap(idata,
+                        lon_out=self.lon_out,
+                        lon_in=self.lon_in,
+                        missing_val=self.msg_py), 10)
 
     def test_numpy_1d_mask(self):
         rand = random.randint(1, len(self.data_in) - 2)
@@ -293,9 +327,11 @@ class Test_interp_manually_calc(unittest.TestCase):
         mask_out[rand * 2] = 1
         mask_out[rand * 2 - 1] = 1
         mask_out[rand * 2 + 1] = 1
-        np.testing.assert_almost_equal(ma.masked_array(self.data_out, mask_out),
-                                       interp_wrap(data_in=ma.masked_array(self.data_in, mask), lon_out=self.lon_out,
-                                                   lon_in=self.lon_in), 10)
+        np.testing.assert_almost_equal(
+            ma.masked_array(self.data_out, mask_out),
+            interp_wrap(data_in=ma.masked_array(self.data_in, mask),
+                        lon_out=self.lon_out,
+                        lon_in=self.lon_in), 10)
 
     def test_numpy_1d_nan(self):
         rand = random.randint(1, len(self.data_in) - 2)
@@ -305,19 +341,31 @@ class Test_interp_manually_calc(unittest.TestCase):
         odata[rand * 2] = np.nan
         odata[rand * 2 - 1] = np.nan
         odata[rand * 2 + 1] = np.nan
-        np.testing.assert_almost_equal(odata, interp_wrap(idata, lon_out=self.lon_out, lon_in=self.lon_in), 10)
+        np.testing.assert_almost_equal(
+            odata, interp_wrap(idata, lon_out=self.lon_out, lon_in=self.lon_in),
+            10)
 
     def test_numpy_2d_float32(self):
         data_in = self.data_in_2d.astype(np.float32)
         data_out = self.data_out_2d.astype(np.float32)
-        np.testing.assert_almost_equal(data_out, interp_wrap(data_in, lon_in=self.lon_in, lat_in=self.lat_in,
-                                                             lon_out=self.lon_out, lat_out=self.lat_out), 6)
+        np.testing.assert_almost_equal(
+            data_out,
+            interp_wrap(data_in,
+                        lon_in=self.lon_in,
+                        lat_in=self.lat_in,
+                        lon_out=self.lon_out,
+                        lat_out=self.lat_out), 6)
 
     def test_numpy_2d_float64(self):
         data_in = self.data_in_2d.astype(np.float64)
         data_out = self.data_out_2d.astype(np.float64)
-        np.testing.assert_almost_equal(data_out, interp_wrap(data_in, lon_in=self.lon_in, lat_in=self.lat_in,
-                                                             lon_out=self.lon_out, lat_out=self.lat_out), 6)
+        np.testing.assert_almost_equal(
+            data_out,
+            interp_wrap(data_in,
+                        lon_in=self.lon_in,
+                        lat_in=self.lat_in,
+                        lon_out=self.lon_out,
+                        lat_out=self.lat_out), 6)
 
     def test_numpy_2d_cyclic(self):
         x = np.append(self.lon_out, self.lon_in[-1] + 1)
@@ -326,7 +374,8 @@ class Test_interp_manually_calc(unittest.TestCase):
         for i in [0, 1, 2]:
             x_x1 = x[-1] - self.lon_in[-1]
             y2_y1 = self.data_in_2d[i][0] - self.data_in_2d[i][-1]
-            x2_x1 = self.lon_in[-1] + (abs(self.lon_in[-1] - self.lon_in[-2])) - self.lon_in[-1]
+            x2_x1 = self.lon_in[-1] + (abs(self.lon_in[-1] -
+                                           self.lon_in[-2])) - self.lon_in[-1]
             cyclic_point = self.data_in_2d[i][-1] + (x_x1 * y2_y1) / x2_x1
             odata[i * 2][-1] = cyclic_point
         for i in [1, 3]:
@@ -335,22 +384,33 @@ class Test_interp_manually_calc(unittest.TestCase):
             x2_x1 = self.lat_in[int(i / 2) + 1] - self.lat_in[int(i / 2)]
             cyclic_point = odata[int(i / 2) * 2][-1] + (x_x1 * y2_y1) / x2_x1
             odata[i][-1] = cyclic_point
-        np.testing.assert_almost_equal(odata,
-                                       interp_wrap(self.data_in_2d, lat_in=self.lat_in, lat_out=self.lat_out, lon_out=x,
-                                                   lon_in=self.lon_in, cyclic=True), 10)
+        np.testing.assert_almost_equal(
+            odata,
+            interp_wrap(self.data_in_2d,
+                        lat_in=self.lat_in,
+                        lat_out=self.lat_out,
+                        lon_out=x,
+                        lon_in=self.lon_in,
+                        cyclic=True), 10)
 
     def test_numpy_2d_missing(self):
         rand_r = random.randint(1, len(self.data_in_2d) - 2)
-        rand_c = random.randint(1, len(self.data_in_2d[0]) - 2)
+        rand_c = random.randint(2, len(self.data_in_2d[0]) - 2)
         idata = self.data_in_2d
         idata[rand_r][rand_c] = self.msg_py
         odata = self.data_out_2d
         for i in [0, 1, 2, 3, 4]:
-            for j in [(rand_c * 2) - 1, rand_c * 2, (rand_c * 2) + 1, (rand_c * 2) + 2]:
+            for j in [(rand_c * 2) - 1, rand_c * 2, (rand_c * 2) + 1,
+                      (rand_c * 2) + 2]:
                 odata[i][j] = self.msg_py
-        np.testing.assert_almost_equal(odata, interp_wrap(idata, lon_out=self.lon_out, lat_out=self.lat_out,
-                                                          lat_in=self.lat_in, lon_in=self.lon_in,
-                                                          missing_val=self.msg_py), 7)
+        np.testing.assert_almost_equal(
+            odata,
+            interp_wrap(idata,
+                        lon_out=self.lon_out,
+                        lat_out=self.lat_out,
+                        lat_in=self.lat_in,
+                        lon_in=self.lon_in,
+                        missing_val=self.msg_py), 7)
 
     def test_numpy_2d_nan(self):
         rand_r = random.randint(1, len(self.data_in_2d) - 2)
@@ -359,27 +419,41 @@ class Test_interp_manually_calc(unittest.TestCase):
         idata[rand_r][rand_c] = np.nan
         odata = self.data_out_2d
         for i in [0, 1, 2, 3, 4]:
-            for j in [(rand_c * 2) - 1, rand_c * 2, (rand_c * 2) + 1, (rand_c * 2) + 2]:
+            for j in [(rand_c * 2) - 1, rand_c * 2, (rand_c * 2) + 1,
+                      (rand_c * 2) + 2]:
                 odata[i][j] = np.nan
-        np.testing.assert_almost_equal(odata, interp_wrap(idata, lat_in=self.lat_in, lat_out=self.lat_out,
-                                                          lon_out=self.lon_out, lon_in=self.lon_in), decimal=7)
+        np.testing.assert_almost_equal(odata,
+                                       interp_wrap(idata,
+                                                   lat_in=self.lat_in,
+                                                   lat_out=self.lat_out,
+                                                   lon_out=self.lon_out,
+                                                   lon_in=self.lon_in),
+                                       decimal=7)
 
     def test_numpy_2d_mask(self):
-        rand_r = (np.random.rand(1) * (len(self.data_in_2d) - 1)).astype(int)[0]
-        rand_c = (np.random.rand(1) * (len(self.data_in_2d[0]) - 1)).astype(int)[0]
+        rand_r = random.randint(1, len(self.data_in_2d) - 2)
+        rand_c = random.randint(2, len(self.data_in_2d[0]) - 2)
         mask = np.zeros(self.data_in_2d.shape)
         mask[rand_r][rand_c] = 1
         mask_out = np.zeros(self.data_out_2d.shape)
         for i in [0, 1, 2, 3, 4]:
-            for j in [(rand_c * 2) - 1, rand_c * 2, (rand_c * 2) + 1, (rand_c * 2) + 2]:
+            for j in [(rand_c * 2) - 1, rand_c * 2, (rand_c * 2) + 1,
+                      (rand_c * 2) + 2]:
                 mask_out[i][j] = 1
-        np.testing.assert_almost_equal(ma.masked_array(self.data_out_2d, mask_out),
-                                       interp_wrap(ma.masked_array(self.data_in_2d, mask), lat_in=self.lat_in,
-                                                   lat_out=self.lat_out, lon_out=self.lon_out, lon_in=self.lon_in),
+        np.testing.assert_almost_equal(ma.masked_array(self.data_out_2d,
+                                                       mask_out),
+                                       interp_wrap(ma.masked_array(
+                                           self.data_in_2d, mask),
+                                                   lat_in=self.lat_in,
+                                                   lat_out=self.lat_out,
+                                                   lon_out=self.lon_out,
+                                                   lon_in=self.lon_in),
                                        decimal=10)
 
     def test_xarray_1d(self):
-        np.testing.assert_almost_equal(self.data_out, interp_wrap(self.data_in_1d_xr, lon_out=self.lon_out), 10)
+        np.testing.assert_almost_equal(
+            self.data_out, interp_wrap(self.data_in_1d_xr,
+                                       lon_out=self.lon_out), 10)
 
     def test_xarray_2d_float64(self):
         data_in = self.data_in_2d.astype(np.float64)
@@ -390,7 +464,10 @@ class Test_interp_manually_calc(unittest.TestCase):
                                       "lon": self.lon_in
                                   })
         data_out = self.data_out_2d.astype(np.float64)
-        np.testing.assert_almost_equal(data_out, interp_wrap(data_in_xr, lon_out=self.lon_out, lat_out=self.lat_out), 6)
+        np.testing.assert_almost_equal(
+            data_out,
+            interp_wrap(data_in_xr, lon_out=self.lon_out, lat_out=self.lat_out),
+            6)
 
 
 class Test__interp_larger_dataset(unittest.TestCase):
@@ -403,8 +480,11 @@ class Test__interp_larger_dataset(unittest.TestCase):
         dataset = xr.load_dataset("interpolation_output_data.nc")
         cls.output = dataset["__xarray_dataarray_variable__"]
 
-        cls.lat10 = np.flip(np.arange(np.amin(cls.input.coords["lat"]), np.amax(cls.input.coords["lat"]) + 0.1, 0.1))
-        cls.lon10 = np.arange(np.amin(cls.input.coords["lon"]), np.amax(cls.input.coords["lon"]) + 0.1, 0.1)
+        cls.lat10 = np.flip(
+            np.arange(np.amin(cls.input.coords["lat"]),
+                      np.amax(cls.input.coords["lat"]) + 0.1, 0.1))
+        cls.lon10 = np.arange(np.amin(cls.input.coords["lon"]),
+                              np.amax(cls.input.coords["lon"]) + 0.1, 0.1)
 
         cls.input_chunked = xr.DataArray(np.random.rand(3, 96, 37, 19),
                                          dims=["time", "level", "lat", "lon"],
@@ -412,26 +492,25 @@ class Test__interp_larger_dataset(unittest.TestCase):
                                              "lat": np.arange(0, 361, 10),
                                              "lon": np.arange(0, 181, 10)
                                          })
-        chunks = {
-            "time": 1,
-            "level": 1,
-            "lat": 37,
-            "lon": 19
-        }
+        chunks = {"time": 1, "level": 1, "lat": 37, "lon": 19}
         cls.input_chunked.chunk(chunks)
 
     def test_10x(self):
-        np.testing.assert_array_equal(self.output, interp_wrap(self.input, lon_out=self.lon10,
-                                                               lat_out=self.lat10))
+        np.testing.assert_array_equal(
+            self.output,
+            interp_wrap(self.input, lon_out=self.lon10, lat_out=self.lat10))
 
     # def test_10x_res(self):
     #     np.testing.assert_array_equal(self.input.values, interp_wrap(self.input, lon_out=self.lat10,
     #                                                                  lat_out=self.lon10).values[::10, ::10])
 
     def test_chunked(self):
-        np.testing.assert_almost_equal(self.input_chunked.values,
-                                      interp_wrap(self.input_chunked, lat_out=np.arange(0, 361, 5),
-                                                  lon_out=np.arange(0, 181, 5)).values[:, :, ::2, ::2], 10)
+        np.testing.assert_almost_equal(
+            self.input_chunked.values,
+            interp_wrap(self.input_chunked,
+                        lat_out=np.arange(0, 361, 5),
+                        lon_out=np.arange(0, 181, 5)).values[:, :, ::2, ::2],
+            10)
 
 
 class Test_wrap_errors(unittest.TestCase):
@@ -446,26 +525,16 @@ class Test_wrap_errors(unittest.TestCase):
                                            "lat": np.arange(0, 361, 10),
                                            "lon": np.arange(0, 181, 10)
                                        })
-        chunks = {
-            "time": 1,
-            "level": 1,
-            "lat": 18,
-            "lon": 18
-        }
+        chunks = {"time": 1, "level": 1, "lat": 18, "lon": 18}
         cls.input_chunk.chunk(chunks)
 
     def test_coordinate_error_1d(self):
-        np.testing.assert_raises(CoordinateError,
-                                 interp_wrap,
-                                 self.data_in_1d,
+        np.testing.assert_raises(CoordinateError, interp_wrap, self.data_in_1d,
                                  np.arange(0, 10, 0.5))
 
     def test_coordinate_error_2d(self):
-        self.assertRaises(CoordinateError,
-                          interp_wrap,
-                          self.data_in_2d,
-                          np.arange(0, 10, 0.5),
-                          np.arange(0, 10, 0.5))
+        self.assertRaises(CoordinateError, interp_wrap, self.data_in_2d,
+                          np.arange(0, 10, 0.5), np.arange(0, 10, 0.5))
 
     def test_chunk_error(self):
         with nt.assert_raises(ChunkError):
