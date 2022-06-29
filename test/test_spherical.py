@@ -1,9 +1,10 @@
-import scipy.special as ss
-import numpy as np
 import math as ma
-import xarray as xr
 import sys
 import unittest
+
+import numpy as np
+import scipy.special as ss
+import xarray as xr
 
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
@@ -16,6 +17,12 @@ else:
 
 
 class Test_Spherical(unittest.TestCase):
+    test_results_np = None
+    test_data_np = None
+    test_harmonics_np = None
+    phi_np = None
+    theta_np = None
+    test_scale_np = None
 
     @classmethod
     def setUpClass(cls):

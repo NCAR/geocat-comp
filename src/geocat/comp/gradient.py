@@ -4,6 +4,8 @@ import numpy as np
 import xarray as xr
 
 SupportedTypes = Union[np.ndarray, xr.DataArray]
+XTypes = Union[xr.DataArray, xr.Dataset]
+
 d2r = 1.74532925199432957692369e-02
 
 
@@ -101,11 +103,28 @@ def arc_lon_wgs84(
 
 def grad_wgs84(
     data: SupportedTypes,
-    longitude: SupportedTypes,
-    latitude: SupportedTypes,
+    longitude: SupportedTypes = None,
+    latitude: SupportedTypes = None,
     wrap_longitude: bool = True,
 ):
-    #look into dynamically creating tuples for pad values based on dims
+    return None
+
+
+def grad_wgs84_xr(
+    data: XTypes,
+    wrap_longitude: bool = True,
+):
+    lon2d, lat2d = np.meshgrid(data.coords['lon'], data.coords['lat'])
+    return grad_wgs84(data.values, lon2d, lat2d)
+
+
+def grad_wgs84_np(
+    data: np.array,
+    longitude: np.array,
+    latitude: np.array,
+    wrap_longitude: bool = True,
+):
+    # look into dynamically creating tuples for pad values based on dims
     if wrap_longitude:
         datapad = np.pad(data, ((0, 0), (1, 1)), mode='wrap')
         lonpad = np.pad(longitude, ((0, 0), (1, 1)), mode='wrap')
@@ -157,8 +176,8 @@ def grad_wgs84(
     lonresult = np.zeros(data.shape)
     latresult = np.zeros(data.shape)
 
-    #this can be refactored to use slices for a speed improvement
-    #need specific nan_average function to return appropriate results
+    # this can be refactored to use slices for a speed improvement
+    # need specific nan_average function to return appropriate results
     for latloc in range(1, datapad.shape[0] - 1):
         for lonloc in range(1, datapad.shape[1] - 1):
             lonbac = (datapad[latloc, lonloc] - datapad[latloc, lonloc - 1]) / \

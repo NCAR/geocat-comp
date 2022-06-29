@@ -60,7 +60,8 @@ def get_skewt_vars(p: pint.Quantity, tc: pint.Quantity, tdc: pint.Quantity,
     Returns
     -------
     joined : :class:`str`
-        A string element with the format "Plcl=<value> Tlcl[C]=<value> Shox=<value> Pwat[cm]=<value> Cape[J]=<value>" where:
+        A string element with the format "Plcl=<value> Tlcl[C]=<value>
+        Shox=<value> Pwat[cm]=<value> Cape[J]=<value>" where:
 
         - Cape  -  Convective Available Potential Energy [J]
         - Pwat  -  Precipitable Water [cm]
@@ -71,8 +72,10 @@ def get_skewt_vars(p: pint.Quantity, tc: pint.Quantity, tdc: pint.Quantity,
     See Also
     --------
     Related NCL Functions:
-    `skewT_PlotData <https://www.ncl.ucar.edu/Document/Functions/Skewt_func/skewT_PlotData.shtml>`_,
-    `skewt_BackGround <https://www.ncl.ucar.edu/Document/Functions/Skewt_func/skewT_BackGround.shtml>`_
+    `skewT_PlotData <https://www.ncl.ucar.edu/Document/Functions/Skewt_func
+    /skewT_PlotData.shtml>`_,
+    `skewt_BackGround <https://www.ncl.ucar.edu/Document/Functions/Skewt_func
+    /skewT_BackGround.shtml>`_
     """
 
     # CAPE

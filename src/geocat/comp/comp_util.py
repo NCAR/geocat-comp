@@ -22,10 +22,24 @@ def write_xarray_to_netcdf(data: xr.Dataset,
                            variable_name: str = 'variable') -> None:
     sdata = copy.deepcopy(data)
     sdata = sdata.rename(variable_name)
-    sdata.to_netcdf(str(variable_name + '.nc4'))
+    sdata.to_netcdf(str(variable_name + '.nc'))
+    return None
 
 
 def read_xarray_from_netcdf(file_name: str) -> xr.Dataset:
-    if file_name[-4:] != '.nc4':
-        file_name = str(file_name + '.nc4')
+    if file_name[-3:] != '.nc':
+        file_name = str(file_name + '.nc')
     return xr.load_dataset(file_name)
+
+
+def spherical_data(latitudes, longitudes):
+    x = [x for x in range(latitudes)]
+    y = [y for y in range(longitudes)]
+    lons, lats = np.meshgrid(x, y)
+
+    x = [x for x in range(latitudes)]
+    y = [y for y in range(longitudes)]
+    lons, lats = np.meshgrid(x, y)
+
+    return None
+    np.meshgrid(x, y)
