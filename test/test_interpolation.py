@@ -203,8 +203,10 @@ class Test_interp_manually_calc(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.test_input = xr.load_dataset('interpolation_test_input_data.nc')
-        cls.test_output = xr.load_dataset('interpolation_test_output_data.nc')
+        cls.test_input = xr.load_dataset(
+            'test/interpolation_test_input_data.nc')
+        cls.test_output = xr.load_dataset(
+            'test/interpolation_test_output_data.nc')
 
         cls.data_in = cls.test_input['normal']
         cls.data_out = cls.test_output['normal']
@@ -332,10 +334,10 @@ class Test__interp_larger_dataset(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.test_input = xr.load_dataset('interpolation_test_data.nc') \
+        cls.test_input = xr.load_dataset('test/interpolation_test_data.nc') \
             ['__xarray_dataarray_variable__']
 
-        cls.test_output = xr.load_dataset('interpolation_output_data.nc') \
+        cls.test_output = xr.load_dataset('test/interpolation_output_data.nc') \
             ['__xarray_dataarray_variable__']
 
         cls.test_lat_output = np.flip(
@@ -364,7 +366,7 @@ class Test__interp_larger_dataset(unittest.TestCase):
         np.testing.assert_almost_equal(
             self.test_output,
             data_xr.values,
-            12,
+            7,
         )
 
     def test_chunked(self):
@@ -378,4 +380,4 @@ class Test__interp_larger_dataset(unittest.TestCase):
         test_exact_match_nans = self.test_output.values[::10, ::10]
         test_exact_match_nans[np.isnan(data_exact_xr)] = np.nan
 
-        np.testing.assert_almost_equal(test_exact_match_nans, data_exact_xr, 10)
+        np.testing.assert_almost_equal(test_exact_match_nans, data_exact_xr, 7)
