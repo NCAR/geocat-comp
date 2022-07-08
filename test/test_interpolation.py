@@ -10,7 +10,8 @@ import xarray as xr
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
 if "--cov" in str(sys.argv):
-    pass
+    from src.geocat.comp import interp_wrap, interp_hybrid_to_pressure, \
+        interp_sigma_to_hybrid
 else:
     from geocat.comp import interp_wrap, interp_hybrid_to_pressure, \
         interp_sigma_to_hybrid
@@ -203,10 +204,18 @@ class Test_interp_manually_calc(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.test_input = xr.load_dataset(
-            'test/interpolation_test_input_data.nc')
-        cls.test_output = xr.load_dataset(
-            'test/interpolation_test_output_data.nc')
+        try:
+            cls.test_input = xr.open_dataset("interpolation_test_input_data.nc")
+        except:
+            cls.test_input = xr.open_dataset(
+                "test/interpolation_test_input_data.nc")
+
+        try:
+            cls.test_output = xr.open_dataset(
+                "interpolation_test_output_data.nc")
+        except:
+            cls.test_output = xr.open_dataset(
+                "test/interpolation_test_output_data.nc")
 
         cls.data_in = cls.test_input['normal']
         cls.data_out = cls.test_output['normal']
@@ -334,11 +343,21 @@ class Test__interp_larger_dataset(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.test_input = xr.load_dataset('test/interpolation_test_data.nc') \
+
+        try:
+            cls.test_input = xr.open_dataset("interpolation_test_data.nc") \
+            ['__xarray_dataarray_variable__']
+        except:
+            cls.test_input = xr.open_dataset("test/interpolation_test_data.nc") \
             ['__xarray_dataarray_variable__']
 
-        cls.test_output = xr.load_dataset('test/interpolation_output_data.nc') \
+        try:
+            cls.test_output = xr.load_dataset('interpolation_output_data.nc') \
             ['__xarray_dataarray_variable__']
+        except:
+            cls.test_output = \
+            xr.load_dataset('test/interpolation_output_data.nc') \
+                ['__xarray_dataarray_variable__']
 
         cls.test_lat_output = np.flip(
             np.arange(
