@@ -512,7 +512,7 @@ def _xrelhum(t: xr.DataArray, w: xr.DataArray, p: xr.DataArray, use_gpu: bool=Fa
     Returns
     -------
     rh : :class:`xarray.DataArray`
-        Relative humidity. Will have the same dimensions as temperture
+        Relative humidity. Will have the same dimensions as temperature
 
 
     See Also

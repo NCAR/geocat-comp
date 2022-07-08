@@ -8,10 +8,10 @@ import xarray as xr
 
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
-#if "--cov" in str(sys.argv):
-from src.geocat.comp import dewtemp, heat_index, relhum, relhum_ice, relhum_water
-#else:
-#    from geocat.comp import dewtemp, heat_index, relhum, relhum_ice, relhum_water
+if "--cov" in str(sys.argv):
+    from src.geocat.comp import dewtemp, heat_index, relhum, relhum_ice, relhum_water
+else:
+    from geocat.comp import dewtemp, heat_index, relhum, relhum_ice, relhum_water
 
 
 class Test_dewtemp(unittest.TestCase):

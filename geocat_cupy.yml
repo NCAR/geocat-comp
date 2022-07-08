@@ -1,4 +1,4 @@
-name: /glade/work/hkashgar/conda-envs/geocat
+name: geocat
 channels:
   - conda-forge
   - ncar
@@ -24,4 +24,3 @@ dependencies:
   - xarray
   - distributed
   - netcdf4
-prefix: /glade/work/hkashgar/conda-envs/geocat
