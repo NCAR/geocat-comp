@@ -220,10 +220,10 @@ class Test_interp_manually_calc(unittest.TestCase):
         cls.data_in = cls.test_input['normal']
         cls.data_out = cls.test_output['normal']
 
-        cls.lat_in = cls.data_in['lat']
-        cls.lat_out = cls.data_out['lat']
-        cls.lon_in = cls.data_in['lon']
-        cls.lon_out = cls.data_out['lon']
+        cls.lat_in = cls.data_in['lat'].values
+        cls.lat_out = cls.data_out['lat'].values
+        cls.lon_in = cls.data_in['lon'].values
+        cls.lon_out = cls.data_out['lon'].values
 
         cls.data_in_nan = cls.test_input['nan']
         cls.data_out_nan = cls.test_output['nan']
@@ -251,7 +251,8 @@ class Test_interp_manually_calc(unittest.TestCase):
                                          'lat': self.lat_out,
                                          'lon': self.lon_out
                                      }),
-                        cyclic=True).values, 6)
+                        cyclic=True).values,
+            decimal=7)
 
     def test_float64(self):
         np.testing.assert_almost_equal(
@@ -270,7 +271,7 @@ class Test_interp_manually_calc(unittest.TestCase):
                              }),
                 cyclic=True,
             ).values,
-            decimal=6,
+            decimal=8,
         )
 
     def test_missing(self):
@@ -285,7 +286,7 @@ class Test_interp_manually_calc(unittest.TestCase):
                              }),
                 cyclic=True,
             ).values,
-            decimal=7,
+            decimal=8,
         )
 
     def test_nan(self):
@@ -300,7 +301,7 @@ class Test_interp_manually_calc(unittest.TestCase):
                              }),
                 cyclic=True,
             ).values,
-            decimal=7,
+            decimal=8,
         )
 
     def test_mask(self):
@@ -315,7 +316,7 @@ class Test_interp_manually_calc(unittest.TestCase):
                              }),
                 cyclic=True,
             ).values,
-            decimal=10,
+            decimal=8,
         )
 
     def test_2_nans(self):
@@ -330,8 +331,20 @@ class Test_interp_manually_calc(unittest.TestCase):
                              }),
                 cyclic=True,
             ).values,
-            decimal=10,
+            decimal=8,
         )
+
+    def test_numpy(self):
+        np.testing.assert_almost_equal(self.data_out.values,
+                                       interp_wrap(
+                                           self.data_in.values,
+                                           lat_in=self.lat_in,
+                                           lon_in=self.lon_in,
+                                           lat_out=self.lat_out,
+                                           lon_out=self.lon_out,
+                                           cyclic=True,
+                                       ),
+                                       decimal=8)
 
 
 class Test__interp_larger_dataset(unittest.TestCase):
@@ -385,7 +398,7 @@ class Test__interp_larger_dataset(unittest.TestCase):
         np.testing.assert_almost_equal(
             self.test_output,
             data_xr.values,
-            7,
+            decimal=8,
         )
 
     def test_chunked(self):
@@ -399,4 +412,6 @@ class Test__interp_larger_dataset(unittest.TestCase):
         test_exact_match_nans = self.test_output.values[::10, ::10]
         test_exact_match_nans[np.isnan(data_exact_xr)] = np.nan
 
-        np.testing.assert_almost_equal(test_exact_match_nans, data_exact_xr, 7)
+        np.testing.assert_almost_equal(test_exact_match_nans,
+                                       data_exact_xr,
+                                       decimal=8)

@@ -393,78 +393,12 @@ def _post(data_in, missing_val):
     return data_in
 
 
-def _numpy_wrap(
-    data_in: np.ndarray,
-    lat_in: np.ndarray,
-    lon_in: np.ndarray,
-    lat_out: np.ndarray,
-    lon_out: np.ndarray,
-    cyclic: bool = False,
-    missing_val: np.number = None,
-    method: str = "linear",
-) -> np.ndarray:
-    """
-    Numpy wrapper for interp_wrap - multidimensional interpolation of variables.
-
-    Parameters
-    ----------
-    data_in: :class:`np.ndarray`
-        Multidimensional array with values to be interpolated. Last two dimensions must be
-        of shape - len(lat_in) x len(lon_in)
-
-    lat_in: :class:`np.ndarray`
-        List of latitude coordinates corresponding to data_in.
-
-    lon_in: :class:`np.ndarray`
-        List of longitude coordinates corresponding to data_in.
-
-    lat_out: :class:`np.ndarray`
-        List of latitude coordinates to be interpolated to.
-
-    lon_out: :class:`np.ndarray`
-        List of longitude coordinates to be interpolated to.
-
-    cyclic: :class:'bool', Optional
-        Set as true if lon values are cyclical but do not fully wrap around the globe
-        (0, 1.5, 3, ..., 354, 355.5) Default is false
-
-    missing_val : :class:'np.number', Optional
-        Provide a number to represent missing data. Alternative to using np.nan
-
-    method: :class:'str', Optional
-        Provide specific method of interpolation. Default is "linear"
-        “linear” or “nearest” for multidimensional array,
-
-    Returns
-    -------
-    data_out : :class:`numpy.ndarray`
-       Returns same data type as input data_in. Shape will be the same as input array except
-       for last two dimensions which will be equal to len(lat_out) x len(lon_out)
-
-    """
-    data_in = xr.DataArray(data_in,
-                           dims=['lat', 'lon'],
-                           coords={
-                               'lat': lat_in,
-                               'lon': lon_in,
-                           })
-    data_out = xr.DataArray(dims=['lat', 'lon'],
-                            coords={
-                                'lat': lat_out,
-                                'lon': lon_out,
-                            })
-
-    data_out = interp_wrap(data_in,
-                           data_out,
-                           cyclic=cyclic,
-                           missing_val=missing_val,
-                           method=method)
-
-    return data_out.values
-
-
-def interp_wrap(data_in: xr.DataArray,
-                data_out: xr.DataArray,
+def interp_wrap(data_in: supported_types,
+                data_out: supported_types = None,
+                lat_in: np.ndarray = None,
+                lon_in: np.ndarray = None,
+                lon_out: np.ndarray = None,
+                lat_out: np.ndarray = None,
                 cyclic: bool = False,
                 missing_val: np.number = None,
                 method: str = "linear") -> supported_types:
@@ -474,11 +408,31 @@ def interp_wrap(data_in: xr.DataArray,
 
     Parameters
     ----------
-    data_in : :class:`xarray.DataArray`
-        Data array with data to be interpolated and associated coords
+    data_in : :class:`xarray.DataArray` :class:'np.ndarray'
+        Data array with data to be interpolated and associated coords. If
+        it is a np array, then lat_in and lon_in must be provided. Length must
+        be coordinated with given coordinates.
 
     data_out: :class:'xarray.DataArray'
-        Data array with coords to be interpolated to
+        Data array with coords to be interpolated to, either provide this
+        or lon_out and lat_out. Names of dims to be interpolated must be
+        the same as the corresponding coords in data_in.
+
+    lat_in: :class:`np.ndarray`
+        List of latitude coordinates corresponding to data_in. Must be
+        given if data_in is not an xarray.
+
+    lon_in: :class:`np.ndarray`
+        List of longitude coordinates corresponding to data_in. Must be
+        given if data_in is not an xarray.
+
+    lat_out: :class:`np.ndarray`
+        List of latitude coordinates to be interpolated to. Must be given
+        if data_out is not given.
+
+    lon_out: :class:`np.ndarray`
+        List of longitude coordinates to be interpolated to. Must be given
+        if data_out is not given.
 
     cyclic: :class:'bool', Optional
         Set as true if lon values are cyclical but do not fully wrap around the globe
@@ -500,7 +454,6 @@ def interp_wrap(data_in: xr.DataArray,
     Examples
     --------
     >>> import xarray as xr
-    >>> import pandas as pd
     >>> import numpy as np
     >>> import geocat.comp
     >>> da = xr.DataArray(data = [[1, 2, 3, 4, 5, 99], [2, 4, 6, 8, 10, 12]],
@@ -522,9 +475,32 @@ def interp_wrap(data_in: xr.DataArray,
     https://scitools.org.uk/cartopy/docs/latest/reference/generated/cartopy.util.add_cyclic_point.html
     https://www.ncl.ucar.edu/Document/Functions/Built-in/linint2.shtml
     """
+    # check for xarray/numpy
+    if not isinstance(data_in, xr.DataArray):
+        if lat_in is None or lon_in is None:
+            raise CoordinateError(
+                "Argument lat_in and lon_in must be provided if data_in is not an xarray"
+            )
+        data_in = xr.DataArray(data_in,
+                               dims=['lat', 'lon'],
+                               coords={
+                                   'lat': lat_in,
+                                   'lon': lon_in
+                               })
 
-    data_in = _pre_interp_wrap(data_in, cyclic, missing_val)
-    data_out = data_in.interp(data_out.coords, method=method)
-    data_out = _post(data_out, missing_val=missing_val)
+    if data_out is None:
+        if lat_out is None or lon_out is None:
+            raise CoordinateError(
+                "Argument lat_out and lon_out must be provided if data_out is not an xarray"
+            )
+        data_out = xr.DataArray(dims=[data_in.dims[-2], data_in.dims[-1]],
+                                coords={
+                                    data_in.dims[-2]: lat_out,
+                                    data_in.dims[-1]: lon_out
+                                })
 
-    return data_out
+    data_in_modified = _pre_interp_wrap(data_in, cyclic, missing_val)
+    data_out = data_in_modified.interp(data_out.coords, method=method)
+    data_out_modified = _post(data_out, missing_val=missing_val)
+
+    return data_out_modified
