@@ -347,7 +347,7 @@ class Test_interp_manually_calc(unittest.TestCase):
                                        decimal=8)
 
 
-class Test__interp_larger_dataset(unittest.TestCase):
+class Test_interp_larger_dataset(unittest.TestCase):
     test_input = None
     test_output = None
     test_lat_output = None

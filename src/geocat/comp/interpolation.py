@@ -368,7 +368,7 @@ def _pre_interp_wrap(
     return data_in
 
 
-def _post(data_in, missing_val):
+def _post_interp_wrap(data_in, missing_val):
     """Helper Function: Handling missing data functionality.
 
     Parameters
