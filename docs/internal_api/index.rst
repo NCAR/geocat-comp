@@ -37,9 +37,9 @@ GeoCAT-comp routines
 
    geocat.comp.interpolation._vertical_remap
 
-   geocat.comp.interpolation._pre
+   geocat.comp.interpolation._pre_interp_wrap
 
-   geocat.comp.interpolation._post
+   geocat.comp.interpolation._post_interp_wrap
 
    geocat.comp.interpolation.interp_wrap
 

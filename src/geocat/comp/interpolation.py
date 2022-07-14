@@ -502,6 +502,6 @@ def interp_wrap(data_in: supported_types,
 
     data_in_modified = _pre_interp_wrap(data_in, cyclic, missing_val)
     data_out = data_in_modified.interp(data_out.coords, method=method)
-    data_out_modified = _post(data_out, missing_val=missing_val)
+    data_out_modified = _post_interp_wrap(data_out, missing_val=missing_val)
 
     return data_out_modified
