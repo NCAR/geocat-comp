@@ -25,7 +25,7 @@ jobs:
         python-version: [ "3.8", "3.9", "3.10" ]
     steps:
       - name: Cancel previous runs
-        uses: styfle/cancel-workflow-action@0.9.1
+        uses: styfle/cancel-workflow-action@0.10.0
         with:
           access_token: ${{ github.token }}
       - name: checkout
