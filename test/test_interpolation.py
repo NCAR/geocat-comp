@@ -205,16 +205,16 @@ class Test_interp_manually_calc(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         try:
-            cls.test_input = xr.open_dataset("interpolation_test_input_data.nc")
+            cls.test_input = xr.load_dataset("interpolation_test_input_data.nc")
         except:
-            cls.test_input = xr.open_dataset(
+            cls.test_input = xr.load_dataset(
                 "test/interpolation_test_input_data.nc")
 
         try:
-            cls.test_output = xr.open_dataset(
+            cls.test_output = xr.load_dataset(
                 "interpolation_test_output_data.nc")
         except:
-            cls.test_output = xr.open_dataset(
+            cls.test_output = xr.load_dataset(
                 "test/interpolation_test_output_data.nc")
 
         cls.data_in = cls.test_input['normal']
@@ -358,26 +358,25 @@ class Test__interp_larger_dataset(unittest.TestCase):
     def setUpClass(cls):
 
         try:
-            cls.test_input = xr.open_dataset("interpolation_test_data.nc") \
-            ['__xarray_dataarray_variable__']
+            cls.test_input = xr.load_dataset("spherical_noise_input.nc") \
+            ['spherical_noise']
         except:
-            cls.test_input = xr.open_dataset("test/interpolation_test_data.nc") \
-            ['__xarray_dataarray_variable__']
+            cls.test_input = xr.load_dataset("test/spherical_noise_input.nc") \
+            ['spherical_noise']
 
         try:
-            cls.test_output = xr.load_dataset('interpolation_output_data.nc') \
-            ['__xarray_dataarray_variable__']
+            cls.test_output = xr.load_dataset('spherical_noise_output.nc') \
+            ['spherical_noise']
         except:
             cls.test_output = \
-            xr.load_dataset('test/interpolation_output_data.nc') \
-                ['__xarray_dataarray_variable__']
+            xr.load_dataset('test/spherical_noise_output.nc') \
+                ['spherical_noise']
 
-        cls.test_lat_output = np.flip(
-            np.arange(
-                np.min(cls.test_input.coords['lat']),
-                np.max(cls.test_input.coords['lat']) + 0.1,
-                0.1,
-            ))
+        cls.test_lat_output = np.arange(
+            np.min(cls.test_input.coords['lat']),
+            np.max(cls.test_input.coords['lat']) + 0.1,
+            0.1,
+        )
 
         cls.test_lon_output = np.arange(
             np.min(cls.test_input.coords['lon']),

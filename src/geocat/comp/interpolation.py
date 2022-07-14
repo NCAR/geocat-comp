@@ -456,11 +456,12 @@ def interp_wrap(data_in: supported_types,
     >>> import xarray as xr
     >>> import numpy as np
     >>> import geocat.comp
-    >>> da = xr.DataArray(data = [[1, 2, 3, 4, 5, 99], [2, 4, 6, 8, 10, 12]],
-                            dims = ("lat", "lon"),
-                        coords={"lat": [0, 1], "lon": [0, 50, 100, 250, 300, 350]},
-                        )
-    >>> do = interp_wrap(da, lon_out=[0, 50, 360], lat_out=[0, 1], cyclic=1, missing_val=99)
+    >>> data = np.asarray([[1, 2, 3, 4, 5, 99], [2, 4, 6, 8, 10, 12]])
+    >>> lat_in = [0, 1]
+    >>> lon_in = [0, 50, 100, 250, 300, 350]
+    >>> data_in = xr.DataArray(data, dims=['lat', 'lon'], coords={'lat': lat_in, 'lon': lon_in})
+    >>> data_out = xr.DataArray(dims=['lat', 'lon'], coords={'lat': [0, 1], 'lon': [0, 50, 360]})
+    >>> do = interp_wrap(data_in, data_out, cyclic=True, missing_val=99)
     >>> print(do)
     <xarray.DataArray (lat: 2, lon: 3)>
     array([[ 1.,  2., 99.],
