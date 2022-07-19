@@ -204,18 +204,11 @@ class Test_interp_manually_calc(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        try:
-            cls.test_input = xr.load_dataset("interpolation_test_input_data.nc")
-        except:
-            cls.test_input = xr.load_dataset(
-                "test/interpolation_test_input_data.nc")
+        cls.test_input = xr.load_dataset(
+            gdf.get("netcdf_files/interpolation_test_input_data.nc"))
 
-        try:
-            cls.test_output = xr.load_dataset(
-                "interpolation_test_output_data.nc")
-        except:
-            cls.test_output = xr.load_dataset(
-                "test/interpolation_test_output_data.nc")
+        cls.test_output = xr.load_dataset(
+            gdf.get("netcdf_files/interpolation_test_output_data.nc"))
 
         cls.data_in = cls.test_input['normal']
         cls.data_out = cls.test_output['normal']
@@ -356,44 +349,31 @@ class Test_interp_larger_dataset(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        cls.test_input = xr.load_dataset(
+            gdf.get("netcdf_files/spherical_noise_input.nc"))['spherical_noise']
 
-        try:
-            cls.test_input = xr.load_dataset("spherical_noise_input.nc") \
-            ['spherical_noise']
-        except:
-            cls.test_input = xr.load_dataset("test/spherical_noise_input.nc") \
-            ['spherical_noise']
+        cls.test_output = xr.load_dataset(
+            gdf.get(
+                "netcdf_files/spherical_noise_output.nc"))['spherical_noise']
 
-        try:
-            cls.test_output = xr.load_dataset('spherical_noise_output.nc') \
-            ['spherical_noise']
-        except:
-            cls.test_output = \
-            xr.load_dataset('test/spherical_noise_output.nc') \
-                ['spherical_noise']
-
-        cls.test_lat_output = np.arange(
-            np.min(cls.test_input.coords['lat']),
-            np.max(cls.test_input.coords['lat']) + 0.1,
-            0.1,
-        )
-
-        cls.test_lon_output = np.arange(
-            np.min(cls.test_input.coords['lon']),
-            np.max(cls.test_input.coords['lon']) + 0.1,
-            0.1,
-        )
-
+        # cls.test_lat_output = np.arange(
+        #     np.min(cls.test_input.coords['lat']),
+        #     np.max(cls.test_input.coords['lat']) + 0.1,
+        #     0.1,
+        # )
+        #
+        # cls.test_lon_output = np.arange(
+        #     np.min(cls.test_input.coords['lon']),
+        #     np.max(cls.test_input.coords['lon']) + 0.1,
+        #     0.1,
+        # )
         cls.test_data_chunked = cls.test_input.chunk(2)
 
     def test_10x(self):
         data_xr = interp_wrap(
             self.test_input,
-            xr.DataArray(dims=['lat', 'lon'],
-                         coords={
-                             'lat': self.test_lat_output,
-                             'lon': self.test_lon_output,
-                         }))
+            xr.DataArray(dims=self.test_output.dims,
+                         coords=self.test_output.coords))
         np.testing.assert_almost_equal(
             self.test_output,
             data_xr.values,
@@ -407,10 +387,7 @@ class Test_interp_larger_dataset(unittest.TestCase):
                 dims=self.test_output.dims,
                 coords=self.test_output.coords,
             ))
-        data_exact_xr = data_xr.values[::10, ::10]
-        test_exact_match_nans = self.test_output.values[::10, ::10]
-        test_exact_match_nans[np.isnan(data_exact_xr)] = np.nan
 
-        np.testing.assert_almost_equal(test_exact_match_nans,
-                                       data_exact_xr,
+        np.testing.assert_almost_equal(self.test_output,
+                                       data_xr.values,
                                        decimal=8)
