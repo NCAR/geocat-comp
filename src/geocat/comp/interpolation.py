@@ -38,6 +38,87 @@ def _pressure_from_hybrid(psfc, hya, hyb, p0=100000.):
     return hya * p0 + hyb * psfc
 
 
+def _pre_interp_multidim(
+    data_in: xr.DataArray,
+    cyclic: bool,
+    missing_val,
+):
+    """Helper Function: Handling missing data functionality and adding cyclic
+    point if required.
+
+    Parameters
+    ----------
+    data_in : :class:`xarray.DataArray`
+        The data on which to operate
+
+    cyclic : :class:`bool`
+        Determines if cyclic point should be added or not.
+        If true then add point, else do nothing.
+
+    missing_val : :class:`int`, :class:`float`, Optional
+        Provides an alternative to NaN
+
+    Returns
+    -------
+    data_in : :class:`xarray.DataArray`
+       The data input with cyclic points added (if cyclic is true)
+       and missing_val values replaced with np.nan
+
+    Notes
+    -------
+    """
+    # replace missing_val with np.nan
+    if missing_val is not None:
+        data_in = xr.DataArray(np.where(data_in.values == missing_val, np.nan,
+                                        data_in.values),
+                               dims=data_in.dims,
+                               coords=data_in.coords)
+
+    # add cyclic points and create new data array
+    if cyclic:
+        padded_data = np.pad(data_in.values, ((0, 0), (1, 1)), mode='wrap')
+        padded_longitudes = np.pad(data_in.coords[data_in.dims[-1]], (1, 1),
+                                   mode='wrap')
+        padded_longitudes[0] -= 360
+        padded_longitudes[-1] += 360
+
+        data_in = xr.DataArray(
+            padded_data,
+            coords={
+                data_in.dims[-2]: data_in.coords[data_in.dims[-2]].values,
+                data_in.dims[-1]: padded_longitudes,
+            },
+            dims=data_in.dims,
+        )
+
+    return data_in
+
+
+def _post_interp_multidim(data_in, missing_val):
+    """Helper Function: Handling missing data functionality.
+
+    Parameters
+    ----------
+    data_in : :class:`xarray.DataArray`
+        The data on which to operate
+
+    missing_val : :class:`int`, :class:`float`, Optional
+         Provides an alternative to NaN
+
+    Returns
+    -------
+    data_in : :class:`xarray.DataArray`
+       The data input with np.nan values replaced with missing_val
+    """
+    if missing_val is not None:
+        data_in = xr.DataArray(np.where(np.isnan(data_in.values), missing_val,
+                                        data_in.values),
+                               dims=data_in.dims,
+                               coords=data_in.coords)
+
+    return data_in
+
+
 def _sigma_from_hybrid(psfc, hya, hyb, p0=100000.):
     """Calculate sigma at the hybrid levels."""
 
@@ -312,96 +393,14 @@ def interp_sigma_to_hybrid(data: xr.DataArray,
     return output
 
 
-def _pre_interp_wrap(
-    data_in: xr.DataArray,
-    cyclic: bool,
-    missing_val,
-):
-    """Helper Function: Handling missing data functionality and adding cyclic
-    point if required.
-
-    Parameters
-    ----------
-    data_in : :class:`xarray.DataArray`
-        The data on which to operate
-
-    cyclic : :class:`bool`
-        Determines if cyclic point should be added or not.
-        If true then add point, else do nothing.
-
-    missing_val : :class:`int`, :class:`float`, Optional
-        Provides an alternative to NaN
-
-    Returns
-    -------
-    data_in : :class:`xarray.DataArray`
-       The data input with cyclic points added (if cyclic is true)
-       and missing_val values replaced with np.nan
-
-    Notes
-    -------
-    """
-    # replace missing_val with np.nan
-    if missing_val is not None:
-        data_in = xr.DataArray(np.where(data_in.values == missing_val, np.nan,
-                                        data_in.values),
-                               dims=data_in.dims,
-                               coords=data_in.coords)
-
-    # add cyclic points and create new data array
-    if cyclic:
-        padded_data = np.pad(data_in.values, ((0, 0), (1, 1)), mode='wrap')
-        padded_longitudes = np.pad(data_in.coords[data_in.dims[-1]], (1, 1),
-                                   mode='wrap')
-        padded_longitudes[0] -= 360
-        padded_longitudes[-1] += 360
-
-        data_in = xr.DataArray(
-            padded_data,
-            coords={
-                data_in.dims[-2]: data_in.coords[data_in.dims[-2]].values,
-                data_in.dims[-1]: padded_longitudes,
-            },
-            dims=data_in.dims,
-        )
-
-    return data_in
-
-
-def _post_interp_wrap(data_in, missing_val):
-    """Helper Function: Handling missing data functionality.
-
-    Parameters
-    ----------
-    data_in : :class:`xarray.DataArray`
-        The data on which to operate
-
-    missing_val : :class:`int`, :class:`float`, Optional
-         Provides an alternative to NaN
-
-    Returns
-    -------
-    data_in : :class:`xarray.DataArray`
-       The data input with np.nan values replaced with missing_val
-    """
-    if missing_val is not None:
-        data_in = xr.DataArray(np.where(np.isnan(data_in.values), missing_val,
-                                        data_in.values),
-                               dims=data_in.dims,
-                               coords=data_in.coords)
-
-    return data_in
-
-
-def interp_wrap(data_in: supported_types,
-                data_out: supported_types = None,
-                lat_in: np.ndarray = None,
-                lon_in: np.ndarray = None,
-                lon_out: np.ndarray = None,
-                lat_out: np.ndarray = None,
-                cyclic: bool = False,
-                missing_val: np.number = None,
-                method: str = "linear") -> supported_types:
+def interp_multidim(data_in: supported_types,
+                    lon_out: np.ndarray,
+                    lat_out: np.ndarray,
+                    lat_in: np.ndarray = None,
+                    lon_in: np.ndarray = None,
+                    cyclic: bool = False,
+                    missing_val: np.number = None,
+                    method: str = "linear") -> supported_types:
     """Multidimensional interpolation of variables. Uses xarray.interp to
     perform linear interpolation. Will not perform extrapolation, returns
     missing values if any surrounding points contain missing values.
@@ -413,10 +412,11 @@ def interp_wrap(data_in: supported_types,
         it is a np array, then lat_in and lon_in must be provided. Length must
         be coordinated with given coordinates.
 
-    data_out: :class:'xarray.DataArray'
-        Data array with coords to be interpolated to, either provide this
-        or lon_out and lat_out. Names of dims to be interpolated must be
-        the same as the corresponding coords in data_in.
+    lat_out: :class:`np.ndarray`
+        List of latitude coordinates to be interpolated to.
+
+    lon_out: :class:`np.ndarray`
+        List of longitude coordinates to be interpolated to.
 
     lat_in: :class:`np.ndarray`
         List of latitude coordinates corresponding to data_in. Must be
@@ -426,16 +426,9 @@ def interp_wrap(data_in: supported_types,
         List of longitude coordinates corresponding to data_in. Must be
         given if data_in is not an xarray.
 
-    lat_out: :class:`np.ndarray`
-        List of latitude coordinates to be interpolated to. Must be given
-        if data_out is not given.
-
-    lon_out: :class:`np.ndarray`
-        List of longitude coordinates to be interpolated to. Must be given
-        if data_out is not given.
-
     cyclic: :class:'bool', Optional
-        Set as true if lon values are cyclical but do not fully wrap around the globe
+        Set as true if lon values are cyclical but do not fully wrap around
+        the globe
         (0, 1.5, 3, ..., 354, 355.5) Default is false
 
     missing_val : :class:'np.number', Optional
@@ -448,8 +441,10 @@ def interp_wrap(data_in: supported_types,
     Returns
     -------
     data_out : :class:`numpy.ndarray`, :class:`xarray.DataArray`
-       Returns same data type as input data_in. Shape will be the same as input array except
-       for last two dimensions which will be equal to coordinates given in data_out
+       Returns same data type as input data_in. Shape will be the same as
+       input array except
+       for last two dimensions which will be equal to coordinates given in
+       data_out
 
     Examples
     --------
@@ -459,9 +454,11 @@ def interp_wrap(data_in: supported_types,
     >>> data = np.asarray([[1, 2, 3, 4, 5, 99], [2, 4, 6, 8, 10, 12]])
     >>> lat_in = [0, 1]
     >>> lon_in = [0, 50, 100, 250, 300, 350]
-    >>> data_in = xr.DataArray(data, dims=['lat', 'lon'], coords={'lat': lat_in, 'lon': lon_in})
-    >>> data_out = xr.DataArray(dims=['lat', 'lon'], coords={'lat': [0, 1], 'lon': [0, 50, 360]})
-    >>> do = interp_wrap(data_in, data_out, cyclic=True, missing_val=99)
+    >>> data_in = xr.DataArray(data, dims=['lat', 'lon'], coords={'lat':
+    lat_in, 'lon': lon_in})
+    >>> data_out = xr.DataArray(dims=['lat', 'lon'], coords={'lat': [0, 1],
+    'lon': [0, 50, 360]})
+    >>> do = interp_multidim(data_in, data_out, cyclic=True, missing_val=99)
     >>> print(do)
     <xarray.DataArray (lat: 2, lon: 3)>
     array([[ 1.,  2., 99.],
@@ -473,7 +470,8 @@ def interp_wrap(data_in: supported_types,
     See Also
     --------
     https://docs.xarray.dev/en/stable/generated/xarray.DataArray.interp.html
-    https://scitools.org.uk/cartopy/docs/latest/reference/generated/cartopy.util.add_cyclic_point.html
+    https://scitools.org.uk/cartopy/docs/latest/reference/generated/cartopy
+    .util.add_cyclic_point.html
     https://www.ncl.ucar.edu/Document/Functions/Built-in/linint2.shtml
     """
     # check for xarray/numpy
@@ -500,8 +498,8 @@ def interp_wrap(data_in: supported_types,
                                     data_in.dims[-1]: lon_out
                                 })
 
-    data_in_modified = _pre_interp_wrap(data_in, cyclic, missing_val)
+    data_in_modified = _pre_interp_multidim(data_in, cyclic, missing_val)
     data_out = data_in_modified.interp(data_out.coords, method=method)
-    data_out_modified = _post_interp_wrap(data_out, missing_val=missing_val)
+    data_out_modified = _post_interp_multidim(data_out, missing_val=missing_val)
 
     return data_out_modified

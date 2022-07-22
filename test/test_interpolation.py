@@ -10,10 +10,10 @@ import xarray as xr
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
 if "--cov" in str(sys.argv):
-    from src.geocat.comp import interp_wrap, interp_hybrid_to_pressure, \
+    from src.geocat.comp import interp_multidim, interp_hybrid_to_pressure, \
         interp_sigma_to_hybrid
 else:
-    from geocat.comp import interp_wrap, interp_hybrid_to_pressure, \
+    from geocat.comp import interp_multidim, interp_hybrid_to_pressure, \
         interp_sigma_to_hybrid
 
 # Global input data
@@ -233,24 +233,24 @@ class Test_interp_manually_calc(unittest.TestCase):
     def test_float32(self):
         np.testing.assert_almost_equal(
             self.data_out.values.astype(np.float32),
-            interp_wrap(xr.DataArray(self.data_in.values.astype(np.float32),
-                                     dims=['lat', 'lon'],
-                                     coords={
-                                         'lat': self.lat_in,
-                                         'lon': self.lon_in,
-                                     }),
-                        xr.DataArray(dims=['lat', 'lon'],
-                                     coords={
-                                         'lat': self.lat_out,
-                                         'lon': self.lon_out
-                                     }),
-                        cyclic=True).values,
+            interp_multidim(xr.DataArray(self.data_in.values.astype(np.float32),
+                                         dims=['lat', 'lon'],
+                                         coords={
+                                             'lat': self.lat_in,
+                                             'lon': self.lon_in,
+                                         }),
+                            xr.DataArray(dims=['lat', 'lon'],
+                                         coords={
+                                             'lat': self.lat_out,
+                                             'lon': self.lon_out
+                                         }),
+                            cyclic=True).values,
             decimal=7)
 
     def test_float64(self):
         np.testing.assert_almost_equal(
             self.data_out.values.astype(np.float64),
-            interp_wrap(
+            interp_multidim(
                 xr.DataArray(self.data_in.values.astype(np.float64),
                              dims=['lat', 'lon'],
                              coords={
@@ -270,7 +270,7 @@ class Test_interp_manually_calc(unittest.TestCase):
     def test_missing(self):
         np.testing.assert_almost_equal(
             self.data_out_missing,
-            interp_wrap(
+            interp_multidim(
                 self.data_in_missing,
                 xr.DataArray(dims=['lat', 'lon'],
                              coords={
@@ -285,7 +285,7 @@ class Test_interp_manually_calc(unittest.TestCase):
     def test_nan(self):
         np.testing.assert_almost_equal(
             self.data_out_nan,
-            interp_wrap(
+            interp_multidim(
                 self.data_in_nan,
                 xr.DataArray(dims=['lat', 'lon'],
                              coords={
@@ -300,7 +300,7 @@ class Test_interp_manually_calc(unittest.TestCase):
     def test_mask(self):
         np.testing.assert_almost_equal(
             self.data_out_mask,
-            interp_wrap(
+            interp_multidim(
                 self.data_in_mask,
                 xr.DataArray(dims=['lat', 'lon'],
                              coords={
@@ -315,7 +315,7 @@ class Test_interp_manually_calc(unittest.TestCase):
     def test_2_nans(self):
         np.testing.assert_almost_equal(
             self.data_out_nan_2,
-            interp_wrap(
+            interp_multidim(
                 self.data_in_nan_2,
                 xr.DataArray(dims=['lat', 'lon'],
                              coords={
@@ -329,7 +329,7 @@ class Test_interp_manually_calc(unittest.TestCase):
 
     def test_numpy(self):
         np.testing.assert_almost_equal(self.data_out.values,
-                                       interp_wrap(
+                                       interp_multidim(
                                            self.data_in.values,
                                            lat_in=self.lat_in,
                                            lon_in=self.lon_in,
@@ -370,7 +370,7 @@ class Test_interp_larger_dataset(unittest.TestCase):
         cls.test_data_chunked = cls.test_input.chunk(2)
 
     def test_10x(self):
-        data_xr = interp_wrap(
+        data_xr = interp_multidim(
             self.test_input,
             xr.DataArray(dims=self.test_output.dims,
                          coords=self.test_output.coords))
@@ -381,7 +381,7 @@ class Test_interp_larger_dataset(unittest.TestCase):
         )
 
     def test_chunked(self):
-        data_xr = interp_wrap(
+        data_xr = interp_multidim(
             self.test_data_chunked,
             xr.DataArray(
                 dims=self.test_output.dims,
