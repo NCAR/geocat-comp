@@ -487,19 +487,13 @@ def interp_multidim(data_in: supported_types,
                                    'lon': lon_in
                                })
 
-    if data_out is None:
-        if lat_out is None or lon_out is None:
-            raise CoordinateError(
-                "Argument lat_out and lon_out must be provided if data_out is not an xarray"
-            )
-        data_out = xr.DataArray(dims=[data_in.dims[-2], data_in.dims[-1]],
-                                coords={
-                                    data_in.dims[-2]: lat_out,
-                                    data_in.dims[-1]: lon_out
-                                })
+    output_coords = {
+        data_in.dims[-1]: lon_out,
+        data_in.dims[-2]: lat_out,
+    }
 
     data_in_modified = _pre_interp_multidim(data_in, cyclic, missing_val)
-    data_out = data_in_modified.interp(data_out.coords, method=method)
+    data_out = data_in_modified.interp(output_coords, method=method)
     data_out_modified = _post_interp_multidim(data_out, missing_val=missing_val)
 
     return data_out_modified
