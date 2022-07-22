@@ -239,11 +239,8 @@ class Test_interp_manually_calc(unittest.TestCase):
                                              'lat': self.lat_in,
                                              'lon': self.lon_in,
                                          }),
-                            xr.DataArray(dims=['lat', 'lon'],
-                                         coords={
-                                             'lat': self.lat_out,
-                                             'lon': self.lon_out
-                                         }),
+                            self.lat_out,
+                            self.lon_out,
                             cyclic=True).values,
             decimal=7)
 
@@ -257,11 +254,8 @@ class Test_interp_manually_calc(unittest.TestCase):
                                  'lat': self.lat_in,
                                  'lon': self.lon_in,
                              }),
-                xr.DataArray(dims=['lat', 'lon'],
-                             coords={
-                                 'lat': self.lat_out,
-                                 'lon': self.lon_out,
-                             }),
+                self.lat_out,
+                self.lon_out,
                 cyclic=True,
             ).values,
             decimal=8,
@@ -272,11 +266,8 @@ class Test_interp_manually_calc(unittest.TestCase):
             self.data_out_missing,
             interp_multidim(
                 self.data_in_missing,
-                xr.DataArray(dims=['lat', 'lon'],
-                             coords={
-                                 'lat': self.lat_out,
-                                 'lon': self.lon_out,
-                             }),
+                self.lat_out,
+                self.lon_out,
                 cyclic=True,
             ).values,
             decimal=8,
@@ -287,11 +278,8 @@ class Test_interp_manually_calc(unittest.TestCase):
             self.data_out_nan,
             interp_multidim(
                 self.data_in_nan,
-                xr.DataArray(dims=['lat', 'lon'],
-                             coords={
-                                 'lat': self.lat_out,
-                                 'lon': self.lon_out,
-                             }),
+                self.lat_out,
+                self.lon_out,
                 cyclic=True,
             ).values,
             decimal=8,
@@ -302,11 +290,8 @@ class Test_interp_manually_calc(unittest.TestCase):
             self.data_out_mask,
             interp_multidim(
                 self.data_in_mask,
-                xr.DataArray(dims=['lat', 'lon'],
-                             coords={
-                                 'lat': self.lat_out,
-                                 'lon': self.lon_out,
-                             }),
+                self.lat_out,
+                self.lon_out,
                 cyclic=True,
             ).values,
             decimal=8,
@@ -317,11 +302,8 @@ class Test_interp_manually_calc(unittest.TestCase):
             self.data_out_nan_2,
             interp_multidim(
                 self.data_in_nan_2,
-                xr.DataArray(dims=['lat', 'lon'],
-                             coords={
-                                 'lat': self.lat_out,
-                                 'lon': self.lon_out,
-                             }),
+                self.lat_out,
+                self.lon_out,
                 cyclic=True,
             ).values,
             decimal=8,
@@ -331,10 +313,10 @@ class Test_interp_manually_calc(unittest.TestCase):
         np.testing.assert_almost_equal(self.data_out.values,
                                        interp_multidim(
                                            self.data_in.values,
+                                           self.lat_out,
+                                           self.lon_out,
                                            lat_in=self.lat_in,
                                            lon_in=self.lon_in,
-                                           lat_out=self.lat_out,
-                                           lon_out=self.lon_out,
                                            cyclic=True,
                                        ),
                                        decimal=8)
@@ -356,24 +338,12 @@ class Test_interp_larger_dataset(unittest.TestCase):
             gdf.get(
                 "netcdf_files/spherical_noise_output.nc"))['spherical_noise']
 
-        # cls.test_lat_output = np.arange(
-        #     np.min(cls.test_input.coords['lat']),
-        #     np.max(cls.test_input.coords['lat']) + 0.1,
-        #     0.1,
-        # )
-        #
-        # cls.test_lon_output = np.arange(
-        #     np.min(cls.test_input.coords['lon']),
-        #     np.max(cls.test_input.coords['lon']) + 0.1,
-        #     0.1,
-        # )
         cls.test_data_chunked = cls.test_input.chunk(2)
 
     def test_10x(self):
-        data_xr = interp_multidim(
-            self.test_input,
-            xr.DataArray(dims=self.test_output.dims,
-                         coords=self.test_output.coords))
+        data_xr = interp_multidim(self.test_input,
+                                  self.test_output.coords['lat'],
+                                  self.test_output.coords['lon'])
         np.testing.assert_almost_equal(
             self.test_output,
             data_xr.values,
@@ -381,12 +351,9 @@ class Test_interp_larger_dataset(unittest.TestCase):
         )
 
     def test_chunked(self):
-        data_xr = interp_multidim(
-            self.test_data_chunked,
-            xr.DataArray(
-                dims=self.test_output.dims,
-                coords=self.test_output.coords,
-            ))
+        data_xr = interp_multidim(self.test_data_chunked,
+                                  self.test_output.coords['lat'],
+                                  self.test_output.coords['lon'])
 
         np.testing.assert_almost_equal(self.test_output,
                                        data_xr.values,

@@ -394,8 +394,8 @@ def interp_sigma_to_hybrid(data: xr.DataArray,
 
 
 def interp_multidim(data_in: supported_types,
-                    lon_out: np.ndarray,
                     lat_out: np.ndarray,
+                    lon_out: np.ndarray,
                     lat_in: np.ndarray = None,
                     lon_in: np.ndarray = None,
                     cyclic: bool = False,
