@@ -1,15 +1,14 @@
+from unittest import TestCase
 import sys
-
-import cftime
 import numpy as np
-import pandas as pd
-import pytest
 import xarray as xr
 
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
-from src.geocat.comp import pearson_r
-#from geocat.comp import pearson_r
+if "--cov" in str(sys.argv):
+    from src.geocat.comp import pearson_r
+else:
+    from geocat.comp import pearson_r
 
 def _get_dummy_data():
     """
@@ -36,6 +35,6 @@ def _get_dummy_data():
                     attrs={'description': 'Test data'})
     return ds
 
-def test_pearson_r():
-    assert 1==1
-
+class Test_pearson_r(TestCase):
+    def test_pearson_r(self):
+        assert False
