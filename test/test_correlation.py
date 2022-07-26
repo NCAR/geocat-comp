@@ -33,9 +33,8 @@ class Test_pearson_r(TestCase):
                             'lon': lons
                         },
                         attrs={'description': 'Test data'})
-        cls.unweighted_r = 0.960868163
 
-        cls.weights = np.arange(1, 37).reshape(2,18)
+        cls.unweighted_r = 0.960868163
         cls.weighted_r = 0.962039034
 
     def test_pearson_r(self):
