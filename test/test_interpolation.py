@@ -321,6 +321,17 @@ class Test_interp_manually_calc(unittest.TestCase):
                                        ),
                                        decimal=8)
 
+    def test_extrapolate(self):
+        np.testing.assert_almost_equal(self.data_out.values,
+                                       interp_multidim(
+                                           self.data_in,
+                                           self.lat_out,
+                                           self.lon_out,
+                                           cyclic=True,
+                                           fill_value='extrapolate',
+                                       ),
+                                       decimal=8)
+
 
 class Test_interp_larger_dataset(unittest.TestCase):
     test_input = None

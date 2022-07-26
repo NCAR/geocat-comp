@@ -393,14 +393,16 @@ def interp_sigma_to_hybrid(data: xr.DataArray,
     return output
 
 
-def interp_multidim(data_in: supported_types,
-                    lat_out: np.ndarray,
-                    lon_out: np.ndarray,
-                    lat_in: np.ndarray = None,
-                    lon_in: np.ndarray = None,
-                    cyclic: bool = False,
-                    missing_val: np.number = None,
-                    method: str = "linear") -> supported_types:
+def interp_multidim(
+        data_in: supported_types,
+        lat_out: np.ndarray,
+        lon_out: np.ndarray,
+        lat_in: np.ndarray = None,
+        lon_in: np.ndarray = None,
+        cyclic: bool = False,
+        missing_val: np.number = None,
+        method: str = "linear",
+        fill_value: typing.Union[str, np.number] = np.nan) -> supported_types:
     """Multidimensional interpolation of variables. Uses xarray.interp to
     perform linear interpolation. Will not perform extrapolation, returns
     missing values if any surrounding points contain missing values.
@@ -436,7 +438,11 @@ def interp_multidim(data_in: supported_types,
 
     method: :class:'str', Optional
         Provide specific method of interpolation. Default is "linear"
-        “linear” or “nearest” for multidimensional array,
+        “linear” or “nearest” for multidimensional array
+
+    fill_value: :class:'str', Optional
+        Set as 'extrapolate' to allow extrapoltion of data. Default is
+        no extrapolation.
 
     Returns
     -------
@@ -458,7 +464,7 @@ def interp_multidim(data_in: supported_types,
     lat_in, 'lon': lon_in})
     >>> data_out = xr.DataArray(dims=['lat', 'lon'], coords={'lat': [0, 1],
     'lon': [0, 50, 360]})
-    >>> do = interp_multidim(data_in, data_out, cyclic=True, missing_val=99)
+    >>> do = interp_multidim(data_in, [0, 1], [0, 50, 360], cyclic=True, missing_val=99)
     >>> print(do)
     <xarray.DataArray (lat: 2, lon: 3)>
     array([[ 1.,  2., 99.],
@@ -493,7 +499,9 @@ def interp_multidim(data_in: supported_types,
     }
 
     data_in_modified = _pre_interp_multidim(data_in, cyclic, missing_val)
-    data_out = data_in_modified.interp(output_coords, method=method)
+    data_out = data_in_modified.interp(output_coords,
+                                       method=method,
+                                       kwargs={'fill_value': fill_value})
     data_out_modified = _post_interp_multidim(data_out, missing_val=missing_val)
 
     return data_out_modified
