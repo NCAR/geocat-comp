@@ -22,12 +22,12 @@ class Test_pearson_r(TestCase):
 
         # Create data variables
         np.random.seed(0)
-        a = np.random.random_sample((len(lats), len(lons)))
-        b = np.power(a, 2)
-        weights = np.arange(1, 37).reshape(2, 18)
-        cls.ds = xr.Dataset(data_vars={'a': (('lat', 'lon'), a),
-                                       'b': (('lat', 'lon'), b),
-                                       'weights': (('lat','lon'), weights)},
+        cls.a = np.random.random_sample((len(lats), len(lons)))
+        cls.b = np.power(cls.a, 2)
+        cls.weights = np.arange(1, 37).reshape(2, 18)
+        cls.ds = xr.Dataset(data_vars={'a': (('lat', 'lon'), cls.a),
+                                       'b': (('lat', 'lon'), cls.b),
+                                       'weights': (('lat','lon'), cls.weights)},
                         coords={
                             'lat': lats,
                             'lon': lons
@@ -50,3 +50,13 @@ class Test_pearson_r(TestCase):
         result = pearson_r(a, b, weights=w)
         print(self.weighted_r, result)
         assert np.allclose(self.weighted_r, result)
+
+    def test_pearson_r_xr_warn(self):
+        a = self.ds.a
+        b = self.ds.b
+        self.assertWarns(Warning, pearson_r, a, b, dim='lat', axis=0)
+
+    def test_pearson_r_np_warn(self):
+        a = self.a
+        b = self.b
+        self.assertWarns(Warning, pearson_r, a, b, dim='lat', axis=0)
