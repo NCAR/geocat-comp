@@ -37,18 +37,30 @@ class Test_pearson_r(TestCase):
         cls.unweighted_r = 0.960868163
         cls.weighted_r = 0.962039034
 
-    def test_pearson_r(self):
+    def test_pearson_r_np(self):
+        a = self.a
+        b = self.b
+        result = pearson_r(a, b)
+        assert np.allclose(self.unweighted_r, result)
+
+    def test_pearson_r_np_weighted(self):
+        a = self.a
+        b = self.b
+        w = self.weights
+        result = pearson_r(a, b, weights=w)
+        assert np.allclose(self.weighted_r, result)
+
+    def test_pearson_r_xr(self):
         a = self.ds.a
         b = self.ds.b
         result = pearson_r(a, b)
         assert np.allclose(self.unweighted_r, result)
 
-    def test_pearson_r_weighted(self):
+    def test_pearson_r_xr_weighted(self):
         a = self.ds.a
         b = self.ds.b
         w = self.ds.weights
         result = pearson_r(a, b, weights=w)
-        print(self.weighted_r, result)
         assert np.allclose(self.weighted_r, result)
 
     def test_pearson_r_xr_warn(self):

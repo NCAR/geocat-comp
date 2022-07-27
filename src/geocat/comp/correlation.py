@@ -1,12 +1,19 @@
+import numpy as np
 import xskillscore as xs
 import xskillscore.core.np_deterministic as xs_internal
 import xarray as xr
 import warnings
 
-def pearson_r(a, b, dim=None, weights=None, skipna=False, keep_attrs=False, axis=-1):
+def pearson_r(a, b, dim=None, weights=None, skipna=False, keep_attrs=False, axis=None):
     if not isinstance(a, xr.DataArray) and not isinstance(b, xr.DataArray):
         if (dim is not None) and (axis is not None):
             warnings.warn("The `axis` keyword is unused with xarray.DataArray inputs")
+        if axis is None: # squash array to 1D for element wise computation
+            axis = 0
+            a = np.ravel(a)
+            b = np.ravel(b)
+            if weights is not None:
+                weights = np.ravel(weights)
         return xs_internal._pearson_r(a, b, weights, axis, skipna)
     else:
         if (dim is not None) and (axis is not None):
