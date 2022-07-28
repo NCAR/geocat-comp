@@ -14,7 +14,7 @@ class Test_pearson_r(TestCase):
     @classmethod
     def setUpClass(cls):
         # Coordinates
-        time = xr.cftime_range(start='2022-07-25',
+        times = xr.cftime_range(start='2022-07-25',
                                end='2022-07-26',
                                freq='D')
         lats = np.linspace(start=-90, stop=90, num=2, dtype='float32')
@@ -22,20 +22,21 @@ class Test_pearson_r(TestCase):
 
         # Create data variables
         np.random.seed(0)
-        cls.a = np.random.random_sample((len(lats), len(lons)))
+        cls.a = np.random.random_sample((len(lats), len(lons), len(times)))
         cls.b = np.power(cls.a, 2)
-        cls.weights = np.arange(1, 37).reshape(2, 18)
-        cls.ds = xr.Dataset(data_vars={'a': (('lat', 'lon'), cls.a),
-                                       'b': (('lat', 'lon'), cls.b),
-                                       'weights': (('lat','lon'), cls.weights)},
+        cls.weights = np.arange(1, 73).reshape(2, 18, 2)
+        cls.ds = xr.Dataset(data_vars={'a': (('lat', 'lon', 'time'), cls.a),
+                                       'b': (('lat', 'lon', 'time'), cls.b),
+                                       'weights': (('lat', 'lon', 'time'), cls.weights)},
                         coords={
                             'lat': lats,
-                            'lon': lons
+                            'lon': lons,
+                            'time': times
                         },
                         attrs={'description': 'Test data'})
 
-        cls.unweighted_r = 0.960868163
-        cls.weighted_r = 0.962039034
+        cls.unweighted_r = 0.966220619
+        cls.weighted_r = 0.96862701
 
     def test_pearson_r_np(self):
         a = self.a
@@ -54,6 +55,8 @@ class Test_pearson_r(TestCase):
         a = self.ds.a
         b = self.ds.b
         result = pearson_r(a, b)
+        print(result)
+        print(self.unweighted_r)
         assert np.allclose(self.unweighted_r, result)
 
     def test_pearson_r_xr_weighted(self):
