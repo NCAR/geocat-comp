@@ -107,6 +107,11 @@ def grad_wgs84(
     latitude: SupportedTypes = None,
     wrap_longitude: bool = True,
 ):
+    # todo takes in either numpy or xarray, assume most users will use
+    #  ortholinear xarray
+    # check if main array is xarray or numpy
+    # return call to appropraite inner function
+
     return None
 
 
@@ -114,6 +119,12 @@ def grad_wgs84_xr(
     data: XTypes,
     wrap_longitude: bool = True,
 ):
+    # remove data and coords
+    # then check data dimensions to slice as needed for mutidimensional arrays
+    # for now I think I run each slice and reassemble again after since it
+    #   cannot be easily done with a kernel convolution
+    # reassemble the xarray and return
+
     lon2d, lat2d = np.meshgrid(data.coords['lon'], data.coords['lat'])
     return grad_wgs84(data.values, lon2d, lat2d)
 
@@ -124,7 +135,7 @@ def grad_wgs84_np(
     latitude: np.array,
     wrap_longitude: bool = True,
 ):
-    # look into dynamically creating tuples for pad values based on dims
+    # todo look into dynamically creating tuples for pad values based on dims
     if wrap_longitude:
         datapad = np.pad(data, ((0, 0), (1, 1)), mode='wrap')
         lonpad = np.pad(longitude, ((0, 0), (1, 1)), mode='wrap')

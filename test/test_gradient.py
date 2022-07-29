@@ -1,5 +1,6 @@
 import sys
 import unittest
+import xarray as xr
 
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
@@ -15,4 +16,4 @@ class Test_Gradient(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        return garbage
+        cls.test_data = xr.load_dataset('gradient_test_data.nc')
