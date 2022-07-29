@@ -37,7 +37,10 @@ class Test_pearson_r(TestCase):
 
         cls.unweighted_r = 0.966220619
         cls.weighted_r = 0.96862701
+        cls.weighted_r_lon = [[0.952141203, 0.970682807],
+                               [0.981126127, 0.968390927]]
 
+    # Testing numpy inputs
     def test_pearson_r_np(self):
         a = self.a
         b = self.b
@@ -51,12 +54,16 @@ class Test_pearson_r(TestCase):
         result = pearson_r(a, b, weights=w)
         assert np.allclose(self.weighted_r, result)
 
+    def test_pearson_r_np_warn(self):
+        a = self.a
+        b = self.b
+        self.assertWarns(Warning, pearson_r, a, b, dim='lat', axis=0)
+
+    # Testing xarray inputs
     def test_pearson_r_xr(self):
         a = self.ds.a
         b = self.ds.b
         result = pearson_r(a, b)
-        print(result)
-        print(self.unweighted_r)
         assert np.allclose(self.unweighted_r, result)
 
     def test_pearson_r_xr_weighted(self):
@@ -71,7 +78,11 @@ class Test_pearson_r(TestCase):
         b = self.ds.b
         self.assertWarns(Warning, pearson_r, a, b, dim='lat', axis=0)
 
-    def test_pearson_r_np_warn(self):
-        a = self.a
-        b = self.b
-        self.assertWarns(Warning, pearson_r, a, b, dim='lat', axis=0)
+    def test_pearson_r_xr_lon(self):
+        a = self.ds.a
+        b = self.ds.b
+        w = self.ds.weights[0,:,0]
+        result = pearson_r(a, b, weights=w, dim='lon')
+        print(result)
+        print(self.weighted_r_lon)
+        assert np.allclose(self.weighted_r_lon, result)
