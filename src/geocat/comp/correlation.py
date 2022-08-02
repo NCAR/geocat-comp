@@ -5,6 +5,37 @@ import xarray as xr
 import warnings
 
 def pearson_r(a, b, dim=None, weights=None, skipna=False, keep_attrs=False, axis=None):
+    """
+    This function wraps the function of the same name from `xskillscore <https://xskillscore.readthedocs.io/en/stable/api/xskillscore.pearson_r.html#xskillscore.pearson_r>`_.
+    The difference between the xskillscore version and this one is that the GeoCAT version allows
+    for array-like inputs rather than only supporting `xarray.DataArrays`. The parameters work
+    the same way as in the xskillscore version, with an added parameter `axis` (see below).
+
+    Parameters
+    ----------
+    a : :class:`xarray.DataArray`, :class:`numpy.ndarray`
+        See xskillscore `documentation <https://xskillscore.readthedocs.io/en/stable/api/xskillscore.pearson_r.html#xskillscore.pearson_r>`_.
+    b : :class:`xarray.DataArray`, :class:`numpy.ndarray`
+        See xskillscore `documentation <https://xskillscore.readthedocs.io/en/stable/api/xskillscore.pearson_r.html#xskillscore.pearson_r>`_.
+    dim : :class:`str`, :class:`list`, Optional
+        Used when `a` and `b` are of type `xarray.DataArray`. Is ignored otherwise.
+        See xskillscore `documentation <https://xskillscore.readthedocs.io/en/stable/api/xskillscore.pearson_r.html#xskillscore.pearson_r>`_.
+    weights : :class:`xarray.DataArray`, :class:`numpy.ndarray`, Optional
+        Must have the same dimensions as `dim`.
+        See xskillscore `documentation <https://xskillscore.readthedocs.io/en/stable/api/xskillscore.pearson_r.html#xskillscore.pearson_r>`_.
+    skipna : :class:`bool`, Optional
+        See xskillscore `documentation <https://xskillscore.readthedocs.io/en/stable/api/xskillscore.pearson_r.html#xskillscore.pearson_r>`_.
+    keep_attrs : :class:`bool`, Optional
+        See xskillscore `documentation <https://xskillscore.readthedocs.io/en/stable/api/xskillscore.pearson_r.html#xskillscore.pearson_r>`_.
+    axis : :class:`int`
+        The axis to apply the correlation along. Used when `a` and `b` are of type `np.ndarray` or are array-like. Is ignored otherwise.
+
+    Returns
+    -------
+    r : :class:`xarray.DataArray`, :class:`numpy.ndarray`
+        Pearson's correlation coefficient
+    """
+
     if not isinstance(a, xr.DataArray) and not isinstance(b, xr.DataArray):  # if a and v are not xr.DataArrays
         if (dim is not None) and (axis is not None):
             warnings.warn("The `dim` keyword is unused with non xarray.DataArray inputs")
