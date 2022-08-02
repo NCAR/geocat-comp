@@ -4,7 +4,13 @@ import xskillscore.core.np_deterministic as xs_internal
 import xarray as xr
 import warnings
 
-def pearson_r(a, b, dim=None, weights=None, skipna=False, keep_attrs=False, axis=None):
+def pearson_r(a,
+              b,
+              dim=None,
+              weights=None,
+              skipna=False,
+              keep_attrs=False,
+              axis=None):
     """
     This function wraps the function of the same name from `xskillscore <https://xskillscore.readthedocs.io/en/stable/api/xskillscore.pearson_r.html#xskillscore.pearson_r>`_.
     The difference between the xskillscore version and this one is that the GeoCAT version allows
@@ -35,10 +41,11 @@ def pearson_r(a, b, dim=None, weights=None, skipna=False, keep_attrs=False, axis
     r : :class:`xarray.DataArray`, :class:`numpy.ndarray`
         Pearson's correlation coefficient
     """
-
-    if not isinstance(a, xr.DataArray) and not isinstance(b, xr.DataArray):  # if a and v are not xr.DataArrays
+    # if a and v are not xr.DataArrays
+    if not isinstance(a, xr.DataArray) and not isinstance(b, xr.DataArray):
         if (dim is not None) and (axis is not None):
-            warnings.warn("The `dim` keyword is unused with non xarray.DataArray inputs")
+            warnings.warn(
+                "The `dim` keyword is unused with non xarray.DataArray inputs")
         if axis is None:  # squash array to 1D for element wise computation
             axis = 0
             a = np.ravel(a)
@@ -51,7 +58,8 @@ def pearson_r(a, b, dim=None, weights=None, skipna=False, keep_attrs=False, axis
             print('Data along `axis` must have the same dimension as `weights`')
     else:  # if a and b are xr.DataArrays
         if (dim is not None) and (axis is not None):
-            warnings.warn("The `axis` keyword is unused with xarray.DataArray inputs")
+            warnings.warn(
+                "The `axis` keyword is unused with xarray.DataArray inputs")
         try:
             return xs.pearson_r(a, b, dim, weights, skipna, keep_attrs)
         except ValueError:
