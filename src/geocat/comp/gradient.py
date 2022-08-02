@@ -223,6 +223,9 @@ def grad_wgs84_np(
 
 
 def grad_kernel(data: SupportedTypes) -> SupportedTypes:
+    #todo this function will take *any* input and apply the four kernals and return the result,
+    # the input will be padded on the first dimension on both sides with a one wrap,
+    # the input will be padded on the second dimension on both sides with a one nan
     '''
     https://stackoverflow.com/questions/52529152/applying-scipy-ndimage-convolve-to-tridimensional-xarray-dataarray
     kernel3d = np.ones((3, 3, 1))
