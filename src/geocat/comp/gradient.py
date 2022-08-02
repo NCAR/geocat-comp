@@ -220,3 +220,33 @@ def grad_wgs84_np(
             latresult[latloc - 1, lonloc - 1] = latgrad
 
     return [lonresult, latresult]
+
+
+def grad_kernel(data: SupportedTypes) -> SupportedTypes:
+    '''
+    kernel3d = np.ones((3, 3, 1))
+    conv3d = lambda x: convolve(x, kernel3d, mode="wrap")
+    result3d = xr.apply_ufunc(conv3d, da)
+    #'''
+    kernw = np.array([
+        [0, 0, 0],
+        [-1, 1, 0],
+        [0, 0, 0],
+    ])
+    kerne = np.array([
+        [0, 0, 0],
+        [0, -1, 1],
+        [0, 0, 0],
+    ])
+    kernn = np.array([
+        [0, 1, 0],
+        [0, -1, 0],
+        [0, 0, 0],
+    ])
+    kerns = np.array([
+        [0, 0, 0],
+        [0, 1, 0],
+        [0, -1, 0],
+    ])
+
+    return None
