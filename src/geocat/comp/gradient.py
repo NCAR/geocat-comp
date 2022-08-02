@@ -224,6 +224,7 @@ def grad_wgs84_np(
 
 def grad_kernel(data: SupportedTypes) -> SupportedTypes:
     '''
+    https://stackoverflow.com/questions/52529152/applying-scipy-ndimage-convolve-to-tridimensional-xarray-dataarray
     kernel3d = np.ones((3, 3, 1))
     conv3d = lambda x: convolve(x, kernel3d, mode="wrap")
     result3d = xr.apply_ufunc(conv3d, da)
