@@ -5,10 +5,10 @@ import xarray as xr
 
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
-#if "--cov" in str(sys.argv):
-from src.geocat.comp import pearson_r
-#else:
-#    from geocat.comp import pearson_r
+if "--cov" in str(sys.argv):
+    from src.geocat.comp import pearson_r
+else:
+    from geocat.comp import pearson_r
 
 class Test_pearson_r(TestCase):
     @classmethod
