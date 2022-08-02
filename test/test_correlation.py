@@ -5,10 +5,10 @@ import xarray as xr
 
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
-#if "--cov" in str(sys.argv):
-from src.geocat.comp import pearson_r#
-#else:
-#    from geocat.comp import pearson_r
+if "--cov" in str(sys.argv):
+    from src.geocat.comp import pearson_r#
+else:
+    from geocat.comp import pearson_r
 
 class Test_pearson_r(TestCase):
     @classmethod
@@ -93,6 +93,4 @@ class Test_pearson_r(TestCase):
         b = self.ds.b
         w = self.ds.weights[:,0,0]
         result = pearson_r(a, b, weights=w, dim='lat')
-        print(result)
-        print(self.weighted_r_lat)
         assert np.allclose(self.weighted_r_lat, result)
