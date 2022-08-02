@@ -44,25 +44,25 @@ class Test_pearson_r(TestCase):
                               [0.997034735, 0.99834464, 0.987382522, 0.99646236, 0.989222738]]
 
     # Testing numpy inputs
-    def test_pearson_r_np(self):
+    def test_np_inputs(self):
         a = self.a
         b = self.b
         result = pearson_r(a, b)
         assert np.allclose(self.unweighted_r, result)
 
-    def test_pearson_r_np_weighted(self):
+    def test_np_inputs_weighted(self):
         a = self.a
         b = self.b
         w = self.weights
         result = pearson_r(a, b, weights=w)
         assert np.allclose(self.weighted_r, result)
 
-    def test_pearson_r_np_warn(self):
+    def test_np_inputs_warn(self):
         a = self.a
         b = self.b
         self.assertWarns(Warning, pearson_r, a, b, dim='lat', axis=0)
 
-    def test_pearson_r_np_lat(self):
+    def test_np_inputs_across_lats(self):
         a = self.a
         b = self.b
         w = self.weights
@@ -70,25 +70,25 @@ class Test_pearson_r(TestCase):
         assert np.allclose(self.weighted_r_lat, result)
 
     # Testing xarray inputs
-    def test_pearson_r_xr(self):
+    def test_xr_inputs(self):
         a = self.ds.a
         b = self.ds.b
         result = pearson_r(a, b)
         assert np.allclose(self.unweighted_r, result)
 
-    def test_pearson_r_xr_weighted(self):
+    def test_xr_inputs_weighted(self):
         a = self.ds.a
         b = self.ds.b
         w = self.ds.weights
         result = pearson_r(a, b, weights=w)
         assert np.allclose(self.weighted_r, result)
 
-    def test_pearson_r_xr_warn(self):
+    def test_xr_inputs_warn(self):
         a = self.ds.a
         b = self.ds.b
         self.assertWarns(Warning, pearson_r, a, b, dim='lat', axis=0)
 
-    def test_pearson_r_xr_lat(self):
+    def test_xr_inputs_across_lats(self):
         a = self.ds.a
         b = self.ds.b
         w = self.ds.weights[:,0,0]
