@@ -37,6 +37,7 @@ class Test_pearson_r(TestCase):
                         attrs={'description': 'Test data'})
 
         cls.unweighted_r = 0.963472086
+        cls.unweighted_r_skipnan = 0.96383798
         cls.weighted_r = 0.963209755
         cls.weighted_r_lat = [[0.995454445, 0.998450821, 0.99863877, 0.978765291, 0.982350092],
                               [0.99999275, 0.995778831, 0.998994355, 0.991634937, 0.999868279],
@@ -69,6 +70,14 @@ class Test_pearson_r(TestCase):
         result = pearson_r(a, b, weights=w, axis=0)
         assert np.allclose(self.weighted_r_lat, result)
 
+    def test_np_inputs_skipna(self):
+        # deep copy to prevent adding nans to the test data for other tests
+        a = self.a.copy()
+        a[0] = np.nan
+        b = self.b
+        result = pearson_r(a, b, skipna=True)
+        assert np.allclose(self.unweighted_r_skipnan, result)
+
     # Testing xarray inputs
     def test_xr_inputs(self):
         a = self.ds.a
@@ -94,6 +103,14 @@ class Test_pearson_r(TestCase):
         w = self.ds.weights[:,0,0]
         result = pearson_r(a, b, weights=w, dim='lat')
         assert np.allclose(self.weighted_r_lat, result)
+
+    def test_xr_inputs_skipna(self):
+        # deep copy to prevent adding nans to the test data for other tests
+        a = self.ds.a.copy(deep=True)
+        a[0] = np.nan
+        b = self.ds.b
+        result = pearson_r(a, b, skipna=True)
+        assert np.allclose(self.unweighted_r_skipnan, result)
 
     def test_keep_attrs(self):
         a = self.ds.a
