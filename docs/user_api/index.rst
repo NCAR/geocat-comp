@@ -22,6 +22,8 @@ GeoCAT-comp native routines
 
    geocat.comp.climatologies.month_to_season
 
+   geocat.comp.correlation.pearson_r
+
    geocat.comp.crop.actual_saturation_vapor_pressure
 
    geocat.comp.crop.max_daylight
