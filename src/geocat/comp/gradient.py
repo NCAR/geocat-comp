@@ -230,29 +230,25 @@ def grad_kernel(data: SupportedTypes) -> SupportedTypes:
     # one wrap,
     # the input will be padded on the second dimension on both sides with a
     # one nan
-    '''
-    https://xarray-spatial.org/reference/_autosummary/xrspatial.convolution.convolution_2d.html
-    #'''
+    """https://xarray-spatial.org/reference/_autosummary/xrspatial.convolution.
 
-    #learned things
-    #kernels must be odd numbered, convolve_2d does not support even numbered kernels in a useful way
-    #this means different kernals for all four directions away from the pixel of interests
+    .convolution_2d.html #
+    """
+
+    # learned things
+    # kernels must be odd numbered, convolve_2d does not support even
+    # numbered kernels in a useful way
+    # this means different kernals for all four directions away from the
+    # pixel of interests
     #  which is annying but whatever, saves some effort indexing
-    #  is also opens up the option for a numpy style return, with the [-1, 0. 1] kernels
+    #  is also opens up the option for a numpy style return, with the [-1,
+    #  0. 1] kernels
     #
     kernw = np.array([
-        [
-            -1,
-            1,
-            0,
-        ],
+        [-1, 1, 0],
     ])
     kerne = np.array([
-        [
-            0,
-            -1,
-            1,
-        ],
+        [0, -1, 1],
     ])
     kernn = np.array([
         [-1],
@@ -266,11 +262,7 @@ def grad_kernel(data: SupportedTypes) -> SupportedTypes:
     ])
 
     npkernwe = np.array([
-        [
-            -1,
-            0,
-            1,
-        ],
+        [-1, 0, 1],
     ])
     npkernns = np.array([
         [-1],
@@ -279,44 +271,13 @@ def grad_kernel(data: SupportedTypes) -> SupportedTypes:
     ])
 
     testarray = np.array([
-        [
-            1,
-            0,
-            0,
-            0,
-            0,
-        ],
-        [
-            0,
-            1,
-            0,
-            0,
-            0,
-        ],
-        [
-            0,
-            0,
-            1,
-            0,
-            0,
-        ],
-        [
-            0,
-            0,
-            0,
-            1,
-            0,
-        ],
-        [
-            0,
-            0,
-            0,
-            0,
-            1,
-        ],
+        [1, 0, 0, 0, 0],
+        [0, 1, 0, 0, 0],
+        [0, 0, 1, 0, 0],
+        [0, 0, 0, 1, 0],
+        [0, 0, 0, 0, 1],
     ])
     testarray = xr.DataArray(testarray)
-
     testresult = conv(testarray, npkernwe)
 
     return None
