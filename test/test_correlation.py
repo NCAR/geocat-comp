@@ -10,7 +10,9 @@ if "--cov" in str(sys.argv):
 else:
     from geocat.comp import pearson_r
 
+
 class Test_pearson_r(TestCase):
+
     @classmethod
     def setUpClass(cls):
         # Coordinates
