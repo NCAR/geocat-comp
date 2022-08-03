@@ -22,8 +22,6 @@ GeoCAT-comp native routines
 
    geocat.comp.climatologies.month_to_season
 
-   geocat.comp.correlation.pearson_r
-
    geocat.comp.crop.actual_saturation_vapor_pressure
 
    geocat.comp.crop.max_daylight
@@ -79,6 +77,8 @@ GeoCAT-comp native routines
    geocat.comp.spherical.recomposition
 
    geocat.comp.spherical.scale_voronoi
+
+   geocat.comp.stats.pearson_r
 
 
 GeoCAT-comp routines from GeoCAT-f2py
