@@ -2,6 +2,7 @@ from typing import Union
 
 import numpy as np
 import xarray as xr
+from xrspatial.convolution import convolution_2d as conv
 
 SupportedTypes = Union[np.ndarray, xr.DataArray]
 XTypes = Union[xr.DataArray, xr.Dataset]
@@ -223,34 +224,99 @@ def grad_wgs84_np(
 
 
 def grad_kernel(data: SupportedTypes) -> SupportedTypes:
-    #todo this function will take *any* input and apply the four kernals and return the result,
-    # the input will be padded on the first dimension on both sides with a one wrap,
-    # the input will be padded on the second dimension on both sides with a one nan
+    # todo this function will take *any* input and apply the four kernals and
+    #  return the result,
+    # the input will be padded on the first dimension on both sides with a
+    # one wrap,
+    # the input will be padded on the second dimension on both sides with a
+    # one nan
     '''
-    https://stackoverflow.com/questions/52529152/applying-scipy-ndimage-convolve-to-tridimensional-xarray-dataarray
-    kernel3d = np.ones((3, 3, 1))
-    conv3d = lambda x: convolve(x, kernel3d, mode="wrap")
-    result3d = xr.apply_ufunc(conv3d, da)
+    https://xarray-spatial.org/reference/_autosummary/xrspatial.convolution.convolution_2d.html
     #'''
+
+    #learned things
+    #kernels must be odd numbered, convolve_2d does not support even numbered kernels in a useful way
+    #this means different kernals for all four directions away from the pixel of interests
+    #  which is annying but whatever, saves some effort indexing
+    #  is also opens up the option for a numpy style return, with the [-1, 0. 1] kernels
+    #
     kernw = np.array([
-        [0, 0, 0],
-        [-1, 1, 0],
-        [0, 0, 0],
+        [
+            -1,
+            1,
+            0,
+        ],
     ])
     kerne = np.array([
-        [0, 0, 0],
-        [0, -1, 1],
-        [0, 0, 0],
+        [
+            0,
+            -1,
+            1,
+        ],
     ])
     kernn = np.array([
-        [0, 1, 0],
-        [0, -1, 0],
-        [0, 0, 0],
+        [-1],
+        [1],
+        [0],
     ])
     kerns = np.array([
-        [0, 0, 0],
-        [0, 1, 0],
-        [0, -1, 0],
+        [0],
+        [-1],
+        [1],
     ])
+
+    npkernwe = np.array([
+        [
+            -1,
+            0,
+            1,
+        ],
+    ])
+    npkernns = np.array([
+        [-1],
+        [0],
+        [1],
+    ])
+
+    testarray = np.array([
+        [
+            1,
+            0,
+            0,
+            0,
+            0,
+        ],
+        [
+            0,
+            1,
+            0,
+            0,
+            0,
+        ],
+        [
+            0,
+            0,
+            1,
+            0,
+            0,
+        ],
+        [
+            0,
+            0,
+            0,
+            1,
+            0,
+        ],
+        [
+            0,
+            0,
+            0,
+            0,
+            1,
+        ],
+    ])
+    testarray = xr.DataArray(testarray)
+
+    testresult = conv(testarray, npkernwe)
 
     return None
