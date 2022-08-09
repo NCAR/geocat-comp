@@ -155,7 +155,8 @@ def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0, 
 
                     else:  # else extrapolate below surface
                         if var is None:  # fill with surface value
-                            output[lev_i, lat, lon] = data[0, lat, lon]  # TODO force index 0 for lev to be surface
+                            model_sfc = np.argmax(vert_pres)
+                            output[lev_i, lat, lon] = data[model_sfc, lat, lon]
 
                         elif var == 'temperature':  # extrapolate temperature
                             # TODO
