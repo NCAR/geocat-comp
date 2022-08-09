@@ -128,10 +128,52 @@ def _sigma_from_hybrid(psfc, hya, hyb, p0=100000.):
     return hya * p0 / psfc + hyb
 
 
-def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0):
+def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0, extrapolate=False, var=None):
     """Execute the defined interpolation function on data."""
+    if extrapolate == False:
+        return func_interpolate(new_levels, xcoords, data, axis=interp_axis)
+    else:
+        # Set up
+        R_d = 287.04  # dry air gas constant
+        g_inv = 1 / 9.80616  # inverse of gravity
+        alpha = 0.0065 * R_d * g_inv
+        nlev = len(new_levels)
+        nlat = len(data[0, :, 0])
+        nlon = len(data[0, 0, :])
+        p_sfc = xcoords[0, :, :]  # model surface pressure
 
-    return func_interpolate(new_levels, xcoords, data, axis=interp_axis)
+        output = np.zeros((nlev, nlat, nlon))
+
+        for lat in range(0, nlat):
+            for lon in range(0, nlon):
+                vert_pres = xcoords[:, lat, lon]  # get vertical pressure profile for specific point
+
+                for lev_i, new_lev in enumerate(new_levels):
+                    if new_lev <= p_sfc[lat, lon]:  # if the new level is higher than the surface
+                        # TODO: default to linear interpolation
+                        print('TODO: default to linear interpolation')
+
+                    else:  # else extrapolate below surface
+                        if var is None:  # fill with surface value
+                            output[lev_i, lat, lon] = data[0, lat, lon]  # TODO force index 0 for lev to be surface
+
+                        elif var == 'temperature':  # extrapolate temperature
+                            # TODO
+                            print('TODO: temp')
+
+                        elif var == 'geopotential':
+                            # TODO
+                            print('TODO: geo')
+
+                        else:
+                            # TODO
+                            print('TODO: raise exception')
+
+
+
+
+
+
 
 
 def interp_hybrid_to_pressure(data: xr.DataArray,
@@ -141,7 +183,9 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
                               p0: float = 100000.,
                               new_levels: np.ndarray = __pres_lev_mandatory__,
                               lev_dim: str = None,
-                              method: str = 'linear') -> xr.DataArray:
+                              method: str = 'linear',
+                              extrapolate: bool = True,
+                              var: str = None) -> xr.DataArray:
     """Interpolate data from hybrid-sigma levels to isobaric levels. Keeps
     attributes (i.e. meta information) of the input data in the output as
     default.
@@ -257,7 +301,7 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
     out_chunks[interp_axis] = (new_levels.size,)
     out_chunks = tuple(out_chunks)
     # ''' end of boilerplate
-
+    print(pressure)
     from dask.array.core import map_blocks
     output = map_blocks(
         _vertical_remap,
@@ -266,6 +310,8 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
         pressure.data,
         data.data,
         interp_axis,
+        extrapolate,
+        var,
         chunks=out_chunks,
         dtype=data.dtype,
         drop_axis=[interp_axis],
