@@ -128,7 +128,7 @@ def _sigma_from_hybrid(psfc, hya, hyb, p0=100000.):
     return hya * p0 / psfc + hyb
 
 
-def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0, extrapolate=False, var=None):
+def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0, extrapolate=None, var=None, ts=None, phis=None):
     """Execute the defined interpolation function on data."""
     if extrapolate == False:
         return func_interpolate(new_levels, xcoords, data, axis=interp_axis)
@@ -186,7 +186,9 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
                               lev_dim: str = None,
                               method: str = 'linear',
                               extrapolate: bool = True,
-                              var: str = None) -> xr.DataArray:
+                              var: str = None,
+                              ts: xr.DataArray = None,
+                              phis: xr.DataArray = None) -> xr.DataArray:
     """Interpolate data from hybrid-sigma levels to isobaric levels. Keeps
     attributes (i.e. meta information) of the input data in the output as
     default.
@@ -222,6 +224,19 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
 
     method : :class:`str`, Optional
         String that is the interpolation method; can be either "linear" or "log". Defaults to "linear".
+
+    extrapolate : :class:`bool`, Optional
+        When True, values are extrapolated when the pressure level is outside the range of `ps`. Otherwise, no extrapolation is done. Defaults to False
+
+    var : :class:`string`, Optional
+        String that indicates which variable to extrapolate: "temperature", "geopotential" (for geopotential height), or None for all other variables. Defaults to None.
+
+    ts : :class:`xarray.DataArray`, Optional
+        A multi-dimensional array the same sizes as `ps` equal to temperature at the lowest (i.e, closest to the surface) level. Only used when var="geopotential".
+
+    phis
+        A multi-dimensional array of surface geopotential (m^2/sec^2) wiht same time/space shape as `ps`.
+
 
     Returns
     -------
@@ -313,6 +328,8 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
         interp_axis,
         extrapolate,
         var,
+        ts,
+        phis,
         chunks=out_chunks,
         dtype=data.dtype,
         drop_axis=[interp_axis],
