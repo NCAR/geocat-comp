@@ -149,18 +149,36 @@ def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0, 
                 vert_pres = xcoords[:, lat, lon]  # get vertical pressure profile for specific point
 
                 for lev_i, new_lev in enumerate(new_levels):
-                    if new_lev <= p_sfc[lat, lon]:  # if the new level is higher than the surface
+                    if new_lev <= p_sfc[lat, lon]:  # if the new level is less (higher in altitude) than the surface
                         # TODO: default to linear interpolation
                         print('TODO: default to linear interpolation')
 
                     else:  # else extrapolate below surface
+                        model_sfc = np.argmax(vert_pres)  # index of the highest pressure level (lowest in altitude)
+
                         if var is None:  # fill with surface value
-                            model_sfc = np.argmax(vert_pres)
                             output[lev_i, lat, lon] = data[model_sfc, lat, lon]
 
                         elif var == 'temperature':  # extrapolate temperature
-                            # TODO
-                            print('TODO: temp')
+                            p_sfc_hPa = p_sfc[lat, lon]  * 0.01  # convert from Pa to hPa
+                            tstar = data[model_sfc, lat, lon] * (1 + alpha * (p_sfc_hPa / vert_pres[model_sfc] - 1))
+                            hgt = phis[lat, lon](g_inv)  # altitude
+
+                            if hgt < 2000:
+                                alnp = alpha*np.log(new_lev/p_sfc_hPa)
+                            else:
+                                t0 = tstar * 0.0065 * hgt
+                                tplat = min(t0, 298)
+                                if hgt <= 2500:
+                                    t_prime_0 = 0.002 * ((2500 - hgt) * t0 + (hgt - 2000) * tplat)
+                                else:
+                                    t_prime_0 = tplat
+
+                                if t_prime_0 < tstar:
+                                    alnp = 0
+                                else:
+                                    alnp = R_d * (t_prime_0 - tstar) / phis[lat, lon] * np.log(new_lev / p_sfc_hPa)
+                            output[lev_i, lat, lon] = tstar * (1 + alnp + 0.5 * alnp**2 + 1 / 6 * alnp**3)
 
                         elif var == 'geopotential':
                             # TODO
