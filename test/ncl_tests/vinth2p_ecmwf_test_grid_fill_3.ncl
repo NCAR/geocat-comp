@@ -44,18 +44,6 @@ begin
  Q@units = "g/kg"
 
 ;-----------------------------------------------------------------
-; Interpolate with no extrapolation
-;-----------------------------------------------------------------
-
- Tp   = vinth2p (T,hyam,hybm,lev_p,PS,1,P0mb,1,False)
- Qp   = vinth2p (Q,hyam,hybm,lev_p,PS,1,P0mb,1,False)
- Zp   = vinth2p (Z,hyam,hybm,lev_p,PS,1,P0mb,1,False)
-
- Tp@long_name = "Temperature (K)"
- Qp@long_name = "Specific Humidity (g/kg)"
- Zp@long_name = "Geopotential (m)"
-
-;-----------------------------------------------------------------
 ; Interpolate and extrapolation below surface pressure
 ;-----------------------------------------------------------------
 
@@ -65,94 +53,36 @@ begin
  Qpx    = vinth2p_ecmwf (Q,hyam,hybm,lev_p,PS,1,P0mb,1,True,varflg,TS,PHIS)
  varflg = -1
  Zpx    = vinth2p_ecmwf (Z,hyam,hybm,lev_p,PS,1,P0mb,1,True,varflg,TS,PHIS)
- print(Tpx)
-;-----------------------------------------------------------------
-; set the poisson_grid_fill input variables
-;-----------------------------------------------------------------
-  nscan = 2000             ; usually *much* fewer
-  eps   = 0.001            ; variable depended
-  gtype = True             ; Cyclic in longitude [global]
-  guess = 0                ; use zonal means
-  relc  = 0.6              ; standard relaxation coef
-  opt   = 0
 
-;-----------------------------------------------------------------
-; Global grid: Fill in over land
-;-----------------------------------------------------------------
+;===========================
+; write output to netcdf
+;===========================
 
-  Tp_orig = Tp                        ; save for demo plot
-  Qp_orig = Qp
-  Zp_orig = Zp
+   system("/bin/rm -f vinth2p_ecmwf_output.nc")   ; remove any pre-existing file
+   ncdf = addfile("vinth2p_ecmwf_output.nc" ,"c")  ; open output netCDF file
 
-  poisson_grid_fill( Tp, gtype, guess, nscan, eps, relc, opt)
-  poisson_grid_fill( Qp, gtype, guess, nscan, eps, relc, opt)
-  poisson_grid_fill( Zp, gtype, guess, nscan, eps, relc, opt)
+;===================================================================
+; create global attributes of the file (optional)
+;===================================================================
+   fAtt               = True            ; assign file attributes
+   fAtt@title         = "vinth2p_ecmwf output of grid_fill_3 example"
+   fAtt@source_file   =  "original-file.nc"
+   fAtt@Conventions   = "None"
+   fAtt@creation_date = systemfunc ("date")
+   fileattdef( ncdf, fAtt )            ; copy file attributes
 
+;===================================================================
+; make time an UNLIMITED dimension; recommended  for most applications
+;===================================================================
+   filedimdef(ncdf,"time",-1,True)
 
-;-----------------------------------------------------------------
-; plot for compare
-;-----------------------------------------------------------------
+;===================================================================
+; output variables directly; NCL will call appropriate functions
+; to write the meta data associated with each variable
+;===================================================================
 
-  LEV   = 950                              ; arbitrary level for demo
-
-  wks   = gsn_open_wks("png","grid_fill")  ; send graphics to PNG file
-  plot  = new(3,graphic)
-
-  res                              = True
-  res@gsnDraw                      = False
-  res@gsnFrame                     = False
-  res@cnInfoLabelOrthogonalPosF    = -0.07
-
-  res@cnInfoLabelOn       = False           ; turn off cn info label
-  res@cnFillOn            = True            ; turn on color
-  res@cnFillPalette       = "amwg"          ; set color map
-
-  res@lbLabelBarOn        = False           ; turn off individual cb's
-  res@mpCenterLonF        = 180.
-  res@mpFillOn            = False
-
-  resP    = True
- ;resP@gsnPanelMainString = title               ; uncomment to add title
-  resP@gsnMaximize        = True                ; make large
-  resP@gsnPanelLabelBar   = True                ; add common colorbar
- ;resP@lbLabelStride      = 2                   ; force every other label
- ;resP@lbLabelFontHeightF = 0.0125              ; make labels smaller [0.2 default]
-
-; Temperature
-
-  res@gsnRightString = "Original: "+LEV+"hPa"
-  plot(0) = gsn_csm_contour_map(wks,Tp_orig(0,{LEV},:,:),res)
-
-  res@gsnRightString = "vinth2p with extrapolation"
-  plot(1) = gsn_csm_contour_map(wks,Tpx(0,{LEV},:,:),res)
-
-  res@gsnRightString = "poisson_grid_fill"
-  plot(2) = gsn_csm_contour_map(wks,Tp(0,{LEV},:,:),res)
-  gsn_panel(wks,plot,(/3,1/),resP)
-
-; Specific humidity
-
-  res@gsnRightString = "Original: "+LEV+"hPa"
-  plot(0) = gsn_csm_contour_map(wks,Qp_orig(0,{LEV},:,:),res)
-
-  res@gsnRightString = "vinth2p with extrapolation"
-  plot(1) = gsn_csm_contour_map(wks,Qpx(0,{LEV},:,:),res)
-
-  res@gsnRightString = "poisson_grid_fill"
-  plot(2) = gsn_csm_contour_map(wks,Qp(0,{LEV},:,:),res)
-  gsn_panel(wks,plot,(/3,1/),resP)
-
-; Geopotential
-
-  res@gsnRightString = "Original: "+LEV+"hPa"
-  plot(0) = gsn_csm_contour_map(wks,Zp_orig(0,{LEV},:,:),res)
-
-  res@gsnRightString = "vinth2p with extrapolation"
-  plot(1) = gsn_csm_contour_map(wks,Zpx(0,{LEV},:,:),res)
-
-  res@gsnRightString = "poisson_grid_fill"
-  plot(2) = gsn_csm_contour_map(wks,Zp(0,{LEV},:,:),res)
-  gsn_panel(wks,plot,(/3,1/),resP)
-
+   ncdf->T  = Tpx
+   ncdf->Q  = Qpx
+   ncdf->Z  = Zpx
 
 end
