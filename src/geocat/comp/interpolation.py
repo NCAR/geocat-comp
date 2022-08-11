@@ -140,7 +140,9 @@ def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0, 
         nlev = len(new_levels)
         nlat = len(data[0, :, 0])
         nlon = len(data[0, 0, :])
-        p_sfc = xcoords[0, :, :]  # model surface pressure
+
+        model_sfc = np.argmax(xcoords[:, 0, 0])  # index of the highest pressure level (lowest in altitude)
+        p_sfc = xcoords[model_sfc, :, :]  # model surface pressure
 
         output = np.zeros((nlev, nlat, nlon))
 
@@ -154,15 +156,13 @@ def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0, 
                         print('TODO: default to linear interpolation')
 
                     else:  # else extrapolate below surface
-                        model_sfc = np.argmax(vert_pres)  # index of the highest pressure level (lowest in altitude)
-
                         if var is None:  # fill with surface value
                             output[lev_i, lat, lon] = data[model_sfc, lat, lon]
 
                         elif var == 'temperature':  # extrapolate temperature
                             p_sfc_hPa = p_sfc[lat, lon]  * 0.01  # convert from Pa to hPa
                             tstar = data[model_sfc, lat, lon] * (1 + alpha * (p_sfc_hPa / vert_pres[model_sfc] - 1))
-                            hgt = phis[lat, lon](g_inv)  # altitude
+                            hgt = phis[lat, lon] * g_inv  # altitude
 
                             if hgt < 2000:
                                 alnp = alpha*np.log(new_lev/p_sfc_hPa)
@@ -178,7 +178,7 @@ def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0, 
                                     alnp = 0
                                 else:
                                     alnp = R_d * (t_prime_0 - tstar) / phis[lat, lon] * np.log(new_lev / p_sfc_hPa)
-                            output[lev_i, lat, lon] = tstar * (1 + alnp + 0.5 * alnp**2 + 1 / 6 * alnp**3)
+                            output[lev_i, lat, lon] = tstar * (1 + alnp + (0.5 * alnp**2) + (1 / 6 * alnp**3))
 
                         elif var == 'geopotential':
                             # TODO
@@ -187,7 +187,7 @@ def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0, 
                         else:
                             # TODO
                             print('TODO: raise exception')
-
+        return output
 
 
 
@@ -335,7 +335,7 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
     out_chunks[interp_axis] = (new_levels.size,)
     out_chunks = tuple(out_chunks)
     # ''' end of boilerplate
-    print(pressure)
+
     from dask.array.core import map_blocks
     output = map_blocks(
         _vertical_remap,
