@@ -128,7 +128,7 @@ def _sigma_from_hybrid(psfc, hya, hyb, p0=100000.):
     return hya * p0 / psfc + hyb
 
 
-def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0, extrapolate=None, var=None, ts=None, phis=None):
+def _vertical_remap(func_interpolate, method, new_levels, xcoords, data, interp_axis=0, extrapolate=None, var=None, ts=None, phis=None):
     """Execute the defined interpolation function on data."""
     if extrapolate == False:
         return func_interpolate(new_levels, xcoords, data, axis=interp_axis)
@@ -340,6 +340,7 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
     output = map_blocks(
         _vertical_remap,
         func_interpolate,
+        method,
         new_levels,
         pressure.data,
         data.data,
