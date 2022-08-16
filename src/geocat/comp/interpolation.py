@@ -128,71 +128,10 @@ def _sigma_from_hybrid(psfc, hya, hyb, p0=100000.):
     return hya * p0 / psfc + hyb
 
 
-def _vertical_remap(func_interpolate, method, new_levels, xcoords, data, interp_axis=0, extrapolate=None, var=None, ts=None, phis=None):
+def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0):
     """Execute the defined interpolation function on data."""
-    if extrapolate == False:
-        return func_interpolate(new_levels, xcoords, data, axis=interp_axis)
-    else:
-        # Set up
-        R_d = 287.04  # dry air gas constant
-        g_inv = 1 / 9.80616  # inverse of gravity
-        alpha = 0.0065 * R_d * g_inv
-        nlev = len(new_levels)
-        nlat = len(data[0, :, 0])
-        nlon = len(data[0, 0, :])
 
-        model_sfc = np.argmax(xcoords[:, 0, 0])  # index of the highest pressure level (lowest in altitude)
-        p_sfc = xcoords[model_sfc, :, :]  # model surface pressure
-
-        output = np.zeros((nlev, nlat, nlon))
-
-        for lat in range(0, nlat):
-            for lon in range(0, nlon):
-                vert_pres = xcoords[:, lat, lon]  # get vertical pressure profile for specific point
-
-                for lev_i, new_lev in enumerate(new_levels):
-                    if new_lev <= p_sfc[lat, lon]:  # if the new level is less (higher in altitude) than the surface
-                        # TODO: default to linear interpolation
-                        print('TODO: default to linear interpolation')
-
-                    else:  # else extrapolate below surface
-                        if var is None:  # fill with surface value
-                            output[lev_i, lat, lon] = data[model_sfc, lat, lon]
-
-                        elif var == 'temperature':  # extrapolate temperature
-                            p_sfc_hPa = p_sfc[lat, lon]  * 0.01  # convert from Pa to hPa
-                            tstar = data[model_sfc, lat, lon] * (1 + alpha * (p_sfc_hPa / vert_pres[model_sfc] - 1))
-                            hgt = phis[lat, lon] * g_inv  # altitude
-
-                            if hgt < 2000:
-                                alnp = alpha*np.log(new_lev/p_sfc_hPa)
-                            else:
-                                t0 = tstar * 0.0065 * hgt
-                                tplat = min(t0, 298)
-                                if hgt <= 2500:
-                                    t_prime_0 = 0.002 * ((2500 - hgt) * t0 + (hgt - 2000) * tplat)
-                                else:
-                                    t_prime_0 = tplat
-
-                                if t_prime_0 < tstar:
-                                    alnp = 0
-                                else:
-                                    alnp = R_d * (t_prime_0 - tstar) / phis[lat, lon] * np.log(new_lev / p_sfc_hPa)
-                            output[lev_i, lat, lon] = tstar * (1 + alnp + (0.5 * alnp**2) + (1 / 6 * alnp**3))
-
-                        elif var == 'geopotential':
-                            # TODO
-                            print('TODO: geo')
-
-                        else:
-                            # TODO
-                            print('TODO: raise exception')
-        return output
-
-
-
-
-
+    return func_interpolate(new_levels, xcoords, data, axis=interp_axis)
 
 
 def interp_hybrid_to_pressure(data: xr.DataArray,
@@ -202,11 +141,7 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
                               p0: float = 100000.,
                               new_levels: np.ndarray = __pres_lev_mandatory__,
                               lev_dim: str = None,
-                              method: str = 'linear',
-                              extrapolate: bool = True,
-                              var: str = None,
-                              ts: xr.DataArray = None,
-                              phis: xr.DataArray = None) -> xr.DataArray:
+                              method: str = 'linear') -> xr.DataArray:
     """Interpolate data from hybrid-sigma levels to isobaric levels. Keeps
     attributes (i.e. meta information) of the input data in the output as
     default.
@@ -242,19 +177,6 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
 
     method : :class:`str`, Optional
         String that is the interpolation method; can be either "linear" or "log". Defaults to "linear".
-
-    extrapolate : :class:`bool`, Optional
-        When True, values are extrapolated when the pressure level is outside the range of `ps`. Otherwise, no extrapolation is done. Defaults to False
-
-    var : :class:`string`, Optional
-        String that indicates which variable to extrapolate: "temperature", "geopotential" (for geopotential height), or None for all other variables. Defaults to None.
-
-    ts : :class:`xarray.DataArray`, Optional
-        A multi-dimensional array the same sizes as `ps` equal to temperature at the lowest (i.e, closest to the surface) level. Only used when var="geopotential".
-
-    phis
-        A multi-dimensional array of surface geopotential (m^2/sec^2) wiht same time/space shape as `ps`.
-
 
     Returns
     -------
@@ -340,15 +262,10 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
     output = map_blocks(
         _vertical_remap,
         func_interpolate,
-        method,
         new_levels,
         pressure.data,
         data.data,
         interp_axis,
-        extrapolate,
-        var,
-        ts,
-        phis,
         chunks=out_chunks,
         dtype=data.dtype,
         drop_axis=[interp_axis],
