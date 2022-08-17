@@ -133,6 +133,46 @@ def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0):
 
     return func_interpolate(new_levels, xcoords, data, axis=interp_axis)
 
+def _vertical_remap_extrapolate(data, pressure, new_levels, interp_method, var, t_sfc, phi_sfc):
+    R_d = 287.04  # dry air gas constant
+    g_inv = 1 / 9.80616  # inverse of gravity
+    alpha = 0.0065 * R_d * g_inv
+    lev_name = pressure.cf['vertical'].name
+    sfc = pressure[lev_name].argmax().data  # find index of lowest level
+    pressure_sfc = pressure[lev_name][sfc].data  # extract pressure at lowest level
+
+    # create output array
+    output = xr.full_like(data, np.nan).isel(**{lev_name:1}, drop=True)
+    output = output.expand_dims({'lev': len(new_levels)}).assign_coords({'lev': new_levels})
+
+    if var == 'temperature':
+        alnp = xr.zeros_like(data)  # to hold values of alpha * log(p / pressure_sfc)
+        tprime0 = xr.zeros_like(phi_sfc)  # to hold values of alpha * log(p / pressure_sfc)
+
+        for lev in new_levels:
+            if lev > pressure_sfc:  # if new level is below ground
+                tstar = data.isel(**{lev_name:sfc})  # 2nd term in eqn 5 is 0 in this case
+                hgt = phi_sfc * g_inv
+
+                t0 = tstar + 0.0065 * hgt
+                tplat = xr.apply_ufunc(np.minimum, 298, t0, dask='parallelized')
+
+                tprime0 = xr.where((2000 <= hgt) & (hgt <= 2500),
+                              0.002 * ((2500 - hgt) * t0 + (hgt - 2000) * tplat),
+                              np.nan)  # tprime0 = np.nan when hgt is outside of range [2000, 2500]
+                tprime0.where(hgt <= 2500, other=tplat)  # tprime0 = tplat when hgt > 2500
+
+                # alnp=0 when 2000<=hgt<=2500 and tprime0 >= tplat; alnp is non-zero when 2000<=hgt<=2500 and tprime0 < tplat
+                alnp = xr.where((2000 <= hgt) & (hgt <= 2500) & (tprime0 >= tplat),
+                                0,
+                                ((2000 <= hgt) & (hgt <= 2500)) *
+                                    (R_d * (tprime0 - tstar) / phi_sfc *
+                                     np.log(lev / pressure_sfc)))
+                alnp.where(hgt >= 2000, other=alpha * np.log(lev / pressure_sfc))  # alnp = alpha * np.log(lev / pressure_sfc when hgt < 2000
+
+
+                output.loc[dict(**{lev_name:lev})] = tstar * (1 + alnp + 0.5 * alnp**2 + 1/6 * alnp**3)
+        return output
 
 def interp_hybrid_to_pressure(data: xr.DataArray,
                               ps: xr.DataArray,
@@ -141,7 +181,11 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
                               p0: float = 100000.,
                               new_levels: np.ndarray = __pres_lev_mandatory__,
                               lev_dim: str = None,
-                              method: str = 'linear') -> xr.DataArray:
+                              method: str = 'linear',
+                              extrapolate: bool = False,
+                              var: str = None,
+                              t_sfc: xr.DataArray = None,
+                              phi_sfc: xr.DataArray = None) -> xr.DataArray:
     """Interpolate data from hybrid-sigma levels to isobaric levels. Keeps
     attributes (i.e. meta information) of the input data in the output as
     default.
@@ -259,18 +303,22 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
     # ''' end of boilerplate
 
     from dask.array.core import map_blocks
-    output = map_blocks(
-        _vertical_remap,
-        func_interpolate,
-        new_levels,
-        pressure.data,
-        data.data,
-        interp_axis,
-        chunks=out_chunks,
-        dtype=data.dtype,
-        drop_axis=[interp_axis],
-        new_axis=[interp_axis],
-    )
+    if extrapolate:
+        output = _vertical_remap_extrapolate(data, pressure, new_levels, method, var, t_sfc, phi_sfc)
+        return output
+    else:
+        output = map_blocks(
+            _vertical_remap,
+            func_interpolate,
+            new_levels,
+            pressure.data,
+            data.data,
+            interp_axis,
+            chunks=out_chunks,
+            dtype=data.dtype,
+            drop_axis=[interp_axis],
+            new_axis=[interp_axis],
+        )
 
     # End of Workaround
     ###############################################################################
