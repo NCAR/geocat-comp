@@ -21,22 +21,20 @@ def pearson_r(a,
 
     Parameters
     ----------
-    a : :class:`xarray.DataArray`, :class:`numpy.ndarray`
-        See xskillscore `documentation <https://xskillscore.readthedocs.io/en/stable/api/xskillscore.pearson_r.html#xskillscore.pearson_r>`_.
-    b : :class:`xarray.DataArray`, :class:`numpy.ndarray`
-        See xskillscore `documentation <https://xskillscore.readthedocs.io/en/stable/api/xskillscore.pearson_r.html#xskillscore.pearson_r>`_.
+    a : :class:`xarray.DataArray`, :class:`xarray.Dataset`, :class:`numpy.ndarray`
+        Arrays over which to apply the function.
+    b : :class:`xarray.DataArray`, :class:`xarray.Dataset`, :class:`numpy.ndarray`
+        Arrays over which to apply the function.
     dim : :class:`str`, :class:`list`, Optional
-        Used when `a` and `b` are of type `xarray.DataArray`. Is ignored otherwise.
-        See xskillscore `documentation <https://xskillscore.readthedocs.io/en/stable/api/xskillscore.pearson_r.html#xskillscore.pearson_r>`_.
+        The dimension(s) to apply the correlation along. Note that this dimension will be reduced as a result. Defaults to None reducing all dimensions. Only used when `a` and `b` are of type `xarray.DataArray` or `xarray.Dataset`.
     weights : :class:`xarray.DataArray`, :class:`numpy.ndarray`, Optional
-        Must have the same dimensions as `dim`.
-        See xskillscore `documentation <https://xskillscore.readthedocs.io/en/stable/api/xskillscore.pearson_r.html#xskillscore.pearson_r>`_.
+        Weights matching dimensions of `dim` to apply during the function.
     skipna : :class:`bool`, Optional
-        See xskillscore `documentation <https://xskillscore.readthedocs.io/en/stable/api/xskillscore.pearson_r.html#xskillscore.pearson_r>`_.
+        If True, skip NaNs when computing function.
     keep_attrs : :class:`bool`, Optional
-        See xskillscore `documentation <https://xskillscore.readthedocs.io/en/stable/api/xskillscore.pearson_r.html#xskillscore.pearson_r>`_.
+        If True, the attributes (attrs) will be copied from the first input to the new one. If False (default), the new object will be returned without attributes. Only used when `a` and `b` are of types `xarray.Dataset` or `xarray.DataArray`.
     axis : :class:`int`
-        The axis to apply the correlation along. Used when `a` and `b` are of type `np.ndarray` or are array-like. Is ignored otherwise.
+        The axis to apply the correlation along. Only used when `a` and `b` are of type `np.ndarray` or are array-like.
 
     Returns
     -------
