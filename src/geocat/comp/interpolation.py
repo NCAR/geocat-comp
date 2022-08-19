@@ -133,6 +133,9 @@ def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0):
 
     return func_interpolate(new_levels, xcoords, data, axis=interp_axis)
 
+def loglog(x):
+    return np.log(np.log(x))
+
 def _vertical_remap_extrapolate(data, pressure, new_levels, interp_method, var, t_sfc, phi_sfc):
     R_d = 287.04  # dry air gas constant
     g_inv = 1 / 9.80616  # inverse of gravity
@@ -172,6 +175,15 @@ def _vertical_remap_extrapolate(data, pressure, new_levels, interp_method, var, 
 
 
                 output.loc[dict(**{lev_name:lev})] = tstar * (1 + alnp + 0.5 * alnp**2 + 1/6 * alnp**3)
+            else:  # if new level is above ground, interpolate
+                for i in range(len(pressure[lev_name]) - 1):
+                    if pressure[lev_name][i] <= lev and lev <= pressure[lev_name][i+1]:
+                        if interp_method == 'linear':
+                            output.loc[dict(**{lev_name:lev})] = data.isel(**{lev_name:i}) + (data.isel(**{lev_name:i+1}) - data.isel(**{lev_name:i})) * (lev - pressure.isel(**{lev_name:i})) / (pressure.isel(**{lev_name:i+1}) - pressure.isel(**{lev_name:i}))
+                        elif interp_method == 'log':
+                            output.loc[dict(**{lev_name:lev})] = data.isel(**{lev_name:i}) + (data.isel(**{lev_name:i+1}) - data.isel(**{lev_name:i})) * np.log(lev / pressure.isel(**{lev_name:i})) / np.log(pressure.isel(**{lev_name:i+1}) / pressure.isel(**{lev_name:i}))
+                        else:
+                            output.loc[dict(**{lev_name:lev})] = data.isel(**{lev_name:i}) + (data.isel(**{lev_name:i+1}) - data.isel(**{lev_name:i})) * (loglog(lev) - loglog(pressure.isel(**{lev_name:i}))) / (loglog(pressure.isel(**{lev_name:i+1})) - loglog(pressure.isel(**{lev_name:i})))
         return output
 
 def interp_hybrid_to_pressure(data: xr.DataArray,
