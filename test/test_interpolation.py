@@ -106,6 +106,46 @@ class Test_interp_hybrid_to_pressure(TestCase):
 
         nt.assert_array_almost_equal(self.uzon_expected, uzon, 5)
 
+class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
+    # Open the netCDF data file with the input data
+    try:
+        ds_ccsm = xr.open_dataset(
+            gdf.get("netcdf_files/ccsm35.h0.0021-01.demo.nc"),
+            decode_times=False)
+    except:
+        ds_ccsm = xr.open_dataset("ccsm35.h0.0021-01.demo.nc",
+                                  decode_times=False)
+
+    # Open the netCDF file with the output data from running vinth2p_ecmwf_test_grid_fill_3.ncl
+    ds_out = xr.open_dataset("vinth2p_ecmwf_output.nc", decode_times=False)
+
+    # Pull out inputs
+    _hyam = ds_ccsm.hyam[0:10]
+    _hybm = ds_ccsm.hybm[0:10]
+    temp_in = ds_ccsm.T[:, 0:10, 0:10, 0:10]
+    press_in = ds_ccsm.PS[:, 0:10, 0:10]
+    phis = ds_ccsm.PHIS[:, 0:10, 0:10]
+    temp_expected = ds_out.T[:, 0:10, 0:10, 0:10]
+
+    # Pull out expected output
+    temp_expected = ds_out.T[:, :, 0:10, 0:10].rename(lev_p='lev')
+
+    new_levels = np.asarray([100, 200, 300, 400, 500, 600, 700, 750, 850, 925, 950, 1000])
+    _p0 = 1000 * 100 # reference pressure in hPa
+    def test_interp_hybrid_to_pressure_extrap_temp(self):
+        temp_out = interp_hybrid_to_pressure(self.temp_in,
+                                             self.press_in,
+                                             self._hyam,
+                                             self._hybm,
+                                             p0=self._p0,
+                                             new_levels=self.new_levels,
+                                             method="log",
+                                             extrapolate=True,
+                                             var='temperature',
+                                             phi_sfc=self.phis)
+        temp_out = temp_out.transpose('time', 'lev', 'lat', 'lon')
+        xr.testing.assert_allclose(self.temp_expected, temp_out)
+
 
 class Test_interp_sigma_to_hybrid(TestCase):
     hyam = xr.DataArray([0.0108093, 0.0130731, 0.03255911, 0.0639471])
