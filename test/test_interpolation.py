@@ -120,17 +120,15 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
     ds_out = xr.open_dataset("vinth2p_ecmwf_output.nc", decode_times=False)
 
     # Pull out inputs
-    _hyam = ds_ccsm.hyam[0:10]
-    _hybm = ds_ccsm.hybm[0:10]
-    temp_in = ds_ccsm.T[:, 0:10, 0:10, 0:10]
-    press_in = ds_ccsm.PS[:, 0:10, 0:10]
-    phis = ds_ccsm.PHIS[:, 0:10, 0:10]
-    temp_expected = ds_out.T[:, 0:10, 0:10, 0:10]
+    _hyam = ds_ccsm.hyam
+    _hybm = ds_ccsm.hybm
+    temp_in = ds_ccsm.T
+    press_in = ds_ccsm.PS
+    phis = ds_ccsm.PHIS
 
-    # Pull out expected output
-    temp_expected = ds_out.T[:, :, 0:10, 0:10].rename(lev_p='lev')
+    temp_expected = ds_out.T.rename(lev_p='plev')
 
-    new_levels = np.asarray([100, 200, 300, 400, 500, 600, 700, 750, 850, 925, 950, 1000])
+    new_levels = np.asarray([950, 1000])
     _p0 = 1000 * 100 # reference pressure in hPa
     def test_interp_hybrid_to_pressure_extrap_temp(self):
         temp_out = interp_hybrid_to_pressure(self.temp_in,
@@ -139,12 +137,14 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
                                              self._hybm,
                                              p0=self._p0,
                                              new_levels=self.new_levels,
-                                             method="log",
+                                             method="linear",
                                              extrapolate=True,
                                              var='temperature',
                                              phi_sfc=self.phis)
-        temp_out = temp_out.transpose('time', 'lev', 'lat', 'lon')
-        xr.testing.assert_allclose(self.temp_expected, temp_out)
+        temp_out = temp_out.transpose('time', 'plev', 'lat', 'lon')
+        print(self.temp_expected[:, :, 0:3, 0:4])
+        print(temp_out[:, :, 0:3, 0:4].compute())
+        xr.testing.assert_allclose(self.temp_expected[:, :, 0:3, 0:4], temp_out[:, :, 0:3, 0:4])
 
 
 class Test_interp_sigma_to_hybrid(TestCase):
