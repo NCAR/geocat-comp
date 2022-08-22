@@ -140,80 +140,52 @@ def _vertical_remap_extrapolate(data, pressure, new_levels, interp_method, var, 
     R_d = 287.04  # dry air gas constant
     g_inv = 1 / 9.80616  # inverse of gravity
     alpha = 0.0065 * R_d * g_inv
-
-    lat_name = pressure.cf['latitude'].name
-    lon_name = pressure.cf['longitude'].name
     lev_name = pressure.cf['vertical'].name
-
-    pressure.rename(**{lat_name:'lat', lon_name:'lon', lev_name:'lev'})
-
     sfc = pressure[lev_name].argmax().data  # find index of lowest level
-    pressure_sfc = pressure.isel(lev=sfc) * 0.01 # pressure at surface level in hPa
-    data_sfc = data.isel(lev=sfc)
+    pressure_sfc = pressure[lev_name][sfc].data  # extract pressure at lowest level
+
     # create output array
-    output = xr.full_like(data, np.nan).isel(lev=1, drop=True)
+    output = xr.full_like(data, np.nan).isel(**{lev_name:1}, drop=True)
     output = output.expand_dims({'lev': len(new_levels)}).assign_coords({'lev': new_levels})
 
-    for i_lat, lat in enumerate(pressure.cf['latitude']):
-        for i_lon, lon in enumerate(pressure.cf['longitude']):
-            for new_lev in new_levels:
-                if new_lev <= pressure_sfc.isel(lon=i_lon, lat=i_lat):
-                    for i in range(len(pressure[lev_name]) - 1):
-                        if pressure[lev_name][i] <= new_lev and new_lev <= \
-                                pressure[lev_name][i + 1]:
-                            if interp_method == 'linear':
-                                output.loc[
-                                    dict(lev=new_lev)] = data.isel(
-                                    lev=i) + (data.isel(
-                                    lev=i+1) - data.isel(
-                                    lev=i)) * (new_lev - pressure.isel(
-                                    lev=i)) / (pressure.isel(
-                                    lev=i+1) - pressure.isel(
-                                    lev=i))
-                            elif interp_method == 'log':
-                                output.loc[
-                                    dict(lev=new_lev)] = data.isel(
-                                    lev=i) + (data.isel(
-                                    lev=i+1) - data.isel(
-                                    lev=i)) * np.log(
-                                    new_lev / pressure.isel(
-                                        lev=i)) / np.log(
-                                    pressure.isel(
-                                        lev=i+1) / pressure.isel(
-                                        lev=i))
-                            else:
-                                output.loc[
-                                    dict(lev=new_lev)] = data.isel(
-                                    lev=i) + (data.isel(
-                                    lev=i+1) - data.isel(
-                                    lev=i)) * (loglog(new_lev) - loglog(
-                                    pressure.isel(lev=i))) / (loglog(
-                                    pressure.isel(
-                                        lev=i+1)) - loglog(
-                                    pressure.isel(lev=i)))
+    if var == 'temperature':
+        alnp = xr.zeros_like(data)  # to hold values of alpha * log(p / pressure_sfc)
+        tprime0 = xr.zeros_like(phi_sfc)  # to hold values of alpha * log(p / pressure_sfc)
 
-                elif var == 'temperature':
-                    psfc_hPa = pressure_sfc.isel(dict(lat=i_lat, lon=i_lon))
-                    tstar = data_sfc.isel(dict(lat=i_lat, lon=i_lon))  # second term in equation 5 is zero when extrapolating below surface
-                    hgt = phi_sfc.isel(dict(lat=i_lat, lon=i_lon)) * g_inv
+        for lev in new_levels:
+            if lev > pressure_sfc:  # if new level is below ground
+                tstar = data.isel(**{lev_name:sfc})  # 2nd term in eqn 5 is 0 in this case
+                hgt = phi_sfc * g_inv
 
-                    if (hgt < 2000):
-                        alnp = alpha* np.log(new_lev / psfc_hPa)
-                    else:
-                        t0 = tstar + 0.0065 * hgt
-                        tplat = min(t0, 298)
-                        if (hgt <= 2500):
-                            tprime0 = 0.002 * ((2500 - hgt) * t0 + (hgt - 2000) * tplat)
+                t0 = tstar + 0.0065 * hgt
+                tplat = xr.apply_ufunc(np.minimum, 298, t0, dask='parallelized')
+
+                tprime0 = xr.where((2000 <= hgt) & (hgt <= 2500),
+                              0.002 * ((2500 - hgt) * t0 + (hgt - 2000) * tplat),
+                              np.nan)  # tprime0 = np.nan when hgt is outside of range [2000, 2500]
+                tprime0.where(hgt <= 2500, other=tplat)  # tprime0 = tplat when hgt > 2500
+
+                # alnp=0 when 2000<=hgt<=2500 and tprime0 >= tplat; alnp is non-zero when 2000<=hgt<=2500 and tprime0 < tplat
+                alnp = xr.where((2000 <= hgt) & (hgt <= 2500) & (tprime0 >= tplat),
+                                0,
+                                ((2000 <= hgt) & (hgt <= 2500)) *
+                                    (R_d * (tprime0 - tstar) / phi_sfc *
+                                     np.log(lev / pressure_sfc)))
+                alnp.where(hgt >= 2000, other=alpha * np.log(lev / pressure_sfc))  # alnp = alpha * np.log(lev / pressure_sfc when hgt < 2000
+
+
+                output.loc[dict(**{lev_name:lev})] = tstar * (1 + alnp + 0.5 * alnp**2 + 1/6 * alnp**3)
+            else:  # if new level is above ground, interpolate
+                for i in range(len(pressure[lev_name]) - 1):
+                    if pressure[lev_name][i] <= lev and lev <= pressure[lev_name][i+1]:
+                        if interp_method == 'linear':
+                            output.loc[dict(**{lev_name:lev})] = data.isel(**{lev_name:i}) + (data.isel(**{lev_name:i+1}) - data.isel(**{lev_name:i})) * (lev - pressure.isel(**{lev_name:i})) / (pressure.isel(**{lev_name:i+1}) - pressure.isel(**{lev_name:i}))
+                        elif interp_method == 'log':
+                            output.loc[dict(**{lev_name:lev})] = data.isel(**{lev_name:i}) + (data.isel(**{lev_name:i+1}) - data.isel(**{lev_name:i})) * np.log(lev / pressure.isel(**{lev_name:i})) / np.log(pressure.isel(**{lev_name:i+1}) / pressure.isel(**{lev_name:i}))
                         else:
-                            tprime0 = tplat
+                            output.loc[dict(**{lev_name:lev})] = data.isel(**{lev_name:i}) + (data.isel(**{lev_name:i+1}) - data.isel(**{lev_name:i})) * (loglog(lev) - loglog(pressure.isel(**{lev_name:i}))) / (loglog(pressure.isel(**{lev_name:i+1})) - loglog(pressure.isel(**{lev_name:i})))
+        return output
 
-                        if tprime0 < tstar:
-                            alnp = 0
-                        else:
-                            alnp = R_d * (tprime0 - tstar) / phi_sfc.isel(dict(lat=i_lat, lon=i_lon)) * np.log(new_lev / psfc_hPa)
-
-                    output.loc[dict(lon=lon, lat=lat, lev=new_lev)] = tstar * (1 + alnp + 0.5 * alnp ** 2 + 1 / 6 * alnp ** 3)
-    return output
 def interp_hybrid_to_pressure(data: xr.DataArray,
                               ps: xr.DataArray,
                               hyam: xr.DataArray,
