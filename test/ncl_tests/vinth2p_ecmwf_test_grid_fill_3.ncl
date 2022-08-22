@@ -48,7 +48,7 @@ begin
 ;-----------------------------------------------------------------
 
  varflg = 1
- Tpx    = vinth2p_ecmwf (T,hyam,hybm,lev_p,PS,1,P0mb,1,False,varflg,TS,PHIS)
+ Tpx    = vinth2p_ecmwf (T,hyam,hybm,lev_p,PS,1,P0mb,1,True,varflg,TS,PHIS)
  varflg = 0
  Qpx    = vinth2p_ecmwf (Q,hyam,hybm,lev_p,PS,1,P0mb,1,True,varflg,TS,PHIS)
  varflg = -1
