@@ -170,20 +170,20 @@ def _vertical_remap_extrapolate(data, pressure, new_levels, interp_method, var, 
                                 0,
                                 ((2000 <= hgt) & (hgt <= 2500)) *
                                     (R_d * (tprime0 - tstar) / phi_sfc *
-                                     np.log(lev / pressure_sfc)))
-                alnp.where(hgt >= 2000, other=alpha * np.log(lev / pressure_sfc))  # alnp = alpha * np.log(lev / pressure_sfc when hgt < 2000
+                                     np.log(plev / pressure_sfc)))
+                alnp.where(hgt >= 2000, other=alpha * np.log(plev / pressure_sfc))  # alnp = alpha * np.log(lev / pressure_sfc when hgt < 2000
 
 
-                output.loc[dict(**{lev_name:lev})] = tstar * (1 + alnp + 0.5 * alnp**2 + 1/6 * alnp**3)
+                output.loc[dict(plev=plev)] = tstar * (1 + alnp + 0.5 * alnp**2 + 1/6 * alnp**3)
             else:  # if new level is above ground, interpolate
                 for i in range(len(pressure[lev_name]) - 1):
                     if pressure[lev_name][i] <= plev and plev <= pressure[lev_name][i+1]:
                         if interp_method == 'linear':
                             output.loc[dict(plev=plev)] = data.isel(**{lev_name:i+1}) + (data.isel(**{lev_name:i}) - data.isel(**{lev_name:i+1})) * (plev - pressure.isel(**{lev_name:i+1})) / (pressure.isel(**{lev_name:i}) - pressure.isel(**{lev_name:i+1}))
                         elif interp_method == 'log':
-                            output.loc[dict(dict(plev=plev))] = data.isel(**{lev_name:i}) + (data.isel(**{lev_name:i+1}) - data.isel(**{lev_name:i})) * np.log(plev / pressure.isel(**{lev_name:i})) / np.log(pressure.isel(**{lev_name:i+1}) / pressure.isel(**{lev_name:i}))
+                            output.loc[dict(plev=plev)] = data.isel(**{lev_name:i}) + (data.isel(**{lev_name:i+1}) - data.isel(**{lev_name:i})) * np.log(plev / pressure.isel(**{lev_name:i})) / np.log(pressure.isel(**{lev_name:i+1}) / pressure.isel(**{lev_name:i}))
                         else:
-                            output.loc[dict(dict(plev=plev))] = data.isel(**{lev_name:i}) + (data.isel(**{lev_name:i}) - data.isel(**{lev_name:i})) * (loglog(plev) - loglog(pressure.isel(**{lev_name:i}))) / (loglog(pressure.isel(**{lev_name:i+1})) - loglog(pressure.isel(**{lev_name:i})))
+                            output.loc[dict(plev=plev)] = data.isel(**{lev_name:i}) + (data.isel(**{lev_name:i}) - data.isel(**{lev_name:i})) * (loglog(plev) - loglog(pressure.isel(**{lev_name:i}))) / (loglog(pressure.isel(**{lev_name:i+1})) - loglog(pressure.isel(**{lev_name:i})))
         return output
 
 def interp_hybrid_to_pressure(data: xr.DataArray,
