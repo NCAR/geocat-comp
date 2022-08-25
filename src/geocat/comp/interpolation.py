@@ -136,14 +136,14 @@ def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0):
 def loglog(x):
     return np.log(np.log(x))
 
-def _vertical_remap_extrapolate(data, pressure, new_levels, interp_method, var, t_sfc, phi_sfc):
+def _vertical_remap_extrapolate(data, pressure, ps, new_levels, interp_method, var, t_sfc, phi_sfc):
     R_d = 287.04  # dry air gas constant
     g_inv = 1 / 9.80616  # inverse of gravity
     alpha = 0.0065 * R_d * g_inv
     lev_name = pressure.cf['vertical'].name
     sfc = pressure[lev_name].argmax().data  # find index of lowest level
     pressure_sfc = pressure[lev_name][sfc].data  # extract pressure at lowest level
-
+    ps = ps * 0.01  # to hPA
     # create output array
     output = xr.full_like(data, np.nan).isel(**{lev_name:1}, drop=True)
     output = output.expand_dims({'plev': len(new_levels)}).assign_coords({'plev': new_levels})
@@ -154,7 +154,7 @@ def _vertical_remap_extrapolate(data, pressure, new_levels, interp_method, var, 
 
         for plev in new_levels:
             if plev > pressure_sfc:  # if new level is below ground
-                tstar = data.isel(**{lev_name:sfc})  # 2nd term in eqn 5 is 0 in this case
+                tstar = data.isel(**{lev_name:sfc}) * (1 + alpha * (ps / pressure_sfc - 1))
                 hgt = phi_sfc * g_inv
 
                 t0 = tstar + 0.0065 * hgt
@@ -316,7 +316,7 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
 
     from dask.array.core import map_blocks
     if extrapolate:
-        output = _vertical_remap_extrapolate(data, pressure, new_levels, method, var, t_sfc, phi_sfc)
+        output = _vertical_remap_extrapolate(data, pressure, ps, new_levels, method, var, t_sfc, phi_sfc)
         return output
     else:
         output = map_blocks(
