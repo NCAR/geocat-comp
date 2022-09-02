@@ -78,7 +78,6 @@ GeoCAT-comp native routines
 
    geocat.comp.spherical.scale_voronoi
 
-   geocat.comp.stats.pearson_r
 
 
 GeoCAT-comp routines from GeoCAT-f2py

@@ -34,7 +34,7 @@ novel computational functions for geosciences data.
 .. toctree::
    :maxdepth: 2
 
-   ./installation
+   ./getting-started
    ./api
    ./examples
    ./citation
