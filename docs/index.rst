@@ -42,13 +42,6 @@ novel computational functions for geosciences data.
    API Reference <api>
    Usage Examples <examples>
    Cite GeoCAT-comp <cite>
-
-.. toctree::
-   :maxdepth: 2
-   :hidden:
-   :caption: For developers
-
-   Contributing <contributing>
    NCL Documentation <https://www.ncl.ucar.edu/>
 
 .. toctree::
