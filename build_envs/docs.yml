@@ -1,0 +1,17 @@
+name: gc-docs
+channels:
+    - conda-forge
+dependencies:
+    - python=3.9
+    - geocat-comp
+    - pre_commit
+    - xarray
+    - pip
+    - ipykernel
+    - ipython
+    - jupyter_client
+    - matplotlib-base
+    - sphinx-book-theme
+    - myst-nb
+    - sphinx-design
+    - nbsphinx
