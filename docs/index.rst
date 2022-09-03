@@ -36,9 +36,25 @@ novel computational functions for geosciences data.
 .. toctree::
    :maxdepth: 2
    :hidden:
+   :caption: For users
 
-   ./installation
-   ./api
-   ./examples
-   ./citation
-   ./support
+   Installation <installation>
+   API Reference <api>
+   Usage Examples <examples>
+   Cite GeoCAT-comp <cite>
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: For developers
+
+   Contributing <contributing>
+   NCL Documentation <https://www.ncl.ucar.edu/>
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: Getting Support
+
+   GitHub Issues <https://github.com/NCAR/geocat-comp/issues>
+   Feature Request Form <https://forms.gle/6DTo3ELLri4DAGfG8>

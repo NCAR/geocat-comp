@@ -1,3 +1,7 @@
+.. currentmodule:: geocat.comp
+
+.. _cite:
+
 Citation
 ==========
 
