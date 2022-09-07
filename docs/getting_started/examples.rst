@@ -8,7 +8,7 @@ Usage Examples
 Short Tutorial
 --------------
 Need to finish
-.. TODO
+.. TODO add sine examples workflows
 
 The examples that show GeoCAT-comp functions being utilized in real-world use
 cases can be found at `GeoCAT-comp Examples
