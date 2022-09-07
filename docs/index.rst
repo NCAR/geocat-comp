@@ -38,6 +38,7 @@ novel computational functions for geosciences data.
    :hidden:
    :caption: For users
 
+   Getting Started <getting_started/index>
    Installation <installation>
    API Reference <api>
    Usage Examples <examples>
@@ -49,5 +50,6 @@ novel computational functions for geosciences data.
    :hidden:
    :caption: Getting Support
 
+   Support <getting_started/support>
    GitHub Issues <https://github.com/NCAR/geocat-comp/issues>
    Feature Request Form <https://forms.gle/6DTo3ELLri4DAGfG8>
