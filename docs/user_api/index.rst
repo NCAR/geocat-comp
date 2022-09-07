@@ -87,9 +87,9 @@ GeoCAT-comp routines from GeoCAT-f2py
 .. autosummary::
    :toctree: ./generated/
 
-   geocat.f2py.dpres_plevel
+   geocat.comp.dpres_plevel
 
-   geocat.f2py.grid_to_triple
+   geocat.comp.grid_to_triple
 
    geocat.comp.linint1
 
