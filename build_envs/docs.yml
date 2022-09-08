@@ -4,8 +4,7 @@ channels:
 dependencies:
     - python=3.9
     - pre_commit
-    - xarray
-    - xskillscore
+    - geocat-f2py
     - pip
     - ipykernel
     - ipython
