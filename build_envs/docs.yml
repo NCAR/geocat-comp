@@ -5,6 +5,7 @@ dependencies:
     - python=3.9
     - pre_commit
     - geocat-f2py
+    - xskillscore
     - pip
     - ipykernel
     - ipython
