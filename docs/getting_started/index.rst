@@ -14,4 +14,5 @@ This is a quick guide to getting set up and familiar with GeoCAT-comp.
    Overview <overview>
    Quick Installation <quick-install>
    Basic Examples <examples>
+   Functions by Category <categories>
    Support <support>
