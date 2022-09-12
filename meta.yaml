@@ -38,6 +38,7 @@ requirements:
     - numpy
     - scipy
     - xarray
+    - xskillscore
 
 test:
   requires:
@@ -65,3 +66,4 @@ extra:
     - erogluorhan # O. Eroglu https://github.com/erogluorhan
     - anissa111 # A. Zacharias https://github.com/anissa111
     - michaelavs # M. Sizemore https://github.com/michaelavs
+    - hCraker # H. Craker https://github.com/hCraker
