@@ -1,3 +1,5 @@
+.. TODO adjust this page to reflect module reorganization when that happens
+
 Functions By Category
 =====================
 Climatologies
@@ -12,6 +14,28 @@ Climatologies
    climatology_average
    month_to_season
 
+Crop
+^^^^
+.. py:currentmodule:: geocat.comp.crop
+.. autosummary::
+   :nosignatures:
+
+   actual_saturation_vapor_pressure
+   max_daylight
+   psychrometric_constant
+   saturation_vapor_pressure
+   saturation_vapor_pressure_slope
+
+EOF Functions
+^^^^^^^^^^^^^
+.. py:currentmodule:: geocat.comp.eofunc
+.. autosummary::
+   :nosignatures:
+
+   eofunc
+   eofunc_eofs
+   eofunc_pcs
+   eofunc_ts
 
 Fourier Filters
 ^^^^^^^^^^^^^^
@@ -57,6 +81,15 @@ Polynomial
    detrend
    ndpolyfit
    ndpolyval
+
+Skew-T Plot Parameters
+^^^^^^^^^^^^^^^^^^^^^^
+.. currentmodule:: geocat.comp.skewt_params
+.. autosummary::
+   :nosignatures:
+
+   get_skewt_vars
+   showalter_index
 
 Spherical Harmonics
 ^^^^^^^^^^^^^^^^^^^
