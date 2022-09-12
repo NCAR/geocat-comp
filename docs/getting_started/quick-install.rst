@@ -23,4 +23,3 @@ Installing GeoCAT-comp in a Pre-existing Conda Environment
 3. Install geocat-comp::
 
     conda install -c ncar -c conda-forge geocat-comp
-

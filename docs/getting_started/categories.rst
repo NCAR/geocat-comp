@@ -108,4 +108,3 @@ Statistics
    :nosignatures:
 
    pearson_r
-
