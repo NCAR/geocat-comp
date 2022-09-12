@@ -5,8 +5,14 @@
 Usage Examples
 ==============
 
-The examples that show GeoCAT-comp functions being utilized in real-world use
-cases can be found at `GeoCAT-comp Examples
-<https://geocat-examples.readthedocs.io/en/latest/gallery-geocat-comp/index.html>`_
-gallery. These examples also demonstrate how GeoCAT-comp can be used to make plots
-with Matplotlib (using Cartopy).
+Here's some examples of how to use the uxarray. We are always planning to add
+more examples! If you are interested in contributing your own examples, please
+see the :doc:`contributing`.
+
+.. include:: notebook-examples.txt
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+
+   examples/reading-data.ipynb
