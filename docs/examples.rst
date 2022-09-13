@@ -5,9 +5,7 @@
 Usage Examples
 ==============
 
-Here's some examples of how to use the uxarray. We are always planning to add
-more examples! If you are interested in contributing your own examples, please
-see the :doc:`contributing`.
+Here's some examples of how to use geocat-comp.
 
 .. include:: notebook-examples.txt
 
@@ -15,4 +13,4 @@ see the :doc:`contributing`.
    :maxdepth: 1
    :hidden:
 
-   examples/reading-data.ipynb
+   examples/calendar_average.ipynb
