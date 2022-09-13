@@ -32,10 +32,8 @@ EOF Functions
 .. autosummary::
    :nosignatures:
 
-   eofunc
    eofunc_eofs
    eofunc_pcs
-   eofunc_ts
 
 Fourier Filters
 ^^^^^^^^^^^^^^
