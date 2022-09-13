@@ -315,22 +315,19 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
     # ''' end of boilerplate
 
     from dask.array.core import map_blocks
-    if extrapolate:
-        output = _vertical_remap_extrapolate(data, pressure, ps, new_levels, method, var, t_sfc, phi_sfc)
-        return output
-    else:
-        output = map_blocks(
-            _vertical_remap,
-            func_interpolate,
-            new_levels,
-            pressure.data,
-            data.data,
-            interp_axis,
-            chunks=out_chunks,
-            dtype=data.dtype,
-            drop_axis=[interp_axis],
-            new_axis=[interp_axis],
-        )
+
+    output = map_blocks(
+        _vertical_remap,
+        func_interpolate,
+        new_levels,
+        pressure.data,
+        data.data,
+        interp_axis,
+        chunks=out_chunks,
+        dtype=data.dtype,
+        drop_axis=[interp_axis],
+        new_axis=[interp_axis],
+    )
 
     # End of Workaround
     ###############################################################################

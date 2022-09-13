@@ -22,7 +22,7 @@ begin
 
  f    = addfile (diri+fili, "r")
 
- lev_p = (/850, 925, 950,1000/)
+ lev_p = (/500, 925, 950, 1000/)
 
  lev_p!0         = "lev_p"                  ; variable/dim name
  lev_p&lev_p     =  lev_p                   ; create coordinate variable

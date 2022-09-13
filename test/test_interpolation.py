@@ -128,7 +128,7 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
 
     temp_expected = ds_out.T.rename(lev_p='plev')
 
-    new_levels = np.asarray([850, 925, 950, 1000])
+    new_levels = np.asarray([500, 925, 950, 1000])
     _p0 = 1000 * 100 # reference pressure in hPa
     def test_interp_hybrid_to_pressure_extrap_temp(self):
         temp_out = interp_hybrid_to_pressure(self.temp_in,
