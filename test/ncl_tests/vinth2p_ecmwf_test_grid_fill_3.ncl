@@ -22,7 +22,7 @@ begin
 
  f    = addfile (diri+fili, "r")
 
- lev_p = (/950,1000/)
+ lev_p = (/850, 925, 950,1000/)
 
  lev_p!0         = "lev_p"                  ; variable/dim name
  lev_p&lev_p     =  lev_p                   ; create coordinate variable
@@ -33,12 +33,12 @@ begin
  hyam = f->hyam
  hybm = f->hybm
  P0mb = 1000.                        ; reference pressure [mb]
- PS   = f->PS
- T    = f->T                         ; MODEL on hybrid levels
- Q    = f->Q
- TS   = f->TS
- Z    = f->Z3
- PHIS = f->PHIS
+ PS   = f->PS(:, :2, :1)
+ T    = f->T(:, :, :2, :1)                         ; MODEL on hybrid levels
+ Q    = f->Q(:, :, :2, :1)
+ TS   = f->TS(:, :2, :1)
+ Z    = f->Z3(:, :, :2, :1)
+ PHIS = f->PHIS(:, :2, :1)
 
  Q    = Q*1000.                      ; make g/kg for nicer plot
  Q@units = "g/kg"
