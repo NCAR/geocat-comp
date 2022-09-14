@@ -116,7 +116,7 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
         ds_ccsm = xr.open_dataset("ccsm35.h0.0021-01.demo.nc",
                                   decode_times=False)
 
-    # Open the netCDF file with the output data from running vinth2p_ecmwf_test_grid_fill_3.ncl
+    # Open the netCDF file with the output data from running vinth2p_ecmwf.ncl
     ds_out = xr.open_dataset("vinth2p_ecmwf_output.nc", decode_times=False)
 
     # Pull out inputs
@@ -129,7 +129,8 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
     temp_interp_expected = ds_out.Tp.rename(lev_p='plev')
 
     new_levels = np.asarray([500, 925, 950, 1000])
-    _p0 = 1000 * 100 # reference pressure in hPa
+    new_levels *= 100 # new levels in Pa
+    _p0 = 1000 * 100 # reference pressure in Pa
     def test_interp_hybrid_to_pressure_interp_temp(self):
         temp_out = interp_hybrid_to_pressure(self.temp_in,
                                              self.press_in,
@@ -139,8 +140,7 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
                                              new_levels=self.new_levels,
                                              method="linear")
         temp_out = temp_out.transpose('time', 'plev', 'lat', 'lon')
-        print(self.temp_interp_expected)
-        print(temp_out.compute())
+        temp_out = temp_out.assign_coords(dict(plev=self.new_levels/100))
         xr.testing.assert_allclose(self.temp_interp_expected, temp_out)
 
 
