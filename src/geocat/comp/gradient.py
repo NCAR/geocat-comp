@@ -2,7 +2,7 @@ from typing import Union
 
 import numpy as np
 import xarray as xr
-from xrspatial.convolution import convolution_2d as conv
+from scipy.ndimage import convolve
 
 SupportedTypes = Union[np.ndarray, xr.DataArray]
 XTypes = Union[xr.DataArray, xr.Dataset]
@@ -223,18 +223,13 @@ def grad_wgs84_np(
     return [lonresult, latresult]
 
 
-def grad_kernel(data: SupportedTypes) -> SupportedTypes:
+def grad_kernel(data: xr.DataArray) -> [xr.DataArray]:
     # todo this function will take *any* input and apply the four kernals and
     #  return the result,
     # the input will be padded on the first dimension on both sides with a
     # one wrap,
     # the input will be padded on the second dimension on both sides with a
     # one nan
-    """https://xarray-spatial.org/reference/_autosummary/xrspatial.convolution.
-
-    .convolution_2d.html #
-    """
-
     # learned things
     # kernels must be odd numbered, convolve_2d does not support even
     # numbered kernels in a useful way
@@ -244,40 +239,71 @@ def grad_kernel(data: SupportedTypes) -> SupportedTypes:
     #  is also opens up the option for a numpy style return, with the [-1,
     #  0. 1] kernels
     #
-    kernw = np.array([
-        [-1, 1, 0],
-    ])
-    kerne = np.array([
-        [0, -1, 1],
-    ])
-    kernn = np.array([
-        [-1],
-        [1],
-        [0],
-    ])
-    kerns = np.array([
-        [0],
-        [-1],
-        [1],
+
+    gradkernlat = np.array([
+        [0, 1, -1],
     ])
 
-    npkernwe = np.array([
-        [-1, 0, 1],
+    sumkernlat = np.array([
+        [0.5, 0.5, 0],
     ])
-    npkernns = np.array([
-        [-1],
+
+    gradkernlon = np.array([
         [0],
         [1],
+        [-1],
     ])
 
-    testarray = np.array([
-        [1, 0, 0, 0, 0],
-        [0, 1, 0, 0, 0],
-        [0, 0, 1, 0, 0],
-        [0, 0, 0, 1, 0],
-        [0, 0, 0, 0, 1],
+    sumkernlon = np.array([
+        [0.5],
+        [0.5],
+        [0],
     ])
-    testarray = xr.DataArray(testarray)
-    testresult = conv(testarray, npkernwe)
 
-    return None
+    lon2d, lat2d = np.meshgrid(data.coords['lon'], data.coords['lat'])
+    arclon2d = arc_lon_wgs84(lon2d, lat2d)
+    arclat2d = arc_lat_wgs84(lat2d)
+
+    datagradlat = xr.DataArray(
+        convolve(data, gradkernlat, mode='wrap', origin=0),
+        dims=('lon', 'lat'),
+    )
+    datagradlon = xr.DataArray(
+        convolve(data, gradkernlon, mode='wrap', origin=0),
+        dims=('lon', 'lat'),
+    )
+
+    arclon2d = xr.DataArray(
+        arc_lon_wgs84(lon2d, lat2d),
+        dims=('lon', 'lat'),
+    )
+    arclat2d = xr.DataArray(
+        arc_lat_wgs84(lat2d),
+        dims=('lon', 'lat'),
+    )
+
+    arclatgrad = xr.DataArray(
+        convolve(arclon2d, gradkernlat, mode='mirror', origin=0),
+        dims=('lon', 'lat'),
+    )
+
+    arclongrad = xr.DataArray(
+        convolve(arclat2d, gradkernlon, mode='mirror', origin=0),
+        dims=('lon', 'lat'),
+    )
+
+    datascalelat = np.divide(datagradlat, arclatgrad)
+    datascalelon = np.divide(datagradlon, arclongrad)
+
+    datasumlat = xr.DataArray(
+        convolve(datascalelat, sumkernlat, mode='wrap', origin=0),
+        dims=('lon', 'lat'),
+    )
+    datasumlon = xr.DataArray(
+        convolve(datascalelon, sumkernlon, mode='wrap', origin=0),
+        dims=('lon', 'lat'),
+    )
+
+    # do lat and lon differences, can use the gradient kernel
+
+    return [datasumlon, datasumlat]
