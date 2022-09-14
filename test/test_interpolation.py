@@ -126,7 +126,7 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
     press_in = ds_ccsm.PS[:, :3, :2]
     phis = ds_ccsm.PHIS[:, :3, :2]
 
-    temp_expected = ds_out.T.rename(lev_p='plev')
+    temp_interp_expected = ds_out.Tp.rename(lev_p='plev')
 
     new_levels = np.asarray([500, 925, 950, 1000])
     _p0 = 1000 * 100 # reference pressure in hPa
@@ -137,14 +137,11 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
                                              self._hybm,
                                              p0=self._p0,
                                              new_levels=self.new_levels,
-                                             method="linear",
-                                             extrapolate=True,
-                                             var='temperature',
-                                             phi_sfc=self.phis)
+                                             method="linear")
         temp_out = temp_out.transpose('time', 'plev', 'lat', 'lon')
-        print(self.temp_expected)
+        print(self.temp_interp_expected)
         print(temp_out.compute())
-        xr.testing.assert_allclose(self.temp_expected, temp_out)
+        xr.testing.assert_allclose(self.temp_interp_expected, temp_out)
 
 
 class Test_interp_sigma_to_hybrid(TestCase):
