@@ -243,17 +243,15 @@ def grad_kernel(data: xr.DataArray) -> [xr.DataArray]:
     gradkernlat = np.array([
         [0, 1, -1],
     ])
-
-    sumkernlat = np.array([
-        [0.5, 0.5, 0],
-    ])
-
     gradkernlon = np.array([
         [0],
         [1],
         [-1],
     ])
 
+    sumkernlat = np.array([
+        [0.5, 0.5, 0],
+    ])
     sumkernlon = np.array([
         [0.5],
         [0.5],
@@ -261,8 +259,6 @@ def grad_kernel(data: xr.DataArray) -> [xr.DataArray]:
     ])
 
     lon2d, lat2d = np.meshgrid(data.coords['lon'], data.coords['lat'])
-    arclon2d = arc_lon_wgs84(lon2d, lat2d)
-    arclat2d = arc_lat_wgs84(lat2d)
 
     datagradlat = xr.DataArray(
         convolve(data, gradkernlat, mode='wrap', origin=0),
@@ -286,7 +282,6 @@ def grad_kernel(data: xr.DataArray) -> [xr.DataArray]:
         convolve(arclon2d, gradkernlat, mode='mirror', origin=0),
         dims=('lon', 'lat'),
     )
-
     arclongrad = xr.DataArray(
         convolve(arclat2d, gradkernlon, mode='mirror', origin=0),
         dims=('lon', 'lat'),
