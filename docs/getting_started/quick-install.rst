@@ -6,7 +6,7 @@ Quick Installation
 ==================
 
 For complete instructions on the various ways to install geocat-comp (e.g. via pip or source), head
-to the complete `installation <installation>`_ page.
+to the complete `installation <../installation.rst>`_ page.
 
 Installing GeoCAT-comp in a Pre-existing Conda Environment
 ----------------------------------------------------------
