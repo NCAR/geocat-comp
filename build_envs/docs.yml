@@ -3,9 +3,9 @@ channels:
     - conda-forge
 dependencies:
     - python=3.9
-    - geocat-comp
     - pre_commit
-    - xarray
+    - geocat-f2py
+    - xskillscore
     - pip
     - ipykernel
     - ipython
