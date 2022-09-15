@@ -16,5 +16,4 @@ examples, and info for where to get additional help.
    Overview <overview>
    Quick Installation <quick-install>
    Basic Examples <examples>
-   Functions by Category <categories>
    Support <support>

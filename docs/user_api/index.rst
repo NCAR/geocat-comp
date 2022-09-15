@@ -3,106 +3,137 @@
 User API
 ========
 
-Routines
---------
-
-GeoCAT-comp native routines
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+GeoCAT-comp Native Functions
+----------------------------
+Climatologies
+^^^^^^^^^^^^^
+.. currentmodule:: geocat.comp.climatologies
 .. autosummary::
-   :toctree: ./generated/
+   :nosignatures:
 
-   geocat.comp.climatologies.anomaly
+   anomaly
+   calendar_average
+   climatology
+   climatology_average
+   month_to_season
 
-   geocat.comp.climatologies.calendar_average
+Crop
+^^^^
+.. currentmodule:: geocat.comp.crop
+.. autosummary::
+   :nosignatures:
 
-   geocat.comp.climatologies.climatology
+   actual_saturation_vapor_pressure
+   max_daylight
+   psychrometric_constant
+   saturation_vapor_pressure
+   saturation_vapor_pressure_slope
 
-   geocat.comp.climatologies.climatology_average
+EOF Functions
+^^^^^^^^^^^^^
+.. currentmodule:: geocat.comp.eofunc
+.. autosummary::
+   :nosignatures:
 
-   geocat.comp.climatologies.month_to_season
+   eofunc_eofs
+   eofunc_pcs
 
-   geocat.comp.crop.actual_saturation_vapor_pressure
+Fourier Filters
+^^^^^^^^^^^^^^
+.. currentmodule:: geocat.comp.fourier_filters
+.. autosummary::
+   :nosignatures:
 
-   geocat.comp.crop.max_daylight
+   fourier_band_block
+   fourier_band_pass
+   fourier_filter
+   fourier_high_pass
+   fourier_low_pass
 
-   geocat.comp.crop.psychrometric_constant
 
-   geocat.comp.crop.saturation_vapor_pressure
+Iterpolation
+^^^^^^^^^^^^
+.. currentmodule:: geocat.comp.interpolation
+.. autosummary::
+   :nosignatures:
 
-   geocat.comp.crop.saturation_vapor_pressure_slope
+   interp_hybrid_to_pressure
+   interp_sigma_to_hybrid
+   interp_multidim
 
-   geocat.comp.eofunc.eofunc_eofs
+Meteorology
+^^^^^^^^^^^
+.. currentmodule:: geocat.comp.meteorology
+.. autosummary::
+   :nosignatures:
 
-   geocat.comp.eofunc.eofunc_pcs
+   dewtemp
+   heat_index
+   relhum
+   relhum_ice
+   relhum_water
 
-   geocat.comp.fourier_filters.fourier_band_block
+Polynomial
+^^^^^^^^^^
+.. currentmodule:: geocat.comp.polynomial
+.. autosummary::
+   :nosignatures:
 
-   geocat.comp.fourier_filters.fourier_band_pass
+   detrend
+   ndpolyfit
+   ndpolyval
 
-   geocat.comp.fourier_filters.fourier_filter
+Skew-T Plot Parameters
+^^^^^^^^^^^^^^^^^^^^^^
+.. currentmodule:: geocat.comp.skewt_params
+.. autosummary::
+   :nosignatures:
 
-   geocat.comp.fourier_filters.fourier_low_pass
+   get_skewt_vars
+   showalter_index
 
-   geocat.comp.fourier_filters.fourier_high_pass
+Spherical Harmonics
+^^^^^^^^^^^^^^^^^^^
+.. currentmodule:: geocat.comp.spherical
+.. autosummary::
+   :nosignatures:
 
-   geocat.comp.interpolation.interp_hybrid_to_pressure
+   decomposition
+   recomposition
+   scale_voronoi
 
-   geocat.comp.interpolation.interp_sigma_to_hybrid
+Statistics
+^^^^^^^^^^
+.. currentmodule:: geocat.comp.stats
+.. autosummary::
+   :nosignatures:
 
-   geocat.comp.interpolation.interp_multidim
+   pearson_r
 
-   geocat.comp.meteorology.dewtemp
-
-   geocat.comp.meteorology.heat_index
-
-   geocat.comp.meteorology.relhum
-
-   geocat.comp.meteorology.relhum_ice
-
-   geocat.comp.meteorology.relhum_water
-
-   geocat.comp.polynomial.detrend
-
-   geocat.comp.polynomial.ndpolyfit
-
-   geocat.comp.polynomial.ndpolyval
-
-   geocat.comp.skewt_params.get_skewt_vars
-
-   geocat.comp.skewt_params.showalter_index
-
-   geocat.comp.spherical.decomposition
-
-   geocat.comp.spherical.recomposition
-
-   geocat.comp.spherical.scale_voronoi
-
-   geocat.comp.stats.pearson_r
 
 
 GeoCAT-comp routines from GeoCAT-f2py
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+-------------------------------------
+.. currentmodule:: geocat.comp
 .. autosummary::
-   :toctree: ./generated/
+   :nosignatures:
 
-   geocat.comp.dpres_plevel
+   depres_level
 
-   geocat.comp.grid_to_triple
+   grid_to_triple
 
-   geocat.comp.linint1
+   linint1
 
-   geocat.comp.linint2
+   linint2
 
-   geocat.comp.linint2pts
+   linint2pts
 
-   geocat.comp.moc_globe_atl
+   moc_globe_atl
 
-   geocat.comp.rcm2points
+   rcm2points
 
-   geocat.comp.rcm2rgrid
+   rcm2rgrid
 
-   geocat.comp.rgrid2rcm
+   rgrid2rcm
 
-   geocat.comp.triple_to_grid
+   triple_to_grid
