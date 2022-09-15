@@ -7,7 +7,7 @@ Usage Examples
 
 Short Tutorial
 --------------
-Calculate Saturation Vapor Pressure from :code:`Numpy` Data::
+Calculate saturation vapor pressure from :code:`Numpy` Data::
 
     >>> import numpy as np
     >>> from geocat.comp import saturation_vapor_pressure
