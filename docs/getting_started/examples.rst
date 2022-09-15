@@ -7,7 +7,7 @@ Usage Examples
 
 Short Tutorial
 --------------
-Calculate Saturation Vapor Pressure from :code:`Numpy` Data::
+Calculate saturation vapor pressure from :code:`Numpy` Data::
 
     >>> import numpy as np
     >>> from geocat.comp import saturation_vapor_pressure
@@ -16,7 +16,7 @@ Calculate Saturation Vapor Pressure from :code:`Numpy` Data::
 
     array([1.22796262, 1.76730647, 2.50402976])
 
-Calculate Daily Climate Averages from NetCDF Data::
+Calculate daily climate averages from NetCDF Data::
 
     >>> import xarray as xr
     >>> from geocat.comp import calendar_average
