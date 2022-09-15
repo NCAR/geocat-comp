@@ -128,21 +128,9 @@ def _sigma_from_hybrid(psfc, hya, hyb, p0=100000.):
     return hya * p0 / psfc + hyb
 
 
-def _vertical_remap(func_interpolate,
-                    new_levels,
-                    xcoords,
-                    data,
-                    interp_axis=0,
-                    extrapolate=False,
-                    variable=None,
-                    temp_sfc=None,
-                    phi_sfc=None):
+def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0):
     """Execute the defined interpolation function on data."""
-    output = func_interpolate(new_levels, xcoords, data, axis=interp_axis)
-    if extrapolate:
-
-        print(data.shape)
-    return output
+    return func_interpolate(new_levels, xcoords, data, axis=interp_axis)
 
 
 def interp_hybrid_to_pressure(data: xr.DataArray,
@@ -152,11 +140,7 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
                               p0: float = 100000.,
                               new_levels: np.ndarray = __pres_lev_mandatory__,
                               lev_dim: str = None,
-                              method: str = 'linear',
-                              extrapolate: bool = False,
-                              variable: str = None,
-                              temp_sfc: xr.DataArray = None,
-                              phi_sfc: xr.DataArray = None) -> xr.DataArray:
+                              method: str = 'linear') -> xr.DataArray:
     """Interpolate data from hybrid-sigma levels to isobaric levels. Keeps
     attributes (i.e. meta information) of the input data in the output as
     default.
@@ -281,10 +265,6 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
         pressure.data,
         data.data,
         interp_axis,
-        extrapolate,
-        variable,
-        temp_sfc,
-        phi_sfc,
         chunks=out_chunks,
         dtype=data.dtype,
         drop_axis=[interp_axis],
