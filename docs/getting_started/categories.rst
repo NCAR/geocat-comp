@@ -16,7 +16,7 @@ Climatologies
 
 Crop
 ^^^^
-.. py:currentmodule:: geocat.comp.crop
+.. currentmodule:: geocat.comp.crop
 .. autosummary::
    :nosignatures:
 
@@ -28,7 +28,7 @@ Crop
 
 EOF Functions
 ^^^^^^^^^^^^^
-.. py:currentmodule:: geocat.comp.eofunc
+.. currentmodule:: geocat.comp.eofunc
 .. autosummary::
    :nosignatures:
 
