@@ -62,4 +62,3 @@ Calculate daily climate averages from NetCDF Data::
     Attributes:
         long_name:  Surface temperature (radiative)
         units:      K
-
