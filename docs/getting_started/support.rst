@@ -10,7 +10,7 @@ Reporting Bugs
 Search open `issues <https://github.com/NCAR/geocat-comp/issues>`_ on the GeoCAT-comp GitHub repository to see if the
 bug has already been reported. If not, open an issue and follow the *bug report* template provided.
 
-Submiting Feature Requests
+Submitting Feature Requests
 --------------------------
 Search open `issues <https://github.com/NCAR/geocat-comp/issues>`_ on the GeoCAT-comp GitHub repository to see if the
 feature you want has already been requested. If not, open an issue and follow the *feature request* template provided.
