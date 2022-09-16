@@ -130,6 +130,7 @@ def _sigma_from_hybrid(psfc, hya, hyb, p0=100000.):
 
 def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0):
     """Execute the defined interpolation function on data."""
+
     return func_interpolate(new_levels, xcoords, data, axis=interp_axis)
 
 
