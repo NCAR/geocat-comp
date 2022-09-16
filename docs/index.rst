@@ -50,6 +50,6 @@ novel computational functions for geosciences data.
    :hidden:
    :caption: Getting Support
 
-   Support <getting_started/support>
+   Support <support>
    GitHub Issues <https://github.com/NCAR/geocat-comp/issues>
    Feature Request Form <https://forms.gle/6DTo3ELLri4DAGfG8>

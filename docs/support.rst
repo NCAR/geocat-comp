@@ -14,6 +14,8 @@ Submitting Feature Requests
 --------------------------
 Search open `issues <https://github.com/NCAR/geocat-comp/issues>`_ on the GeoCAT-comp GitHub repository to see if the
 feature you want has already been requested. If not, open an issue and follow the *feature request* template provided.
+If you are not comfortable with GitHub issues, you can fill out `this form <https://forms.gle/6DTo3ELLri4DAGfG8>`_
+to request features.
 
 Earth System Data Science (ESDS) Office Hours
 ---------------------------------------------
