@@ -34,7 +34,8 @@ into the correct format.
 GeoCAT-comp's open-source nature allows for more community engagement than a traditional software development workflow
 does. As advances are made in the realm of geoscience, new tools will be needed to analyze new datasets. We are dedicated
 to addressing user needs and encourage users to submit feature requests and contributions to our GitHub as well as
-participate in discussions. See our `support <support>`_ page for info on how to submit bug reports and requests and how to get involved.
+participate in discussions. See our :ref:`support` page for info on how to submit bug reports, request new
+features, and get involved.
 
 GeoCAT-f2py
 -----------
@@ -43,4 +44,4 @@ consuming. To ensure GeoCAT users have access to those functions while we work o
 they are based upon is wrapped in Python in the GeoCAT-f2py (Fortran 2 Python) package. GeoCAT-f2py is imported by
 GeoCAT-comp and included in the GeoCAT-comp namespace. Simply, this means that GeoCAT-f2py functions can be called
 through GeoCAT-comp, so there is no need for users to import GeoCAT-f2py directly in their scripts. Information about
-GeoCAT-f2py can be found on the `package's homepage <https://geocat-f2py.readthedocs.io/en/>`_.
+GeoCAT-f2py can be found on the `package's homepage <https://geocat-f2py.readthedocs.io/>`_.
