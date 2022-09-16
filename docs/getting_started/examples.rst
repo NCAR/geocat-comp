@@ -2,12 +2,12 @@
 
 .. _tutorial:
 
-Usage Examples
-==============
+Quick Start Examples
+====================
 
-Short Tutorial
---------------
-Calculate saturation vapor pressure from :code:`Numpy` Data::
+For more comprehensive examples, go check out :ref:`examples`
+
+Calculate saturation vapor pressure from ``Numpy`` Data::
 
     >>> import numpy as np
     >>> from geocat.comp import saturation_vapor_pressure
