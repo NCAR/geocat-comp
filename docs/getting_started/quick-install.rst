@@ -16,7 +16,7 @@ Installing GeoCAT-comp in a Pre-existing Conda Environment
 
         conda update conda
 
-2.  Activate the conda environment you want to add GeoCAT to. In this example, the environment is called :code:`foo`::
+2.  Activate the conda environment you want to add GeoCAT to. In this example, the environment is called ``foo``::
 
         conda activate foo
 
