@@ -9,12 +9,13 @@ import xarray as xr
 
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
-if "--cov" in str(sys.argv):
-    from src.geocat.comp import interp_multidim, interp_hybrid_to_pressure, \
+#TODO uncomment this
+#if "--cov" in str(sys.argv):
+from src.geocat.comp import interp_multidim, interp_hybrid_to_pressure, \
         interp_sigma_to_hybrid
-else:
-    from geocat.comp import interp_multidim, interp_hybrid_to_pressure, \
-        interp_sigma_to_hybrid
+#else:
+#    from geocat.comp import interp_multidim, interp_hybrid_to_pressure, \
+#        interp_sigma_to_hybrid
 
 # Global input data
 
@@ -123,10 +124,12 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
     _hyam = ds_ccsm.hyam
     _hybm = ds_ccsm.hybm
     temp_in = ds_ccsm.T[:, :, :3, :2]
+    temp_sfc_in = ds_ccsm.TS[:, :3, :2]
     press_in = ds_ccsm.PS[:, :3, :2]
     phis = ds_ccsm.PHIS[:, :3, :2]
 
     temp_interp_expected = ds_out.Tp.rename(lev_p='plev')
+    temp_extrap_expected = ds_out.Tpx.rename(lev_p='plev')
 
     new_levels = np.asarray([500, 925, 950, 1000])
     new_levels *= 100 # new levels in Pa
@@ -142,6 +145,22 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
         temp_out = temp_out.transpose('time', 'plev', 'lat', 'lon')
         temp_out = temp_out.assign_coords(dict(plev=self.new_levels/100))
         xr.testing.assert_allclose(self.temp_interp_expected, temp_out)
+
+    def test_interp_hybrid_to_pressure_extrap_temp(self):
+        temp_out = interp_hybrid_to_pressure(self.temp_in,
+                                             self.press_in,
+                                             self._hyam,
+                                             self._hybm,
+                                             p0=self._p0,
+                                             new_levels=self.new_levels,
+                                             method="linear",
+                                             extrapolate=True,
+                                             variable='temperature',
+                                             t_sfc=self.temp_sfc_in,
+                                             phi_sfc=self.phis)
+        temp_out = temp_out.transpose('time', 'plev', 'lat', 'lon')
+        temp_out = temp_out.assign_coords(dict(plev=self.new_levels/100))
+        xr.testing.assert_allclose(self.temp_extrap_expected, temp_out)
 
 
 class Test_interp_sigma_to_hybrid(TestCase):
