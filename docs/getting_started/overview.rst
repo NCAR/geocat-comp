@@ -22,7 +22,7 @@ GeoCAT-comp draws from well-established analysis packages like `NumPy <https://n
 functions in pure Python. With so many tools being used under the hood, GeoCAT-comp users have access to geoscience
 specific computational tools without needing extensive working knowledge of `Pangeo <https://pangeo.io/>`_ stack.
 
-There are syntactical benefits to using the Pangeo stack, once of which is indexing by label. NCL requires the
+There are syntactical benefits to using the Pangeo stack, one of which is indexing by label. NCL requires the
 dimensions of input data to be in a particular order. This results in functions with rigid data format requirements and
 multiple versions of the same function for different dimension orders. By using `xarray <https://docs.xarray.dev/>`_,
 GeoCAT-comp avoids those data format requirements. The xarray data structures allow users to
