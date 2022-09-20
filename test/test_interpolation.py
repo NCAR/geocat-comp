@@ -135,32 +135,32 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
     new_levels *= 100 # new levels in Pa
     _p0 = 1000 * 100 # reference pressure in Pa
     def test_interp_hybrid_to_pressure_interp_temp(self):
-        temp_out = interp_hybrid_to_pressure(self.temp_in,
-                                             self.press_in,
-                                             self._hyam,
-                                             self._hybm,
-                                             p0=self._p0,
-                                             new_levels=self.new_levels,
-                                             method="linear")
-        temp_out = temp_out.transpose('time', 'plev', 'lat', 'lon')
-        temp_out = temp_out.assign_coords(dict(plev=self.new_levels/100))
-        xr.testing.assert_allclose(self.temp_interp_expected, temp_out)
+        result = interp_hybrid_to_pressure(self.temp_in,
+                                           self.press_in,
+                                           self._hyam,
+                                           self._hybm,
+                                           p0=self._p0,
+                                           new_levels=self.new_levels,
+                                           method="linear")
+        result = result.transpose('time', 'plev', 'lat', 'lon')
+        result = result.assign_coords(dict(plev=self.new_levels / 100))
+        xr.testing.assert_allclose(self.temp_interp_expected, result)
 
     def test_interp_hybrid_to_pressure_extrap_temp(self):
-        temp_out = interp_hybrid_to_pressure(self.temp_in,
-                                             self.press_in,
-                                             self._hyam,
-                                             self._hybm,
-                                             p0=self._p0,
-                                             new_levels=self.new_levels,
-                                             method="linear",
-                                             extrapolate=True,
-                                             variable='temperature',
-                                             t_sfc=self.temp_sfc_in,
-                                             phi_sfc=self.phis)
-        temp_out = temp_out.transpose('time', 'plev', 'lat', 'lon')
-        temp_out = temp_out.assign_coords(dict(plev=self.new_levels/100))
-        xr.testing.assert_allclose(self.temp_extrap_expected, temp_out)
+        result = interp_hybrid_to_pressure(self.temp_in,
+                                           self.press_in,
+                                           self._hyam,
+                                           self._hybm,
+                                           p0=self._p0,
+                                           new_levels=self.new_levels,
+                                           method="linear",
+                                           extrapolate=True,
+                                           variable='temperature',
+                                           t_sfc=self.temp_sfc_in,
+                                           phi_sfc=self.phis)
+        result = result.transpose('time', 'plev', 'lat', 'lon')
+        result = result.assign_coords(dict(plev=self.new_levels / 100))
+        xr.testing.assert_allclose(self.temp_extrap_expected, result)
 
 
 class Test_interp_sigma_to_hybrid(TestCase):
