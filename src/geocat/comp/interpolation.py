@@ -142,9 +142,6 @@ def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, variable
     p_sfc = pressure.data.max()  # extract pressure at lowest level
 
     if variable == 'temperature':
-        alnp = xr.zeros_like(output)  # to hold values of alpha * log(p / p_sfc)
-        tprime0 = xr.zeros_like(phi_sfc)  # to hold values of alpha * log(p / p_sfc)
-
         for lev in new_levels:
             if lev > p_sfc:  # if new level is below ground
                 tstar = t_sfc  # 2nd term in eqn 5 is 0 in this case since we already know the surface temperature
@@ -163,9 +160,6 @@ def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, variable
 
                 output.loc[dict(plev=lev)] = tstar * (1 + alnp + 0.5 * alnp ** 2 + 1 / 6 * alnp ** 3)
     elif variable == 'geopotential':
-        alnp = xr.zeros_like(output)  # to hold values of alpha * log(p / p_sfc)
-        alph = xr.zeros_like(output)  # to hold values of alpha * log(p / p_sfc)
-
         for lev in new_levels:
             if lev > p_sfc:  # if new level is below ground
                 tstar = t_sfc  # 2nd term in eqn 5 is 0 in this case since we already know the surface temperature
