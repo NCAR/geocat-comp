@@ -15,7 +15,7 @@ Installing GeoCAT-comp via Conda in a New Environment
 The easiest way to install GeoCAT-comp is using
 `Conda <http://conda.pydata.org/docs/>`_::
 
-    conda create -n geocat -c conda-forge -c ncar geocat-comp
+    conda create -n geocat -c conda-forge geocat-comp
 
 where "geocat" is the name of a new conda environment, which can then be
 activated using::
@@ -28,7 +28,7 @@ environment.  The following :code:`conda create` command can be used to create a
 :code:`conda` environment that includes some of these additional commonly used Python
 packages pre-installed::
 
-    conda create -n geocat -c conda-forge -c ncar geocat-comp matplotlib cartopy jupyter
+    conda create -n geocat -c conda-forge geocat-comp matplotlib cartopy jupyter
 
 Alternatively, if you already created a conda environment using the first
 command (without the extra packages), you can activate and install the packages
@@ -66,7 +66,8 @@ If you started a project and later decided to use GeoCAT-comp, you will need to 
 
 3. Install geocat-comp::
 
-        conda install -c ncar -c conda-forge geocat-comp
+    conda install -c conda-forge geocat-comp
+
 
 Updating GeoCAT-comp via Conda
 -------------------------------
