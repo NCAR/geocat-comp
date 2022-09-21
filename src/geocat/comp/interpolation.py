@@ -146,36 +146,32 @@ def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, variable
             if lev > p_sfc:  # if new level is below ground
                 tstar = t_sfc  # 2nd term in eqn 5 is 0 in this case since we already know the surface temperature
                 hgt = phi_sfc * g_inv
-
                 t0 = tstar + 0.0065 * hgt
                 tplat = xr.apply_ufunc(np.minimum, 298, t0, dask='parallelized')
 
                 tprime0 = xr.where((2000 <= hgt) & (hgt <= 2500), 0.002 * ((2500 - hgt) * t0 + ((hgt - 2000) * tplat)), np.nan)
-
                 tprime0 = xr.where(2500 < hgt, tplat, np.nan)
 
-                alnp = xr.where(tprime0 < tstar, 0, R_d * (tprime0 - tstar) / phi_sfc * np.log(lev / p_sfc))
+                alnp = xr.where(hgt < 2000, alpha * np.log(lev / p_sfc), R_d * (tprime0 - tstar) / phi_sfc * np.log(lev / p_sfc))
+                alnp = xr.where(tprime0 < tstar, 0, alnp)
 
-                alnp = xr.where(hgt < 2000, alpha * np.log(lev / p_sfc), alnp)
-
-                output.loc[dict(plev=lev)] = tstar * (1 + alnp + 0.5 * alnp ** 2 + 1 / 6 * alnp ** 3)
+                output.loc[dict(plev=lev)] = tstar * (1 + alnp + (0.5 * (alnp ** 2)) + (1 / 6 * (alnp ** 3)))
     elif variable == 'geopotential':
         for lev in new_levels:
             if lev > p_sfc:  # if new level is below ground
                 tstar = t_sfc  # 2nd term in eqn 5 is 0 in this case since we already know the surface temperature
                 hgt = phi_sfc * g_inv
-
                 t0 = tstar + 0.0065 * hgt
 
                 alph = xr.where((tstar <= 290.5) & (t0 > 290.5), R_d / phi_sfc * (290.5 - tstar), alpha)
 
-                alph = xr.where((tstar > 290.5) & (t0 > 290.5), 0, alpha)
+                alph = xr.where((tstar > 290.5) & (t0 > 290.5), 0, alph)
                 tstar = xr.where((tstar > 290.5) & (t0 > 290.5), 0.5 * (290.5 + tstar), tstar)
 
                 tstar = xr.where((tstar < 255), 0.5 * (tstar + 255), tstar)
 
                 alnp = alph * np.log(lev / p_sfc)
-                output.loc[dict(plev=lev)] = hgt - R_d * tstar * g_inv * np.log(lev, p_sfc) * (1 + 0.5 * alnp + 1 / 6 * alnp ** 2)
+                output.loc[dict(plev=lev)] = phi_sfc - (R_d * tstar * np.log(lev / p_sfc) * (1 + (0.5 * alnp) + (1 / 6 * alnp ** 2)))
     else:
         sfc = data[plev_name].argmax().data
         for lev in new_levels:
