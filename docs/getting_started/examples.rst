@@ -2,8 +2,8 @@
 
 .. _tutorial:
 
-Quick Start Examples
-====================
+Basic Examples
+==============
 
 For more comprehensive examples, go check out :ref:`examples`
 
