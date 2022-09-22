@@ -14,7 +14,7 @@ examples, and info for where to get additional help.
     .. grid-item-card:: Overview
         :class-title: custom-title
         :class-body: custom-body
-        :img-top: _static/images/icons/handshake.svg
+        :img-top: ../_static/images/icons/handshake.svg
         :link: overview.rst
 
         Get aquainted with GeoCAT-comp
@@ -22,7 +22,7 @@ examples, and info for where to get additional help.
     .. grid-item-card::  Quick Installation
         :class-title: custom-title
         :class-body: custom-body
-        :img-top: _static/images/icons/electric_bolt.svg
+        :img-top: ../_static/images/icons/electric_bolt.svg
         :link: quick-install.rst
 
         The most basic installation instructions for GeoCAT-comp
@@ -30,7 +30,7 @@ examples, and info for where to get additional help.
     .. grid-item-card::  Basic Examples
         :class-title: custom-title
         :class-body: custom-body
-        :img-top: _static/images/icons/menu_book.svg
+        :img-top: ../_static/images/icons/menu_book.svg
         :link: examples.rst
 
         A few intro examples to get you started
