@@ -102,143 +102,21 @@ def arc_lon_wgs84(
     return rad_lat_wgs84(lat) * np.cos(lat * d2r) * lon * d2r
 
 
-def grad_wgs84(
-    data: SupportedTypes,
-    longitude: SupportedTypes = None,
-    latitude: SupportedTypes = None,
-    wrap_longitude: bool = True,
-):
-    # todo takes in either numpy or xarray, assume most users will use
-    #  ortholinear xarray
-    # check if main array is xarray or numpy
-    # return call to appropraite inner function
+def gradient(data: xr.DataArray) -> [xr.DataArray]:
+    """Filter a dataset by frequency. This function allowes for low_pass, high_
+    pass, band_pass, or band_block filtering of the data's freqency
+    representation.
 
-    return None
+    Parameters
+    ----------
+    data : :class:`numpy.ndarray`, :class:`xarray.DataArray`
+        n-dimensional dataset, with orthographic latitude longitude coordinates
 
-
-def grad_wgs84_xr(
-    data: XTypes,
-    wrap_longitude: bool = True,
-):
-    # remove data and coords
-    # then check data dimensions to slice as needed for mutidimensional arrays
-    # for now I think I run each slice and reassemble again after since it
-    #   cannot be easily done with a kernel convolution
-    # reassemble the xarray and return
-
-    lon2d, lat2d = np.meshgrid(data.coords['lon'], data.coords['lat'])
-    return grad_wgs84(data.values, lon2d, lat2d)
-
-
-def grad_wgs84_np(
-    data: np.array,
-    longitude: np.array,
-    latitude: np.array,
-    wrap_longitude: bool = True,
-):
-    # todo look into dynamically creating tuples for pad values based on dims
-    if wrap_longitude:
-        datapad = np.pad(data, ((0, 0), (1, 1)), mode='wrap')
-        lonpad = np.pad(longitude, ((0, 0), (1, 1)), mode='wrap')
-        lonpad[:, 0] = lonpad[:, 0] - 360
-        lonpad[:, -1] = lonpad[:, -1] + 360
-        latpad = np.pad(latitude, ((0, 0), (1, 1)), mode='wrap')
-    else:
-        datapad = np.pad(
-            data,
-            ((0, 0), (1, 1)),
-            mode='constant',
-            constant_values=np.nan,
-        )
-        lonpad = np.pad(
-            longitude,
-            ((0, 0), (1, 1)),
-            mode='constant',
-            constant_values=np.nan,
-        )
-        latpad = np.pad(
-            latitude,
-            ((0, 0), (1, 1)),
-            mode='constant',
-            constant_values=np.nan,
-        )
-
-    datapad = np.pad(
-        datapad,
-        ((1, 1), (0, 0)),
-        mode='constant',
-        constant_values=np.nan,
-    )
-    lonpad = np.pad(
-        lonpad,
-        ((1, 1), (0, 0)),
-        mode='constant',
-        constant_values=np.nan,
-    )
-    latpad = np.pad(
-        latpad,
-        ((1, 1), (0, 0)),
-        mode='constant',
-        constant_values=np.nan,
-    )
-
-    arclonpad = arc_lon_wgs84(lonpad, latpad)
-    arclatpad = arc_lat_wgs84(latpad)
-
-    lonresult = np.zeros(data.shape)
-    latresult = np.zeros(data.shape)
-
-    # this can be refactored to use slices for a speed improvement
-    # need specific nan_average function to return appropriate results
-    for latloc in range(1, datapad.shape[0] - 1):
-        for lonloc in range(1, datapad.shape[1] - 1):
-            lonbac = (datapad[latloc, lonloc] - datapad[latloc, lonloc - 1]) / \
-                     (arclonpad[latloc, lonloc] - arclonpad[latloc, lonloc - 1])
-            lonfor = (datapad[latloc, lonloc + 1] - datapad[latloc, lonloc]) / \
-                     (arclonpad[latloc, lonloc + 1] - arclonpad[latloc, lonloc])
-            if not np.isnan(lonbac) and not np.isnan(lonfor):
-                longrad = (lonbac + lonfor) / 2
-            elif not np.isnan(lonbac):
-                longrad = lonbac
-            elif not np.isnan(lonfor):
-                longrad = lonfor
-            else:
-                longrad = np.nan
-            lonresult[latloc - 1, lonloc - 1] = longrad
-
-            latbac = (datapad[latloc, lonloc] - datapad[latloc - 1, lonloc]) / \
-                     (arclatpad[latloc, lonloc] - arclatpad[latloc - 1, lonloc])
-            latfor = (datapad[latloc + 1, lonloc] - datapad[latloc, lonloc]) / \
-                     (arclatpad[latloc + 1, lonloc] - arclatpad[latloc, lonloc])
-            if not np.isnan(latbac) and not np.isnan(latfor):
-                latgrad = (latbac + latfor) / 2
-            elif not np.isnan(latbac):
-                latgrad = latbac
-            elif not np.isnan(latfor):
-                latgrad = latfor
-            else:
-                latgrad = np.nan
-            latresult[latloc - 1, lonloc - 1] = latgrad
-
-    return [lonresult, latresult]
-
-
-def grad_kernel(data: xr.DataArray) -> [xr.DataArray]:
-    # todo this function will take *any* input and apply the four kernals and
-    #  return the result,
-    # the input will be padded on the first dimension on both sides with a
-    # one wrap,
-    # the input will be padded on the second dimension on both sides with a
-    # one nan
-    # learned things
-    # kernels must be odd numbered, convolve_2d does not support even
-    # numbered kernels in a useful way
-    # this means different kernals for all four directions away from the
-    # pixel of interests
-    #  which is annying but whatever, saves some effort indexing
-    #  is also opens up the option for a numpy style return, with the [-1,
-    #  0. 1] kernels
-    #
+    Returns
+    -------
+    gradients : list of :class:`numpy.ndarray`, list of :class:`xarray.DataArray`
+        longitudinal and latitudinal gradients calculated using th WGS84 geoid.
+    """
 
     gradkernlat = np.array([
         [0, 1, -1],
@@ -301,4 +179,4 @@ def grad_kernel(data: xr.DataArray) -> [xr.DataArray]:
 
     # do lat and lon differences, can use the gradient kernel
 
-    return [datasumlon, datasumlat]
+    return [datasumlon[1:-1, 1:-1], datasumlat[1:-1, 1:-1]]

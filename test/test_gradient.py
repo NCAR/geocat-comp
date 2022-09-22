@@ -1,19 +1,50 @@
 import sys
 import unittest
+
+import numpy as np
 import xarray as xr
 
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
 if "--cov" in str(sys.argv):
-    pass
+    from src.geocat.comp import gradient
 elif "-v" in str(sys.argv):
-    pass
+    from src.geocat.comp import gradient
 else:
     pass
 
 
 class Test_Gradient(unittest.TestCase):
+    test_data = None
+    test_results_lon = None
+    test_results_lat = None
+
+    results = None
+    results_lon = None
+    results_lat = None
 
     @classmethod
     def setUpClass(cls):
-        cls.test_data = xr.load_dataset('gradient_test_data.nc')
+        cls.test_data = xr.load_dataset(
+            'gradient_test_data.nc').to_array().squeeze()
+        cls.test_results_lon = xr.load_dataset(
+            'gradient_test_results_longitude.nc').to_array().squeeze()
+        cls.test_results_lat = xr.load_dataset(
+            'gradient_test_results_latitude.nc').to_array().squeeze()
+        cls.results = gradient(cls.test_data)
+        cls.results_lon = cls.results[0]
+        cls.results_lat = cls.results[1]
+
+    def test_gradient_lon_xr(self):
+        np.testing.assert_almost_equal(
+            self.results_lon.data,
+            self.test_results_lon.data,
+            decimal=3,
+        )
+
+    def test_gradient_lat_xr(self):
+        np.testing.assert_almost_equal(
+            self.results_lat.data,
+            self.test_results_lat.data,
+            decimal=3,
+        )

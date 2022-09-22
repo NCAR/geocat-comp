@@ -46,6 +46,8 @@ GeoCAT-comp native routines
 
    geocat.comp.fourier_filters.fourier_high_pass
 
+   geocat.comp.gradient.gradient
+
    geocat.comp.interpolation.interp_hybrid_to_pressure
 
    geocat.comp.interpolation.interp_sigma_to_hybrid
