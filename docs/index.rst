@@ -33,6 +33,44 @@ on geosciences data. Many of these functions originated in NCL and were translat
 Python with the help of GeoCAT-comp; however, developers are welcome to come up with
 novel computational functions for geosciences data.
 
+.. grid:: 1 1 2 2
+    :gutter: 2
+
+    .. grid-item-card:: Getting Started
+        :class-title: custom-title
+        :class-body: custom-body
+        :img-top: _static/images/icons/tips.svg
+        :link: getting_started/index.rst
+
+        A good place to start for new users
+
+    .. grid-item-card::  Examples
+        :class-title: custom-title
+        :class-body: custom-body
+        :img-top: _static/images/icons/science.svg
+        :link: examples
+        :link-type: doc
+
+        A gallery of examples using GeoCAT-comp
+
+    .. grid-item-card::  Installation
+        :class-title: custom-title
+        :class-body: custom-body
+        :img-top: _static/images/icons/download.svg
+        :link: installation
+        :link-type: doc
+
+        Installation instructions for GeoCAT-comp
+
+    .. grid-item-card::  API
+        :class-title: custom-title
+        :class-body: custom-body
+        :img-top: _static/images/icons/code.svg
+        :link: api
+        :link-type: doc
+
+        See the complete GeoCAT-comp API
+
 .. toctree::
    :maxdepth: 2
    :hidden:
