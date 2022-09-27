@@ -175,9 +175,6 @@ def _geo_height_extrapolate(lev, p_sfc, t_sfc, phi_sfc):
 
 def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, variable, t_sfc, phi_sfc):
     # TODO: check for appropriate input values
-    R_d = 287.04  # dry air gas constant
-    g_inv = 1 / 9.80616  # inverse of gravity
-    alpha = 0.0065 * R_d * g_inv
     plev_name = pressure.cf['vertical'].name
     sfc_index = pressure[plev_name].argmax().data  # index of the model surface
     p_sfc = pressure.isel(**dict({plev_name:sfc_index})) # extract pressure at lowest level
@@ -361,8 +358,6 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
     output = output.transpose(*dims).assign_coords(coords)
 
     if extrapolate:
-        # output from interpolation is hPa by default. Must be in Pa for extrapolation
-        data = data.assign_coords(dict(**{lev_dim:data[lev_dim]*100}))
         output = _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, variable, t_sfc, phi_sfc)
 
     return output

@@ -9,13 +9,12 @@ import xarray as xr
 
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
-#TODO uncomment this
-#if "--cov" in str(sys.argv):
-from src.geocat.comp import interp_multidim, interp_hybrid_to_pressure, \
+if "--cov" in str(sys.argv):
+    from src.geocat.comp import interp_multidim, interp_hybrid_to_pressure, \
         interp_sigma_to_hybrid
-#else:
-#    from geocat.comp import interp_multidim, interp_hybrid_to_pressure, \
-#        interp_sigma_to_hybrid
+else:
+    from geocat.comp import interp_multidim, interp_hybrid_to_pressure, \
+        interp_sigma_to_hybrid
 
 # Global input data
 
@@ -164,6 +163,7 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
                                            phi_sfc=self.phis)
         result = result.transpose('time', 'plev', 'lat', 'lon')
         result = result.assign_coords(dict(plev=self.new_levels / 100))
+        print((self.temp_extrap_expected - result).compute())
         xr.testing.assert_allclose(self.temp_extrap_expected, result)
 
 
@@ -181,6 +181,7 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
                                            phi_sfc=self.phis)
         result = result.transpose('time', 'plev', 'lat', 'lon')
         result = result.assign_coords(dict(plev=self.new_levels / 100))
+        print((self.geopotential_extrap_expected - result).compute())
         xr.testing.assert_allclose(self.geopotential_extrap_expected, result)
 
     def test_interp_hybrid_to_pressure_extrap_other(self):
