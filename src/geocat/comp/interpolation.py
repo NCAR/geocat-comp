@@ -133,50 +133,65 @@ def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0):
 
     return func_interpolate(new_levels, xcoords, data, axis=interp_axis)
 
+def _temp_extrapolate(lev, p_sfc, t_sfc, phi_sfc):
+    R_d = 287.04  # dry air gas constant
+    g_inv = 1 / 9.80616  # inverse of gravity
+    alpha = 0.0065 * R_d * g_inv
+
+    tstar = t_sfc  # 2nd term in eqn 5 is 0 in this case since we already know the surface temperature
+    hgt = phi_sfc * g_inv
+    t0 = tstar + 0.0065 * hgt
+    tplat = xr.apply_ufunc(np.minimum, 298, t0, dask='parallelized')
+
+    tprime0 = xr.where((2000 <= hgt) & (hgt <= 2500), 0.002 * (
+                (2500 - hgt) * t0 + ((hgt - 2000) * tplat)), np.nan)
+    tprime0 = xr.where(2500 < hgt, tplat, np.nan)
+
+    alnp = xr.where(hgt < 2000, alpha * np.log(lev / p_sfc),
+                    R_d * (tprime0 - tstar) / phi_sfc * np.log(
+                        lev / p_sfc))
+    alnp = xr.where(tprime0 < tstar, 0, alnp)
+
+    return tstar * (1 + alnp + (0.5 * (alnp ** 2)) + (1 / 6 * (alnp ** 3)))
+
+def _geo_height_extrapolate(lev, p_sfc, t_sfc, phi_sfc):
+    R_d = 287.04  # dry air gas constant
+    g_inv = 1 / 9.80616  # inverse of gravity
+    alpha = 0.0065 * R_d * g_inv
+
+    tstar = t_sfc  # 2nd term in eqn 5 is 0 in this case since we already know the surface temperature
+    hgt = phi_sfc * g_inv
+    t0 = tstar + 0.0065 * hgt
+
+    alph = xr.where((tstar <= 290.5) & (t0 > 290.5), R_d / phi_sfc * (290.5 - tstar), alpha)
+
+    alph = xr.where((tstar > 290.5) & (t0 > 290.5), 0, alph)
+    tstar = xr.where((tstar > 290.5) & (t0 > 290.5), 0.5 * (290.5 + tstar), tstar)
+
+    tstar = xr.where((tstar < 255), 0.5 * (tstar + 255), tstar)
+
+    alnp = alph * np.log(lev / p_sfc)
+    return phi_sfc - (R_d * tstar * np.log(lev / p_sfc) * (1 + (0.5 * alnp) + (1 / 6 * alnp ** 2)))
+
 def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, variable, t_sfc, phi_sfc):
     # TODO: check for appropriate input values
     R_d = 287.04  # dry air gas constant
     g_inv = 1 / 9.80616  # inverse of gravity
     alpha = 0.0065 * R_d * g_inv
     plev_name = pressure.cf['vertical'].name
-    p_sfc = pressure.data.max()  # extract pressure at lowest level
+    sfc_index = pressure[plev_name].argmax().data  # index of the model surface
+    p_sfc = pressure.isel(**dict({plev_name:sfc_index})) # extract pressure at lowest level
 
     if variable == 'temperature':
         for lev in new_levels:
-            if lev > p_sfc:  # if new level is below ground
-                tstar = t_sfc  # 2nd term in eqn 5 is 0 in this case since we already know the surface temperature
-                hgt = phi_sfc * g_inv
-                t0 = tstar + 0.0065 * hgt
-                tplat = xr.apply_ufunc(np.minimum, 298, t0, dask='parallelized')
+            output.loc[dict(plev=lev)] = xr.where(lev <= p_sfc, output.sel(plev=lev), _temp_extrapolate(lev, p_sfc, t_sfc, phi_sfc))
 
-                tprime0 = xr.where((2000 <= hgt) & (hgt <= 2500), 0.002 * ((2500 - hgt) * t0 + ((hgt - 2000) * tplat)), np.nan)
-                tprime0 = xr.where(2500 < hgt, tplat, np.nan)
-
-                alnp = xr.where(hgt < 2000, alpha * np.log(lev / p_sfc), R_d * (tprime0 - tstar) / phi_sfc * np.log(lev / p_sfc))
-                alnp = xr.where(tprime0 < tstar, 0, alnp)
-
-                output.loc[dict(plev=lev)] = tstar * (1 + alnp + (0.5 * (alnp ** 2)) + (1 / 6 * (alnp ** 3)))
     elif variable == 'geopotential':
         for lev in new_levels:
-            if lev > p_sfc:  # if new level is below ground
-                tstar = t_sfc  # 2nd term in eqn 5 is 0 in this case since we already know the surface temperature
-                hgt = phi_sfc * g_inv
-                t0 = tstar + 0.0065 * hgt
-
-                alph = xr.where((tstar <= 290.5) & (t0 > 290.5), R_d / phi_sfc * (290.5 - tstar), alpha)
-
-                alph = xr.where((tstar > 290.5) & (t0 > 290.5), 0, alph)
-                tstar = xr.where((tstar > 290.5) & (t0 > 290.5), 0.5 * (290.5 + tstar), tstar)
-
-                tstar = xr.where((tstar < 255), 0.5 * (tstar + 255), tstar)
-
-                alnp = alph * np.log(lev / p_sfc)
-                output.loc[dict(plev=lev)] = phi_sfc - (R_d * tstar * np.log(lev / p_sfc) * (1 + (0.5 * alnp) + (1 / 6 * alnp ** 2)))
+            output.loc[dict(plev=lev)] = xr.where(lev <= p_sfc, output.sel(plev=lev), _geo_height_extrapolate(lev, p_sfc, t_sfc, phi_sfc))
     else:
-        sfc = data[plev_name].argmax().data
         for lev in new_levels:
-            if lev > p_sfc:  # if new level is below ground
-                output.loc[dict(plev=lev)] = data.isel(**{plev_name:sfc})
+                output.loc[dict(plev=lev)] = xr.where(lev <= p_sfc, output.sel(plev=lev), data.isel(**dict({plev_name:sfc_index})))
     return output
 
 
