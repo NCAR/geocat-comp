@@ -171,7 +171,7 @@ def _geo_height_extrapolate(lev, p_sfc, t_sfc, phi_sfc):
     tstar = xr.where((tstar < 255), 0.5 * (tstar + 255), tstar)
 
     alnp = alph * np.log(lev / p_sfc)
-    return phi_sfc - (R_d * tstar * np.log(lev / p_sfc) * (1 + (0.5 * alnp) + (1 / 6 * alnp ** 2)))
+    return hgt - R_d * tstar * g_inv * np.log(lev / p_sfc) * (1 + 0.5 * alnp + 1 / 6 * alnp**2)
 
 def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, variable, t_sfc, phi_sfc):
     # TODO: check for appropriate input values
