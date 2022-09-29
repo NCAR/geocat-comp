@@ -7,19 +7,21 @@ from scipy.ndimage import convolve
 SupportedTypes = Union[np.ndarray, xr.DataArray]
 XTypes = Union[xr.DataArray, xr.Dataset]
 
-d2r = 1.74532925199432957692369e-02
+d2r = 1.74532925199432957692369e-02  # degrees to radians conversion factor
 
 
 def rad_lat_wgs84(lat: SupportedTypes,):
-    '''
-    The radius calculation for the wgs84 ellipsoid uses a taylor series from
-    radius = ((a*cos(lat))**2+(b*sin(lat))**2)**(1/2)
-    The taylor series is the radius of the elipsoid for a given latitude
+    """The radius calculation for the wgs84 ellipsoid at a latitude uses a
+    taylor series from.
+
+    .. math:
+        radius = \sqrt{a^2 \cdot cos(lat)^2+b^2 \cdot sin(lat)^2}
+    This returns the radius of the elipsoid for a given latitude
     This is accurate to within floating point error.
 
-    note: This doesn't need to be a taylor series, though the taylor series
-    was a step for the arc_lat_wgs84 function to avoid the eliptic integral
-    '''
+    note: This doesn't need to be a taylor series, though the taylor series is faster
+    and a needed step for the arc_lat_wgs84 function to avoid the eliptic integral
+    """
     return \
         8.05993093251779959604912e-107 * lat ** 48 - \
         1.26581811418535723456176e-102 * lat ** 46 - \
@@ -49,15 +51,17 @@ def rad_lat_wgs84(lat: SupportedTypes,):
 
 
 def arc_lat_wgs84(lat: SupportedTypes,):
-    '''
-    The arc length calculation for the wgs84 ellipsoid uses a taylor series from
-    radius = ((a*cos(lat))**2+(b*sin(lat))**2)**(1/2)
+    """The arc length calculation for the wgs84 ellipsoid at a latitude uses a
+    taylor series to obtain the value of the elliptic integral.
+
+    .. math:
+        arclat = \int_{0}^{lat}\sqrt{a^2 \cdot cos(lat)^2+b^2 \cdot sin(lat)^2}\ dlat
     The integral of the radius taylor series gives an arc length taylor series
-    The taylor series is the distance from the equator to a given latitude
+    This returns the distance from the equator to a given latitude
     This is accurate to within floating point error.
 
     note: This needs to be a taylor series to avoid the eliptic integral
-    '''
+    """
     return \
         2.87086392358719396475614e-110 * lat ** 49 - \
         4.70057315402553703681995e-106 * lat ** 47 - \
@@ -90,15 +94,17 @@ def arc_lon_wgs84(
     lon: SupportedTypes,
     lat: SupportedTypes,
 ):
-    '''
-    The arc length calculation for the wgs84 ellipsoid uses a taylor series from
-    radius = ((a*cos(lat))**2+(b*sin(lat))**2)**(1/2)
-    The taylor series is the radius of the elipsoid for a given latitude
+    """The arc length calculation for the wgs84 ellipsoid at a longitude uses a
+    taylor series from.
+
+    .. math:
+        arclon = lon \cdot cos(lat) \cdot \sqrt{a^2 \cdot cos(lat)^2+b^2 \cdot sin(lat)^2}
+    This returns the distance from the Greenwich Meridian  to a given latitude
     This is accurate to within floating point error.
 
-    note: This doesn't need to be a taylor series, though the taylor series
-    was a step for the arc_lat_wgs84 function to avoid the eliptic integral
-    '''
+    note: This doesn't need to be a taylor series, though the taylor series is faster
+    and a needed step for the arc_lat_wgs84 function to avoid the eliptic integral
+    """
     return rad_lat_wgs84(lat) * np.cos(lat * d2r) * lon * d2r
 
 
