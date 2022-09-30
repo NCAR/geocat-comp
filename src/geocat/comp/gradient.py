@@ -19,8 +19,10 @@ def rad_lat_wgs84(lat: SupportedTypes,):
     This returns the radius of the elipsoid for a given latitude
     This is accurate to within floating point error.
 
-    note: This doesn't need to be a taylor series, though the taylor series is faster
-    and a needed step for the arc_lat_wgs84 function to avoid the eliptic integral
+    note: This doesn't need to be a taylor series, though the taylor series
+    is faster
+    and a needed step for the arc_lat_wgs84 function to avoid the eliptic
+    integral
     """
     return \
         8.05993093251779959604912e-107 * lat ** 48 - \
@@ -55,7 +57,8 @@ def arc_lat_wgs84(lat: SupportedTypes,):
     taylor series to obtain the value of the elliptic integral.
 
     .. math:
-        arclat = \int_{0}^{lat}\sqrt{a^2 \cdot cos(lat)^2+b^2 \cdot sin(lat)^2}\ dlat
+        arclat = \int_{0}^{lat}\sqrt{a^2 \cdot cos(lat)^2+b^2 \cdot sin(
+        lat)^2}\ dlat
     The integral of the radius taylor series gives an arc length taylor series
     This returns the distance from the equator to a given latitude
     This is accurate to within floating point error.
@@ -98,12 +101,15 @@ def arc_lon_wgs84(
     taylor series from.
 
     .. math:
-        arclon = lon \cdot cos(lat) \cdot \sqrt{a^2 \cdot cos(lat)^2+b^2 \cdot sin(lat)^2}
+        arclon = lon \cdot cos(lat) \cdot \sqrt{a^2 \cdot cos(lat)^2+b^2
+        \cdot sin(lat)^2}
     This returns the distance from the Greenwich Meridian  to a given latitude
     This is accurate to within floating point error.
 
-    note: This doesn't need to be a taylor series, though the taylor series is faster
-    and a needed step for the arc_lat_wgs84 function to avoid the eliptic integral
+    note: This doesn't need to be a taylor series, though the taylor series
+    is faster
+    and a needed step for the arc_lat_wgs84 function to avoid the eliptic
+    integral
     """
     return rad_lat_wgs84(lat) * np.cos(lat * d2r) * lon * d2r
 
@@ -120,7 +126,8 @@ def gradient(data: xr.DataArray) -> [xr.DataArray]:
 
     Returns
     -------
-    gradients : list of :class:`numpy.ndarray`, list of :class:`xarray.DataArray`
+    gradients : list of :class:`numpy.ndarray`, list of
+    :class:`xarray.DataArray`
         longitudinal and latitudinal gradients calculated using th WGS84 geoid.
     """
 
@@ -186,3 +193,121 @@ def gradient(data: xr.DataArray) -> [xr.DataArray]:
     # do lat and lon differences, can use the gradient kernel
 
     return [datasumlon[1:-1, 1:-1], datasumlat[1:-1, 1:-1]]
+
+
+# '''
+#
+# def grad_wgs84_xr(
+#     data: XTypes,
+#     wrap_longitude: bool = True,
+# ):
+#     # remove data and coords
+#     # then check data dimensions to slice as needed for mutidimensional arrays
+#     # for now I think I run each slice and reassemble again after since it
+#     #   cannot be easily done with a kernel convolution
+#     # reassemble the xarray and return
+#
+#     lon2d, lat2d = np.meshgrid(data.coords['lon'], data.coords['lat'])
+#     return grad_wgs84(data.values, lon2d, lat2d)
+#
+#
+# def grad_wgs84_np(
+#     data: np.array,
+#     longitude: np.array,
+#     latitude: np.array,
+#     wrap_longitude: bool = True,
+# ):
+#     # todo look into dynamically creating tuples for pad values based on dims
+#     if wrap_longitude:
+#         datapad = np.pad(data, ((0, 0), (1, 1)), mode='wrap')
+#         lonpad = np.pad(longitude, ((0, 0), (1, 1)), mode='wrap')
+#         lonpad[:, 0] = lonpad[:, 0] - 360
+#         lonpad[:, -1] = lonpad[:, -1] + 360
+#         latpad = np.pad(latitude, ((0, 0), (1, 1)), mode='wrap')
+#     else:
+#         datapad = np.pad(
+#             data,
+#             ((0, 0), (1, 1)),
+#             mode='constant',
+#             constant_values=np.nan,
+#         )
+#         lonpad = np.pad(
+#             longitude,
+#             ((0, 0), (1, 1)),
+#             mode='constant',
+#             constant_values=np.nan,
+#         )
+#         latpad = np.pad(
+#             latitude,
+#             ((0, 0), (1, 1)),
+#             mode='constant',
+#             constant_values=np.nan,
+#         )
+#
+#     datapad = np.pad(
+#         datapad,
+#         ((1, 1), (0, 0)),
+#         mode='constant',
+#         constant_values=np.nan,
+#     )
+#     lonpad = np.pad(
+#         lonpad,
+#         ((1, 1), (0, 0)),
+#         mode='constant',
+#         constant_values=np.nan,
+#     )
+#     latpad = np.pad(
+#         latpad,
+#         ((1, 1), (0, 0)),
+#         mode='constant',
+#         constant_values=np.nan,
+#     )
+#
+#     arclonpad = arc_lon_wgs84(lonpad, latpad)
+#     arclatpad = arc_lat_wgs84(latpad)
+#
+#     lonresult = np.zeros(data.shape)
+#     latresult = np.zeros(data.shape)
+#
+#     # this can be refactored to use slices for a speed improvement
+#     # need specific nan_average function to return appropriate results
+#     for latloc in range(1, datapad.shape[0] - 1):
+#         for lonloc in range(1, datapad.shape[1] - 1):
+#             lonbac = (datapad[latloc, lonloc] - datapad[latloc, lonloc -
+#             1]) / \
+#                      (arclonpad[latloc, lonloc] - arclonpad[latloc, lonloc
+#                      - 1])
+#             lonfor = (datapad[latloc, lonloc + 1] - datapad[latloc,
+#             lonloc]) / \
+#                      (arclonpad[latloc, lonloc + 1] - arclonpad[latloc,
+#                      lonloc])
+#             if not np.isnan(lonbac) and not np.isnan(lonfor):
+#                 longrad = (lonbac + lonfor) / 2
+#             elif not np.isnan(lonbac):
+#                 longrad = lonbac
+#             elif not np.isnan(lonfor):
+#                 longrad = lonfor
+#             else:
+#                 longrad = np.nan
+#             lonresult[latloc - 1, lonloc - 1] = longrad
+#
+#             latbac = (datapad[latloc, lonloc] - datapad[latloc - 1,
+#             lonloc]) / \
+#                      (arclatpad[latloc, lonloc] - arclatpad[latloc - 1,
+#                      lonloc])
+#             latfor = (datapad[latloc + 1, lonloc] - datapad[latloc,
+#             lonloc]) / \
+#                      (arclatpad[latloc + 1, lonloc] - arclatpad[latloc,
+#                      lonloc])
+#             if not np.isnan(latbac) and not np.isnan(latfor):
+#                 latgrad = (latbac + latfor) / 2
+#             elif not np.isnan(latbac):
+#                 latgrad = latbac
+#             elif not np.isnan(latfor):
+#                 latgrad = latfor
+#             else:
+#                 latgrad = np.nan
+#             latresult[latloc - 1, lonloc - 1] = latgrad
+#
+#     return [lonresult, latresult]
+##'''
