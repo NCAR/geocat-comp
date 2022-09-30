@@ -39,7 +39,7 @@ EOF Functions
    eofunc_pcs
 
 Fourier Filters
-^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^
 .. currentmodule:: geocat.comp.fourier_filters
 .. autosummary::
    :nosignatures:

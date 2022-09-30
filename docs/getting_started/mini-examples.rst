@@ -1,6 +1,6 @@
 .. currentmodule:: geocat.comp
 
-.. _tutorial:
+.. _mini-example:
 
 Basic Examples
 ==============

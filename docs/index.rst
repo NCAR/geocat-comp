@@ -40,7 +40,8 @@ novel computational functions for geosciences data.
         :class-title: custom-title
         :class-body: custom-body
         :img-top: _static/images/icons/tips.svg
-        :link: getting_started/index.rst
+        :link: getting-started
+        :link-type: doc
 
         A good place to start for new users
 
@@ -76,11 +77,11 @@ novel computational functions for geosciences data.
    :hidden:
    :caption: For users
 
-   Getting Started <getting_started/index>
+   Getting Started <getting-started>
    Installation <installation>
    API Reference <api>
    Usage Examples <examples>
-   Cite GeoCAT-comp <cite>
+   Cite GeoCAT-comp <citation.rst>
    NCL Documentation <https://www.ncl.ucar.edu/>
 
 .. toctree::

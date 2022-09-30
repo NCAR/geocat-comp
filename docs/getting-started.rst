@@ -1,6 +1,6 @@
 .. currentmodule:: geocat.comp
 
-.. _getting_started:
+.. _getting-started:
 
 Getting Started
 ===============
@@ -14,24 +14,24 @@ examples, and info for where to get additional help.
     .. grid-item-card:: Overview
         :class-title: custom-title
         :class-body: custom-body
-        :img-top: ../_static/images/icons/handshake.svg
-        :link: overview.rst
+        :img-top: _static/images/icons/handshake.svg
+        :link: getting_started/overview.rst
 
         Get aquainted with GeoCAT-comp
 
     .. grid-item-card::  Quick Installation
         :class-title: custom-title
         :class-body: custom-body
-        :img-top: ../_static/images/icons/electric_bolt.svg
-        :link: quick-install.rst
+        :img-top: _static/images/icons/electric_bolt.svg
+        :link: getting_started/quick-install.rst
 
         The most basic installation instructions for GeoCAT-comp
 
     .. grid-item-card::  Basic Examples
         :class-title: custom-title
         :class-body: custom-body
-        :img-top: ../_static/images/icons/menu_book.svg
-        :link: examples.rst
+        :img-top: _static/images/icons/menu_book.svg
+        :link: getting_started/mini-examples.rst
 
         A few intro examples to get you started
 
@@ -40,6 +40,6 @@ examples, and info for where to get additional help.
    :hidden:
    :caption: Getting Started
 
-   Overview <overview>
-   Quick Installation <quick-install>
-   Basic Examples <examples>
+   Overview getting_started/overview.rst
+   Quick Installation getting_started/quick-install.rst
+   Basic Examples getting-started/examples.rst

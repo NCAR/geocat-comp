@@ -5,8 +5,8 @@
 Quick Installation
 ==================
 
-For complete instructions on the various ways to install geocat-comp (e.g. via pip or source), head
-to the complete `installation <../installation.rst>`_ page.
+For complete instructions on the various ways to install geocat-comp (e.g.
+via pip or source), head to the complete `installation <../installation.rst>`_ page.
 
 Installing GeoCAT-comp in a Pre-existing Conda Environment
 ----------------------------------------------------------
@@ -16,9 +16,9 @@ Installing GeoCAT-comp in a Pre-existing Conda Environment
 
         conda update conda
 
-2.  Activate the conda environment you want to add GeoCAT to. In this example, the environment is called ``foo``::
+2.  Activate the conda environment where you intent to install ``geocat-comp``. In this example, the environment is called ``geocat``::
 
-        conda activate foo
+        conda activate geocat
 
 3. Install geocat-comp::
 
