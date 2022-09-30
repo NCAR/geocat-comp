@@ -328,9 +328,12 @@ def update_gallery(app: Sphinx):
     LOGGER.info("gallery created")
 
 
-# only execute notebooks with unexecuted cells
-# should be "auto" by default
+# turn off notebook execution
+# set to "auto" for default behavior
 nb_execution_mode = "off"
+
+# turn off duplicate generation of toctree entries?
+numpydoc_show_class_members = False
 
 
 # Allow for changes to be made to the css in the theme_overrides file
