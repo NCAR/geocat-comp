@@ -118,9 +118,9 @@ def arc_lon_wgs84(
 
 
 def gradient(data: xr.DataArray) -> [xr.DataArray]:
-    r"""Filter a dataset by frequency. This function allowes for low_pass, high_
-    pass, band_pass, or band_block filtering of the data's freqency
-    representation.
+    r"""Extract and return the gradient values of a dataset at each point in the
+    dataset. Assuming that the data points are on the surface of the WGS84
+    ellipsoid.
 
     Parameters
     ----------
