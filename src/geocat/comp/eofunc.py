@@ -155,11 +155,11 @@ def eofunc_eofs(data,
     See Also
     --------
     Related NCL Functions:
-    `eofunc <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc.shtml>`_,
-    `eofunc_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_Wrap.shtml>`_,
-    `eofunc_north <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_north.shtml>`_,
-    `eofunc_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc_n.shtml>`_,
-    `eofunc_n_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_n_Wrap.shtml>`_
+    `eofunc <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc.shtml>`__,
+    `eofunc_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_Wrap.shtml>`__,
+    `eofunc_north <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_north.shtml>`__,
+    `eofunc_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc_n.shtml>`__,
+    `eofunc_n_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_n_Wrap.shtml>`__
     """
 
     data, solver = _generate_eofs_solver(data,
@@ -286,10 +286,10 @@ def eofunc_pcs(data,
     See Also
     --------
     Related NCL Functions:
-    `eofunc_ts <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc_ts.shtml>`_,
-    `eofunc_ts_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_ts_Wrap.shtml>`_,
-    `eofunc_ts_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc_ts_n.shtml>`_,
-    `eofunc_ts_n_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_ts_n_Wrap.shtml>`_
+    `eofunc_ts <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc_ts.shtml>`__,
+    `eofunc_ts_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_ts_Wrap.shtml>`__,
+    `eofunc_ts_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc_ts_n.shtml>`__,
+    `eofunc_ts_n_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_ts_n_Wrap.shtml>`__
     """
 
     data, solver = _generate_eofs_solver(data,

@@ -743,12 +743,12 @@ def detrend(data: typing.Iterable, deg=1, axis=0, **kwargs) -> xr.DataArray:
     See Also
     --------
     Related NCL Functions:
-    `dtrend <https://www.ncl.ucar.edu/Document/Functions/Built-in/dtrend.shtml>`_,
-    `dtrend_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/dtrend_n.shtml>`_,
-    `dtrend_msg <https://www.ncl.ucar.edu/Document/Functions/Built-in/dtrend_msg.shtml>`_,
-    `dtrend_msg_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/dtrend_msg_n.shtml>`_,
-    `dtrend_quadratic <https://www.ncl.ucar.edu/Document/Functions/Built-in/dtrend_quadratic.shtml>`_,
-    `dtrend_quadratic_msg_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/dtrend_quadratic_msg_n.shtml>`_
+    `dtrend <https://www.ncl.ucar.edu/Document/Functions/Built-in/dtrend.shtml>`__,
+    `dtrend_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/dtrend_n.shtml>`__,
+    `dtrend_msg <https://www.ncl.ucar.edu/Document/Functions/Built-in/dtrend_msg.shtml>`__,
+    `dtrend_msg_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/dtrend_msg_n.shtml>`__,
+    `dtrend_quadratic <https://www.ncl.ucar.edu/Document/Functions/Built-in/dtrend_quadratic.shtml>`__,
+    `dtrend_quadratic_msg_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/dtrend_quadratic_msg_n.shtml>`__
     """
     if (int(deg) != deg) or (deg < 0):
         raise ValueError("deg must be non-negative integer value.")

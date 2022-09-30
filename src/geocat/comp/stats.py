@@ -14,7 +14,7 @@ def pearson_r(a,
               axis=None):
     """This function wraps the function of the same name from `xskillscore <htt
     ps://xskillscore.readthedocs.io/en/stable/api/xskillscore.pearson_r.html#xs
-    killscore.pearson_r>`_. The difference between the xskillscore version and
+    killscore.pearson_r>`__. The difference between the xskillscore version and
     this one is that the GeoCAT version allows for array-like inputs rather
     than only supporting `xarray.DataArrays`. The parameters work the same way
     as in the xskillscore version, with an added parameter `axis` (see below).

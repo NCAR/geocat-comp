@@ -186,8 +186,8 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
     See Also
     --------
     Related NCL Functions:
-    `vinth2p <https://www.ncl.ucar.edu/Document/Functions/Built-in/vinth2p.shtml>`_,
-    `vinth2p_ecmwf <https://www.ncl.ucar.edu/Document/Functions/Built-in/vinth2p_ecmwf.shtml>`_
+    `vinth2p <https://www.ncl.ucar.edu/Document/Functions/Built-in/vinth2p.shtml>`__,
+    `vinth2p_ecmwf <https://www.ncl.ucar.edu/Document/Functions/Built-in/vinth2p_ecmwf.shtml>`__
     """
 
     # Determine the level dimension and then the interpolation axis
@@ -341,7 +341,7 @@ def interp_sigma_to_hybrid(data: xr.DataArray,
     See Also
     --------
     Related NCL Function:
-    `sigma2hybrid <https://www.ncl.ucar.edu/Document/Functions/Built-in/sigma2hybrid.shtml>`_
+    `sigma2hybrid <https://www.ncl.ucar.edu/Document/Functions/Built-in/sigma2hybrid.shtml>`__
     """
 
     # Determine the level dimension and then the interpolation axis

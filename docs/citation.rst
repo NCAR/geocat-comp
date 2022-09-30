@@ -16,7 +16,7 @@ software version through DOIs but are also able to download & use the correspond
 reproducibility purposes.
 
 Please find DOIs for all the GeoCAT-comp versions `here
-<https://zenodo.org/search?page=1&size=20&q=conceptrecid:%226607205%22&sort=-version&all_versions=True>`_.
+<https://zenodo.org/search?page=1&size=20&q=conceptrecid:%226607205%22&sort=-version&all_versions=True>`__.
 
 If you would like to cite GeoCAT-comp as a whole (without referring to a specific version), use
 the following text:

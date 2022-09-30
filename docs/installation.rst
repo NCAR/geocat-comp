@@ -6,14 +6,14 @@ Installation
 ============
 
 This installation guide includes only the GeoCAT-comp installation and build instructions.
-Please refer to `GeoCAT Contributor's Guide <https://geocat.ucar.edu/pages/contributing.html>`_ for installation of
+Please refer to `GeoCAT Contributor's Guide <https://geocat.ucar.edu/pages/contributing.html>`__ for installation of
 the whole GeoCAT project.
 
 Installing GeoCAT-comp via Conda in a New Environment
 -----------------------------------------------------
 
 The easiest way to install GeoCAT-comp is using
-`Conda <http://conda.pydata.org/docs/>`_::
+`Conda <http://conda.pydata.org/docs/>`__::
 
     conda create -n geocat -c conda-forge geocat-comp
 
@@ -47,7 +47,7 @@ Although packages like Matplotlib are often used with GeoCAT-comp, they are cons
 `optional` dependencies and must be explicitly installed.
 
 If you are interested in learning more about how Conda environments work, please
-visit the `managing environments <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html>`_
+visit the `managing environments <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html>`__
 page of the Conda documentation.
 
 Installing GeoCAT-comp in a Pre-existing Conda Environment
@@ -104,19 +104,19 @@ Required dependencies for building and testing GeoCAT-comp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     - Python 3.8+
-    - `GeoCAT-datafiles <https://github.com/NCAR/geocat-datafiles>`_  (For tests only)
-    - `GeoCAT-f2py <https://github.com/NCAR/geocat-f2py>`_
-    - `cf_xarray <https://cf-xarray.readthedocs.io/en/latest/>`_
-    - `cftime <https://unidata.github.io/cftime/>`_
-    - `eofs <https://ajdawson.github.io/eofs/latest/index.html>`_
-    - `dask <https://dask.org/>`_
-    - `distributed <https://distributed.readthedocs.io/en/latest/>`_
-    - `netcdf4 <https://unidata.github.io/netcdf4-python/>`_  (For tests only)
-    - `numpy <https://numpy.org/doc/stable/>`_
-    - `pytest <https://docs.pytest.org/en/stable/>`_  (For tests only)
-    - `xarray <http://xarray.pydata.org/en/stable/>`_
+    - `GeoCAT-datafiles <https://github.com/NCAR/geocat-datafiles>`__  (For tests only)
+    - `GeoCAT-f2py <https://github.com/NCAR/geocat-f2py>`__
+    - `cf_xarray <https://cf-xarray.readthedocs.io/en/latest/>`__
+    - `cftime <https://unidata.github.io/cftime/>`__
+    - `eofs <https://ajdawson.github.io/eofs/latest/index.html>`__
+    - `dask <https://dask.org/>`__
+    - `distributed <https://distributed.readthedocs.io/en/latest/>`__
+    - `netcdf4 <https://unidata.github.io/netcdf4-python/>`__  (For tests only)
+    - `numpy <https://numpy.org/doc/stable/>`__
+    - `pytest <https://docs.pytest.org/en/stable/>`__  (For tests only)
+    - `xarray <http://xarray.pydata.org/en/stable/>`__
 
-Note: `GeoCAT-f2py <https://github.com/NCAR/geocat-f2py>`_ dependency will automatically
+Note: `GeoCAT-f2py <https://github.com/NCAR/geocat-f2py>`__ dependency will automatically
 install further dependencies for compiled language implementation.
 
 
@@ -150,7 +150,7 @@ Testing a GeoCAT-comp build
 
 A GeoCAT-comp build can be tested from the root directory of the source code
 repository using the following command (Explicit installation of the
-`pytest <https://docs.pytest.org/en/stable/>`_ package may be required, please
+`pytest <https://docs.pytest.org/en/stable/>`__ package may be required, please
 see above)::
 
     pytest test

@@ -46,7 +46,7 @@ def max_daylight(
     See Also
     --------
     Related NCL Functions:
-    `daylight_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/daylight_fao56.shtml>`_
+    `daylight_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/daylight_fao56.shtml>`__
     """
 
     x_out = False
@@ -146,7 +146,7 @@ def psychrometric_constant(
     See Also
     --------
     Related NCL Functions:
-    `psychro_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/psychro_fao56.shtml>`_
+    `psychro_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/psychro_fao56.shtml>`__
     """
 
     # Constant
@@ -215,11 +215,11 @@ def saturation_vapor_pressure(
     See Also
     --------
     Related GeoCAT Functions:
-    `actual_saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.actual_saturation_vapor_pressure.html#geocat.comp.crop.actual_saturation_vapor_pressure>`_,
-    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure_slope.html#geocat.comp.crop.saturation_vapor_pressure_slope>`_
+    `actual_saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.actual_saturation_vapor_pressure.html#geocat.comp.crop.actual_saturation_vapor_pressure>`__,
+    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure_slope.html#geocat.comp.crop.saturation_vapor_pressure_slope>`__
 
     Related NCL Functions:
-    `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>`_
+    `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>`__
     """
 
     in_type = type(temperature)
@@ -291,11 +291,11 @@ def actual_saturation_vapor_pressure(
     See Also
     --------
     Related GeoCAT Functions:
-    `saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure.html#geocat.comp.crop.saturation_vapor_pressure>`_,
-    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure_slope.html#geocat.comp.crop.saturation_vapor_pressure_slope>`_
+    `saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure.html#geocat.comp.crop.saturation_vapor_pressure>`__,
+    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure_slope.html#geocat.comp.crop.saturation_vapor_pressure_slope>`__
 
     Related NCL Functions:
-    `satvpr_tdew_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_tdew_fao56.shtml>`_
+    `satvpr_tdew_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_tdew_fao56.shtml>`__
     """
 
     in_type = type(tdew)
@@ -349,11 +349,11 @@ def saturation_vapor_pressure_slope(
     See Also
     --------
     Related GeoCAT Functions:
-    `actual_saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.actual_saturation_vapor_pressure.html#geocat.comp.crop.actual_saturation_vapor_pressure>`_,
-    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure_slope.html#geocat.comp.crop.saturation_vapor_pressure_slope>`_
+    `actual_saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.actual_saturation_vapor_pressure.html#geocat.comp.crop.actual_saturation_vapor_pressure>`__,
+    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure_slope.html#geocat.comp.crop.saturation_vapor_pressure_slope>`__
 
     Related NCL Functions:
-    `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>`_
+    `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>`__
     """
 
     in_type = type(temperature)

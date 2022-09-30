@@ -27,7 +27,7 @@
 GeoCAT-comp Documentation
 =========================
 
-GeoCAT-comp is computational component of the `GeoCAT <https://geocat.ucar.edu/>`_
+GeoCAT-comp is computational component of the `GeoCAT <https://geocat.ucar.edu/>`__
 project. GeoCAT-comp provides implementations of computational functions for operating
 on geosciences data. Many of these functions originated in NCL and were translated into
 Python with the help of GeoCAT-comp; however, developers are welcome to come up with

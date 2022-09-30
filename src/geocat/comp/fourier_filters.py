@@ -54,7 +54,7 @@ def fourier_filter(
 
     Examples
     --------
-    Example 1: The tidal cycle needs to be removed from a 10/hr `oceanic dataset <https://tidesandcurrents.noaa.gov/waterlevels.html?id=9415020&units=standard&bdate=20210101&edate=20210131&timezone=GMT&datum=MLLW&interval=6&action=data>`_
+    Example 1: The tidal cycle needs to be removed from a 10/hr `oceanic dataset <https://tidesandcurrents.noaa.gov/waterlevels.html?id=9415020&units=standard&bdate=20210101&edate=20210131&timezone=GMT&datum=MLLW&interval=6&action=data>`__
 
 
     >>> from geocat.comp import fourier_filter
