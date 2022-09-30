@@ -330,7 +330,7 @@ def update_gallery(app: Sphinx):
 
 # only execute notebooks with unexecuted cells
 # should be "auto" by default
-nb_execution_mode = "auto"
+nb_execution_mode = "off"
 
 
 # Allow for changes to be made to the css in the theme_overrides file
