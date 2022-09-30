@@ -17,12 +17,12 @@ def rad_lat_wgs84(lat: SupportedTypes,):
     .. math:
         :nowrap:
         radius = \sqrt{a^2 \cdot cos(lat)^2+b^2 \cdot sin(lat)^2}
-    This returns the radius of the elipsoid for a given latitude
+    This returns the radius of the ellipsoid for a given latitude
     This is accurate to within floating point error.
 
     note: This doesn't need to be a taylor series, though the taylor series
     is faster
-    and a needed step for the arc_lat_wgs84 function to avoid the eliptic
+    and a needed step for the arc_lat_wgs84 function to avoid the elliptic
     integral
     """
     return \
@@ -65,7 +65,7 @@ def arc_lat_wgs84(lat: SupportedTypes,):
     This returns the distance from the equator to a given latitude
     This is accurate to within floating point error.
 
-    note: This needs to be a taylor series to avoid the eliptic integral
+    note: This needs to be a taylor series to avoid the elliptic integral
     """
     return \
         2.87086392358719396475614e-110 * lat ** 49 - \
@@ -111,7 +111,7 @@ def arc_lon_wgs84(
 
     note: This doesn't need to be a taylor series, though the taylor series
     is faster
-    and a needed step for the arc_lat_wgs84 function to avoid the eliptic
+    and a needed step for the arc_lat_wgs84 function to avoid the elliptic
     integral
     """
     return rad_lat_wgs84(lat) * np.cos(lat * d2r) * lon * d2r
@@ -205,7 +205,7 @@ def gradient(data: xr.DataArray) -> [xr.DataArray]:
 #     wrap_longitude: bool = True,
 # ):
 #     # remove data and coords
-#     # then check data dimensions to slice as needed for mutidimensional arrays
+#     # then check data dimensions to slice as needed for multidimensional arrays
 #     # for now I think I run each slice and reassemble again after since it
 #     #   cannot be easily done with a kernel convolution
 #     # reassemble the xarray and return
