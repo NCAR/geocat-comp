@@ -328,6 +328,11 @@ def update_gallery(app: Sphinx):
     LOGGER.info("gallery created")
 
 
+# only execute notebooks with unexecuted cells
+# should be "auto" by default
+nb_execution_mode = "auto"
+
+
 # Allow for changes to be made to the css in the theme_overrides file
 def setup(app):
     app.add_css_file('theme_overrides.css')
