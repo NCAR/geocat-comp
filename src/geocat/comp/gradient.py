@@ -11,7 +11,7 @@ d2r = 1.74532925199432957692369e-02  # degrees to radians conversion factor
 
 
 def rad_lat_wgs84(lat: SupportedTypes,):
-    """The radius calculation for the wgs84 ellipsoid at a latitude uses a
+    r"""The radius calculation for the wgs84 ellipsoid at a latitude uses a
     taylor series from.
 
     .. math:
@@ -54,7 +54,7 @@ def rad_lat_wgs84(lat: SupportedTypes,):
 
 
 def arc_lat_wgs84(lat: SupportedTypes,):
-    """The arc length calculation for the wgs84 ellipsoid at a latitude uses a
+    r"""The arc length calculation for the wgs84 ellipsoid at a latitude uses a
     taylor series to obtain the value of the elliptic integral.
 
     .. math:
@@ -118,7 +118,7 @@ def arc_lon_wgs84(
 
 
 def gradient(data: xr.DataArray) -> [xr.DataArray]:
-    """Filter a dataset by frequency. This function allowes for low_pass, high_
+    r"""Filter a dataset by frequency. This function allowes for low_pass, high_
     pass, band_pass, or band_block filtering of the data's freqency
     representation.
 
