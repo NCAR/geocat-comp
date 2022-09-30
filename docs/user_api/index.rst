@@ -48,6 +48,12 @@ GeoCAT-comp native routines
 
    geocat.comp.gradient.gradient
 
+   geocat.comp.gradient.arc_lat_wgs84
+
+   geocat.comp.gradient.arc_lon_wgs84
+
+   geocat.comp.gradient.rad_lon_wgs84
+
    geocat.comp.interpolation.interp_hybrid_to_pressure
 
    geocat.comp.interpolation.interp_sigma_to_hybrid
