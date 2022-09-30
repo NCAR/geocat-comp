@@ -5,7 +5,10 @@ dependencies:
     - python=3.9
     - pre_commit
     - geocat-f2py
-    - xskillscore
+    - geocat-datafiles
+    - geocat-viz
+    - xarray
+    - netcdf4
     - pip
     - ipykernel
     - ipython
