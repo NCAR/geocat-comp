@@ -203,7 +203,7 @@ def _relhum(
 
     Returns
     -------
-    rh :class:`numpy.ndarray)
+    rh :class:`numpy.ndarray`
         Relative humidity. Will have the same dimensions as temperature
 
 
