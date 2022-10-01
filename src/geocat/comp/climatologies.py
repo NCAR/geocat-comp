@@ -166,15 +166,11 @@ def climatology(
     >>> ts
     <xarray.DataArray (time: 24, lat: 1, lon: 1)>
     array([[[ 0]],
-
         [[ 1]],
-
         [[ 2]],
-    ...
+    <BLANKLINE>
         [[21]],
-
         [[22]],
-
         [[23]]])
     Coordinates:
     * time     (time) datetime64[ns] 2000-01-31 2000-02-29 ... 2001-12-31
@@ -182,7 +178,6 @@ def climatology(
     >>> geocat.comp.climatology(ts, 'year')
     <xarray.DataArray (year: 2, lat: 1, lon: 1)>
     array([[[ 5.5]],
-
         [[17.5]]])
     Coordinates:
     * year     (year) int64 2000 2001
@@ -190,16 +185,12 @@ def climatology(
     >>> geocat.comp.climatology(ts, 'season')
     <xarray.DataArray (season: 4, lat: 1, lon: 1)>
     array([[[10.]],
-
         [[12.]],
-
         [[ 9.]],
-
         [[15.]]])
     Coordinates:
     * season   (season) object 'DJF' 'JJA' 'MAM' 'SON'
     Dimensions without coordinates: lat, lon
-
 
     See Also
     --------
@@ -263,17 +254,11 @@ def anomaly(
     >>> ts
     <xarray.DataArray (time: 24, lat: 1, lon: 1)>
     array([[[ 0]],
-
         [[ 1]],
-
         [[ 2]],
-
-    ...
-
+    <BLANKLINE>
         [[21]],
-
         [[22]],
-
         [[23]]])
     Coordinates:
     * time     (time) datetime64[ns] 2000-01-31 2000-02-29 ... 2001-12-31
@@ -281,23 +266,16 @@ def anomaly(
     >>> geocat.comp.anomaly(ts, 'season')
     <xarray.DataArray (time: 24, lat: 1, lon: 1)>
     array([[[-10.]],
-
         [[ -9.]],
-
         [[ -7.]],
-
-    ...
-
+    <BLANKLINE>
         [[  6.]],
-
         [[  7.]],
-
         [[ 13.]]])
     Coordinates:
     * time     (time) datetime64[ns] 2000-01-31 2000-02-29 ... 2001-12-31
         season   (time) <U3 'DJF' 'DJF' 'MAM' 'MAM' ... 'SON' 'SON' 'SON' 'DJF'
     Dimensions without coordinates: lat, lon
-
 
     See Also
     --------

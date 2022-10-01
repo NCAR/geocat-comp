@@ -14,8 +14,8 @@ def fourier_filter(
         high_pass: bool = False,
         band_pass: bool = False,
         band_block: bool = False) -> typing.Union[np.ndarray, xr.DataArray]:
-    """Filter a dataset by frequency. This function allowes for low_pass, high_
-    pass, band_pass, or band_block filtering of the data's freqency
+    """Filter a dataset by frequency. This function allowes for low_pass,
+    high_pass, band_pass, or band_block filtering of the data's freqency
     representation.
 
     Parameters
