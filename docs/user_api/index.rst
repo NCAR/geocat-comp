@@ -10,7 +10,7 @@ Climatologies
 .. currentmodule:: geocat.comp.climatologies
 .. autosummary::
    :nosignatures:
-   :toctree: ../_build/user_generated/
+   :toctree: ./generated/
 
    anomaly
    calendar_average
@@ -23,7 +23,7 @@ Crop
 .. currentmodule:: geocat.comp.crop
 .. autosummary::
    :nosignatures:
-   :toctree: ../_build/user_generated/
+   :toctree: ./generated/
 
    actual_saturation_vapor_pressure
    max_daylight
@@ -36,7 +36,7 @@ EOF Functions
 .. currentmodule:: geocat.comp.eofunc
 .. autosummary::
    :nosignatures:
-   :toctree: ../_build/user_generated/
+   :toctree: ./generated/
 
    eofunc_eofs
    eofunc_pcs
@@ -46,7 +46,7 @@ Fourier Filters
 .. currentmodule:: geocat.comp.fourier_filters
 .. autosummary::
    :nosignatures:
-   :toctree: ../_build/user_generated/
+   :toctree: ./generated/
 
    fourier_band_block
    fourier_band_pass
@@ -60,7 +60,7 @@ Iterpolation
 .. currentmodule:: geocat.comp.interpolation
 .. autosummary::
    :nosignatures:
-   :toctree: ../_build/user_generated/
+   :toctree: ./generated/
 
    interp_hybrid_to_pressure
    interp_sigma_to_hybrid
@@ -71,7 +71,7 @@ Meteorology
 .. currentmodule:: geocat.comp.meteorology
 .. autosummary::
    :nosignatures:
-   :toctree: ../_build/user_generated/
+   :toctree: ./generated/
 
    dewtemp
    heat_index
@@ -84,7 +84,7 @@ Polynomial
 .. currentmodule:: geocat.comp.polynomial
 .. autosummary::
    :nosignatures:
-   :toctree: ../_build/user_generated/
+   :toctree: ./generated/
 
    detrend
    ndpolyfit
@@ -95,7 +95,7 @@ Skew-T Plot Parameters
 .. currentmodule:: geocat.comp.skewt_params
 .. autosummary::
    :nosignatures:
-   :toctree: ../_build/user_generated/
+   :toctree: ./generated/
 
    get_skewt_vars
    showalter_index
@@ -105,7 +105,7 @@ Spherical Harmonics
 .. currentmodule:: geocat.comp.spherical
 .. autosummary::
    :nosignatures:
-   :toctree: ../_build/user_generated/
+   :toctree: ./generated/
 
    decomposition
    recomposition
@@ -116,7 +116,7 @@ Statistics
 .. currentmodule:: geocat.comp.stats
 .. autosummary::
    :nosignatures:
-   :toctree: ../_build/user_generated/
+   :toctree: ./generated/
 
    pearson_r
 
@@ -126,7 +126,7 @@ GeoCAT-comp routines from GeoCAT-f2py
 .. currentmodule:: geocat.comp
 .. autosummary::
    :nosignatures:
-   :toctree: ../_build/user_generated/
+   :toctree: ./generated/
 
    dpres_plevel
    grid_to_triple

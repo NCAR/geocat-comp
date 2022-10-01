@@ -332,9 +332,6 @@ def update_gallery(app: Sphinx):
 # set to "auto" for default behavior
 nb_execution_mode = "off"
 
-# turn off duplicate generation of toctree entries?
-numpydoc_show_class_members = False
-
 # generate warning for all invalid links
 nitpicky = True
 
