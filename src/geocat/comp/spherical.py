@@ -36,12 +36,12 @@ def decomposition(
         2-dimensional array containing the theta (latitude in radians) values for each datapoint in data.
         Phi is zero at the top of the sphere and pi at the bottom, phi = (lat_degrees-90)*(-1)*pi/180
 
-    max_harm: :class: `int`, optional
+    max_harm: int, optional
         The maximum harmonic value for both m and n.
         The total of harmonics calculated is (max_harm+1)*(max_harm+2)/2
         Defaults to 23, for 300 total harmonics.
 
-    chunk_size: :class: `int`, optional
+    chunk_size: int, optional
         The size of the each edge of the dask chunks if using xarray.DataArray inputs.
         Some arrays will be 2d, and others 1d, and the final calculation operates on a 3d array.
         thus the chunks used in the largest calculation scale at chunk_size^3
@@ -130,13 +130,13 @@ def recomposition(
         2-dimensional array containing the theta (latitude in radians) values for each datapoint in data.
         Phi is zero at the top of the sphere and pi at the bottom, phi = (lat_degrees-90)*(-1)*pi/180
 
-    max_harm: :class: `int`, optional
+    max_harm: int, optional
         The maximum harmonic value for both m and n.
         The total of harmonics calculated is (max_harm+1)*(max_harm+2)/2
         The number of total harmonics must equal the number of harmoncs in the input data.
         Defaults to 23, for 300 total harmonics.
 
-    chunk_size: :class: `int`, optional
+    chunk_size: int, optional
         The size of the each edge of the dask chunks if using xarray.DataArray inputs.
         Some arrays will be 2d, and others 1d, and the final calculation operates on a 3d array.
         thus the chunks used in the largest calculation scale at chunk_size^3
@@ -189,7 +189,7 @@ def scale_voronoi(
     phi: SupportedTypes,
     chunk_size: int = 'auto',
 ) -> SupportedTypes:
-    """Calculate the area weighting for dataset.
+    r"""Calculate the area weighting for dataset.
 
     Parameters
     ----------
@@ -198,12 +198,12 @@ def scale_voronoi(
 
     phi : ndarray, :class:`xarray.DataArray`
         2-dimensional array containing the theta (latitude in radians) values for each datapoint in data.
-        Phi is zero at the top of the sphere and pi at the bottom, phi = (lat_degrees-90)*(-1)*pi/180
+        Phi is zero at the top of the sphere and pi at the bottom, :math`\phi = (lat_degrees-90)*(-1)*\pi/180`
 
-    chunk_size: :class: `int`, optional
+    chunk_size: int, optional
         The size of the each edge of the dask chunks if using xarray.DataArray inputs.
         Some arrays will be 2d, and others 1d, and the final calculation operates on a 3d array.
-        thus the chunks used in the largest calculation scale at chunk_size^3
+        thus the chunks used in the largest calculation scale at chunk_size:math:`^3`
         A chunk size of 256 is recommended. Defaults to 'auto'
 
     Returns
