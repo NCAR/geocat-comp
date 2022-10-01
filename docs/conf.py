@@ -110,7 +110,8 @@ napoleon_type_aliases = {
     "array_like": ":term:`array_like`",
     "array-like": ":term:`array-like <array_like>`",
     "ndarray": "numpy.ndarray",
-    "numpy.nan": "np.nan",
+    "numpy.nan": "~numpy.nan",
+    "np.nan": "~numpy.nan",
 }
 
 autosummary_generate = True
@@ -365,7 +366,7 @@ def update_gallery(app: Sphinx):
 nb_execution_mode = "off"
 
 # generate warning for all invalid links
-nitpicky = True
+# nitpicky = True
 
 
 # Allow for changes to be made to the css in the theme_overrides file
