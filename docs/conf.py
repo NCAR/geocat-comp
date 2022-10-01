@@ -76,10 +76,41 @@ intersphinx_mapping = {
     'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
     'xarray': ('http://xarray.pydata.org/en/stable/', None),
     'pint': ('https://pint.readthedocs.io/en/stable/', None),
+    'cftime': ('https://unidata.github.io/cftime/', None),
 }
 
+# napoleon settings
 napoleon_use_admonition_for_examples = True
 napoleon_include_special_with_doc = True
+napoleon_google_docstring = False
+napoleon_numpy_docstring = True
+napoleon_use_param = False
+napoleon_use_rtype = False
+napoleon_preprocess_types = True
+napoleon_type_aliases = {
+    # general terms
+    "sequence": ":term:`sequence`",
+    "iterable": ":term:`iterable`",
+    "callable": ":py:func:`callable`",
+    "array": ":term:`array`",
+    "dict_like": ":term:`dict-like <mapping>`",
+    "dict-like": ":term:`dict-like <mapping>`",
+    "path-like": ":term:`path-like <path-like object>`",
+    "mapping": ":term:`mapping`",
+    "file-like": ":term:`file-like <file-like object>`",
+    "int": ":class:`int`",
+    "float": ":class:`float`",
+    "str": ":class:`str`",
+    "bool": ":class:`bool`",
+    "tuple": ":class:`tuple`",
+    "list": ":class:`list`",
+    "dict": ":class:`dict`",
+    "set": ":class:`set`",
+    # numpy terms
+    "array_like": ":term:`array_like`",
+    "array-like": ":term:`array-like <array_like>`",
+    "ndarray": "~numpy.ndarray",
+}
 
 autosummary_generate = True
 
