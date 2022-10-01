@@ -12,8 +12,8 @@ def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
     Showalter Index derived from `Gallway 1956 <https://journals.ametsoc.org/do
     wnloadpdf/journals/bams/37/10/1520-0477-37_10_528.xml>`__.
 
-    :math:`shox = T500 - Tp500`
-    where:
+    :math:`shox = T500 - Tp500` where:
+
     - T500 is the measured temperature at 500 hPa
     - Tp500 is the temperature of the lifted parcel at 500 hPa
 
