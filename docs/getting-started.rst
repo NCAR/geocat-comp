@@ -40,6 +40,6 @@ examples, and info for where to get additional help.
    :hidden:
    :caption: Getting Started
 
-   Overview getting_started/overview.rst
-   Quick Installation getting_started/quick-install.rst
-   Basic Examples getting-started/examples.rst
+   Overview <getting_started/overview.rst>
+   Quick Installation <getting_started/quick-install.rst>
+   Basic Examples <getting_started/mini-examples.rst>
