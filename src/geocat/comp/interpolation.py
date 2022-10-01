@@ -433,7 +433,7 @@ def interp_multidim(
         the globe
         (0, 1.5, 3, ..., 354, 355.5) Default is false
 
-    missing_val : :class:'np.number', optional
+    missing_val : :class:`np.number`, optional
         Provide a number to represent missing data. Alternative to using np.nan
 
     method: str, optional
@@ -475,10 +475,11 @@ def interp_multidim(
 
     See Also
     --------
-    https://docs.xarray.dev/en/stable/generated/xarray.DataArray.interp.html
-    https://scitools.org.uk/cartopy/docs/latest/reference/generated/cartopy
-    .util.add_cyclic_point.html
-    https://www.ncl.ucar.edu/Document/Functions/Built-in/linint2.shtml
+    `xarray.DataArray.interp <https://docs.xarray.dev/en/stable/generated/xarray.DataArray.interp.html>`__
+
+    `cartopy.util.add_cyclic_point <https://scitools.org.uk/cartopy/docs/latest/reference/generated/cartopy.util.add_cyclic_point.html>`__
+
+    `NCL linint2 <https://www.ncl.ucar.edu/Document/Functions/Built-in/linint2.shtml>`__
     """
     # check for xarray/numpy
     if not isinstance(data_in, xr.DataArray):
