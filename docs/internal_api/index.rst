@@ -3,7 +3,7 @@ Internal API
 
 .. autosummary::
    :nosignatures:
-   :toctree: ./generated/
+   :toctree: ../_build/internal_generated/
 
    geocat.comp.climatologies._contains_datetime_like_objects
 
