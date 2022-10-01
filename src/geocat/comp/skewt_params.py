@@ -9,9 +9,10 @@ from metpy.units import units
 def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
                     dewpt: pint.Quantity) -> pint.Quantity:
     """Calculate Showalter Index from pressure temperature and 850 hPa lcl.
-    Showalter Index derived from [Galway1956]_:
+    Showalter Index derived from `Gallway 1956 <https://journals.ametsoc.org/do
+    wnloadpdf/journals/bams/37/10/1520-0477-37_10_528.xml>`__.
 
-    shox = T500 - Tp500
+    :math:`shox = T500 - Tp500`
     where:
     - T500 is the measured temperature at 500 hPa
     - Tp500 is the temperature of the lifted parcel at 500 hPa
