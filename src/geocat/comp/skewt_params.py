@@ -59,7 +59,7 @@ def get_skewt_vars(p: pint.Quantity, tc: pint.Quantity, tdc: pint.Quantity,
 
     Returns
     -------
-    joined : :class:`str`
+    joined : str
         A string element with the format "Plcl=<value> Tlcl[C]=<value> Shox=<value> Pwat[cm]=<value> Cape[J]=<value>" where:
 
         - Cape  -  Convective Available Potential Energy [J]

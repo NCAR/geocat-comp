@@ -80,19 +80,19 @@ def _calculate_center_of_time_bounds(
         The data on which to operate. It must be uniformly spaced in the time
         dimension.
 
-    time_dim : :class:`str`
+    time_dim : str
         Name of the time coordinate for `xarray` objects
 
-    freq : :class:`str`
+    freq : str
         Alias for the frequency of the adjusted timestamps (i.e. daily, monthly)
 
-    calendar : :class:`str`
+    calendar : str
         Alias for the calendar the time stamps are in (i.e. gregorian, no leap years)
 
-    start : :class:`str`, :class:`cftime.datetime`
+    start : str, :class:`cftime.datetime`
         The starting date of the data. The string representation must be in ISO format
 
-    end : :class:`str`, :class:`cftime.datetime`
+    end : str, :class:`cftime.datetime`
         The ending date of the data. The string representation must be in ISO format
 
     Returns
@@ -138,7 +138,7 @@ def climatology(
     dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
         The data on which to operate
 
-    freq : :class:`str`
+    freq : str
         Climatology frequency alias. Accepted alias:
 
             - 'day': for daily climatologies
@@ -146,7 +146,7 @@ def climatology(
             - 'year': for annual climatologies
             - 'season': for seasonal climatologies
 
-    time_coord_name : :class:`str`, Optional
+    time_coord_name : str, optional
          Name for time coordinate to use. Defaults to None and infers the name
          from the data.
 
@@ -226,7 +226,7 @@ def anomaly(
     dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
         The data on which to operate
 
-    freq : :class:`str`
+    freq : str
         Anomaly frequency alias. Accepted alias:
 
             - 'day': for daily anomalies
@@ -234,7 +234,7 @@ def anomaly(
             - 'year': for annual anomalies
             - 'season': for seasonal anomalies
 
-    time_coord_name : :class:`str`
+    time_coord_name : str
          Name for time coordinate to use. Defaults to None and infers the name
          from the data.
 
@@ -314,7 +314,7 @@ def month_to_season(
     dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
         The data on which to operate
 
-    season : :class:`str`
+    season : str
         A string representing the season to calculate: e.g., "JFM", "JJA".
         Valid values are:
 
@@ -331,7 +331,7 @@ def month_to_season(
          - OND {October, November, Decmber}
          - NDJ {November, Decmber, January}
 
-    time_coord_name : :class:`str`, Optional
+    time_coord_name : str, optional
         Name for time coordinate to use. Defaults to None and infers the name
         from the data.
 
@@ -415,7 +415,7 @@ def calendar_average(
         The data on which to operate. It must be uniformly spaced in the time
         dimension.
 
-    freq : :class:`str`
+    freq : str
         Frequency alias. Accepted alias:
 
             - 'hour': for hourly averages
@@ -424,7 +424,7 @@ def calendar_average(
             - 'season': for meteorological seasonal averages (DJF, MAM, JJA, and SON)
             - 'year': for yearly averages
 
-    time_dim : :class:`str`, Optional
+    time_dim : str, optional
         Name of the time coordinate for `xarray` objects. Defaults to None and
         infers the name from the data.
 
@@ -515,7 +515,7 @@ def climatology_average(
         The data on which to operate. It must be uniformly spaced in the time
         dimension.
 
-    freq : :class:`str`
+    freq : str
         Frequency alias. Accepted alias:
 
             - 'hour': for hourly averages
@@ -523,7 +523,7 @@ def climatology_average(
             - 'month': for monthly averages
             - 'season': for meteorological seasonal averages (DJF, MAM, JJA, and SON)
 
-    time_dim : :class:`str`, Optional
+    time_dim : str, optional
         Name of the time coordinate for `xarray` objects. Defaults to None and
         infers the name from the data.
 

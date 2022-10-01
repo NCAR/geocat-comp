@@ -100,7 +100,7 @@ napoleon_type_aliases = {
     "file-like": ":term:`file-like <file-like object>`",
     "int": ":class:`int`",
     "float": ":class:`float`",
-    "str": ":class:`str`",
+    "str": "str",
     "bool": ":class:`bool`",
     "tuple": ":class:`tuple`",
     "list": ":class:`list`",
@@ -109,7 +109,8 @@ napoleon_type_aliases = {
     # numpy terms
     "array_like": ":term:`array_like`",
     "array-like": ":term:`array-like <array_like>`",
-    "ndarray": "~numpy.ndarray",
+    "ndarray": "numpy.ndarray",
+    "numpy.nan": "np.nan",
 }
 
 autosummary_generate = True
