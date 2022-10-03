@@ -11,7 +11,7 @@ if "--cov" in str(sys.argv):
 elif "-v" in str(sys.argv):
     from src.geocat.comp import gradient
 else:
-    pass
+    from geocat.comp import gradient
 
 
 class Test_Gradient(unittest.TestCase):
