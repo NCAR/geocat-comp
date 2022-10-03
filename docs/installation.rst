@@ -5,8 +5,8 @@ This installation guide includes only the GeoCAT-comp installation and build ins
 Please refer to `GeoCAT Contributor's Guide <https://geocat.ucar.edu/pages/contributing.html>`_ for installation of
 the whole GeoCAT project.
 
-Installing GeoCAT-comp via Conda
---------------------------------
+Installing GeoCAT-comp via Conda in a New Environment
+-----------------------------------------------------
 
 The easiest way to install GeoCAT-comp is using
 `Conda <http://conda.pydata.org/docs/>`_::
@@ -46,6 +46,46 @@ If you are interested in learning more about how Conda environments work, please
 visit the `managing environments <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html>`_
 page of the Conda documentation.
 
+Installing GeoCAT-comp in a Pre-existing Conda Environment
+----------------------------------------------------------
+
+If you started a project and later decided to use GeoCAT-comp, you will need to install it in your pre-existing environment.
+
+1.  Make sure your conda is up to date by running this command from the
+    terminal::
+
+    conda update conda
+
+2.  Activate the conda environment you want to add GeoCAT to. In this example, the environment is called :code:`foo`::
+
+    conda activate foo
+
+3. Install geocat-comp::
+
+    conda install -c ncar -c conda-forge geocat-comp
+
+Updating GeoCAT-comp via Conda
+-------------------------------
+
+It is important to keep your version of :code:`geocat-comp` up to date. This can be done as follows:
+
+1.  Make sure your Conda is up to date by running this command from the terminal::
+
+    conda update conda
+
+2.  Activate the conda environment you want to update. In this example, the environment is called :code:`geocat`::
+
+    conda activate geocat
+
+3. Update :code:`geocat-comp`::
+
+    conda update geocat-comp
+
+
+Installing GeoCAT-comp via PyPi
+-------------------------------
+GeoCAT-comp is distributed also in PyPI; therefore, the above Conda installation instructions should, in theory,
+apply to PyPI installation through using :code:`pip install` commands instead of :code:`conda install` wherever they occur.
 
 Building GeoCAT-comp from source
 --------------------------------
@@ -58,7 +98,7 @@ installed.
 Required dependencies for building and testing GeoCAT-comp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    - Python 3.7+
+    - Python 3.8+
     - `GeoCAT-datafiles <https://github.com/NCAR/geocat-datafiles>`_  (For tests only)
     - `GeoCAT-f2py <https://github.com/NCAR/geocat-f2py>`_
     - `cf_xarray <https://cf-xarray.readthedocs.io/en/latest/>`_

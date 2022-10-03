@@ -58,6 +58,8 @@ GeoCAT-comp native routines
 
    geocat.comp.interpolation.interp_sigma_to_hybrid
 
+   geocat.comp.interpolation.interp_multidim
+
    geocat.comp.meteorology.dewtemp
 
    geocat.comp.meteorology.heat_index
@@ -83,6 +85,8 @@ GeoCAT-comp native routines
    geocat.comp.spherical.recomposition
 
    geocat.comp.spherical.scale_voronoi
+
+   geocat.comp.stats.pearson_r
 
 
 GeoCAT-comp routines from GeoCAT-f2py

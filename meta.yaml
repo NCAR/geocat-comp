@@ -1,21 +1,19 @@
 {% set name = "geocat-comp" %}
-{% set version = "2022.03.0" %}
+{% set version = "2022.08.0" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 build:
   noarch: python
   number: 0
-  skip: true  # [py<38 or win]
+  script: {{ PYTHON }} -m pip install --no-deps --ignore-installed -vv .
 
 source:
-  # url: https://github.com/NCAR/geocat-comp/archive/v{{ version }}.tar.gz   # For building from a specific tag's tarball
-  # sha256: b50e2cf8ecf693ce13260c6f1fa587e71915d8e794ca5aeb3ca1682d2e5f314c
   git_tag: v{{ version }}   # For building from a specific tag
-  # git_rev: main # For building from main branch for debugging purposes
-  git_url: https://github.com/NCAR/geocat-comp.git
+  # git_rev: main # For building from branch for debugging purposes
+  git_url: https://github.com/NCAR/{{ name }}.git
 
 requirements:
   build:
@@ -58,12 +56,12 @@ about:
   home: https://geocat.ucar.edu/
   summary: GeoCAT-comp is a Python package containing a subset of NCL (NCAR Command Language) computational routines.
   dev_url: https://github.com/NCAR/geocat-f2py
-  license: Apache 2.0
+  license: Apache-2.0
   license_file: LICENSE
 
 extra:
   recipe-maintainers:
-    - A. Kootz # https://github.com/pilotchute
-    - O. Eroglu # https://github.com/erogluorhan
-    - A. Zacharias # https://github.com/anissa111
-    - M. Sizemore # https://github.com/michaelavs
+    - pilotchute # A. Kootz https://github.com/pilotchute
+    - erogluorhan # O. Eroglu https://github.com/erogluorhan
+    - anissa111 # A. Zacharias https://github.com/anissa111
+    - michaelavs # M. Sizemore https://github.com/michaelavs
