@@ -25,7 +25,7 @@ jobs:
         python-version: [ "3.8", "3.9", "3.10" ]
     steps:
       - name: Cancel previous runs
-        uses: styfle/cancel-workflow-action@0.9.1
+        uses: styfle/cancel-workflow-action@0.10.0
         with:
           access_token: ${{ github.token }}
       - name: checkout
@@ -54,7 +54,7 @@ jobs:
           python -m pytest test -v --cov=./src/geocat/comp --cov-report=xml
 
       - name: Upload code coverage to Codecov
-        uses: codecov/codecov-action@v3.0.0
+        uses: codecov/codecov-action@v3.1.0
         with:
           file: ./coverage.xml
           flags: unittests

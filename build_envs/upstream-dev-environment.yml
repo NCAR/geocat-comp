@@ -16,6 +16,7 @@ dependencies:
   - pytest  # for tests
   - pytest-cov  # for tests
   - pip
+  - xskillscore
   - pip:
     - git+https://github.com/pydata/xarray.git
     - git+https://github.com/xarray-contrib/cf-xarray.git
