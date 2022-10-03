@@ -26,11 +26,11 @@ class Test_Gradient(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.test_data = xr.load_dataset(
-            'gradient_test_data.nc').to_array().squeeze()
+            'test/gradient_test_data.nc').to_array().squeeze()
         cls.test_results_lon = xr.load_dataset(
-            'gradient_test_results_longitude.nc').to_array().squeeze()
+            'test/gradient_test_results_longitude.nc').to_array().squeeze()
         cls.test_results_lat = xr.load_dataset(
-            'gradient_test_results_latitude.nc').to_array().squeeze()
+            'test/gradient_test_results_latitude.nc').to_array().squeeze()
         cls.results = gradient(cls.test_data)
         cls.results_lon = cls.results[0]
         cls.results_lat = cls.results[1]
