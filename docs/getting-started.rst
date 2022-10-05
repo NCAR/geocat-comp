@@ -5,8 +5,8 @@
 Getting Started
 ===============
 This is a quick guide to getting set up and familiar with GeoCAT-comp. You'll get an overview of what geocat-comp is,
-why we made it, and what functionalities it provides. You'll also get quick installation instructions, some simple
-examples, and info for where to get additional help.
+why we made it, and what functionalities it provides. You'll also get quick installation instructions and some simple
+examples to get you started.
 
 .. grid:: 1 1 2 3
     :gutter: 2
