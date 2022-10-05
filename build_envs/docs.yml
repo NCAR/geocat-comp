@@ -2,7 +2,7 @@ name: gc-docs
 channels:
     - conda-forge
 dependencies:
-    - python=3.9
+    - python>=3.8
     - pre_commit
     - geocat-f2py
     - geocat-datafiles
