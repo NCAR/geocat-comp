@@ -40,7 +40,7 @@ in an existing environment with the following commands::
 Please note that the use of the ``conda-forge`` channel is essential to guarantee
 compatibility between dependency packages.
 
-Also, note that the Conda package manager automatically installs all ``required``
+Also, note that the Conda package manager automatically installs all required
 dependencies of GeoCAT-comp, meaning it is not necessary to explicitly install
 Python, NumPy, Xarray, or Dask when creating an envionment and installing GeoCAT-comp.
 Although packages like Matplotlib are often used with GeoCAT-comp, they are considered
