@@ -24,7 +24,7 @@ specific computational tools without needing extensive working knowledge of `Pan
 
 There are syntactical benefits to using the Pangeo stack, one of which is indexing by label. NCL requires the
 dimensions of input data to be in a particular order. This results in functions with rigid data format requirements and
-multiple versions of the same function for different dimension orders. By using `xarray <https://docs.xarray.dev/>`__,
+multiple versions of the same function for different dimension orders. By using `Xarray <https://docs.xarray.dev/>`__,
 GeoCAT-comp avoids those data format requirements. The xarray data structures allow users to
 `refer to dimensions by label <https://docs.xarray.dev/en/stable/getting-started-guide/why-xarray.html#what-labels-enable>`__
 rather than index, thereby removing the need for multiple versions of the same function. This makes it easier for the
