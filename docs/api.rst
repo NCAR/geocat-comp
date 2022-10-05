@@ -17,7 +17,7 @@ public and internal API.
         :img-top: _static/images/icons/public.svg
         :link: user_api/index.rst
 
-        Public API for geocat-comp
+        Public API for GeoCAT-comp
 
     .. grid-item-card:: Internal API
         :class-title: custom-title
@@ -25,7 +25,7 @@ public and internal API.
         :img-top: _static/images/icons/notpublic.svg
         :link: internal_api/index.rst
 
-        Internal API for geocat-comp
+        Internal API for GeoCAT-comp
 
 .. toctree::
    :maxdepth: 2
