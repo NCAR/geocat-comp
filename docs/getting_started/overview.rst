@@ -17,7 +17,7 @@ a plethora of scientific analysis packages designed for general use or for niche
 for learning Python basics and for data analysis workflows. Python also enables scalability through parallel computation
 which was never possible with NCL, enabling geoscientists to tackle analysis workflows on large volumes of data.
 
-GeoCAT-comp draws from well-established analysis packages like `NumPy <https://numpy.org/>`__, `xarray <https://docs.xarray.dev/>`__,
+GeoCAT-comp draws from well-established analysis packages like `NumPy <https://numpy.org/>`__, `Xarray <https://docs.xarray.dev/>`__,
 `SciPy <https://scipy.org/>`__, and `MetPy <https://unidata.github.io/MetPy/>`__ to recreate and expand upon NCL
 functions in pure Python. With so many tools being used under the hood, GeoCAT-comp users have access to geoscience
 specific computational tools without needing extensive working knowledge of `Pangeo <https://pangeo.io/>`__ stack.
