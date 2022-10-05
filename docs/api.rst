@@ -8,7 +8,24 @@ API Reference
 These pages provide generated summaries of geocat-comp's
 public and internal API.
 
-.. add function cateogories here
+.. grid:: 1 1 1 2
+    :gutter: 2
+
+    .. grid-item-card:: User API
+        :class-title: custom-title
+        :class-body: custom-body
+        :img-top: _static/images/icons/public.svg
+        :link: user_api/index.rst
+
+        Public API for geocat-comp
+
+    .. grid-item-card:: Internal API
+        :class-title: custom-title
+        :class-body: custom-body
+        :img-top: _static/images/icons/notpublic.svg
+        :link: internal_api/index.rst
+
+        Internal API for geocat-comp
 
 .. toctree::
    :maxdepth: 2
