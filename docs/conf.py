@@ -14,8 +14,18 @@
 
 import os
 import sys
+import pathlib
+import yaml
+from sphinx.application import Sphinx
+from sphinx.util import logging
+from textwrap import dedent, indent
+
+sys.path.insert(0,
+                os.path.abspath('../'))  # Source code dir relative to this file
 
 import geocat.comp
+
+LOGGER = logging.getLogger("conf")
 
 try:
     from unittest.mock import MagicMock
@@ -47,8 +57,14 @@ sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.autosummary',
-    'sphinx.ext.intersphinx', 'sphinx.ext.mathjax'
+    'sphinx.ext.napoleon',
+    'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.mathjax',
+    'myst_nb',
+    "sphinx_design",
+    "nbsphinx",
 ]
 
 #mathjax_path = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
@@ -56,14 +72,47 @@ extensions = [
 intersphinx_mapping = {
     'dask': ('https://docs.dask.org/en/latest/', None),
     'python': ('http://docs.python.org/3/', None),
-    'numpy': ('http://docs.scipy.org/doc/numpy/', None),
+    'numpy': ("https://numpy.org/doc/stable", None),
     'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
     'xarray': ('http://xarray.pydata.org/en/stable/', None),
     'pint': ('https://pint.readthedocs.io/en/stable/', None),
+    'cftime': ('https://unidata.github.io/cftime/', None),
 }
 
+# napoleon settings
 napoleon_use_admonition_for_examples = True
 napoleon_include_special_with_doc = True
+napoleon_google_docstring = False
+napoleon_numpy_docstring = True
+napoleon_use_param = False
+napoleon_use_rtype = False
+napoleon_preprocess_types = True
+napoleon_type_aliases = {
+    # general terms
+    "sequence": ":term:`sequence`",
+    "iterable": ":term:`iterable`",
+    "callable": ":py:func:`callable`",
+    "array": ":term:`array`",
+    "dict_like": ":term:`dict-like <mapping>`",
+    "dict-like": ":term:`dict-like <mapping>`",
+    "path-like": ":term:`path-like <path-like object>`",
+    "mapping": ":term:`mapping`",
+    "file-like": ":term:`file-like <file-like object>`",
+    "int": ":class:`int`",
+    "float": ":class:`float`",
+    "str": "str",
+    "bool": ":class:`bool`",
+    "tuple": ":class:`tuple`",
+    "list": ":class:`list`",
+    "dict": ":class:`dict`",
+    "set": ":class:`set`",
+    # numpy terms
+    "array_like": ":term:`array_like`",
+    "array-like": ":term:`array-like <array_like>`",
+    "ndarray": "numpy.ndarray",
+    "numpy.nan": "~numpy.nan",
+    "np.nan": "~numpy.nan",
+}
 
 autosummary_generate = True
 
@@ -73,7 +122,11 @@ templates_path = ['_templates']
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 # source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.ipynb': 'myst-nb',
+    '.myst': 'myst-nb',
+}
 
 # The encoding of source files.
 #source_encoding = 'utf-8-sig'
@@ -111,7 +164,7 @@ release = read_version()
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -156,19 +209,28 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 
-on_rtd = os.environ.get('READTHEDOCS') == 'True'
-if on_rtd:
-    html_theme = 'default'
-else:
-    import sphinx_rtd_theme
-    html_theme = 'sphinx_rtd_theme'
-    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
-#html_theme = 'alabaster'
+html_theme = "sphinx_book_theme"
+html_title = ""
+
+autosummary_imported_members = True
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#html_theme_options = {}
+html_theme_options = dict(
+    # analytics_id=''  this is configured in rtfd.io
+    # canonical_url="",
+    repository_url="https://github.com/NCAR/geocat-comp",
+    repository_branch="main",
+    path_to_docs="docs",
+    use_edit_page_button=True,
+    use_repository_button=True,
+    use_issues_button=True,
+    home_page_in_toc=False,
+    navbar_footer_text="",
+    extra_footer=
+    "<em>The National Center for Atmospheric Research is sponsored by the National Science Foundation. Any opinions, findings and conclusions or recommendations expressed in this material do not necessarily reflect the views of the National Science Foundation.</em>",
+)
 
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
@@ -182,17 +244,18 @@ else:
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-html_logo = '_static/images/nsf.png'
+html_logo = '_static/images/logos/GeoCAT_nsf.svg'
 
 # The name of an image file (relative to this directory) to use as a favicon of
 # the docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-#html_favicon = None
+html_favicon = '_static/images/logos/GeoCAT_square.svg'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+html_css_files = ["style.css"]
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
@@ -262,6 +325,51 @@ htmlhelp_basename = 'geocat-compdoc'
 autodoc_typehints = 'none'
 
 
+# custom scripts for making a gallery of examples notebooks
+# note: this method only supports a single gallery
+def update_gallery(app: Sphinx):
+    """Update the gallery of examples notebooks."""
+
+    LOGGER.info("creating gallery...")
+
+    notebooks = yaml.safe_load(
+        pathlib.Path(app.srcdir, "gallery.yml").read_bytes())
+
+    items = [
+        f"""
+         .. grid-item-card::
+            :text-align: center
+            :link: {item['path']}
+
+            .. image:: {item['thumbnail']}
+                :alt: {item['title']}
+            +++
+            {item['title']}
+            """ for item in notebooks
+    ]
+
+    items_md = indent(dedent("\n".join(items)), prefix="    ")
+    markdown = f"""
+.. grid:: 1 2 3 3
+    :gutter: 2
+
+    {items_md}
+    """
+
+    pathlib.Path(app.srcdir, "notebook-examples.txt").write_text(markdown)
+
+    LOGGER.info("gallery created")
+
+
+# turn off notebook execution
+# set to "auto" for default behavior
+nb_execution_mode = "off"
+
+# generate warning for all invalid links
+# nitpicky = True
+
+
 # Allow for changes to be made to the css in the theme_overrides file
 def setup(app):
     app.add_css_file('theme_overrides.css')
+    app.connect("builder-inited", update_gallery)
