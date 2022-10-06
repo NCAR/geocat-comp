@@ -8,6 +8,7 @@ import xarray as xr
 from itertools import chain
 from metpy.units import units
 
+
 def _dewtemp(
     tk: typing.Union[np.ndarray, xr.DataArray, list,
                      float], rh: typing.Union[np.ndarray, xr.DataArray, list,
@@ -1000,6 +1001,7 @@ def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
     """Calculate Showalter Index from pressure temperature and 850 hPa lcl.
     Showalter Index derived from `Gallway 1956 <https://journals.ametsoc.org/do
     wnloadpdf/journals/bams/37/10/1520-0477-37_10_528.xml>`__.
+
     :math:`shox = T500 - Tp500` where:
     - T500 is the measured temperature at 500 hPa
     - Tp500 is the temperature of the lifted parcel at 500 hPa
@@ -1028,6 +1030,7 @@ def max_daylight(
 ) -> typing.Union[np.ndarray, xr.DataArray, float]:
     """Computes maximum number of daylight hours as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
+
     Crop evapotranspiration - Guidelines for computing crop water
     requirement. Specifically, see equation 34 of Chapter 3.
     Note for abs(lat) > 55 the eqns have limited validity.
@@ -1114,6 +1117,7 @@ def psychrometric_constant(
 ) -> typing.Union[np.ndarray, xr.DataArray]:
     """Compute psychrometric constant [kPa / C] as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
+
     Crop evapotranspiration - Guidelines for computing crop water
     requirement. Specifically, see equation 7 of Chapter 3 or equation 3-2 in
     Annex 3.
@@ -1298,6 +1302,7 @@ def saturation_vapor_pressure_slope(
     """Compute the slope [kPa/C] of saturation vapor pressure curve as
     described in the Food and Agriculture Organization (FAO) Irrigation and
     Drainage Paper 56 entitled:
+
     Crop evapotranspiration - Guidelines for computing crop water
     requirement. Specifically, see equation 13 of Chapter 3.
     Parameters

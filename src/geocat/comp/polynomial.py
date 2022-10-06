@@ -218,7 +218,8 @@ def ndpolyfit(x: typing.Iterable,
         >>> p = ndpolyfit(x, y_md, deg=2, axis=1)
     """
     warnings.warn(
-        "ndpolyfit is deprecated. Use xarray.DataArray.polyfit or xarray.Dataset.polyfit instead.", DeprecationWarning)
+        "ndpolyfit is deprecated. Use xarray.DataArray.polyfit or xarray.Dataset.polyfit instead.",
+        DeprecationWarning)
     rcond = kwargs.get("rcond", None)
     full = kwargs.get("full", False)
     w = kwargs.get("w", None)
@@ -620,7 +621,8 @@ def ndpolyval(p: typing.Iterable,
         ValueError: x has invalid shape.
     """
     warnings.warn(
-        "ndpolyval is deprecated and should be replaced by xarray.polyval.", DeprecationWarning)
+        "ndpolyval is deprecated and should be replaced by xarray.polyval.",
+        DeprecationWarning)
     p_ndarr = _to_numpy_ndarray(p)
     axis = _check_axis(axis, p_ndarr.ndim)
     if isinstance(x, da.Array):
@@ -755,7 +757,8 @@ def detrend(data: typing.Iterable, deg=1, axis=0, **kwargs) -> xr.DataArray:
     `dtrend_quadratic_msg_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/dtrend_quadratic_msg_n.shtml>`__
     """
     warnings.warn(
-        "detrend is deprecated and should be replaced by scipy.signal.detrend.", DeprecationWarning)
+        "detrend is deprecated and should be replaced by scipy.signal.detrend.",
+        DeprecationWarning)
     if (int(deg) != deg) or (deg < 0):
         raise ValueError("deg must be non-negative integer value.")
 

@@ -67,6 +67,7 @@ def pearson_r(a,
         except ValueError:
             print('Data along `dim` must have the same dimension as `weights`')
 
+
 def _generate_eofs_solver(data, time_dim=0, weights=None, center=True, ddof=1):
     """Convenience function to be used in both `eofunc_eofs` and `eofunc_pcs`
     functions."""
