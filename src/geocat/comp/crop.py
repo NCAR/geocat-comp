@@ -2,7 +2,6 @@ import numpy as np
 import typing
 import warnings
 import xarray as xr
-from .comp_util import _is_duck_array
 
 
 def max_daylight(
@@ -54,9 +53,9 @@ def max_daylight(
         x_out = True
 
     # convert inputs to numpy arrays for function call if necessary
-    if not _is_duck_array(jday):
+    if not xr.core.utils.is_duck_array(jday):
         jday = np.asarray(jday, dtype='float32')
-    if not _is_duck_array(lat):
+    if not xr.core.utils.is_duck_array(lat):
         lat = np.asarray(lat, dtype='float32')
 
     # check to ensure dimension of lat is not greater than two
