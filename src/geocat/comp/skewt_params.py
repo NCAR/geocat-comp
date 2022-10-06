@@ -34,7 +34,8 @@ def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
     shox : :class:`pint.Quantity`
        Showalter index in delta degrees celsius
     """
-    warnings.warn("The skewt_params module is deprecated, and showalter_index() has been moved to the meteorology module for future use.", DeprecationWarning)
+    warnings.warn(
+        "The skewt_params module is deprecated, and showalter_index() has been moved to the meteorology module for future use.", DeprecationWarning)
     shox = mpcalc.showalter_index(pressure, temperature, dewpt)
     return shox
 
@@ -76,7 +77,8 @@ def get_skewt_vars(p: pint.Quantity, tc: pint.Quantity, tdc: pint.Quantity,
     `skewT_PlotData <https://www.ncl.ucar.edu/Document/Functions/Skewt_func/skewT_PlotData.shtml>`__,
     `skewt_BackGround <https://www.ncl.ucar.edu/Document/Functions/Skewt_func/skewT_BackGround.shtml>`__
     """
-    warnings.warn("The skewt_params module is deprecated, and get_skewt_vars() has been moved to the geocat.viz package for future use.", DeprecationWarning)
+    warnings.warn(
+        "The skewt_params module is deprecated, and get_skewt_vars() has been moved to the geocat.viz package for future use.", DeprecationWarning)
 
     # CAPE
     cape = mpcalc.cape_cin(p, tc, tdc, pro)

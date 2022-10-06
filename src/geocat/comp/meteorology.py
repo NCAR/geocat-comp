@@ -994,6 +994,7 @@ def relhum_water(temperature: typing.Union[np.ndarray, list, float],
 
     return relative_humidity
 
+
 def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
                     dewpt: pint.Quantity) -> pint.Quantity:
     """Calculate Showalter Index from pressure temperature and 850 hPa lcl.
