@@ -55,7 +55,7 @@ def _pre_interp_multidim(
         Determines if cyclic point should be added or not.
         If true then add point, else do nothing.
 
-    missing_val : :class:`int`, :class:`float`, Optional
+    missing_val : int, float, optional
         Provides an alternative to NaN
 
     Returns
@@ -102,7 +102,7 @@ def _post_interp_multidim(data_in, missing_val):
     data_in : :class:`xarray.DataArray`
         The data on which to operate
 
-    missing_val : :class:`int`, :class:`float`, Optional
+    missing_val : int, float, optional
          Provides an alternative to NaN
 
     Returns
@@ -210,8 +210,8 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
 
     Notes
     -----
-    ACKNOWLEDGEMENT: We'd like to thank to [Brian Medeiros](https://github.com/brianpm),
-    [Matthew Long](https://github.com/matt-long), and [Deepak Cherian](https://github.com/dcherian)
+    ACKNOWLEDGEMENT: We'd like to thank to `Brian Medeiros <https://github.com/brianpm>`__,
+    `Matthew Long <https://github.com/matt-long>`__, and `Deepak Cherian <https://github.com/dcherian>`__
     at NCAR for their great contributions since the code implemented here is mostly
     based on their work.
 
@@ -227,17 +227,17 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
         One-dimensional arrays containing the hybrid A and B coefficients. Must have the same
         dimension size as the `lev_dim` dimension of data.
 
-    p0 : :class:`float`, Optional
+    p0 : float, optional
         Scalar numeric value equal to surface reference pressure (Pa). Defaults to 100000 Pa.
 
-    new_levels : :class:`numpy.ndarray`, Optional
+    new_levels : ndarray, optional
         A one-dimensional array of output pressure levels (Pa). If not given, the mandatory
         list of 21 pressure levels is used.
 
-    lev_dim : :class:`str`, Optional
+    lev_dim : str, optional
         String that is the name of level dimension in data. Defaults to "lev".
 
-    method : :class:`str`, Optional
+    method : str, optional
         String that is the interpolation method; can be either "linear" or "log". Defaults to "linear".
 
     Returns
@@ -248,8 +248,8 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
     See Also
     --------
     Related NCL Functions:
-    `vinth2p <https://www.ncl.ucar.edu/Document/Functions/Built-in/vinth2p.shtml>`_,
-    `vinth2p_ecmwf <https://www.ncl.ucar.edu/Document/Functions/Built-in/vinth2p_ecmwf.shtml>`_
+    `vinth2p <https://www.ncl.ucar.edu/Document/Functions/Built-in/vinth2p.shtml>`__,
+    `vinth2p_ecmwf <https://www.ncl.ucar.edu/Document/Functions/Built-in/vinth2p_ecmwf.shtml>`__
     """
 
     # Determine the level dimension and then the interpolation axis
@@ -389,13 +389,13 @@ def interp_sigma_to_hybrid(data: xr.DataArray,
         One-dimensional arrays containing the hybrid A and B coefficients. Must have the same
         dimension as the output hybrid levels.
 
-    p0 : :class:`float`, Optional
+    p0 : float, optional
         Scalar numeric value equal to surface reference pressure (Pa). Defaults to 100000 Pa.
 
-    lev_dim : :class:`str`, Optional
+    lev_dim : str, optional
         String that is the name of level dimension in data. Defaults to "lev".
 
-    method : :class:`str`, Optional
+    method : str, optional
         String that is the interpolation method; can be either "linear" or "log". Defaults to "linear".
 
     Returns
@@ -406,7 +406,7 @@ def interp_sigma_to_hybrid(data: xr.DataArray,
     See Also
     --------
     Related NCL Function:
-    `sigma2hybrid <https://www.ncl.ucar.edu/Document/Functions/Built-in/sigma2hybrid.shtml>`_
+    `sigma2hybrid <https://www.ncl.ucar.edu/Document/Functions/Built-in/sigma2hybrid.shtml>`__
     """
 
     # Determine the level dimension and then the interpolation axis
@@ -474,44 +474,44 @@ def interp_multidim(
 
     Parameters
     ----------
-    data_in : :class:`xarray.DataArray` :class:'np.ndarray'
+    data_in : :class:`xarray.DataArray`, ndarray
         Data array with data to be interpolated and associated coords. If
         it is a np array, then lat_in and lon_in must be provided. Length must
         be coordinated with given coordinates.
 
-    lat_out: :class:`np.ndarray`
+    lat_out: ndarray
         List of latitude coordinates to be interpolated to.
 
-    lon_out: :class:`np.ndarray`
+    lon_out: ndarray
         List of longitude coordinates to be interpolated to.
 
-    lat_in: :class:`np.ndarray`
+    lat_in: ndarray
         List of latitude coordinates corresponding to data_in. Must be
         given if data_in is not an xarray.
 
-    lon_in: :class:`np.ndarray`
+    lon_in: ndarray
         List of longitude coordinates corresponding to data_in. Must be
         given if data_in is not an xarray.
 
-    cyclic: :class:'bool', Optional
+    cyclic: bool, optional
         Set as true if lon values are cyclical but do not fully wrap around
         the globe
         (0, 1.5, 3, ..., 354, 355.5) Default is false
 
-    missing_val : :class:'np.number', Optional
+    missing_val : :class:`np.number`, optional
         Provide a number to represent missing data. Alternative to using np.nan
 
-    method: :class:'str', Optional
+    method: str, optional
         Provide specific method of interpolation. Default is "linear"
         “linear” or “nearest” for multidimensional array
 
-    fill_value: :class:'str', Optional
+    fill_value: str, optional
         Set as 'extrapolate' to allow extrapoltion of data. Default is
         no extrapolation.
 
     Returns
     -------
-    data_out : :class:`numpy.ndarray`, :class:`xarray.DataArray`
+    data_out : ndarray, :class:`xarray.DataArray`
        Returns same data type as input data_in. Shape will be the same as
        input array except
        for last two dimensions which will be equal to coordinates given in
@@ -540,10 +540,11 @@ def interp_multidim(
 
     See Also
     --------
-    https://docs.xarray.dev/en/stable/generated/xarray.DataArray.interp.html
-    https://scitools.org.uk/cartopy/docs/latest/reference/generated/cartopy
-    .util.add_cyclic_point.html
-    https://www.ncl.ucar.edu/Document/Functions/Built-in/linint2.shtml
+    `xarray.DataArray.interp <https://docs.xarray.dev/en/stable/generated/xarray.DataArray.interp.html>`__
+
+    `cartopy.util.add_cyclic_point <https://scitools.org.uk/cartopy/docs/latest/reference/generated/cartopy.util.add_cyclic_point.html>`__
+
+    `NCL linint2 <https://www.ncl.ucar.edu/Document/Functions/Built-in/linint2.shtml>`__
     """
     # check for xarray/numpy
     if not isinstance(data_in, xr.DataArray):

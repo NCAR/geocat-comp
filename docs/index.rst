@@ -3,6 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+.. module:: geocat.comp
+
 .. meta::
    :description: GeoCAT-comp Python module
    :keywords: geocat, geocat-comp, geocat comp, geocatcomp, geocat.comp,
@@ -22,36 +24,71 @@
 .. |
 .. |
 
-GeoCAT-comp
-===========
+GeoCAT-comp Documentation
+=========================
 
-GeoCAT-comp is computational component of the `GeoCAT <https://geocat.ucar.edu/>`_
+GeoCAT-comp is computational component of the `GeoCAT <https://geocat.ucar.edu/>`__
 project. GeoCAT-comp provides implementations of computational functions for operating
 on geosciences data. Many of these functions originated in NCL and were translated into
 Python with the help of GeoCAT-comp; however, developers are welcome to come up with
 novel computational functions for geosciences data.
 
+.. grid:: 1 1 2 2
+    :gutter: 2
+
+    .. grid-item-card:: Getting Started
+        :class-title: custom-title
+        :class-body: custom-body
+        :img-top: _static/images/icons/tips.svg
+        :link: getting-started
+        :link-type: doc
+
+        A good place to start for new users
+
+    .. grid-item-card::  Examples
+        :class-title: custom-title
+        :class-body: custom-body
+        :img-top: _static/images/icons/science.svg
+        :link: examples
+        :link-type: doc
+
+        A gallery of examples using GeoCAT-comp
+
+    .. grid-item-card::  Installation
+        :class-title: custom-title
+        :class-body: custom-body
+        :img-top: _static/images/icons/download.svg
+        :link: installation
+        :link-type: doc
+
+        Installation instructions for GeoCAT-comp
+
+    .. grid-item-card::  API
+        :class-title: custom-title
+        :class-body: custom-body
+        :img-top: _static/images/icons/code.svg
+        :link: api
+        :link-type: doc
+
+        See the complete GeoCAT-comp API
+
 .. toctree::
    :maxdepth: 2
+   :hidden:
+   :caption: For users
 
-   ./installation
-   ./api
-   ./examples
-   ./citation
-   ./support
+   Getting Started <getting-started>
+   Installation <installation>
+   API Reference <api>
+   Usage Examples <examples>
+   Cite GeoCAT-comp <citation.rst>
+   NCL Documentation <https://www.ncl.ucar.edu/>
 
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: Getting Support
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
-
---------------------
-
-*The National Center for Atmospheric Research is sponsored by the National
-Science Foundation. Any opinions, findings and conclusions or recommendations
-expressed in this material do not necessarily reflect the views of the
-National Science Foundation.*
+   Support <support>
+   GitHub Issues <https://github.com/NCAR/geocat-comp/issues>
+   Feature Request Form <https://forms.gle/6DTo3ELLri4DAGfG8>

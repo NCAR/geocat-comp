@@ -14,31 +14,31 @@ def pearson_r(a,
               axis=None):
     """This function wraps the function of the same name from `xskillscore <htt
     ps://xskillscore.readthedocs.io/en/stable/api/xskillscore.pearson_r.html#xs
-    killscore.pearson_r>`_. The difference between the xskillscore version and
+    killscore.pearson_r>`__. The difference between the xskillscore version and
     this one is that the GeoCAT version allows for array-like inputs rather
     than only supporting `xarray.DataArrays`. The parameters work the same way
     as in the xskillscore version, with an added parameter `axis` (see below).
 
     Parameters
     ----------
-    a : :class:`xarray.DataArray`, :class:`xarray.Dataset`, :class:`numpy.ndarray`
+    a : :class:`xarray.DataArray`, :class:`xarray.Dataset`, ndarray
         Arrays over which to apply the function.
-    b : :class:`xarray.DataArray`, :class:`xarray.Dataset`, :class:`numpy.ndarray`
+    b : :class:`xarray.DataArray`, :class:`xarray.Dataset`, ndarray
         Arrays over which to apply the function.
-    dim : :class:`str`, :class:`list`, Optional
+    dim : str, :class:`list`, optional
         The dimension(s) to apply the correlation along. Note that this dimension will be reduced as a result. Defaults to None reducing all dimensions. Only used when `a` and `b` are of type `xarray.DataArray` or `xarray.Dataset`.
-    weights : :class:`xarray.DataArray`, :class:`numpy.ndarray`, Optional
+    weights : :class:`xarray.DataArray`, ndarray, optional
         Weights matching dimensions of `dim` to apply during the function.
-    skipna : :class:`bool`, Optional
+    skipna : bool, optional
         If True, skip NaNs when computing function.
-    keep_attrs : :class:`bool`, Optional
+    keep_attrs : bool, optional
         If True, the attributes (attrs) will be copied from the first input to the new one. If False (default), the new object will be returned without attributes. Only used when `a` and `b` are of types `xarray.Dataset` or `xarray.DataArray`.
     axis : :class:`int`
         The axis to apply the correlation along. Only used when `a` and `b` are of type `np.ndarray` or are array-like.
 
     Returns
     -------
-    r : :class:`xarray.DataArray`, :class:`numpy.ndarray`
+    r : :class:`xarray.DataArray`, ndarray
         Pearson's correlation coefficient
     """
     # if a and v are not xr.DataArrays

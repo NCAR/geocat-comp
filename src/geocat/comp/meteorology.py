@@ -16,25 +16,25 @@ def _dewtemp(
 
     Parameters
     ----------
-    tk : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
+    tk : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
         Temperature in Kelvin
 
-    rh : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
+    rh : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
         Relative humidity. Must be the same dimensions as temperature
 
     Returns
     -------
-    tdk : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
+    tdk : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
         Dewpoint temperature in Kelvin. Same size as input variable temperature
 
 
     See Also
     --------
     Related GeoCAT Functions:
-    `dewtemp <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.dewtemp.html#geocat.comp.meteorology.dewtemp>`_
+    `dewtemp <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.dewtemp.html#geocat.comp.meteorology.dewtemp>`__
 
     Related NCL Functions:
-    `dewtemp_trh <https://www.ncl.ucar.edu/Document/Functions/Built-in/dewtemp_trh.shtml>`_
+    `dewtemp_trh <https://www.ncl.ucar.edu/Document/Functions/Built-in/dewtemp_trh.shtml>`__
     """
 
     gc = 461.5  # gas constant for water vapor [j/{kg-k}]
@@ -56,31 +56,31 @@ def _heat_index(temperature: np.ndarray,
 
     Parameters
     ----------
-    temperature : :class:`numpy.ndarray`
+    temperature : ndarray
         temperature(s) in Fahrenheit
 
-    relative_humidity : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`
+    relative_humidity : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         relative humidity as a percentage. Must be the same shape as
         temperature
 
-    alternate_coeffs : :class:`bool`, Optional
+    alternate_coeffs : bool, optional
         flag to use alternate set of coefficients appropriate for
         temperatures from 70F to 115F and humidities between 0% and 80%
 
     Returns
     -------
-    heatindex : :class:`numpy.ndarray`
+    heatindex : ndarray
         Calculated heat index. Same shape as temperature
 
 
     See Also
     --------
     Related GeoCAT Functions:
-    `heat_index <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.heat_index.html#geocat.comp.meteorology.heat_index>`_,
-    `_xheat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xheat_index.html#geocat.comp.meteorology._xheat_index>`_
+    `heat_index <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.heat_index.html#geocat.comp.meteorology.heat_index>`__,
+    `_xheat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xheat_index.html#geocat.comp.meteorology._xheat_index>`__
 
     Related NCL Functions:
-    `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`_
+    `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__
     """
     # Default coefficients for (t>=80F) and (40<gh<100)
     coeffs = [
@@ -89,7 +89,7 @@ def _heat_index(temperature: np.ndarray,
     ]
     crit = [80, 40, 100]  # [T_low [F], RH_low, RH_high]
 
-    # Optional flag coefficients for (70F<t<115F) and (0<gh<80)
+    # optional flag coefficients for (70F<t<115F) and (0<gh<80)
     # within 3F of default coeffs
     if alternate_coeffs:
         coeffs = [
@@ -139,30 +139,30 @@ def _nws_eqn(coeffs, temp, rel_hum):
 
     Parameters
     ----------
-    coeffs : :class:`numpy.ndarray`
+    coeffs : ndarray
         coefficients to calculate heat index
 
-    temp : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`
-        temperaure
+    temp : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
+        temperature
 
-    rel_hum : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`
+    rel_hum : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         relative humidity as a percentage. Must be the same shape as
         temperature
 
     Returns
     -------
-    heatindex : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`
+    heatindex : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         Intermediate calculated heat index. Same shape as temperature
 
 
     See Also
     --------
     Related GeoCAT Functions:
-    `heat_index <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.heat_index.html#geocat.comp.meteorology.heat_index>`_,
-    `_heat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._heat_index.html#geocat.comp.meteorology._heat_index>`_
+    `heat_index <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.heat_index.html#geocat.comp.meteorology.heat_index>`__,
+    `_heat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._heat_index.html#geocat.comp.meteorology._heat_index>`__
 
     Related NCL Functions:
-    `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`_,
+    `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__,
     """
     heatindex = coeffs[0] \
                 + coeffs[1] * temp \
@@ -192,34 +192,34 @@ def _relhum(
 
     Parameters
     ----------
-    t : :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
+    t : ndarray, :obj:`list`, or :obj:`float`
         Temperature in Kelvin
 
-    w : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
+    w : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
         Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-    p : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
+    p : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
         Pressure in Pa. Must have the same dimensions as temperature
 
     Returns
     -------
-    rh :class:`numpy.ndarray)
+    rh : ndarray
         Relative humidity. Will have the same dimensions as temperature
 
 
     See Also
     --------
     Related GeoCAT Functions:
-    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`_,
-    `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`_,
-    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`_,
-    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`_
+    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`__,
+    `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`__,
+    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`__,
+    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`__
 
     Related NCL Functions:
-    `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`_,
-    `relhum_ttd <https://www.ncl.ucar.edu/Document/Functions/Contributed/relhum_ttd.shtml>`_,
-    `relhum_ice <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_ice.shtml>`_,
-    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`_
+    `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
+    `relhum_ttd <https://www.ncl.ucar.edu/Document/Functions/Contributed/relhum_ttd.shtml>`__,
+    `relhum_ice <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_ice.shtml>`__,
+    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`__
     """
 
     table = np.asarray([
@@ -283,34 +283,34 @@ def _relhum_ice(t: typing.Union[np.ndarray, list, float],
 
     Parameters
     ----------
-    t : :class:`numpy.ndarray`, :obj:`list`, :obj:`float`
+    t : ndarray, :obj:`list`, :obj:`float`
         Temperature in Kelvin
 
-    w : :class:`numpy.ndarray`, :obj:`list`, :obj:`float`
+    w : ndarray, :obj:`list`, :obj:`float`
         Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-    p : :class:`numpy.ndarray`, :obj:`list`, :obj:`float`
+    p : ndarray, :obj:`list`, :obj:`float`
         Pressure in Pa. Must have the same dimensions as temperature
 
     Returns
     -------
-    rh : :class:`numpy.ndarray`
+    rh : ndarray
         Relative humidity. Will have the same dimensions as temperature
 
 
     See Also
     --------
     Related GeoCAT Functions:
-    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`_,
-    `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`_,
-    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`_,
-    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`_
+    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`__,
+    `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`__,
+    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`__,
+    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`__
 
     Related NCL Functions:
-    `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`_,
-    `relhum_ttd <https://www.ncl.ucar.edu/Document/Functions/Contributed/relhum_ttd.shtml>`_,
-    `relhum_ice <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_ice.shtml>`_,
-    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`_
+    `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
+    `relhum_ttd <https://www.ncl.ucar.edu/Document/Functions/Contributed/relhum_ttd.shtml>`__,
+    `relhum_ice <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_ice.shtml>`__,
+    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`__
     """
 
     # Define data variables
@@ -347,33 +347,33 @@ def _relhum_water(t: typing.Union[np.ndarray, list, float],
 
     Parameters
     ----------
-    t : :class:`numpy.ndarray`, :obj:`list`, :obj:`float`
+    t : ndarray, :obj:`list`, :obj:`float`
         Temperature in Kelvin
 
-    w : :class:`numpy.ndarray`, :obj:`list`, :obj:`float`
+    w : ndarray, :obj:`list`, :obj:`float`
         Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-    p : :class:`numpy.ndarray`, :obj:`list`, :obj:`float`
+    p : ndarray, :obj:`list`, :obj:`float`
         Pressure in Pa. Must have the same dimensions as temperature
 
     Returns
     -------
-    rh :class:`numpy.ndarray`
+    rh : ndarray
         Relative humidity. Will have the same dimensions as temperature
 
     See Also
     --------
     Related GeoCAT Functions:
-    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`_,
-    `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`_,
-    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`_,
-    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`_
+    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`__,
+    `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`__,
+    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`__,
+    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`__
 
     Related NCL Functions:
-    `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`_,
-    `relhum_ttd <https://www.ncl.ucar.edu/Document/Functions/Contributed/relhum_ttd.shtml>`_,
-    `relhum_ice <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_ice.shtml>`_,
-    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`_
+    `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
+    `relhum_ttd <https://www.ncl.ucar.edu/Document/Functions/Contributed/relhum_ttd.shtml>`__,
+    `relhum_ice <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_ice.shtml>`__,
+    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`__
     """
 
     # Define data variables
@@ -409,7 +409,7 @@ def _xheat_index(temperature: xr.DataArray,
         relative humidity as a percentage. Must be the same shape as
         temperature
 
-    alternate_coeffs : :class:`bool`, Optional
+    alternate_coeffs : bool, optional
         flag to use alternate set of coefficients appropriate for
         temperatures from 70F to 115F and humidities between 0% and 80%
 
@@ -424,11 +424,11 @@ def _xheat_index(temperature: xr.DataArray,
     See Also
     --------
     Related GeoCAT Functions:
-    `heat_index <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.heat_index.html#geocat.comp.meteorology.heat_index>`_,
-    `_heat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._heat_index.html#geocat.comp.meteorology._heat_index>`_
+    `heat_index <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.heat_index.html#geocat.comp.meteorology.heat_index>`__,
+    `_heat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._heat_index.html#geocat.comp.meteorology._heat_index>`__
 
     Related NCL Functions:
-    `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`_,
+    `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__,
     """
     # Default coefficients for (t>=80F) and (40<gh<100)
     coeffs = [
@@ -437,7 +437,7 @@ def _xheat_index(temperature: xr.DataArray,
     ]
     crit = [80, 40, 100]  # [T_low [F], RH_low, RH_high]
 
-    # Optional flag coefficients for (70F<t<115F) and (0<gh<80)
+    # optional flag coefficients for (70F<t<115F) and (0<gh<80)
     # within 3F of default coeffs
     if alternate_coeffs:
         coeffs = [
@@ -509,15 +509,15 @@ def _xrelhum(t: xr.DataArray, w: xr.DataArray, p: xr.DataArray) -> xr.DataArray:
     See Also
     --------
     Related GeoCAT Functions:
-    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`_,
-    `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`_,
-    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`_
+    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`__,
+    `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`__,
+    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`__
 
     Related NCL Functions:
-    `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`_,
-    `relhum_ttd <https://www.ncl.ucar.edu/Document/Functions/Contributed/relhum_ttd.shtml>`_,
-    `relhum_ice <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_ice.shtml>`_,
-    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`_
+    `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
+    `relhum_ttd <https://www.ncl.ucar.edu/Document/Functions/Contributed/relhum_ttd.shtml>`__,
+    `relhum_ice <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_ice.shtml>`__,
+    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`__
     """
 
     table = da.from_array([
@@ -580,24 +580,24 @@ def dewtemp(
 
     Parameters
     ----------
-    temperature : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
+    temperature : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
         Temperature in Kelvin
 
-    relative_humidity : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
+    relative_humidity : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
         Relative humidity. Must be the same dimensions as temperature
 
     Returns
     -------
-    dew_pnt_temp : :class:`numpy.ndarray` or :obj:`float`
+    dew_pnt_temp : ndarray or :obj:`float`
         Dewpoint temperature in Kelvin. Same size as input variable temperature
 
     See Also
     --------
     Related GeoCAT Functions:
-    `_dewtemp <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._dewtemp.html#geocat.comp.meteorology._dewtemp>`_
+    `_dewtemp <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._dewtemp.html#geocat.comp.meteorology._dewtemp>`__
 
     Related NCL Functions:
-    `dewtemp_trh <https://www.ncl.ucar.edu/Document/Functions/Built-in/dewtemp_trh.shtml>`_
+    `dewtemp_trh <https://www.ncl.ucar.edu/Document/Functions/Built-in/dewtemp_trh.shtml>`__
     """
 
     inputs = [temperature, relative_humidity]
@@ -661,20 +661,20 @@ def heat_index(
 
     Parameters
     ----------
-    temperature : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`
+    temperature : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         temperature(s) in Fahrenheit
 
-    relative_humidity : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`
+    relative_humidity : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         relative humidity as a percentage. Must be the same shape as
         temperature
 
-    alternate_coeffs : :class:`bool`, Optional
+    alternate_coeffs : bool, optional
         flag to use alternate set of coefficients appropriate for
         temperatures from 70F to 115F and humidities between 0% and 80%
 
     Returns
     -------
-    heatindex : :class:`numpy.ndarray`, :class:`xarray.DataArray`
+    heatindex : ndarray, :class:`xarray.DataArray`
         Calculated heat index. Same shape as temperature
 
     Examples
@@ -691,11 +691,11 @@ def heat_index(
     See Also
     --------
     Related GeoCAT Functions:
-    `_heat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._heat_index.html#geocat.comp.meteorology._heat_index>`_,
-    `_xheat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xheat_index.html#geocat.comp.meteorology._xheat_index>`_
+    `_heat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._heat_index.html#geocat.comp.meteorology._heat_index>`__,
+    `_xheat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xheat_index.html#geocat.comp.meteorology._xheat_index>`__
 
     Related NCL Functions:
-    `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`_
+    `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__
     """
 
     inputs = [temperature, relative_humidity]
@@ -779,33 +779,33 @@ def relhum(
 
     Parameters
     ----------
-    temperature : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
+    temperature : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
         Temperature in Kelvin
 
-    mixing_ratio : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
+    mixing_ratio : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
         Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-    pressure : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
+    pressure : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
         Pressure in Pa. Must have the same dimensions as temperature
 
     Returns
     -------
-    relative_humidity : :class:`numpy.ndarray` or :class:`xarray.DataArray`
+    relative_humidity : ndarray or :class:`xarray.DataArray`
         Relative humidity. Will have the same dimensions as temperature
 
 
     See Also
     --------
     Related GeoCAT Functions:
-    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`_,
-    `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`_,
-    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`_
+    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`__,
+    `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`__,
+    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`__
 
     Related NCL Functions:
-    `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`_,
-    `relhum_ttd <https://www.ncl.ucar.edu/Document/Functions/Contributed/relhum_ttd.shtml>`_,
-    `relhum_ice <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_ice.shtml>`_,
-    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`_
+    `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
+    `relhum_ttd <https://www.ncl.ucar.edu/Document/Functions/Contributed/relhum_ttd.shtml>`__,
+    `relhum_ice <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_ice.shtml>`__,
+    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`__
     """
 
     inputs = [temperature, mixing_ratio, pressure]
@@ -858,33 +858,33 @@ def relhum_ice(temperature: typing.Union[np.ndarray, list, float],
 
     Parameters
     ----------
-    temperature : :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
+    temperature : ndarray, :obj:`list`, or :obj:`float`
         Temperature in Kelvin
 
-    mixing_ratio : :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
+    mixing_ratio : ndarray, :obj:`list`, or :obj:`float`
         Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-    pressure : :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
+    pressure : ndarray, :obj:`list`, or :obj:`float`
         Pressure in Pa. Must have the same dimensions as temperature
 
     Returns
     -------
-    relative_humidity : :class:`numpy.ndarray`
+    relative_humidity : ndarray
         Relative humidity. Will have the same dimensions as temperature
 
     See Also
     --------
     Related GeoCAT Functions:
-    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`_,
-    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`_,
-    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`_,
-    `_relhum_ice <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._relhum_ice.html#geocat.comp.meteorology._relhum_ice>`_
+    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`__,
+    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`__,
+    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`__,
+    `_relhum_ice <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._relhum_ice.html#geocat.comp.meteorology._relhum_ice>`__
 
     Related NCL Functions:
-    `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`_,
-    `relhum_ttd <https://www.ncl.ucar.edu/Document/Functions/Contributed/relhum_ttd.shtml>`_,
-    `relhum_ice <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_ice.shtml>`_,
-    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`_
+    `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
+    `relhum_ttd <https://www.ncl.ucar.edu/Document/Functions/Contributed/relhum_ttd.shtml>`__,
+    `relhum_ice <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_ice.shtml>`__,
+    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`__
     """
 
     # If xarray input, pull data and store metadata
@@ -933,33 +933,33 @@ def relhum_water(temperature: typing.Union[np.ndarray, list, float],
 
     Parameters
     ----------
-    temperature : :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
+    temperature : ndarray, :obj:`list`, or :obj:`float`
         Temperature in Kelvin
 
-    mixing_ratio : :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
+    mixing_ratio : ndarray, :obj:`list`, or :obj:`float`
         Mixing ratio in kg/kg. Must have the same dimensions as temperature
 
-    pressure : :class:`numpy.ndarray`, :obj:`list`, or :obj:`float`
+    pressure : ndarray, :obj:`list`, or :obj:`float`
         Pressure in Pa. Must have the same dimensions as temperature
 
     Returns
     -------
-    relative_humidity : :class:`numpy.ndarray`
+    relative_humidity : ndarray
         Relative humidity. Will have the same dimensions as temperature
 
     See Also
     --------
     Related GeoCAT Functions:
-    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`_,
-    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`_,
-    `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`_,
-    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._relhum_water.html#geocat.comp.meteorology._relhum_water>`_
+    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`__,
+    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`__,
+    `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`__,
+    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._relhum_water.html#geocat.comp.meteorology._relhum_water>`__
 
     Related NCL Functions:
-    `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`_,
-    `relhum_ttd <https://www.ncl.ucar.edu/Document/Functions/Contributed/relhum_ttd.shtml>`_,
-    `relhum_ice <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_ice.shtml>`_,
-    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`_
+    `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
+    `relhum_ttd <https://www.ncl.ucar.edu/Document/Functions/Contributed/relhum_ttd.shtml>`__,
+    `relhum_ice <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_ice.shtml>`__,
+    `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`__
     """
 
     # If xarray input, pull data and store metadata
