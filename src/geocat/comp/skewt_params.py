@@ -10,7 +10,8 @@ import warnings
 def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
                     dewpt: pint.Quantity) -> pint.Quantity:
     """.. deprecated:: 2022.10.0 The skewt_params module is deprecated, and
-    showalter_index() has been moved to the meteorology module for future use.
+        showalter_index() has been moved to the meteorology module for future
+        use.
 
     Calculate Showalter Index from pressure temperature and 850 hPa lcl.
     Showalter Index derived from `Gallway 1956 <https://journals.ametsoc.org/do
@@ -48,7 +49,9 @@ def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
 def get_skewt_vars(p: pint.Quantity, tc: pint.Quantity, tdc: pint.Quantity,
                    pro: pint.Quantity) -> str:
     """.. deprecated:: 2022.10.0 The skewt_params module is deprecated, and
-    get_skewt_vars() has been moved to the geocat.viz package for future use.
+        get_skewt_vars() has been moved to the
+        `geocat.viz <https://geocat-viz.readthedocs.io/en/latest/index.html>`_
+        package for future use.
 
     This function processes the dataset values and returns a string element
     which can be used as a subtitle to replicate the styles of NCL Skew-T

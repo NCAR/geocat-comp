@@ -62,17 +62,6 @@ Meteorology
    saturation_vapor_pressure_slope
    showalter_index
 
-Polynomial
-^^^^^^^^^^
-.. currentmodule:: geocat.comp.polynomial
-.. autosummary::
-   :nosignatures:
-   :toctree: ./generated/
-
-   detrend
-   ndpolyfit
-   ndpolyval
-
 Spherical Harmonics
 ^^^^^^^^^^^^^^^^^^^
 .. currentmodule:: geocat.comp.spherical
