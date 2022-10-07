@@ -4,7 +4,7 @@ from typing import Iterable
 import numpy as np
 import xarray as xr
 from eofs.xarray import Eof
-
+import geocat.comp.stats as gcstat
 
 def _generate_eofs_solver(data, time_dim=0, weights=None, center=True, ddof=1):
     """Convenience function to be used in both `eofunc_eofs` and `eofunc_pcs`
@@ -167,42 +167,7 @@ def eofunc_eofs(data,
     warnings.warn(
         "The eofunc module is deprecated. eofunc_eofs has been moved to the stats module for future use.",
         DeprecationWarning)
-    data, solver = _generate_eofs_solver(data,
-                                         time_dim=time_dim,
-                                         weights=weights,
-                                         center=center,
-                                         ddof=ddof)
-
-    # Checking number of EOFs
-    if neofs <= 0:
-        raise ValueError(
-            "ERROR eofunc_eofs: num_eofs must be a positive non-zero integer value."
-        )
-
-    eofs = solver.eofs(neofs=neofs, eofscaling=eofscaling)
-
-    # Populate attributes for output
-    attrs = {}
-
-    if meta:
-        attrs = data.attrs
-
-    attrs['eigenvalues'] = solver.eigenvalues(neigs=neofs)
-    attrs['northTest'] = solver.northTest(neigs=neofs, vfscaled=vfscaled)
-    attrs['totalAnomalyVariance'] = solver.totalAnomalyVariance()
-    attrs['varianceFraction'] = solver.varianceFraction(neigs=neofs)
-
-    if meta:
-        dims = ["eof"
-               ] + [data.dims[i] for i in range(data.ndim) if i != time_dim]
-        coords = {
-            k: v for (k, v) in data.coords.items() if k != data.dims[time_dim]
-        }
-    else:
-        dims = ["eof"] + [f"dim_{i}" for i in range(data.ndim) if i != time_dim]
-        coords = {}
-
-    return xr.DataArray(eofs, attrs=attrs, dims=dims, coords=coords)
+    return gcstat.eofunc_eofs(data, neofs, time_dim, eofscaling, weights, center, ddof, vfscaled, meta)
 
 
 def eofunc_pcs(data,
@@ -302,36 +267,8 @@ def eofunc_pcs(data,
     warnings.warn(
         "The eofunc module is deprecated. eofunc_pcs has been moved to the stats module for future use.",
         DeprecationWarning)
-    data, solver = _generate_eofs_solver(data,
-                                         time_dim=time_dim,
-                                         weights=weights,
-                                         center=center,
-                                         ddof=ddof)
 
-    # Checking number of EOFs
-    if npcs <= 0:
-        raise ValueError(
-            "ERROR eofunc_pcs: num_pcs must be a positive non-zero integer value."
-        )
-
-    solver = Eof(data, weights=weights, center=center, ddof=ddof)
-
-    pcs = solver.pcs(npcs=npcs, pcscaling=pcscaling)
-    pcs = pcs.transpose()
-
-    # Populate attributes for output
-    attrs = {}
-
-    if meta:
-        attrs = data.attrs
-
-    dims = ["pc", "time"]
-    if meta:
-        coords = {"time": data.coords[data.dims[time_dim]]}
-    else:
-        coords = {}
-
-    return xr.DataArray(pcs, attrs=attrs, dims=dims, coords=coords)
+    return gcstat.eofunc_pcs(data, npcs, time_dim, pcscaling, weights, center, ddof, meta)
 
 
 # Transparent wrappers for geocat.comp backwards compatibility
