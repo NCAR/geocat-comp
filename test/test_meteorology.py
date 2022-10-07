@@ -15,19 +15,17 @@ import xarray as xr
 if "--cov" in str(sys.argv):
     from src.geocat.comp import (dewtemp, heat_index, relhum, relhum_ice,
                                  relhum_water, showalter_index,
-                                 actual_saturation_vapor_pressure,
-                                 max_daylight,
+                                 actual_saturation_vapor_pressure, max_daylight,
                                  psychrometric_constant,
                                  saturation_vapor_pressure,
                                  saturation_vapor_pressure_slope)
 else:
     from geocat.comp import (dewtemp, heat_index, relhum, relhum_ice,
-                                 relhum_water, showalter_index,
-                                 actual_saturation_vapor_pressure,
-                                 max_daylight,
-                                 psychrometric_constant,
-                                 saturation_vapor_pressure,
-                                 saturation_vapor_pressure_slope)
+                             relhum_water, showalter_index,
+                             actual_saturation_vapor_pressure, max_daylight,
+                             psychrometric_constant, saturation_vapor_pressure,
+                             saturation_vapor_pressure_slope)
+
 
 class Test_dewtemp(unittest.TestCase):
 
@@ -334,7 +332,7 @@ class Test_showalter_index(unittest.TestCase):
         # Compare calculated values with expected
         np.testing.assert_equal(vals, self.NCL_shox)
 
-        
+
 class Test_actual_saturation_vapor_pressure(unittest.TestCase):
 
     @classmethod
