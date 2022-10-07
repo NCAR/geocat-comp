@@ -113,3 +113,49 @@ GeoCAT-comp routines from GeoCAT-f2py
    rcm2rgrid
    rgrid2rcm
    triple_to_grid
+
+Deprecated Functions
+--------------------
+Crop
+^^^^
+.. currentmodule:: geocat.comp.crop
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
+
+   actual_saturation_vapor_pressure
+   max_daylight
+   psychrometric_constant
+   saturation_vapor_pressure
+   saturation_vapor_pressure_slope
+
+EOF Functions
+^^^^^^^^^^^^^
+.. currentmodule:: geocat.comp.eofunc
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
+
+   eofunc_eofs
+   eofunc_pcs
+
+Polynomial
+^^^^^^^^^^
+.. currentmodule:: geocat.comp.polynomial
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
+
+   detrend
+   ndpolyfit
+   ndpolyval
+
+Skew-T Plot Parameters
+^^^^^^^^^^^^^^^^^^^^^^
+.. currentmodule:: geocat.comp.skewt_params
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
+
+   get_skewt_vars
+   showalter_index
