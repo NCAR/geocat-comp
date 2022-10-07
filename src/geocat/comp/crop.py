@@ -9,7 +9,12 @@ def max_daylight(
                        float], lat: typing.Union[np.ndarray, xr.DataArray, list,
                                                  float]
 ) -> typing.Union[np.ndarray, xr.DataArray, float]:
-    """Computes maximum number of daylight hours as described in the Food and
+    """
+    .. deprecated 2022.10.0
+        The crop module is deprecated. psychrometric_constant has been moved
+        to the meteorology module for future use.
+
+    Computes maximum number of daylight hours as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
 
     Crop evapotranspiration - Guidelines for computing crop water
@@ -47,7 +52,9 @@ def max_daylight(
     Related NCL Functions:
     `daylight_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/daylight_fao56.shtml>`__
     """
-
+    warnings.warn(
+        "The crop module is deprecated. max_daylight has been moved to the meteorology module for future use.",
+        DeprecationWarning)
     x_out = False
     if isinstance(jday, xr.DataArray):
         x_out = True
@@ -103,7 +110,12 @@ def max_daylight(
 def psychrometric_constant(
     pressure: typing.Union[np.ndarray, xr.DataArray, list, float]
 ) -> typing.Union[np.ndarray, xr.DataArray]:
-    """Compute psychrometric constant [kPa / C] as described in the Food and
+    """
+    .. deprecated:: 2022.10.0
+        The corp module is deprecated. psychrometric_constant has been moved to
+        the meteorology module for future use.
+
+    Compute psychrometric constant [kPa / C] as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
 
     Crop evapotranspiration - Guidelines for computing crop water
@@ -147,6 +159,9 @@ def psychrometric_constant(
     Related NCL Functions:
     `psychro_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/psychro_fao56.shtml>`__
     """
+    warnings.warn(
+        "The crop module is deprecated. psychrometric_constant has been moved to the meteorology module for future use.",
+        DeprecationWarning)
 
     # Constant
     con = 0.66474e-3
@@ -174,7 +189,12 @@ def saturation_vapor_pressure(
     temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
     tfill: typing.Union[float] = np.nan
 ) -> typing.Union[np.ndarray, xr.DataArray]:
-    """Compute saturation vapor pressure as described in the Food and
+    """
+    .. deprecated:: 2022.10.0
+        The crop module is deprecated. saturation_vapor_pressure has been moved
+        to the meteorology module for future use.
+
+    Compute saturation vapor pressure as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56
     entitled:
 
@@ -220,6 +240,9 @@ def saturation_vapor_pressure(
     Related NCL Functions:
     `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>`__
     """
+    warnings.warn(
+        "The crop module is deprecated. saturation_vapor_pressure has been moved to the meteorology module for future use.",
+        DeprecationWarning)
 
     in_type = type(temperature)
 
@@ -252,7 +275,12 @@ def actual_saturation_vapor_pressure(
     tdew: typing.Union[np.ndarray, xr.DataArray, list, float],
     tfill: typing.Union[float] = np.nan
 ) -> typing.Union[np.ndarray, xr.DataArray]:
-    """ Compute 'actual' saturation vapor pressure [kPa] as described in the
+    """
+    .. deprecated:: 2022.10.0
+        The crop module is deprecated. saturation_vapor_pressure has
+        been moved to the meteorology module for future use.
+
+    Compute 'actual' saturation vapor pressure [kPa] as described in the
     Food and Agriculture Organization (FAO) Irrigation and Drainage Paper 56
     entitled:
 
@@ -296,7 +324,9 @@ def actual_saturation_vapor_pressure(
     Related NCL Functions:
     `satvpr_tdew_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_tdew_fao56.shtml>`__
     """
-
+    warnings.warn(
+        "The crop module is deprecated. saturation_vapor_pressure has been moved to the meteorology module for future use.",
+        DeprecationWarning)
     in_type = type(tdew)
 
     asvp = saturation_vapor_pressure(tdew, tfill)
@@ -315,7 +345,12 @@ def saturation_vapor_pressure_slope(
     temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
     tfill: typing.Union[float] = np.nan
 ) -> typing.Union[np.ndarray, xr.DataArray]:
-    """Compute the slope [kPa/C] of saturation vapor pressure curve as
+    """
+    .. deprecated:: 2022.10.0
+        The crop module is deprecated. saturation_vapor_pressure_slope
+        has been moved to the meteorology module for future use.
+
+    Compute the slope [kPa/C] of saturation vapor pressure curve as
     described in the Food and Agriculture Organization (FAO) Irrigation and
     Drainage Paper 56 entitled:
 
@@ -354,7 +389,9 @@ def saturation_vapor_pressure_slope(
     Related NCL Functions:
     `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>`__
     """
-
+    warnings.warn(
+        "The crop module is deprecated. saturation_vapor_pressure_slope has been moved to the meteorology module for future use.",
+        DeprecationWarning)
     in_type = type(temperature)
 
     if in_type is xr.DataArray:
