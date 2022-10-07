@@ -68,8 +68,9 @@ def ndpolyfit(x: typing.Iterable,
               deg: int,
               axis: int = 0,
               **kwargs) -> (xr.DataArray, da.Array):
-    r""".. deprecated:: 2022.10.0 `ndpolyfit` is deprecated. Use
-        `xarray.DataArray.polyfit` or `xarray.Dataset.polyfit` instead.
+    r""".. deprecated:: 2022.10.0 ``ndpolyfit`` is deprecated. Use
+        `xarray.DataArray.polyfit <https://docs.xarray.dev/en/stable/generated/xarray.DataArray.polyfit.html>`__
+        or `xarray.Dataset.polyfit <https://docs.xarray.dev/en/stable/generated/xarray.Dataset.polyfit.html>`__ instead.
 
     An extension to `numpy.polyfit` function to support multi-dimensional
     arrays, Dask arrays, and missing values.

@@ -9,8 +9,9 @@ def max_daylight(
                        float], lat: typing.Union[np.ndarray, xr.DataArray, list,
                                                  float]
 ) -> typing.Union[np.ndarray, xr.DataArray, float]:
-    r""".. deprecated:: 2022.10.0 The `crop` module is deprecated. `max_daylight`
-        has been moved to the meteorology module for future use.
+    r""".. deprecated:: 2022.10.0 The ``crop`` module is deprecated.
+        ``max_daylight`` has been moved to the ``meteorology`` module for
+        future use.
 
     Computes maximum number of daylight hours as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
@@ -108,8 +109,8 @@ def max_daylight(
 def psychrometric_constant(
     pressure: typing.Union[np.ndarray, xr.DataArray, list, float]
 ) -> typing.Union[np.ndarray, xr.DataArray]:
-    r""".. deprecated:: 2022.10.0 The `crop` module is deprecated.
-        `psychrometric_constant` has been moved to the `meteorology` module for
+    r""".. deprecated:: 2022.10.0 The ``crop`` module is deprecated.
+        ``psychrometric_constant`` has been moved to the ``meteorology`` module for
         future use.
 
     Compute psychrometric constant [kPa / C] as described in the Food and
@@ -186,8 +187,8 @@ def saturation_vapor_pressure(
     temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
     tfill: typing.Union[float] = np.nan
 ) -> typing.Union[np.ndarray, xr.DataArray]:
-    r""".. deprecated:: 2022.10.0 The `crop` module is deprecated.
-        `saturation_vapor_pressure` has been moved to the `meteorology` module
+    r""".. deprecated:: 2022.10.0 The ``crop`` module is deprecated.
+        ``saturation_vapor_pressure`` has been moved to the ``meteorology`` module
         for future use.
 
     Compute saturation vapor pressure as described in the Food and
@@ -271,8 +272,8 @@ def actual_saturation_vapor_pressure(
     tdew: typing.Union[np.ndarray, xr.DataArray, list, float],
     tfill: typing.Union[float] = np.nan
 ) -> typing.Union[np.ndarray, xr.DataArray]:
-    r""".. deprecated:: 2022.10.0 The `crop` module is deprecated.
-        `actual_saturation_vapor_pressure` has been moved to the `meteorology`
+    r""".. deprecated:: 2022.10.0 The ``crop`` module is deprecated.
+        ``actual_saturation_vapor_pressure`` has been moved to the ``meteorology``
         module for future use.
 
     Compute 'actual' saturation vapor pressure [kPa] as described in the
@@ -340,8 +341,8 @@ def saturation_vapor_pressure_slope(
     temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
     tfill: typing.Union[float] = np.nan
 ) -> typing.Union[np.ndarray, xr.DataArray]:
-    r""".. deprecated:: 2022.10.0 The `crop` module is deprecated.
-        `saturation_vapor_pressure_slope` has been moved to the `meteorology`
+    r""".. deprecated:: 2022.10.0 The ``crop`` module is deprecated.
+        ``saturation_vapor_pressure_slope`` has been moved to the ``meteorology``
         module for future use.
 
     Compute the slope [kPa/C] of saturation vapor pressure curve as

@@ -46,8 +46,8 @@ def eofunc_eofs(data,
                 ddof=1,
                 vfscaled=False,
                 meta=False):
-    r""".. deprecated:: 2022.10.0 The `eofunc` module is deprecated.
-        `eofunc_eofs` has been moved to the `stats` module for future use.
+    r""".. deprecated:: 2022.10.0 The ``eofunc`` module is deprecated.
+        ``eofunc_eofs`` has been moved to the ``stats`` module for future use.
 
     Computes empirical orthogonal functions (EOFs, aka: Principal Component
     Analysis).
@@ -213,8 +213,8 @@ def eofunc_pcs(data,
                center=True,
                ddof=1,
                meta=False):
-    r""".. deprecated:: 2022.10.0 The `eofunc` module is deprecated.
-        `eofunc_pcs` has been moved to the `stats` module for future use.
+    r""".. deprecated:: 2022.10.0 The ``eofunc`` module is deprecated.
+        ``eofunc_pcs`` has been moved to the ``stats`` module for future use.
 
     Computes the principal components (time projection) in the empirical
     orthogonal function analysis.
