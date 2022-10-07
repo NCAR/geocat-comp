@@ -510,7 +510,7 @@ def ndpolyval(p: typing.Iterable,
               x: typing.Iterable,
               axis: int = 0,
               **kwargs) -> xr.DataArray:
-    r""".. deprecated:: 2022.10.0 `ndpolyval` is deprecated and should be
+    r""".. deprecated:: 2022.10.0 ``ndpolyval`` is deprecated and should be
         replaced by `xarray.polyval <https://docs.xarray.dev/en/stable/generated/xarray.polyval.html>`__.
 
     Extended version of `numpy.polyval` to support multi-dimensional outputs
@@ -689,7 +689,7 @@ def _ndpolyval(p: np.ndarray,
 
 
 def detrend(data: typing.Iterable, deg=1, axis=0, **kwargs) -> xr.DataArray:
-    r""".. deprecated:: 2022.10.0 `detrend` is deprecated and should be
+    r""".. deprecated:: 2022.10.0 ``detrend`` is deprecated and should be
         replaced by `scipy.signal.detrend <https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.detrend.html>`__.
 
     Estimates and removes the trend of the leftmost dimension from all grid
