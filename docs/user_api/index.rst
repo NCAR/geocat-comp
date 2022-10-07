@@ -18,29 +18,6 @@ Climatologies
    climatology_average
    month_to_season
 
-Crop
-^^^^
-.. currentmodule:: geocat.comp.crop
-.. autosummary::
-   :nosignatures:
-   :toctree: ./generated/
-
-   actual_saturation_vapor_pressure
-   max_daylight
-   psychrometric_constant
-   saturation_vapor_pressure
-   saturation_vapor_pressure_slope
-
-EOF Functions
-^^^^^^^^^^^^^
-.. currentmodule:: geocat.comp.eofunc
-.. autosummary::
-   :nosignatures:
-   :toctree: ./generated/
-
-   eofunc_eofs
-   eofunc_pcs
-
 Fourier Filters
 ^^^^^^^^^^^^^^^
 .. currentmodule:: geocat.comp.fourier_filters
@@ -73,11 +50,17 @@ Meteorology
    :nosignatures:
    :toctree: ./generated/
 
+   actual_saturation_vapor_pressure
    dewtemp
    heat_index
+   max_daylight
+   psychrometric_constant
    relhum
    relhum_ice
    relhum_water
+   saturation_vapor_pressure
+   saturation_vapor_pressure_slope
+   showalter_index
 
 Polynomial
 ^^^^^^^^^^
@@ -89,16 +72,6 @@ Polynomial
    detrend
    ndpolyfit
    ndpolyval
-
-Skew-T Plot Parameters
-^^^^^^^^^^^^^^^^^^^^^^
-.. currentmodule:: geocat.comp.skewt_params
-.. autosummary::
-   :nosignatures:
-   :toctree: ./generated/
-
-   get_skewt_vars
-   showalter_index
 
 Spherical Harmonics
 ^^^^^^^^^^^^^^^^^^^
@@ -118,6 +91,8 @@ Statistics
    :nosignatures:
    :toctree: ./generated/
 
+   eofunc_eofs
+   eofunc_pcs
    pearson_r
 
 
