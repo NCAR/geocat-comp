@@ -68,7 +68,10 @@ def ndpolyfit(x: typing.Iterable,
               deg: int,
               axis: int = 0,
               **kwargs) -> (xr.DataArray, da.Array):
-    """An extension to `numpy.polyfit` function to support multi-dimensional
+    """.. deprecated:: 2022.10.0 ndpolyfit is deprecated. Use
+    xarray.DataArray.polyfit or xarray.Dataset.polyfit instead.
+
+    An extension to `numpy.polyfit` function to support multi-dimensional
     arrays, Dask arrays, and missing values.
 
     Parameters
@@ -506,7 +509,10 @@ def ndpolyval(p: typing.Iterable,
               x: typing.Iterable,
               axis: int = 0,
               **kwargs) -> xr.DataArray:
-    """Extended version of `numpy.polyval` to support multi-dimensional outputs
+    """.. deprecated:: 2022.10.0 ndpolyval is deprecated and should be replaced
+    by xarray.polyval.
+
+    Extended version of `numpy.polyval` to support multi-dimensional outputs
     provided by `geocat.comp.ndpolyfit`.
 
     As the name suggest, this version supports a multi-dimensional `p` array. Let's say `p` is of dimension `(s0,s1,s2)`
@@ -682,7 +688,10 @@ def _ndpolyval(p: np.ndarray,
 
 
 def detrend(data: typing.Iterable, deg=1, axis=0, **kwargs) -> xr.DataArray:
-    """Estimates and removes the trend of the leftmost dimension from all grid
+    """.. deprecated:: 2022.10.0 detrend is deprecated and should be replaced
+    by scipy.signal.detrend.
+
+    Estimates and removes the trend of the leftmost dimension from all grid
     points. This method, at the minimum, provides all the functionality that is
     provided by NCL's 'dtrend', 'dtrend_quadratic', 'dtrend_quadratic_msg_n',
     'dtrend_msg_n', 'dtrend_msg', 'dtrend_n'. However, this function is not
