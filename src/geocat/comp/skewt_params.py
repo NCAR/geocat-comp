@@ -9,8 +9,8 @@ import warnings
 
 def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
                     dewpt: pint.Quantity) -> pint.Quantity:
-    r""".. deprecated:: 2022.10.0 The skewt_params module is deprecated, and
-        showalter_index() has been moved to the meteorology module for future
+    r""".. deprecated:: 2022.10.0 The `skewt_params` module is deprecated, and
+        `showalter_index` has been moved to the `meteorology` module for future
         use.
 
     Calculate Showalter Index from pressure temperature and 850 hPa lcl.
@@ -48,8 +48,8 @@ def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
 
 def get_skewt_vars(p: pint.Quantity, tc: pint.Quantity, tdc: pint.Quantity,
                    pro: pint.Quantity) -> str:
-    r""".. deprecated:: 2022.10.0 The skewt_params module is deprecated, and
-        get_skewt_vars() has been moved to the
+    r""".. deprecated:: 2022.10.0 The `skewt_params` module is deprecated, and
+        `get_skewt_vars` has been moved to the
         `geocat.viz <https://geocat-viz.readthedocs.io/en/latest/index.html>`_
         package for future use.
 
