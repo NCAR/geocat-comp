@@ -46,7 +46,10 @@ def eofunc_eofs(data,
                 ddof=1,
                 vfscaled=False,
                 meta=False):
-    """Computes empirical orthogonal functions (EOFs, aka: Principal Component
+    """.. deprecated:: 2022.10.0 The eofunc module is deprecated. eofunc_eofs
+    has been moved to the stats module for future use.
+
+    Computes empirical orthogonal functions (EOFs, aka: Principal Component
     Analysis).
 
     Note: `eofunc_eofs` allows to perform the EOF analysis that was previously done via the NCL function `eofunc`.
@@ -161,7 +164,9 @@ def eofunc_eofs(data,
     `eofunc_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc_n.shtml>`__,
     `eofunc_n_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_n_Wrap.shtml>`__
     """
-
+    warnings.warn(
+        "The eofunc module is deprecated. eofunc_eofs has been moved to the stats module for future use.",
+        DeprecationWarning)
     data, solver = _generate_eofs_solver(data,
                                          time_dim=time_dim,
                                          weights=weights,
@@ -208,7 +213,10 @@ def eofunc_pcs(data,
                center=True,
                ddof=1,
                meta=False):
-    """Computes the principal components (time projection) in the empirical
+    """.. deprecated:: 2022.10.0 The eofunc module is deprecated. eofunc_pcs
+    has been moved to the stats module for future use.
+
+    Computes the principal components (time projection) in the empirical
     orthogonal function analysis.
 
     Note: `eofunc_pcs` allows to perform the analysis that was previously done via the NCL function `eofunc_ts`.
@@ -291,7 +299,9 @@ def eofunc_pcs(data,
     `eofunc_ts_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc_ts_n.shtml>`__,
     `eofunc_ts_n_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_ts_n_Wrap.shtml>`__
     """
-
+    warnings.warn(
+        "The eofunc module is deprecated. eofunc_pcs has been moved to the stats module for future use.",
+        DeprecationWarning)
     data, solver = _generate_eofs_solver(data,
                                          time_dim=time_dim,
                                          weights=weights,
