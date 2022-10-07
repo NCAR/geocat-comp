@@ -9,8 +9,7 @@ def max_daylight(
                        float], lat: typing.Union[np.ndarray, xr.DataArray, list,
                                                  float]
 ) -> typing.Union[np.ndarray, xr.DataArray, float]:
-    """
-    .. deprecated 2022.10.0 The crop module is deprecated.
+    """.. deprecated 2022.10.0 The crop module is deprecated.
     psychrometric_constant has been moved to the meteorology module for future
     use.
 
