@@ -7,6 +7,7 @@ from metpy.units import units
 import warnings
 import geocat.comp.meteorology as gcm
 
+
 def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
                     dewpt: pint.Quantity) -> pint.Quantity:
     r""".. deprecated:: 2022.10.0 The ``skewt_params`` module is deprecated, and

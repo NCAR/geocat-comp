@@ -5,6 +5,7 @@ import xarray as xr
 
 import geocat.comp.meteorology as gcm
 
+
 def max_daylight(
     jday: typing.Union[np.ndarray, xr.DataArray, list,
                        float], lat: typing.Union[np.ndarray, xr.DataArray, list,
@@ -115,6 +116,7 @@ def psychrometric_constant(
         DeprecationWarning)
 
     return gcm.psychrometric_constant(pressure)
+
 
 def saturation_vapor_pressure(
     temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
