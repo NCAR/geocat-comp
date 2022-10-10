@@ -106,6 +106,7 @@ class Test_interp_hybrid_to_pressure(TestCase):
 
         nt.assert_array_almost_equal(self.uzon_expected, uzon, 5)
 
+
 class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
     # Open the netCDF data file with the input data
     try:
@@ -135,8 +136,9 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
     humidity_extrap_expected = ds_out.Qpx.rename(lev_p='plev')
 
     new_levels = np.asarray([500, 925, 950, 1000])
-    new_levels *= 100 # new levels in Pa
-    _p0 = 1000 * 100 # reference pressure in Pa
+    new_levels *= 100  # new levels in Pa
+    _p0 = 1000 * 100  # reference pressure in Pa
+
     def test_interp_hybrid_to_pressure_interp_temp(self):
         result = interp_hybrid_to_pressure(self.temp_in,
                                            self.press_in,
@@ -165,7 +167,6 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
         result = result.assign_coords(dict(plev=self.new_levels / 100))
         print((self.temp_extrap_expected - result).compute())
         xr.testing.assert_allclose(self.temp_extrap_expected, result)
-
 
     def test_interp_hybrid_to_pressure_extrap_geopotential(self):
         result = interp_hybrid_to_pressure(self.geopotential_in,
@@ -199,6 +200,7 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
         result = result.transpose('time', 'plev', 'lat', 'lon')
         result = result.assign_coords(dict(plev=self.new_levels / 100))
         xr.testing.assert_allclose(self.humidity_extrap_expected, result)
+
 
 class Test_interp_sigma_to_hybrid(TestCase):
     hyam = xr.DataArray([0.0108093, 0.0130731, 0.03255911, 0.0639471])
