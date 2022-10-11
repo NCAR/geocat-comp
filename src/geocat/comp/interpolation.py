@@ -134,12 +134,12 @@ def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0):
     return func_interpolate(new_levels, xcoords, data, axis=interp_axis)
 
 
-def _temp_extrapolate(lev, p_sfc, t_sfc, phi_sfc):
+def _temp_extrapolate(data, lev_dim, lev, p_sfc, ps, phi_sfc):
     R_d = 287.04  # dry air gas constant
     g_inv = 1 / 9.80616  # inverse of gravity
     alpha = 0.0065 * R_d * g_inv
 
-    tstar = t_sfc  # 2nd term in eqn 5 is 0 in this case since we already know the surface temperature
+    tstar = data.isel(**{lev_dim:-1}) * (1 + alpha * (ps / p_sfc - 1))
     hgt = phi_sfc * g_inv
     t0 = tstar + 0.0065 * hgt
     tplat = xr.apply_ufunc(np.minimum, 298, t0, dask='parallelized')
@@ -149,8 +149,8 @@ def _temp_extrapolate(lev, p_sfc, t_sfc, phi_sfc):
                        np.nan)
     tprime0 = xr.where(2500 < hgt, tplat, np.nan)
 
-    alnp = xr.where(hgt < 2000, alpha * np.log(lev / p_sfc),
-                    R_d * (tprime0 - tstar) / phi_sfc * np.log(lev / p_sfc))
+    alnp = xr.where(hgt < 2000, alpha * np.log(lev / ps),
+                    R_d * (tprime0 - tstar) / phi_sfc * np.log(lev / ps))
     alnp = xr.where(tprime0 < tstar, 0, alnp)
 
     return tstar * (1 + alnp + (0.5 * (alnp**2)) + (1 / 6 * (alnp**3)))
@@ -179,7 +179,7 @@ def _geo_height_extrapolate(lev, p_sfc, t_sfc, phi_sfc):
         lev / p_sfc) * (1 + 0.5 * alnp + 1 / 6 * alnp**2)
 
 
-def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure,
+def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, ps,
                            variable, t_sfc, phi_sfc):
     # TODO: check for appropriate input values
     plev_name = pressure.cf['vertical'].name
@@ -191,7 +191,7 @@ def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure,
         for lev in new_levels:
             output.loc[dict(plev=lev)] = xr.where(
                 lev <= p_sfc, output.sel(plev=lev),
-                _temp_extrapolate(lev, p_sfc, t_sfc, phi_sfc))
+                _temp_extrapolate(data, lev_dim, lev, p_sfc, ps, phi_sfc))
 
     elif variable == 'geopotential':
         for lev in new_levels:
@@ -373,7 +373,7 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
 
     if extrapolate:
         output = _vertical_remap_extrap(new_levels, lev_dim, data, output,
-                                        pressure, variable, t_sfc, phi_sfc)
+                                        pressure, ps, variable, t_sfc, phi_sfc)
 
     return output
 
