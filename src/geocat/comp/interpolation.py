@@ -259,15 +259,18 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
 
     variable : str, optional
         String representing what variable is extrapolated below surface level.
-        Required if extrapolate is True. Temperature extrapolation = "temperature".
-        Geopotential height extrapolation = "geopotential". All other variables = "other".
-        If "other", the value of ``data`` at the lowest model level will be used as the
-        below ground fill value.
+        Temperature extrapolation = "temperature". Geopotential height
+        extrapolation = "geopotential". All other variables = "other". If
+        "other", the value of ``data`` at the lowest model level will be used
+        as the below ground fill value. Required if extrapolate is True.
 
     t_bot : :class:`xarray.DataArray`, optional
+        Temperature in Kelvin at the lowest layer of the model. Not necessarily
+        the same as surface temperature. Required if extrapolate is True.
 
-
-    phi_sfc: :class:`xarray.DataArray`
+    phi_sfc: :class:`xarray.DataArray`, optional
+        Geopotential in J/kg at the lowest layer of the model. Not necessarily
+        the same as surface geopotential. Required if extrapolate is True.
 
     Returns
     -------

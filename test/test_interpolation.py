@@ -124,7 +124,7 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
     _hyam = ds_ccsm.hyam
     _hybm = ds_ccsm.hybm
     temp_in = ds_ccsm.T[:, :, :3, :2]
-    temp_sfc_in = ds_ccsm.TS[:, :3, :2]
+    t_bot = ds_ccsm.TS[:, :3, :2]
     geopotential_in = ds_ccsm.Z3[:, :, :3, :2]
     humidity_in = ds_ccsm.Q[:, :, :3, :2] * 1000  # g/kg
     press_in = ds_ccsm.PS[:, :3, :2]
@@ -161,7 +161,7 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
                                            method="linear",
                                            extrapolate=True,
                                            variable='temperature',
-                                           t_bot=self.temp_sfc_in,
+                                           t_bot=self.t_bot,
                                            phi_sfc=self.phis)
         result = result.transpose('time', 'plev', 'lat', 'lon')
         result = result.assign_coords(dict(plev=self.new_levels / 100))
@@ -177,7 +177,7 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
                                            method="linear",
                                            extrapolate=True,
                                            variable='geopotential',
-                                           t_bot=self.temp_sfc_in,
+                                           t_bot=self.t_bot,
                                            phi_sfc=self.phis)
         result = result.transpose('time', 'plev', 'lat', 'lon')
         result = result.assign_coords(dict(plev=self.new_levels / 100))
@@ -194,7 +194,7 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
                                            method="linear",
                                            extrapolate=True,
                                            variable='other',
-                                           t_bot=self.temp_sfc_in,
+                                           t_bot=self.t_bot,
                                            phi_sfc=self.phis)
         result = result.transpose('time', 'plev', 'lat', 'lon')
         result = result.assign_coords(dict(plev=self.new_levels / 100))
