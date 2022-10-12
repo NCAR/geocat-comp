@@ -51,13 +51,9 @@ class Test_interp_hybrid_to_pressure(TestCase):
     u_int_expected = ds_out.u_int  # Expected output
 
     def test_interp_hybrid_to_pressure_atmos(self):
-        u_int = interp_hybrid_to_pressure(self.data,
-                                          self.ps[0, :, :],
-                                          _hyam,
-                                          _hybm,
-                                          p0=_p0,
-                                          new_levels=self.pres3d,
-                                          method="log")
+        u_int = interp_hybrid_to_pressure(self.data, self.ps[0, :, :], _hyam,
+                                          _hybm, p0=_p0,
+                                          new_levels=self.pres3d, method="log")
 
         uzon = u_int.mean(dim='lon')
 
@@ -66,12 +62,8 @@ class Test_interp_hybrid_to_pressure(TestCase):
     def test_interp_hybrid_to_pressure_atmos_4d(self):
         data_t = self.data.expand_dims("time")
 
-        u_int = interp_hybrid_to_pressure(data_t,
-                                          self.ps,
-                                          _hyam,
-                                          _hybm,
-                                          p0=_p0,
-                                          new_levels=self.pres3d,
+        u_int = interp_hybrid_to_pressure(data_t, self.ps, _hyam, _hybm,
+                                          p0=_p0, new_levels=self.pres3d,
                                           method="log")
 
         uzon = u_int.mean(dim='lon')
@@ -81,11 +73,8 @@ class Test_interp_hybrid_to_pressure(TestCase):
 
     def test_interp_hybrid_to_pressure_atmos_wrong_method(self):
         with nt.assert_raises(ValueError):
-            u_int = interp_hybrid_to_pressure(self.data,
-                                              self.ps[0, :, :],
-                                              _hyam,
-                                              _hybm,
-                                              p0=_p0,
+            u_int = interp_hybrid_to_pressure(self.data, self.ps[0, :, :],
+                                              _hyam, _hybm, p0=_p0,
                                               new_levels=self.pres3d,
                                               method="wrong_method")
 
@@ -94,13 +83,9 @@ class Test_interp_hybrid_to_pressure(TestCase):
         ps_dask = self.ps.chunk()
         data_dask = self.data.chunk()
 
-        u_int = interp_hybrid_to_pressure(data_dask,
-                                          ps_dask[0, :, :],
-                                          _hyam,
-                                          _hybm,
-                                          p0=_p0,
-                                          new_levels=self.pres3d,
-                                          method="log")
+        u_int = interp_hybrid_to_pressure(data_dask, ps_dask[0, :, :], _hyam,
+                                          _hybm, p0=_p0,
+                                          new_levels=self.pres3d, method="log")
 
         uzon = u_int.mean(dim='lon')
 
@@ -140,11 +125,8 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
     _p0 = 1000 * 100  # reference pressure in Pa
 
     def test_interp_hybrid_to_pressure_interp_temp(self):
-        result = interp_hybrid_to_pressure(self.temp_in,
-                                           self.press_in,
-                                           self._hyam,
-                                           self._hybm,
-                                           p0=self._p0,
+        result = interp_hybrid_to_pressure(self.temp_in, self.press_in,
+                                           self._hyam, self._hybm, p0=self._p0,
                                            new_levels=self.new_levels,
                                            method="linear")
         result = result.transpose('time', 'plev', 'lat', 'lon')
@@ -152,32 +134,24 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
         xr.testing.assert_allclose(self.temp_interp_expected, result)
 
     def test_interp_hybrid_to_pressure_extrap_temp(self):
-        result = interp_hybrid_to_pressure(self.temp_in,
-                                           self.press_in,
-                                           self._hyam,
-                                           self._hybm,
-                                           p0=self._p0,
+        result = interp_hybrid_to_pressure(self.temp_in, self.press_in,
+                                           self._hyam, self._hybm, p0=self._p0,
                                            new_levels=self.new_levels,
-                                           method="linear",
-                                           extrapolate=True,
+                                           method="linear", extrapolate=True,
                                            variable='temperature',
-                                           t_sfc=self.temp_sfc_in,
+                                           t_bot=self.temp_sfc_in,
                                            phi_sfc=self.phis)
         result = result.transpose('time', 'plev', 'lat', 'lon')
         result = result.assign_coords(dict(plev=self.new_levels / 100))
         xr.testing.assert_allclose(self.temp_extrap_expected, result)
 
     def test_interp_hybrid_to_pressure_extrap_geopotential(self):
-        result = interp_hybrid_to_pressure(self.geopotential_in,
-                                           self.press_in,
-                                           self._hyam,
-                                           self._hybm,
-                                           p0=self._p0,
+        result = interp_hybrid_to_pressure(self.geopotential_in, self.press_in,
+                                           self._hyam, self._hybm, p0=self._p0,
                                            new_levels=self.new_levels,
-                                           method="linear",
-                                           extrapolate=True,
+                                           method="linear", extrapolate=True,
                                            variable='geopotential',
-                                           t_sfc=self.temp_sfc_in,
+                                           t_bot=self.temp_sfc_in,
                                            phi_sfc=self.phis)
         result = result.transpose('time', 'plev', 'lat', 'lon')
         result = result.assign_coords(dict(plev=self.new_levels / 100))
@@ -185,16 +159,12 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
         xr.testing.assert_allclose(self.geopotential_extrap_expected, result)
 
     def test_interp_hybrid_to_pressure_extrap_other(self):
-        result = interp_hybrid_to_pressure(self.humidity_in,
-                                           self.press_in,
-                                           self._hyam,
-                                           self._hybm,
-                                           p0=self._p0,
+        result = interp_hybrid_to_pressure(self.humidity_in, self.press_in,
+                                           self._hyam, self._hybm, p0=self._p0,
                                            new_levels=self.new_levels,
-                                           method="linear",
-                                           extrapolate=True,
+                                           method="linear", extrapolate=True,
                                            variable='other',
-                                           t_sfc=self.temp_sfc_in,
+                                           t_bot=self.temp_sfc_in,
                                            phi_sfc=self.phis)
         result = result.transpose('time', 'plev', 'lat', 'lon')
         result = result.assign_coords(dict(plev=self.new_levels / 100))

@@ -156,12 +156,12 @@ def _temp_extrapolate(data, lev_dim, lev, p_sfc, ps, phi_sfc):
     return tstar * (1 + alnp + (0.5 * (alnp**2)) + (1 / 6 * (alnp**3)))
 
 
-def _geo_height_extrapolate(lev, p_sfc, t_sfc, phi_sfc):
+def _geo_height_extrapolate(t_bot, lev, p_sfc, ps, phi_sfc):
     R_d = 287.04  # dry air gas constant
     g_inv = 1 / 9.80616  # inverse of gravity
     alpha = 0.0065 * R_d * g_inv
 
-    tstar = t_sfc  # 2nd term in eqn 5 is 0 in this case since we already know the surface temperature
+    tstar = t_bot * (1 + alpha * (ps / p_sfc - 1))
     hgt = phi_sfc * g_inv
     t0 = tstar + 0.0065 * hgt
 
@@ -174,13 +174,13 @@ def _geo_height_extrapolate(lev, p_sfc, t_sfc, phi_sfc):
 
     tstar = xr.where((tstar < 255), 0.5 * (tstar + 255), tstar)
 
-    alnp = alph * np.log(lev / p_sfc)
+    alnp = alph * np.log(lev / ps)
     return hgt - R_d * tstar * g_inv * np.log(
-        lev / p_sfc) * (1 + 0.5 * alnp + 1 / 6 * alnp**2)
+        lev / ps) * (1 + 0.5 * alnp + 1 / 6 * alnp**2)
 
 
 def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, ps,
-                           variable, t_sfc, phi_sfc):
+                           variable, t_bot, phi_sfc):
     # TODO: check for appropriate input values
     plev_name = pressure.cf['vertical'].name
     sfc_index = pressure[plev_name].argmax().data  # index of the model surface
@@ -197,7 +197,7 @@ def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, ps,
         for lev in new_levels:
             output.loc[dict(plev=lev)] = xr.where(
                 lev <= p_sfc, output.sel(plev=lev),
-                _geo_height_extrapolate(lev, p_sfc, t_sfc, phi_sfc))
+                _geo_height_extrapolate(t_bot, lev, p_sfc, ps, phi_sfc))
     else:
         for lev in new_levels:
             output.loc[dict(plev=lev)] = xr.where(
@@ -216,7 +216,7 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
                               method: str = 'linear',
                               extrapolate: bool = False,
                               variable: str = None,
-                              t_sfc: xr.DataArray = None,
+                              t_bot: xr.DataArray = None,
                               phi_sfc: xr.DataArray = None) -> xr.DataArray:
     """Interpolate data from hybrid-sigma levels to isobaric levels. Keeps
     attributes (i.e. meta information) of the input data in the output as
@@ -373,7 +373,7 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
 
     if extrapolate:
         output = _vertical_remap_extrap(new_levels, lev_dim, data, output,
-                                        pressure, ps, variable, t_sfc, phi_sfc)
+                                        pressure, ps, variable, t_bot, phi_sfc)
 
     return output
 
