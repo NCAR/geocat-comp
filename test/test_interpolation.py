@@ -9,12 +9,12 @@ import xarray as xr
 
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
-if "--cov" in str(sys.argv):
-    from src.geocat.comp import interp_multidim, interp_hybrid_to_pressure, \
+#if "--cov" in str(sys.argv):
+from src.geocat.comp import interp_multidim, interp_hybrid_to_pressure, \
         interp_sigma_to_hybrid
-else:
-    from geocat.comp import interp_multidim, interp_hybrid_to_pressure, \
-        interp_sigma_to_hybrid
+#else:
+#    from geocat.comp import interp_multidim, interp_hybrid_to_pressure, \
+#        interp_sigma_to_hybrid
 
 # Global input data
 
@@ -114,11 +114,11 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
             gdf.get("netcdf_files/ccsm35.h0.0021-01.demo.nc"),
             decode_times=False)
     except:
-        ds_ccsm = xr.open_dataset("ccsm35.h0.0021-01.demo.nc",
+        ds_ccsm = xr.open_dataset("test/ccsm35.h0.0021-01.demo.nc",
                                   decode_times=False)
 
     # Open the netCDF file with the output data from running vinth2p_ecmwf.ncl
-    ds_out = xr.open_dataset("vinth2p_ecmwf_output.nc", decode_times=False)
+    ds_out = xr.open_dataset("test/vinth2p_ecmwf_output.nc", decode_times=False)
 
     # Pull out inputs
     _hyam = ds_ccsm.hyam

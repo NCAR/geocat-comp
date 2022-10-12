@@ -254,6 +254,21 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
     method : str, optional
         String that is the interpolation method; can be either "linear" or "log". Defaults to "linear".
 
+    extrapolate : bool, optional
+        If True, below ground extrapolation for ``variable`` will be done. Defaults to False.
+
+    variable : str, optional
+        String representing what variable is extrapolated below surface level.
+        Required if extrapolate is True. Temperature extrapolation = "temperature".
+        Geopotential height extrapolation = "geopotential". All other variables = "other".
+        If "other", the value of ``data`` at the lowest model level will be used as the
+        below ground fill value.
+
+    t_bot : :class:`xarray.DataArray`, optional
+
+
+    phi_sfc: :class:`xarray.DataArray`
+
     Returns
     -------
     output : :class:`xarray.DataArray`
