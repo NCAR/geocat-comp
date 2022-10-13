@@ -12,7 +12,8 @@ def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
                     dewpt: pint.Quantity) -> pint.Quantity:
     r""".. deprecated:: 2022.10.0 The ``skewt_params`` module is deprecated, and
         ``showalter_index`` has been moved to the ``meteorology`` module for future
-        use.
+        use. Use ``geocat.comp.showalter_index`` or ``geocat.comp.meteorology.showalter_index``
+        for the same functionality.
 
     Calculate Showalter Index from pressure temperature and 850 hPa lcl.
     Showalter Index derived from `Gallway 1956 <https://journals.ametsoc.org/do
@@ -41,8 +42,10 @@ def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
        Showalter index in delta degrees celsius
     """
     warnings.warn(
-        "The skewt_params module is deprecated, and showalter_index() has been moved to the meteorology module for future use.",
-        DeprecationWarning)
+        "The ``skewt_params`` module is deprecated, and "
+        "``showalter_index`` has been moved to the ``meteorology`` module for future "
+        "use. Use ``geocat.comp.showalter_index`` or ``geocat.comp.meteorology.showalter_index`` "
+        "for the same functionality.", DeprecationWarning)
     return gc.meteorology.showalter_index(pressure, temperature, dewpt)
 
 
@@ -89,7 +92,8 @@ def get_skewt_vars(p: pint.Quantity, tc: pint.Quantity, tdc: pint.Quantity,
     `skewt_BackGround <https://www.ncl.ucar.edu/Document/Functions/Skewt_func/skewT_BackGround.shtml>`__
     """
     warnings.warn(
-        "The skewt_params module is deprecated, and get_skewt_vars() has been moved to the geocat.viz package for future use.",
+        "The ``skewt_params`` module is deprecated, and ``get_skewt_vars`` has "
+        "been moved to the geocat.viz package for future use.",
         DeprecationWarning)
 
     # CAPE

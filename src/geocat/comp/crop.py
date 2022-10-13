@@ -13,7 +13,8 @@ def max_daylight(
 ) -> typing.Union[np.ndarray, xr.DataArray, float]:
     r""".. deprecated:: 2022.10.0 The ``crop`` module is deprecated.
         ``max_daylight`` has been moved to the ``meteorology`` module for
-        future use.
+        future use. Use ``geocat.comp.max_daylight`` or ``geocat.comp.meteorology.max_daylight``
+        for the same functionality.
 
     Computes maximum number of daylight hours as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
@@ -54,7 +55,9 @@ def max_daylight(
     `daylight_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/daylight_fao56.shtml>`__
     """
     warnings.warn(
-        "The crop module is deprecated. max_daylight has been moved to the meteorology module for future use.",
+        "The ``crop`` module is deprecated. ``max_daylight`` has been moved to "
+        "the ``meteorology`` module for future use. Use ``geocat.comp.max_daylight`` "
+        "or ``geocat.comp.meteorology.max_daylight`` for the same functionality.",
         DeprecationWarning)
 
     return gc.meteorology.max_daylight(jday, lat)
@@ -65,7 +68,8 @@ def psychrometric_constant(
 ) -> typing.Union[np.ndarray, xr.DataArray]:
     r""".. deprecated:: 2022.10.0 The ``crop`` module is deprecated.
         ``psychrometric_constant`` has been moved to the ``meteorology`` module for
-        future use.
+        future use. Use ``geocat.comp.psychrometric_constant`` or ``geocat.comp.meteorology.psychrometric_constant``
+        for the same functionality.
 
     Compute psychrometric constant [kPa / C] as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
@@ -112,8 +116,11 @@ def psychrometric_constant(
     `psychro_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/psychro_fao56.shtml>`__
     """
     warnings.warn(
-        "The crop module is deprecated. psychrometric_constant has been moved to the meteorology module for future use.",
-        DeprecationWarning)
+        "The ``crop`` module is deprecated. ``psychrometric_constant`` has "
+        "been moved to the ``meteorology`` module for future use. Use "
+        "``geocat.comp.psychrometric_constant`` or "
+        "``geocat.comp.meteorology.psychrometric_constant`` for the same "
+        "functionality.", DeprecationWarning)
 
     return gc.meteorology.psychrometric_constant(pressure)
 
@@ -123,8 +130,10 @@ def saturation_vapor_pressure(
     tfill: typing.Union[float] = np.nan
 ) -> typing.Union[np.ndarray, xr.DataArray]:
     r""".. deprecated:: 2022.10.0 The ``crop`` module is deprecated.
-        ``saturation_vapor_pressure`` has been moved to the ``meteorology`` module
-        for future use.
+        ``saturation_vapor_pressure`` has been moved to the ``meteorology``
+        module for future use. Use ``geocat.comp.saturation_vapor_pressure`` or
+        ``geocat.comp.meteorology.saturation_vapor_pressure`` for the same
+        functionality.
 
     Compute saturation vapor pressure as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56
@@ -173,8 +182,11 @@ def saturation_vapor_pressure(
     `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>`__
     """
     warnings.warn(
-        "The crop module is deprecated. saturation_vapor_pressure has been moved to the meteorology module for future use.",
-        DeprecationWarning)
+        "The ``crop`` module is deprecated. "
+        "``saturation_vapor_pressure`` has been moved to the ``meteorology`` "
+        "module for future use. Use ``geocat.comp.saturation_vapor_pressure`` or "
+        "``geocat.comp.meteorology.saturation_vapor_pressure`` for the same "
+        "functionality.", DeprecationWarning)
 
     return gc.meteorology.saturation_vapor_pressure(temperature, tfill)
 
@@ -185,7 +197,9 @@ def actual_saturation_vapor_pressure(
 ) -> typing.Union[np.ndarray, xr.DataArray]:
     r""".. deprecated:: 2022.10.0 The ``crop`` module is deprecated.
         ``actual_saturation_vapor_pressure`` has been moved to the ``meteorology``
-        module for future use.
+        module for future use. Use ``geocat.comp.actual_saturation_vapor_pressure``
+        or ``geocat.compmeteorology.actual_saturation_vapor_pressure`` for the
+        same functionality.
 
     Compute 'actual' saturation vapor pressure [kPa] as described in the
     Food and Agriculture Organization (FAO) Irrigation and Drainage Paper 56
@@ -232,8 +246,11 @@ def actual_saturation_vapor_pressure(
     `satvpr_tdew_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_tdew_fao56.shtml>`__
     """
     warnings.warn(
-        "The crop module is deprecated. actual_saturation_vapor_pressure has been moved to the meteorology module for future use.",
-        DeprecationWarning)
+        "The ``crop`` module is deprecated. "
+        "``actual_saturation_vapor_pressure`` has been moved to the ``meteorology`` "
+        "module for future use. Use ``geocat.comp.actual_saturation_vapor_pressure`` "
+        "or ``geocat.compmeteorology.actual_saturation_vapor_pressure`` for the "
+        "same functionality.", DeprecationWarning)
 
     return gc.meteorology.actual_saturation_vapor_pressure(tdew, tfill)
 
@@ -244,7 +261,9 @@ def saturation_vapor_pressure_slope(
 ) -> typing.Union[np.ndarray, xr.DataArray]:
     r""".. deprecated:: 2022.10.0 The ``crop`` module is deprecated.
         ``saturation_vapor_pressure_slope`` has been moved to the ``meteorology``
-        module for future use.
+        module for future use. Use ``geocat.comp.saturation_vapor_pressure_slope``
+        or ``geocat.comp.meteorology.saturation_vapor_pressure_slope`` for the
+        same functionality.
 
     Compute the slope [kPa/C] of saturation vapor pressure curve as
     described in the Food and Agriculture Organization (FAO) Irrigation and
@@ -286,7 +305,10 @@ def saturation_vapor_pressure_slope(
     `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>`__
     """
     warnings.warn(
-        "The crop module is deprecated. saturation_vapor_pressure_slope has been moved to the meteorology module for future use.",
-        DeprecationWarning)
+        "The ``crop`` module is deprecated. "
+        "``saturation_vapor_pressure_slope`` has been moved to the ``meteorology`` "
+        "module for future use. Use ``geocat.comp.saturation_vapor_pressure_slope`` "
+        "or ``geocat.comp.meteorology.saturation_vapor_pressure_slope`` for the "
+        "same functionality.", DeprecationWarning)
 
     return gc.meteorology.saturation_vapor_pressure_slope(temperature, tfill)

@@ -49,6 +49,8 @@ def eofunc_eofs(data,
                 meta=False):
     r""".. deprecated:: 2022.10.0 The ``eofunc`` module is deprecated.
         ``eofunc_eofs`` has been moved to the ``stats`` module for future use.
+        Use ``geocat.comp.eofunc_eofs`` or ``geocat.comp.stats.eofunc_eofs``
+        for the same functionality.
 
     Computes empirical orthogonal functions (EOFs, aka: Principal Component
     Analysis).
@@ -166,10 +168,12 @@ def eofunc_eofs(data,
     `eofunc_n_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_n_Wrap.shtml>`__
     """
     warnings.warn(
-        "The eofunc module is deprecated. eofunc_eofs has been moved to the stats module for future use.",
+        "The ``eofunc`` module is deprecated. ``eofunc_eofs`` has been moved to "
+        "the ``stats`` module for future use. Use ``geocat.comp.eofunc_eofs`` "
+        "or ``geocat.comp.stats.eofunc_eofs`` for the same functionality.",
         DeprecationWarning)
     return gc.stats.eofunc_eofs(data, neofs, time_dim, eofscaling, weights,
-                              center, ddof, vfscaled, meta)
+                                center, ddof, vfscaled, meta)
 
 
 def eofunc_pcs(data,
@@ -182,6 +186,8 @@ def eofunc_pcs(data,
                meta=False):
     r""".. deprecated:: 2022.10.0 The ``eofunc`` module is deprecated.
         ``eofunc_pcs`` has been moved to the ``stats`` module for future use.
+        Use ``geocat.comp.eofunc_pcs`` or ``geocat.comp.stats.eofunc_pcs`` for
+        the same functionality.
 
     Computes the principal components (time projection) in the empirical
     orthogonal function analysis.
@@ -267,11 +273,13 @@ def eofunc_pcs(data,
     `eofunc_ts_n_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_ts_n_Wrap.shtml>`__
     """
     warnings.warn(
-        "The eofunc module is deprecated. eofunc_pcs has been moved to the stats module for future use.",
+        "The ``eofunc`` module is deprecated. ``eofunc_pcs`` has been moved to "
+        "the ``stats`` module for future use. Use ``geocat.comp.eofunc_pcs`` or "
+        "``geocat.comp.stats.eofunc_pcs`` for the same functionality.",
         DeprecationWarning)
 
     return gc.stats.eofunc_pcs(data, npcs, time_dim, pcscaling, weights, center,
-                             ddof, meta)
+                               ddof, meta)
 
 
 # Transparent wrappers for geocat.comp backwards compatibility
