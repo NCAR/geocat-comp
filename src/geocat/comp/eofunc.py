@@ -4,7 +4,7 @@ from typing import Iterable
 import numpy as np
 import xarray as xr
 from eofs.xarray import Eof
-import geocat.comp.stats as gcstat
+import geocat.comp as gc
 
 
 def _generate_eofs_solver(data, time_dim=0, weights=None, center=True, ddof=1):
@@ -168,7 +168,7 @@ def eofunc_eofs(data,
     warnings.warn(
         "The eofunc module is deprecated. eofunc_eofs has been moved to the stats module for future use.",
         DeprecationWarning)
-    return gcstat.eofunc_eofs(data, neofs, time_dim, eofscaling, weights,
+    return gc.stats.eofunc_eofs(data, neofs, time_dim, eofscaling, weights,
                               center, ddof, vfscaled, meta)
 
 
@@ -270,7 +270,7 @@ def eofunc_pcs(data,
         "The eofunc module is deprecated. eofunc_pcs has been moved to the stats module for future use.",
         DeprecationWarning)
 
-    return gcstat.eofunc_pcs(data, npcs, time_dim, pcscaling, weights, center,
+    return gc.stats.eofunc_pcs(data, npcs, time_dim, pcscaling, weights, center,
                              ddof, meta)
 
 

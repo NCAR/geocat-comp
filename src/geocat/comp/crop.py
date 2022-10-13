@@ -3,7 +3,7 @@ import typing
 import warnings
 import xarray as xr
 
-import geocat.comp.meteorology as gcm
+import geocat.comp as gc
 
 
 def max_daylight(
@@ -57,7 +57,7 @@ def max_daylight(
         "The crop module is deprecated. max_daylight has been moved to the meteorology module for future use.",
         DeprecationWarning)
 
-    return gcm.max_daylight(jday, lat)
+    return gc.meteorology.max_daylight(jday, lat)
 
 
 def psychrometric_constant(
@@ -115,7 +115,7 @@ def psychrometric_constant(
         "The crop module is deprecated. psychrometric_constant has been moved to the meteorology module for future use.",
         DeprecationWarning)
 
-    return gcm.psychrometric_constant(pressure)
+    return gc.meteorology.psychrometric_constant(pressure)
 
 
 def saturation_vapor_pressure(
@@ -176,7 +176,7 @@ def saturation_vapor_pressure(
         "The crop module is deprecated. saturation_vapor_pressure has been moved to the meteorology module for future use.",
         DeprecationWarning)
 
-    return gcm.saturation_vapor_pressure(temperature, tfill)
+    return gc.meteorology.saturation_vapor_pressure(temperature, tfill)
 
 
 def actual_saturation_vapor_pressure(
@@ -235,7 +235,7 @@ def actual_saturation_vapor_pressure(
         "The crop module is deprecated. actual_saturation_vapor_pressure has been moved to the meteorology module for future use.",
         DeprecationWarning)
 
-    return gcm.actual_saturation_vapor_pressure(tdew, tfill)
+    return gc.meteorology.actual_saturation_vapor_pressure(tdew, tfill)
 
 
 def saturation_vapor_pressure_slope(
@@ -289,4 +289,4 @@ def saturation_vapor_pressure_slope(
         "The crop module is deprecated. saturation_vapor_pressure_slope has been moved to the meteorology module for future use.",
         DeprecationWarning)
 
-    return gcm.saturation_vapor_pressure_slope(temperature, tfill)
+    return gc.meteorology.saturation_vapor_pressure_slope(temperature, tfill)
