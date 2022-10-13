@@ -3,114 +3,151 @@
 User API
 ========
 
-Routines
---------
-
-GeoCAT-comp native routines
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+GeoCAT-comp Native Functions
+----------------------------
+Climatologies
+^^^^^^^^^^^^^
+.. currentmodule:: geocat.comp.climatologies
 .. autosummary::
+   :nosignatures:
    :toctree: ./generated/
 
-   geocat.comp.climatologies.anomaly
+   anomaly
+   calendar_average
+   climatology
+   climatology_average
+   month_to_season
 
-   geocat.comp.climatologies.calendar_average
+Crop
+^^^^
+.. currentmodule:: geocat.comp.crop
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
 
-   geocat.comp.climatologies.climatology
+   actual_saturation_vapor_pressure
+   max_daylight
+   psychrometric_constant
+   saturation_vapor_pressure
+   saturation_vapor_pressure_slope
 
-   geocat.comp.climatologies.climatology_average
-
-   geocat.comp.climatologies.month_to_season
-
-   geocat.comp.crop.actual_saturation_vapor_pressure
-
-   geocat.comp.crop.max_daylight
-
-   geocat.comp.crop.psychrometric_constant
-
-   geocat.comp.crop.saturation_vapor_pressure
-
-   geocat.comp.crop.saturation_vapor_pressure_slope
-
-   geocat.comp.eofunc.eofunc_eofs
-
-   geocat.comp.eofunc.eofunc_pcs
-
-   geocat.comp.fourier_filters.fourier_band_block
-
-   geocat.comp.fourier_filters.fourier_band_pass
-
-   geocat.comp.fourier_filters.fourier_filter
-
-   geocat.comp.fourier_filters.fourier_low_pass
-
-   geocat.comp.fourier_filters.fourier_high_pass
-
+Gradient
+^^^^^^^^
+.. currentmodule:: geocat.comp.gradient
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
+   
    geocat.comp.gradient.gradient
-
    geocat.comp.gradient.arc_lat_wgs84
-
    geocat.comp.gradient.arc_lon_wgs84
-
    geocat.comp.gradient.rad_lon_wgs84
-
    geocat.comp.interpolation.interp_hybrid_to_pressure
 
-   geocat.comp.interpolation.interp_sigma_to_hybrid
+EOF Functions
+^^^^^^^^^^^^^
+.. currentmodule:: geocat.comp.eofunc
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
 
-   geocat.comp.interpolation.interp_multidim
+   eofunc_eofs
+   eofunc_pcs
 
-   geocat.comp.meteorology.dewtemp
+Fourier Filters
+^^^^^^^^^^^^^^^
+.. currentmodule:: geocat.comp.fourier_filters
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
 
-   geocat.comp.meteorology.heat_index
+   fourier_band_block
+   fourier_band_pass
+   fourier_filter
+   fourier_high_pass
+   fourier_low_pass
 
-   geocat.comp.meteorology.relhum
 
-   geocat.comp.meteorology.relhum_ice
+Iterpolation
+^^^^^^^^^^^^
+.. currentmodule:: geocat.comp.interpolation
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
 
-   geocat.comp.meteorology.relhum_water
+   interp_hybrid_to_pressure
+   interp_sigma_to_hybrid
+   interp_multidim
 
-   geocat.comp.polynomial.detrend
+Meteorology
+^^^^^^^^^^^
+.. currentmodule:: geocat.comp.meteorology
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
 
-   geocat.comp.polynomial.ndpolyfit
+   dewtemp
+   heat_index
+   relhum
+   relhum_ice
+   relhum_water
 
-   geocat.comp.polynomial.ndpolyval
+Polynomial
+^^^^^^^^^^
+.. currentmodule:: geocat.comp.polynomial
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
 
-   geocat.comp.skewt_params.get_skewt_vars
+   detrend
+   ndpolyfit
+   ndpolyval
 
-   geocat.comp.skewt_params.showalter_index
+Skew-T Plot Parameters
+^^^^^^^^^^^^^^^^^^^^^^
+.. currentmodule:: geocat.comp.skewt_params
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
 
-   geocat.comp.spherical.decomposition
+   get_skewt_vars
+   showalter_index
 
-   geocat.comp.spherical.recomposition
+Spherical Harmonics
+^^^^^^^^^^^^^^^^^^^
+.. currentmodule:: geocat.comp.spherical
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
 
-   geocat.comp.spherical.scale_voronoi
+   decomposition
+   recomposition
+   scale_voronoi
 
-   geocat.comp.stats.pearson_r
+Statistics
+^^^^^^^^^^
+.. currentmodule:: geocat.comp.stats
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
+
+   pearson_r
 
 
 GeoCAT-comp routines from GeoCAT-f2py
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+-------------------------------------
+.. currentmodule:: geocat.comp
 .. autosummary::
+   :nosignatures:
    :toctree: ./generated/
 
-   geocat.comp.dpres_plevel
-
-   geocat.comp.grid_to_triple
-
-   geocat.comp.linint1
-
-   geocat.comp.linint2
-
-   geocat.comp.linint2pts
-
-   geocat.comp.moc_globe_atl
-
-   geocat.comp.rcm2points
-
-   geocat.comp.rcm2rgrid
-
-   geocat.comp.rgrid2rcm
-
-   geocat.comp.triple_to_grid
+   dpres_plevel
+   grid_to_triple
+   linint1
+   linint2
+   linint2pts
+   moc_globe_atl
+   rcm2points
+   rcm2rgrid
+   rgrid2rcm
+   triple_to_grid

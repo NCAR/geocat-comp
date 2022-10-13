@@ -64,7 +64,7 @@ def eofunc_eofs(data,
 
     Parameters
     ----------
-    data : (:class:`xarray.DataArray` or :class:`numpy.ndarray` or :class:`list`)
+    data : :class:`xarray.DataArray` or ndarray or list
         Should contain numbers or `np.nan` for missing value representation. It must be at least a 2-dimensional array.
 
         When input data is of type `xarray.DataArray`, `eofs.xarray` interface assumes the left-most dimension
@@ -75,12 +75,12 @@ def eofunc_eofs(data,
         If the input do not have its leftmost dimension as the `time` or number of observations, then the user should
         specify with `time_dim=x` to define which dimension must be treated as time or number of observations
 
-    neofs : (:class:`int`, Optional)
+    neofs : int, optional
         A scalar integer that specifies the number of empirical orthogonal functions (i.e. eigenvalues and
         eigenvectors) to be returned. This is usually less than or equal to the minimum number of observations or
         number of variables. Defaults to 1.
 
-    time_dim : (:class:`int`, Optional)
+    time_dim : int, optional
         An integer defining the time dimension if it is not the leftmost dimension. When input data is of type
         `xarray.DataArray`, this is ignored (assuming `xarray.DataArray` has its leftmost dimension with the exact
         name 'time'). It must be between ``0`` and ``data.ndim - 1`` or it could be ``-1`` indicating the last
@@ -89,20 +89,20 @@ def eofunc_eofs(data,
         Note: The `time_dim` argument allows to perform the EOF analysis that was previously done via the NCL
         function `eofunc_n`.
 
-    eofscaling : (:class:`int`, Optional)
+    eofscaling : int, optional
         (From `eofs` package): Sets the scaling of the EOFs. The following values are accepted:
 
             - 0 : Un-scaled EOFs (default).
             - 1 : EOFs are divided by the square-root of their eigenvalues.
             - 2 : EOFs are multiplied by the square-root of their eigenvalues.
 
-    weights : (:class:`array_like`, Optional)
+    weights : array_like, optional
         (From `eofs` package): An array of weights whose shape is compatible with those of the input array dataset.
         The weights can have the same shape as dataset or a shape compatible with an array broadcast (i.e., the shape
         of the weights can can match the rightmost parts of the shape of the input array dataset). If the input array
         dataset does not require weighting then the value None may be used. Defaults to None (no weighting).
 
-    center : (:class:`bool`, Optional)
+    center : bool, optional
         (From `eofs` package): If True, the mean along the first axis of dataset (the time-mean) will be removed prior
         to analysis. If False, the mean along the first axis will not be removed. Defaults to True (mean is removed).
 
@@ -111,16 +111,16 @@ def eofunc_eofs(data,
         missing values along the time dimension, ensuring that a solution can be found even if missing values occur
         in different locations at different times.
 
-    ddof : (:class:`int`, Optional)
+    ddof : int, optional
         (From `eofs` package): ‘Delta degrees of freedom’. The divisor used to normalize the covariance matrix is
         N - ddof where N is the number of samples. Defaults to 1.
 
-    vfscaled : (:class:`bool`, Optional)
+    vfscaled : bool, optional
         (From `eofs` package): If True, scale the errors by the sum of the eigenvalues. This yields typical errors
         with the same scale as the values returned by Eof.varianceFraction. If False then no scaling is done.
         Defaults to False.
 
-    meta : (:class:`bool`, Optional)
+    meta : bool, optional
         If set to True and the input array is an Xarray, the metadata from the input array will be copied to the
         output array. Defaults to False.
 
@@ -155,11 +155,11 @@ def eofunc_eofs(data,
     See Also
     --------
     Related NCL Functions:
-    `eofunc <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc.shtml>`_,
-    `eofunc_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_Wrap.shtml>`_,
-    `eofunc_north <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_north.shtml>`_,
-    `eofunc_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc_n.shtml>`_,
-    `eofunc_n_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_n_Wrap.shtml>`_
+    `eofunc <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc.shtml>`__,
+    `eofunc_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_Wrap.shtml>`__,
+    `eofunc_north <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_north.shtml>`__,
+    `eofunc_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc_n.shtml>`__,
+    `eofunc_n_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_n_Wrap.shtml>`__
     """
 
     data, solver = _generate_eofs_solver(data,
@@ -226,7 +226,7 @@ def eofunc_pcs(data,
 
     Parameters
     ----------
-    data : :class:`xarray.DataArray` or :class:`numpy.ndarray` or :class:`list`
+    data : :class:`xarray.DataArray` or ndarray or list
         Should contain numbers or `np.nan` for missing value representation. It must be at least a 2-dimensional array.
 
         When input data is of type `xarray.DataArray`, `eofs.xarray` interface assumes the left-most dimension
@@ -237,12 +237,12 @@ def eofunc_pcs(data,
         If the input do not have its leftmost dimension as the `time` or number of observations, then the user should
         specify with `time_dim=x` to define which dimension must be treated as time or number of observations
 
-    npcs : (:class:`int`, Optional)
+    npcs : int, optional
         A scalar integer that specifies the number of principal components (i.e. eigenvalues and eigenvectors) to be
         returned. This is usually less than or equal to the minimum number of observations or number of variables.
         Defaults to 1.
 
-    time_dim : (:class:`int`, Optional)
+    time_dim : int, optional
         An integer defining the time dimension if it is not the leftmost dimension. When input data is of type
         `xarray.DataArray`, this is ignored (assuming `xarray.DataArray` has its leftmost dimension with the exact
         name 'time'). It must be between ``0`` and ``data.ndim - 1`` or it could be ``-1`` indicating the last
@@ -251,19 +251,19 @@ def eofunc_pcs(data,
         Note: The `time_dim` argument allows to perform the EOF analysis that was previously done via the NCL
         function `eofunc_ts_n`.
 
-    pcscaling : (:class:`int`, Optional)
+    pcscaling : int, optional
         (From `eofs` package): Sets the scaling of the retrieved PCs. The following values are accepted:
             - 0 : Un-scaled PCs (default).
             - 1 : PCs are divided by the square-root of their eigenvalues.
             - 2 : PCs are multiplied by the square-root of their eigenvalues.
 
-    weights : (:class:`array_like`, Optional)
+    weights : array_like, optional
         (From `eofs` package): An array of weights whose shape is compatible with those of the input array dataset.
         The weights can have the same shape as dataset or a shape compatible with an array broadcast (i.e., the shape
         of the weights can can match the rightmost parts of the shape of the input array dataset). If the input array
         dataset does not require weighting then the value None may be used. Defaults to None (no weighting).
 
-    center : (:class:`bool`, Optional)
+    center : bool, optional
         (From `eofs` package): If True, the mean along the first axis of dataset (the time-mean) will be removed prior
         to analysis. If False, the mean along the first axis will not be removed. Defaults to True (mean is removed).
 
@@ -272,11 +272,11 @@ def eofunc_pcs(data,
         missing values along the time dimension, ensuring that a solution can be found even if missing values occur
         in different locations at different times.
 
-    ddof : (:class:`int`, Optional)
+    ddof : int, optional
         (From `eofs` package): ‘Delta degrees of freedom’. The divisor used to normalize the covariance matrix is
         N - ddof where N is the number of samples. Defaults to 1.
 
-    meta : (:class:`bool`, Optional)
+    meta : bool, optional
         If set to True and the input array is an Xarray, the metadata from the input array will be copied to the
         output array. Defaults to False.
 
@@ -286,10 +286,10 @@ def eofunc_pcs(data,
     See Also
     --------
     Related NCL Functions:
-    `eofunc_ts <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc_ts.shtml>`_,
-    `eofunc_ts_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_ts_Wrap.shtml>`_,
-    `eofunc_ts_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc_ts_n.shtml>`_,
-    `eofunc_ts_n_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_ts_n_Wrap.shtml>`_
+    `eofunc_ts <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc_ts.shtml>`__,
+    `eofunc_ts_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_ts_Wrap.shtml>`__,
+    `eofunc_ts_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc_ts_n.shtml>`__,
+    `eofunc_ts_n_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_ts_n_Wrap.shtml>`__
     """
 
     data, solver = _generate_eofs_solver(data,

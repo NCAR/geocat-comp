@@ -80,19 +80,19 @@ def _calculate_center_of_time_bounds(
         The data on which to operate. It must be uniformly spaced in the time
         dimension.
 
-    time_dim : :class:`str`
+    time_dim : str
         Name of the time coordinate for `xarray` objects
 
-    freq : :class:`str`
+    freq : str
         Alias for the frequency of the adjusted timestamps (i.e. daily, monthly)
 
-    calendar : :class:`str`
+    calendar : str
         Alias for the calendar the time stamps are in (i.e. gregorian, no leap years)
 
-    start : :class:`str`, :class:`cftime.datetime`
+    start : str, :class:`cftime.datetime`
         The starting date of the data. The string representation must be in ISO format
 
-    end : :class:`str`, :class:`cftime.datetime`
+    end : str, :class:`cftime.datetime`
         The ending date of the data. The string representation must be in ISO format
 
     Returns
@@ -102,7 +102,7 @@ def _calculate_center_of_time_bounds(
 
     Notes
     -----
-    See `xarray.cftime_range <http://xarray.pydata.org/en/stable/generated/xarray.cftime_range.html>`_ for accepted values for `freq` and `calendar`.
+    See `xarray.cftime_range <http://xarray.pydata.org/en/stable/generated/xarray.cftime_range.html>`__ for accepted values for `freq` and `calendar`.
     """
 
     time_bounds = xr.cftime_range(start, end, freq=freq, calendar=calendar)
@@ -138,7 +138,7 @@ def climatology(
     dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
         The data on which to operate
 
-    freq : :class:`str`
+    freq : str
         Climatology frequency alias. Accepted alias:
 
             - 'day': for daily climatologies
@@ -146,7 +146,7 @@ def climatology(
             - 'year': for annual climatologies
             - 'season': for seasonal climatologies
 
-    time_coord_name : :class:`str`, Optional
+    time_coord_name : str, optional
          Name for time coordinate to use. Defaults to None and infers the name
          from the data.
 
@@ -166,15 +166,11 @@ def climatology(
     >>> ts
     <xarray.DataArray (time: 24, lat: 1, lon: 1)>
     array([[[ 0]],
-
         [[ 1]],
-
         [[ 2]],
-    ...
+    <BLANKLINE>
         [[21]],
-
         [[22]],
-
         [[23]]])
     Coordinates:
     * time     (time) datetime64[ns] 2000-01-31 2000-02-29 ... 2001-12-31
@@ -182,7 +178,6 @@ def climatology(
     >>> geocat.comp.climatology(ts, 'year')
     <xarray.DataArray (year: 2, lat: 1, lon: 1)>
     array([[[ 5.5]],
-
         [[17.5]]])
     Coordinates:
     * year     (year) int64 2000 2001
@@ -190,27 +185,23 @@ def climatology(
     >>> geocat.comp.climatology(ts, 'season')
     <xarray.DataArray (season: 4, lat: 1, lon: 1)>
     array([[[10.]],
-
         [[12.]],
-
         [[ 9.]],
-
         [[15.]]])
     Coordinates:
     * season   (season) object 'DJF' 'JJA' 'MAM' 'SON'
     Dimensions without coordinates: lat, lon
 
-
     See Also
     --------
     Related NCL Functions:
-    `clmDayTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayTLL.shtml>`_,
-    `clmDayTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayTLLL.shtml>`_,
-    `clmMonLLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonLLLT.shtml>`_,
-    `clmMonLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonLLT.shtml>`_,
-    `clmMonTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonTLL.shtml>`_,
-    `clmMonTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonTLLL.shtml>`_,
-    `month_to_season <https://www.ncl.ucar.edu/Document/Functions/Contributed/month_to_season.shtml>`_
+    `clmDayTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayTLL.shtml>`__,
+    `clmDayTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayTLLL.shtml>`__,
+    `clmMonLLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonLLLT.shtml>`__,
+    `clmMonLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonLLT.shtml>`__,
+    `clmMonTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonTLL.shtml>`__,
+    `clmMonTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonTLLL.shtml>`__,
+    `month_to_season <https://www.ncl.ucar.edu/Document/Functions/Contributed/month_to_season.shtml>`__
     """
     data, time_invariant_vars, time_coord_name, time_dot_freq = _setup_clim_anom_input(
         dset, freq, time_coord_name)
@@ -235,7 +226,7 @@ def anomaly(
     dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
         The data on which to operate
 
-    freq : :class:`str`
+    freq : str
         Anomaly frequency alias. Accepted alias:
 
             - 'day': for daily anomalies
@@ -243,7 +234,7 @@ def anomaly(
             - 'year': for annual anomalies
             - 'season': for seasonal anomalies
 
-    time_coord_name : :class:`str`
+    time_coord_name : str
          Name for time coordinate to use. Defaults to None and infers the name
          from the data.
 
@@ -263,17 +254,11 @@ def anomaly(
     >>> ts
     <xarray.DataArray (time: 24, lat: 1, lon: 1)>
     array([[[ 0]],
-
         [[ 1]],
-
         [[ 2]],
-
-    ...
-
+    <BLANKLINE>
         [[21]],
-
         [[22]],
-
         [[23]]])
     Coordinates:
     * time     (time) datetime64[ns] 2000-01-31 2000-02-29 ... 2001-12-31
@@ -281,33 +266,26 @@ def anomaly(
     >>> geocat.comp.anomaly(ts, 'season')
     <xarray.DataArray (time: 24, lat: 1, lon: 1)>
     array([[[-10.]],
-
         [[ -9.]],
-
         [[ -7.]],
-
-    ...
-
+    <BLANKLINE>
         [[  6.]],
-
         [[  7.]],
-
         [[ 13.]]])
     Coordinates:
     * time     (time) datetime64[ns] 2000-01-31 2000-02-29 ... 2001-12-31
         season   (time) <U3 'DJF' 'DJF' 'MAM' 'MAM' ... 'SON' 'SON' 'SON' 'DJF'
     Dimensions without coordinates: lat, lon
 
-
     See Also
     --------
     Related NCL Functions:
-    `clmDayAnomTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcDayAnomTLL.shtml>`_,
-    `clmDayAnomTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomTLLL.shtml>`_,
-    `clmMonAnomLLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomLLLT.shtml>`_,
-    `clmMonAnomLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomLLT.shtml>`_,
-    `clmMonAnomTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomTLL.shtml>`_,
-    `clmMonAnomTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomTLLL.shtml>`_
+    `clmDayAnomTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcDayAnomTLL.shtml>`__,
+    `clmDayAnomTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomTLLL.shtml>`__,
+    `clmMonAnomLLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomLLLT.shtml>`__,
+    `clmMonAnomLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomLLT.shtml>`__,
+    `clmMonAnomTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomTLL.shtml>`__,
+    `clmMonAnomTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomTLLL.shtml>`__
     """
 
     data, time_invariant_vars, time_coord_name, time_dot_freq = _setup_clim_anom_input(
@@ -336,7 +314,7 @@ def month_to_season(
     dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
         The data on which to operate
 
-    season : :class:`str`
+    season : str
         A string representing the season to calculate: e.g., "JFM", "JJA".
         Valid values are:
 
@@ -353,7 +331,7 @@ def month_to_season(
          - OND {October, November, Decmber}
          - NDJ {November, Decmber, January}
 
-    time_coord_name : :class:`str`, Optional
+    time_coord_name : str, optional
         Name for time coordinate to use. Defaults to None and infers the name
         from the data.
 
@@ -374,7 +352,7 @@ def month_to_season(
     See Also
     --------
     Related NCL Functions:
-    `month_to_season <https://www.ncl.ucar.edu/Document/Functions/Contributed/month_to_season.shtml>`_
+    `month_to_season <https://www.ncl.ucar.edu/Document/Functions/Contributed/month_to_season.shtml>`__
     """
 
     time_coord_name = _get_time_coordinate_info(dset, time_coord_name)
@@ -437,7 +415,7 @@ def calendar_average(
         The data on which to operate. It must be uniformly spaced in the time
         dimension.
 
-    freq : :class:`str`
+    freq : str
         Frequency alias. Accepted alias:
 
             - 'hour': for hourly averages
@@ -446,7 +424,7 @@ def calendar_average(
             - 'season': for meteorological seasonal averages (DJF, MAM, JJA, and SON)
             - 'year': for yearly averages
 
-    time_dim : :class:`str`, Optional
+    time_dim : str, optional
         Name of the time coordinate for `xarray` objects. Defaults to None and
         infers the name from the data.
 
@@ -467,7 +445,7 @@ def calendar_average(
     See Also
     --------
     Related GeoCAT Functions:
-    `climatology_average <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.climatologies.climatology_average.html#geocat.comp.climatologies.climatology_average>`_
+    `climatology_average <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.climatologies.climatology_average.html#geocat.comp.climatologies.climatology_average>`__
     """
     # TODO: add functionality for users to select specific seasons or hours for averages
     freq_dict = {
@@ -537,7 +515,7 @@ def climatology_average(
         The data on which to operate. It must be uniformly spaced in the time
         dimension.
 
-    freq : :class:`str`
+    freq : str
         Frequency alias. Accepted alias:
 
             - 'hour': for hourly averages
@@ -545,7 +523,7 @@ def climatology_average(
             - 'month': for monthly averages
             - 'season': for meteorological seasonal averages (DJF, MAM, JJA, and SON)
 
-    time_dim : :class:`str`, Optional
+    time_dim : str, optional
         Name of the time coordinate for `xarray` objects. Defaults to None and
         infers the name from the data.
 
@@ -567,18 +545,18 @@ def climatology_average(
     See Also
     --------
     Related GeoCAT Functions:
-    `calendar_average <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.climatologies.calendar_average.html#geocat.comp.climatologies.calendar_average>`_
+    `calendar_average <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.climatologies.calendar_average.html#geocat.comp.climatologies.calendar_average>`__
 
     Related NCL Functions:
-    `clmDayHourTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayHourTLL.shtml>`_,
-    `clmDauHourTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayHourTLLL.shtml>`_,
-    `clmDayTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayTLL.shtml>`_,
-    `clmDayTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayTLLL.shtml>`_,
-    `clmMonLLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonLLLT.shtml>`_,
-    `clmMonLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonLLT.shtml>`_,
-    `clmMonTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonTLL.shtml>`_,
-    `clmMonTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonTLLL.shtml>`_,
-    `month_to_season <https://www.ncl.ucar.edu/Document/Functions/Contributed/month_to_season.shtml>`_
+    `clmDayHourTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayHourTLL.shtml>`__,
+    `clmDauHourTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayHourTLLL.shtml>`__,
+    `clmDayTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayTLL.shtml>`__,
+    `clmDayTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayTLLL.shtml>`__,
+    `clmMonLLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonLLLT.shtml>`__,
+    `clmMonLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonLLT.shtml>`__,
+    `clmMonTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonTLL.shtml>`__,
+    `clmMonTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonTLLL.shtml>`__,
+    `month_to_season <https://www.ncl.ucar.edu/Document/Functions/Contributed/month_to_season.shtml>`__
     """
     # TODO: add functionality for users to select specific seasons or hours for climatologies
     freq_dict = {
