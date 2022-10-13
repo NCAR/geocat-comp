@@ -32,8 +32,8 @@ class Test_Gradient(unittest.TestCase):
         cls.test_results_lat = xr.load_dataset(
             'test/gradient_test_results_latitude.nc').to_array().squeeze()
         cls.results = gradient(cls.test_data)
-        cls.results_lon = cls.results[0]
-        cls.results_lat = cls.results[1]
+        cls.results_axis0 = cls.results[0]
+        cls.results_axis1 = cls.results[1]
 
     def test_gradient_lon_xr(self):
         np.testing.assert_almost_equal(
