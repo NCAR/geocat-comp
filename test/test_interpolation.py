@@ -118,7 +118,7 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
                                   decode_times=False)
 
     # Open the netCDF file with the output data from running vinth2p_ecmwf.ncl
-    ds_out = xr.open_dataset("test/vinth2p_ecmwf_output.nc", decode_times=False)
+    ds_out = xr.open_dataset("vinth2p_ecmwf_output.nc", decode_times=False)
 
     # Pull out inputs
     _hyam = ds_ccsm.hyam
@@ -199,6 +199,18 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
         result = result.transpose('time', 'plev', 'lat', 'lon')
         result = result.assign_coords(dict(plev=self.new_levels / 100))
         xr.testing.assert_allclose(self.humidity_extrap_expected, result)
+
+    def test_interp_hybrid_to_pressure_extrap_kwargs(self):
+        self.assertRaises(ValueError,
+                         interp_hybrid_to_pressure,
+                         self.humidity_in,
+                         self.press_in,
+                         self._hyam,
+                         self._hybm,
+                         p0=self._p0,
+                         new_levels=self.new_levels,
+                         method="linear",
+                         extrapolate=True)
 
 
 class Test_interp_sigma_to_hybrid(TestCase):

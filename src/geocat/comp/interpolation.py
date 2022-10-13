@@ -266,11 +266,11 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
 
     t_bot : :class:`xarray.DataArray`, optional
         Temperature in Kelvin at the lowest layer of the model. Not necessarily
-        the same as surface temperature. Required if extrapolate is True.
+        the same as surface temperature. Required if ``extrapolate`` is True.
 
     phi_sfc: :class:`xarray.DataArray`, optional
         Geopotential in J/kg at the lowest layer of the model. Not necessarily
-        the same as surface geopotential. Required if extrapolate is True.
+        the same as surface geopotential. Required if ``extrapolate`` is True.
 
     Returns
     -------
@@ -284,13 +284,17 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
     `vinth2p_ecmwf <https://www.ncl.ucar.edu/Document/Functions/Built-in/vinth2p_ecmwf.shtml>`__
     """
 
+    # Check inputs
+    if extrapolate and ((variable is None) or (t_bot is None) or (phi_sfc is None)):
+        raise ValueError("If `extrapolate` is True, `variable`, `t_bot`, and `phi_sfc` must be provided.")
+
     # Determine the level dimension and then the interpolation axis
     if lev_dim is None:
         try:
             lev_dim = data.cf["vertical"].name
         except Exception:
             raise ValueError(
-                "Unable to determine vertical dimension name. Please specify the name via `lev_dim` argument.'"
+                "Unable to determine vertical dimension name. Please specify the name via `lev_dim` argument."
             )
 
     try:
