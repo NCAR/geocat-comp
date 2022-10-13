@@ -181,7 +181,6 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
                                            phi_sfc=self.phis)
         result = result.transpose('time', 'plev', 'lat', 'lon')
         result = result.assign_coords(dict(plev=self.new_levels / 100))
-        print((self.geopotential_extrap_expected - result).compute())
         xr.testing.assert_allclose(self.geopotential_extrap_expected, result)
 
     def test_interp_hybrid_to_pressure_extrap_other(self):
