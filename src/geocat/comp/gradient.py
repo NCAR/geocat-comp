@@ -134,68 +134,53 @@ def gradient(data: xr.DataArray) -> [xr.DataArray]:
         longitudinal and latitudinal gradients calculated using th WGS84 geoid.
     """
 
-    gradkernlat = np.array([
-        [0, 1, -1],
-    ])
-    gradkernlon = np.array([
-        [0],
-        [1],
-        [-1],
-    ])
+    def gradient(data: xr.DataArray) -> [xr.DataArray]:
+        """Filter a dataset by frequency. This function allowes for low_pass,
+        high_ pass, band_pass, or band_block filtering of the data's freqency
+        representation.
 
-    sumkernlat = np.array([
-        [0.5, 0.5, 0],
-    ])
-    sumkernlon = np.array([
-        [0.5],
-        [0.5],
-        [0],
-    ])
+        Parameters
+        ----------
+        data : :class:`numpy.ndarray`, :class:`xarray.DataArray`
+            n-dimensional dataset, with orthographic latitude longitude
+            coordinates
 
-    lon2d, lat2d = np.meshgrid(data.coords['lon'], data.coords['lat'])
+        Returns
+        -------
+        gradients : list of :class:`numpy.ndarray`, list of
+        :class:`xarray.DataArray`
+            longitudinal and latitudinal gradients calculated using th WGS84
+            geoid.
+        """
 
-    datagradlat = xr.DataArray(
-        convolve(data, gradkernlat, mode='wrap', origin=0),
-        dims=('lon', 'lat'),
-    )
-    datagradlon = xr.DataArray(
-        convolve(data, gradkernlon, mode='wrap', origin=0),
-        dims=('lon', 'lat'),
-    )
+        lon2d, lat2d = np.meshgrid(data.coords['lon'], data.coords['lat'])
 
-    arclon2d = xr.DataArray(
-        arc_lon_wgs84(lon2d, lat2d),
-        dims=('lon', 'lat'),
-    )
-    arclat2d = xr.DataArray(
-        arc_lat_wgs84(lat2d),
-        dims=('lon', 'lat'),
-    )
+        axis0loc = xr.DataArray(
+            arc_lat_wgs84(lat2d),
+            dims=('lon', 'lat'),
+        )
+        axis1loc = xr.DataArray(
+            arc_lon_wgs84(lon2d, lat2d),
+            dims=('lon', 'lat'),
+        )
 
-    arclatgrad = xr.DataArray(
-        convolve(arclon2d, gradkernlat, mode='mirror', origin=0),
-        dims=('lon', 'lat'),
-    )
-    arclongrad = xr.DataArray(
-        convolve(arclat2d, gradkernlon, mode='mirror', origin=0),
-        dims=('lon', 'lat'),
-    )
+        axis0dist = xr.DataArray(
+            np.gradient(axis0loc, axis=0),
+            dims=('lon', 'lat'),
+        )
+        axis1dist = xr.DataArray(
+            np.gradient(axis1loc, axis=1),
+            dims=('lon', 'lat'),
+        )
 
-    datascalelat = np.divide(datagradlat, arclatgrad)
-    datascalelon = np.divide(datagradlon, arclongrad)
+        grad = xr.DataArray(
+            np.gradient(data),
+            dims=('dir', 'lon', 'lat'),
+        )
+        axis0grad = grad[0] / axis0dist
+        axis1grad = grad[1] / axis1dist
 
-    datasumlat = xr.DataArray(
-        convolve(datascalelat, sumkernlat, mode='wrap', origin=0),
-        dims=('lon', 'lat'),
-    )
-    datasumlon = xr.DataArray(
-        convolve(datascalelon, sumkernlon, mode='wrap', origin=0),
-        dims=('lon', 'lat'),
-    )
-
-    # do lat and lon differences, can use the gradient kernel
-
-    return [datasumlon[1:-1, 1:-1], datasumlat[1:-1, 1:-1]]
+        return [axis1grad, axis0grad]
 
 
 # '''
