@@ -211,6 +211,21 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
                          method="linear",
                          extrapolate=True)
 
+    def test_interp_hybrid_to_pressure_extrap_invalid_var(self):
+        self.assertRaises(ValueError,
+                         interp_hybrid_to_pressure,
+                         self.humidity_in,
+                         self.press_in,
+                         self._hyam,
+                         self._hybm,
+                         p0=self._p0,
+                         new_levels=self.new_levels,
+                         method="linear",
+                         extrapolate=True,
+                         variable=' ',
+                         t_bot=self.t_bot,
+                         phi_sfc=self.phis)
+
 
 class Test_interp_sigma_to_hybrid(TestCase):
     hyam = xr.DataArray([0.0108093, 0.0130731, 0.03255911, 0.0639471])
