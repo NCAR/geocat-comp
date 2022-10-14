@@ -134,53 +134,34 @@ def gradient(data: xr.DataArray) -> [xr.DataArray]:
         longitudinal and latitudinal gradients calculated using th WGS84 geoid.
     """
 
-    def gradient(data: xr.DataArray) -> [xr.DataArray]:
-        """Filter a dataset by frequency. This function allowes for low_pass,
-        high_ pass, band_pass, or band_block filtering of the data's freqency
-        representation.
+    lon2d, lat2d = np.meshgrid(data.coords['lon'], data.coords['lat'])
 
-        Parameters
-        ----------
-        data : :class:`numpy.ndarray`, :class:`xarray.DataArray`
-            n-dimensional dataset, with orthographic latitude longitude
-            coordinates
+    axis0loc = xr.DataArray(
+        arc_lat_wgs84(lat2d),
+        dims=('lon', 'lat'),
+    )
+    axis1loc = xr.DataArray(
+        arc_lon_wgs84(lon2d, lat2d),
+        dims=('lon', 'lat'),
+    )
 
-        Returns
-        -------
-        gradients : list of :class:`numpy.ndarray`, list of
-        :class:`xarray.DataArray`
-            longitudinal and latitudinal gradients calculated using th WGS84
-            geoid.
-        """
+    axis0dist = xr.DataArray(
+        np.gradient(axis0loc, axis=0),
+        dims=('lon', 'lat'),
+    )
+    axis1dist = xr.DataArray(
+        np.gradient(axis1loc, axis=1),
+        dims=('lon', 'lat'),
+    )
 
-        lon2d, lat2d = np.meshgrid(data.coords['lon'], data.coords['lat'])
+    grad = xr.DataArray(
+        np.gradient(data),
+        dims=('dir', 'lon', 'lat'),
+    )
+    axis0grad = grad[0] / axis0dist
+    axis1grad = grad[1] / axis1dist
 
-        axis0loc = xr.DataArray(
-            arc_lat_wgs84(lat2d),
-            dims=('lon', 'lat'),
-        )
-        axis1loc = xr.DataArray(
-            arc_lon_wgs84(lon2d, lat2d),
-            dims=('lon', 'lat'),
-        )
-
-        axis0dist = xr.DataArray(
-            np.gradient(axis0loc, axis=0),
-            dims=('lon', 'lat'),
-        )
-        axis1dist = xr.DataArray(
-            np.gradient(axis1loc, axis=1),
-            dims=('lon', 'lat'),
-        )
-
-        grad = xr.DataArray(
-            np.gradient(data),
-            dims=('dir', 'lon', 'lat'),
-        )
-        axis0grad = grad[0] / axis0dist
-        axis1grad = grad[1] / axis1dist
-
-        return [axis1grad, axis0grad]
+    return [axis0grad, axis1grad]
 
 
 # '''

@@ -35,16 +35,16 @@ class Test_Gradient(unittest.TestCase):
         cls.results_axis0 = cls.results[0]
         cls.results_axis1 = cls.results[1]
 
-    def test_gradient_lon_xr(self):
+    def test_gradient_axis0_xr(self):
         np.testing.assert_almost_equal(
-            self.results_lon.data,
+            self.results_axis0.data,
             self.test_results_lon.data,
             decimal=3,
         )
 
-    def test_gradient_lat_xr(self):
+    def test_gradient_axis1_xr(self):
         np.testing.assert_almost_equal(
-            self.results_lat.data,
+            self.results_axis1.data,
             self.test_results_lat.data,
             decimal=3,
         )
