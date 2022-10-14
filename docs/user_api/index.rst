@@ -37,7 +37,7 @@ Gradient
 .. autosummary::
    :nosignatures:
    :toctree: ./generated/
-   
+
    geocat.comp.gradient.gradient
    geocat.comp.gradient.arc_lat_wgs84
    geocat.comp.gradient.arc_lon_wgs84
