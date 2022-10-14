@@ -218,9 +218,9 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
                               variable: str = None,
                               t_bot: xr.DataArray = None,
                               phi_sfc: xr.DataArray = None) -> xr.DataArray:
-    """Interpolate data from hybrid-sigma levels to isobaric levels. Keeps
-    attributes (i.e. meta information) of the input data in the output as
-    default.
+    """Interpolate and extrapolate data from hybrid-sigma levels to isobaric
+    levels. Keeps attributes (i.e. meta information) of the input data in the
+    output as default.
 
     Notes
     -----
@@ -255,7 +255,9 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
         String that is the interpolation method; can be either "linear" or "log". Defaults to "linear".
 
     extrapolate : bool, optional
-        If True, below ground extrapolation for ``variable`` will be done. Defaults to False.
+        If True, below ground extrapolation for ``variable`` will be done using
+        an `ECMWF formulation <http://dx.doi.org/10.5065/D6HX19NH>`__. Defaults
+        to False.
 
     variable : str, optional
         String representing what variable is extrapolated below surface level.
