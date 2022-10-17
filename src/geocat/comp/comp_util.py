@@ -1,10 +1,6 @@
-import copy
-
 import numpy as np
-import xarray as xr
 
 
-# remove xarray has implemented _is_duck_array() OBE
 def _is_duck_array(value):
     """Returns True when ``value`` is array-like."""
     if isinstance(value, np.ndarray):
