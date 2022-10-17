@@ -6,7 +6,7 @@ import xarray as xr
 
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
-if '--cov' in str(sys.argv):
+if "--cov" in str(sys.argv):
     from src.geocat.comp import (fourier_band_block, fourier_band_pass,
                                  fourier_high_pass, fourier_low_pass)
 else:
