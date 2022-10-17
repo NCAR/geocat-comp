@@ -17,12 +17,6 @@ else:
 
 
 class Test_Spherical(unittest.TestCase):
-    test_results_np = None
-    test_data_np = None
-    test_harmonics_np = None
-    phi_np = None
-    theta_np = None
-    test_scale_np = None
 
     @classmethod
     def setUpClass(cls):
