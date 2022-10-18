@@ -38,11 +38,10 @@ Gradient
    :nosignatures:
    :toctree: ./generated/
 
-   geocat.comp.gradient.gradient
-   geocat.comp.gradient.arc_lat_wgs84
-   geocat.comp.gradient.arc_lon_wgs84
-   geocat.comp.gradient.rad_lon_wgs84
-   geocat.comp.interpolation.interp_hybrid_to_pressure
+   gradient
+   arc_lat_wgs84
+   arc_lon_wgs84
+   rad_lat_wgs84
 
 EOF Functions
 ^^^^^^^^^^^^^
