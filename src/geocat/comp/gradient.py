@@ -13,9 +13,9 @@ def rad_lat_wgs84(lat: SupportedTypes,):
     r"""The radius calculation for the wgs84 ellipsoid at a latitude uses a
     taylor series from.
 
-    .. math:
-        :nowrap:
+    .. math::
         radius = \sqrt{a^2 \cdot cos(lat)^2+b^2 \cdot sin(lat)^2}
+
     This returns the radius of the ellipsoid for a given latitude
     This is accurate to within floating point error.
 
@@ -56,10 +56,9 @@ def arc_lat_wgs84(lat: SupportedTypes,):
     r"""The arc length calculation for the wgs84 ellipsoid at a latitude uses a
     taylor series to obtain the value of the elliptic integral.
 
-    .. math:
-        :nowrap:
-        arclat = \int_{0}^{lat}\sqrt{a^2 \cdot cos(lat)^2+b^2 \cdot sin(
-        lat)^2}\ dlat
+    .. math::
+      arclat = \int_{0}^{lat}\sqrt{a^2 \cdot cos(lat)^2+b^2 \cdot sin(lat)^2}\ dlat
+
     The integral of the radius taylor series gives an arc length taylor series
     This returns the distance from the equator to a given latitude
     This is accurate to within floating point error.
@@ -101,17 +100,16 @@ def arc_lon_wgs84(
     r"""The arc length calculation for the wgs84 ellipsoid at a longitude uses a
     taylor series from.
 
-    .. math:
-        :nowrap:
-        arclon = lon \cdot cos(lat) \cdot \sqrt{a^2 \cdot cos(lat)^2+b^2
-        \cdot sin(lat)^2}
-    This returns the distance from the Greenwich Meridian  to a given latitude
+    .. math::
+        arclon = lon \cdot \cos(lat) \cdot \sqrt{a^2 \cdot \cos(lat)^2+b^2
+        \cdot \sin(lat)^2}
+
+    This returns the distance from the Greenwich Meridian to a given latitude
     This is accurate to within floating point error.
 
     note: This doesn't need to be a taylor series, though the taylor series
-    is faster
-    and a needed step for the arc_lat_wgs84 function to avoid the elliptic
-    integral
+    is faster and a needed step for the arc_lat_wgs84 function to avoid the
+    elliptic integral
     """
     return rad_lat_wgs84(lat) * np.cos(lat * d2r) * lon * d2r
 
