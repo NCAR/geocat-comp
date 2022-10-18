@@ -65,7 +65,8 @@ jobs:
   link-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: conda_setup
+        uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: gc-docs
           channel-priority: strict
