@@ -62,10 +62,7 @@ jobs:
           name: codecov-umbrella
           fail_ci_if_error: false
 
-  link-check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: conda_setup
+      - name: Make docs
         uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: gc-docs
@@ -73,9 +70,6 @@ jobs:
           python-version: 3.9
           channels: conda-forge
           environment-file: build_envs/docs.yml
-      - name: Link Check
         run: |
-          pwd
-          tree
           cd docs
           make linkcheck
