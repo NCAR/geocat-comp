@@ -9,7 +9,7 @@ from .errors import (AttributeError, ChunkError, CoordinateError,
 from .fourier_filters import (fourier_band_block, fourier_band_pass,
                               fourier_filter, fourier_high_pass,
                               fourier_low_pass)
-from .gradient import gradient
+from .gradient import gradient, arc_lon_wgs84, arc_lat_wgs84, rad_lat_wgs84
 from .interpolation import interp_hybrid_to_pressure, interp_sigma_to_hybrid, interp_multidim
 from .polynomial import detrend, ndpolyfit, ndpolyval
 from .meteorology import dewtemp, heat_index, relhum, relhum_ice, relhum_water
