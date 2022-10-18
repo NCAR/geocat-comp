@@ -21,7 +21,6 @@ jobs:
           environment-file: build_envs/docs.yml
       - name: Link Check
         run: |
-          conda activate gc-docs
           cd docs
           make linkcheck
 
