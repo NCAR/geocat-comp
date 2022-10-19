@@ -33,6 +33,8 @@ on geosciences data. Many of these functions originated in NCL and were translat
 Python with the help of GeoCAT-comp; however, developers are welcome to come up with
 novel computational functions for geosciences data.
 
+This is a `broken link <http://www.brokenlinkplease.com/>`__
+
 .. grid:: 1 1 2 2
     :gutter: 2
 
