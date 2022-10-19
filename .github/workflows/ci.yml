@@ -38,7 +38,7 @@ jobs:
           activate-environment: geocat_comp_build
           channel-priority: strict
           python-version: ${{ matrix.python-version }}
-          channels: conda-forge, ncar
+          channels: conda-forge
           environment-file: build_envs/environment.yml
 
       - name: Install geocat-comp
@@ -61,3 +61,26 @@ jobs:
           env_vars: OS,PYTHON
           name: codecov-umbrella
           fail_ci_if_error: false
+
+  link-check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          token: ${{ github.token }}
+      - name: conda_setup
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: gc-docs
+          channel-priority: strict
+          python-version: 3.9
+          channels: conda-forge
+          environment-file: build_envs/docs.yml
+      - name: Make docs with linkcheck
+        run: |
+          cd docs
+          make linkcheck
