@@ -162,8 +162,7 @@ def gradient(data: xr.DataArray) -> [xr.DataArray]:
 
     Returns
     -------
-    gradients : list of :class:`numpy.ndarray`, list of
-    :class:`xarray.DataArray`
+    gradients : list of :class:`numpy.ndarray`, list of :class:`xarray.DataArray`
         longitudinal and latitudinal gradients calculated using th WGS84 geoid.
     """
 
