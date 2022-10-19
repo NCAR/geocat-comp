@@ -84,4 +84,3 @@ jobs:
         run: |
           cd docs
           make linkcheck
-          cat _build/linkcheck/output.txt
