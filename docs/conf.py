@@ -20,8 +20,7 @@ from sphinx.application import Sphinx
 from sphinx.util import logging
 from textwrap import dedent, indent
 
-sys.path.insert(0,
-                os.path.abspath('../'))  # Source code dir relative to this file
+print("sys.path:", sys.path)
 
 import geocat.comp
 
