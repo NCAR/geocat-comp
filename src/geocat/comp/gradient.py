@@ -23,6 +23,17 @@ def rad_lat_wgs84(lat: SupportedTypes,):
     is faster
     and a needed step for the arc_lat_wgs84 function to avoid the elliptic
     integral
+
+    Parameters
+    ----------
+    lat : :class:`numpy.ndarray`, :class:`xarray.DataArray`
+        2-dimensional dataset, of orthographic latitude coordinates
+
+    Returns
+    -------
+    gradients : list of :class:`numpy.ndarray`, list of
+    :class:`xarray.DataArray`
+        latitudinal radii calculated using th WGS84 geoid.
     """
     return \
         8.05993093251779959604912e-107 * lat ** 48 - \
@@ -64,6 +75,17 @@ def arc_lat_wgs84(lat: SupportedTypes,):
     This is accurate to within floating point error.
 
     note: This needs to be a taylor series to avoid the elliptic integral
+
+    Parameters
+    ----------
+    lat : :class:`numpy.ndarray`, :class:`xarray.DataArray`
+        2-dimensional dataset, of orthographic latitude coordinates
+
+    Returns
+    -------
+    gradients : list of :class:`numpy.ndarray`, list of
+    :class:`xarray.DataArray`
+        latitudinal arc from equator calculated using th WGS84 geoid.
     """
     return \
         2.87086392358719396475614e-110 * lat ** 49 - \
@@ -110,6 +132,20 @@ def arc_lon_wgs84(
     note: This doesn't need to be a taylor series, though the taylor series
     is faster and a needed step for the arc_lat_wgs84 function to avoid the
     elliptic integral
+
+    Parameters
+    ----------
+    lon : :class:`numpy.ndarray`, :class:`xarray.DataArray`
+        2-dimensional dataset, of orthographic longitude coordinates
+
+    lat : :class:`numpy.ndarray`, :class:`xarray.DataArray`
+        2-dimensional dataset, of orthographic latitude coordinates
+
+    Returns
+    -------
+    gradients : list of :class:`numpy.ndarray`, list of
+    :class:`xarray.DataArray`
+        longitudinal arc from Prime Meridian calculated using th WGS84 geoid.
     """
     return rad_lat_wgs84(lat) * np.cos(lat * d2r) * lon * d2r
 
