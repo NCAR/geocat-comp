@@ -80,9 +80,8 @@ jobs:
           python-version: 3.9
           channels: conda-forge
           environment-file: build_envs/docs.yml
-      - name: Link Check
+      - name: Make docs with linkcheck
         run: |
-          pwd
-          tree
           cd docs
           make linkcheck
+          cat _build/linkcheck/output.txt
