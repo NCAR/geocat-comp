@@ -1,9 +1,10 @@
-import scipy.special as ss
-import numpy as np
 import math as ma
-import xarray as xr
 import sys
 import unittest
+
+import numpy as np
+import scipy.special as ss
+import xarray as xr
 
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
