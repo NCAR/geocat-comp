@@ -9,10 +9,11 @@ from metpy.units import units
 def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
                     dewpt: pint.Quantity) -> pint.Quantity:
     """Calculate Showalter Index from pressure temperature and 850 hPa lcl.
-    Showalter Index derived from [Galway1956]_:
+    Showalter Index derived from `Gallway 1956 <https://journals.ametsoc.org/do
+    wnloadpdf/journals/bams/37/10/1520-0477-37_10_528.xml>`__.
 
-    shox = T500 - Tp500
-    where:
+    :math:`shox = T500 - Tp500` where:
+
     - T500 is the measured temperature at 500 hPa
     - Tp500 is the temperature of the lifted parcel at 500 hPa
 
@@ -59,7 +60,7 @@ def get_skewt_vars(p: pint.Quantity, tc: pint.Quantity, tdc: pint.Quantity,
 
     Returns
     -------
-    joined : :class:`str`
+    joined : str
         A string element with the format "Plcl=<value> Tlcl[C]=<value> Shox=<value> Pwat[cm]=<value> Cape[J]=<value>" where:
 
         - Cape  -  Convective Available Potential Energy [J]
@@ -71,8 +72,8 @@ def get_skewt_vars(p: pint.Quantity, tc: pint.Quantity, tdc: pint.Quantity,
     See Also
     --------
     Related NCL Functions:
-    `skewT_PlotData <https://www.ncl.ucar.edu/Document/Functions/Skewt_func/skewT_PlotData.shtml>`_,
-    `skewt_BackGround <https://www.ncl.ucar.edu/Document/Functions/Skewt_func/skewT_BackGround.shtml>`_
+    `skewT_PlotData <https://www.ncl.ucar.edu/Document/Functions/Skewt_func/skewT_PlotData.shtml>`__,
+    `skewt_BackGround <https://www.ncl.ucar.edu/Document/Functions/Skewt_func/skewT_BackGround.shtml>`__
     """
 
     # CAPE

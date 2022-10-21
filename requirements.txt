@@ -7,3 +7,4 @@ metpy
 numpy
 scipy
 xarray
+xskillscore

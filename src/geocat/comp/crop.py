@@ -20,15 +20,15 @@ def max_daylight(
 
     Parameters
     ----------
-    jday : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`
+    jday : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         Day of year. Must be 1D
 
-    lat : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`
+    lat : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         Latitude in degrees. Must be 1D
 
     Returns
     -------
-    sunmax : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`float`
+    sunmax : ndarray, :class:`xarray.DataArray`, :class:`float`
         Calculated maximum sunlight in hours/day
 
     Examples
@@ -46,7 +46,7 @@ def max_daylight(
     See Also
     --------
     Related NCL Functions:
-    `daylight_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/daylight_fao56.shtml>`_
+    `daylight_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/daylight_fao56.shtml>`__
     """
 
     x_out = False
@@ -126,12 +126,12 @@ def psychrometric_constant(
 
     Parameters
     ----------
-    pressure : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`
+    pressure : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         pressure in kPa/C
 
     Returns
     -------
-    psy_const : :class:`numpy.ndarray`, :class:`xarray.DataArray`
+    psy_const : ndarray, :class:`xarray.DataArray`
         the computed psychrometric constant. Same shape as pressure.
 
     Examples
@@ -146,7 +146,7 @@ def psychrometric_constant(
     See Also
     --------
     Related NCL Functions:
-    `psychro_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/psychro_fao56.shtml>`_
+    `psychro_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/psychro_fao56.shtml>`__
     """
 
     # Constant
@@ -191,15 +191,15 @@ def saturation_vapor_pressure(
 
     Parameters
     ----------
-    temperature : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`
+    temperature : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         Temperature in Fahrenheit
 
-    tfill : :class:`float`, :class:`numpy.nan`, Optional
+    tfill : float, numpy.nan, optional
         An optional parameter for a fill value in the return value
 
     Returns
     -------
-    svp : :class:`numpy.ndarray`, :class:`xarray.DataArray`
+    svp : ndarray, :class:`xarray.DataArray`
         the computed actual saturation vapor pressure in kPa.
         Same shape as temperature.
 
@@ -215,11 +215,11 @@ def saturation_vapor_pressure(
     See Also
     --------
     Related GeoCAT Functions:
-    `actual_saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.actual_saturation_vapor_pressure.html#geocat.comp.crop.actual_saturation_vapor_pressure>`_,
-    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure_slope.html#geocat.comp.crop.saturation_vapor_pressure_slope>`_
+    `actual_saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.actual_saturation_vapor_pressure.html#geocat.comp.crop.actual_saturation_vapor_pressure>`__,
+    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure_slope.html#geocat.comp.crop.saturation_vapor_pressure_slope>`__
 
     Related NCL Functions:
-    `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>`_
+    `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>`__
     """
 
     in_type = type(temperature)
@@ -267,15 +267,15 @@ def actual_saturation_vapor_pressure(
 
     Parameters
     ----------
-    tdew : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`
+    tdew : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         Dew point temperatures in Fahrenheit
 
-    tfill : :class:`float`, :class:`numpy.nan`, Optional
+    tfill : float, numpy.nan, optional
         An optional parameter for a fill value in the return value
 
     Returns
     -------
-    asvp : :class:`numpy.ndarray`, :class:`xarray.DataArray`
+    asvp : ndarray, :class:`xarray.DataArray`
         the computed actual saturation vapor pressure in kPa.
         Same shape as tdew.
 
@@ -291,11 +291,11 @@ def actual_saturation_vapor_pressure(
     See Also
     --------
     Related GeoCAT Functions:
-    `saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure.html#geocat.comp.crop.saturation_vapor_pressure>`_,
-    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure_slope.html#geocat.comp.crop.saturation_vapor_pressure_slope>`_
+    `saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure.html#geocat.comp.crop.saturation_vapor_pressure>`__,
+    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure_slope.html#geocat.comp.crop.saturation_vapor_pressure_slope>`__
 
     Related NCL Functions:
-    `satvpr_tdew_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_tdew_fao56.shtml>`_
+    `satvpr_tdew_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_tdew_fao56.shtml>`__
     """
 
     in_type = type(tdew)
@@ -325,15 +325,15 @@ def saturation_vapor_pressure_slope(
 
     Parameters
     ----------
-    temperature : :class:`numpy.ndarray`, :class:`xarray.DataArray`, :class:`list`, :class:`float`
+    temperature : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         Temperature in Fahrenheit
 
-    tfill : :class:`float`, :class:`numpy.nan`, Optional
+    tfill : float, numpy.nan, optional
         An optional parameter for a fill value in the return value
 
     Returns
     -------
-    svp_slope : :class:`numpy.ndarray`, :class:`xarray.DataArray`
+    svp_slope : ndarray, :class:`xarray.DataArray`
         The computed slopes of the saturation vapor pressure curve.
         Will be the same shape as temperature.
 
@@ -349,11 +349,11 @@ def saturation_vapor_pressure_slope(
     See Also
     --------
     Related GeoCAT Functions:
-    `actual_saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.actual_saturation_vapor_pressure.html#geocat.comp.crop.actual_saturation_vapor_pressure>`_,
-    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure_slope.html#geocat.comp.crop.saturation_vapor_pressure_slope>`_
+    `actual_saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.actual_saturation_vapor_pressure.html#geocat.comp.crop.actual_saturation_vapor_pressure>`__,
+    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure_slope.html#geocat.comp.crop.saturation_vapor_pressure_slope>`__
 
     Related NCL Functions:
-    `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>`_
+    `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>`__
     """
 
     in_type = type(temperature)
