@@ -31,7 +31,6 @@ Fourier Filters
    fourier_high_pass
    fourier_low_pass
 
-
 Iterpolation
 ^^^^^^^^^^^^
 .. currentmodule:: geocat.comp.interpolation
