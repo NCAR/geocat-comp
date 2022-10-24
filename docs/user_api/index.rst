@@ -31,6 +31,18 @@ Crop
    saturation_vapor_pressure
    saturation_vapor_pressure_slope
 
+Gradient
+^^^^^^^^
+.. currentmodule:: geocat.comp.gradient
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
+
+   gradient
+   arc_lat_wgs84
+   arc_lon_wgs84
+   rad_lat_wgs84
+
 EOF Functions
 ^^^^^^^^^^^^^
 .. currentmodule:: geocat.comp.eofunc
