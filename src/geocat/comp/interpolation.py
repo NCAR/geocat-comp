@@ -218,7 +218,7 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
                               t_bot: xr.DataArray = None,
                               phi_sfc: xr.DataArray = None) -> xr.DataArray:
     """Interpolate and extrapolate data from hybrid-sigma levels to isobaric
-    levels. Keeps attributes (i.e. meta information) of the input data in the
+    levels. Keeps attributes (i.e. metadata) of the input data in the
     output as default.
 
     Notes
