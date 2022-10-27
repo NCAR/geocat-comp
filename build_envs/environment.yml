@@ -15,6 +15,7 @@ dependencies:
   - netcdf4  # for tests
   - numpy
   - pre-commit
+  - pint<0.20
   - pytest  # for tests
   - pytest-cov  # for tests
   - xarray
