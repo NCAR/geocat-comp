@@ -181,7 +181,6 @@ def _geo_height_extrapolate(t_bot, lev, p_sfc, ps, phi_sfc):
 
 def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, ps,
                            variable, t_bot, phi_sfc):
-    # TODO: check for appropriate input values
     plev_name = pressure.cf['vertical'].name
     sfc_index = pressure[plev_name].argmax().data  # index of the model surface
     p_sfc = pressure.isel(**dict({plev_name: sfc_index
