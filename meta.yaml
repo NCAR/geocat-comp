@@ -1,5 +1,5 @@
 {% set name = "geocat-comp" %}
-{% set version = "2022.10.1" %}
+{% set version = "2022.10.0" %}
 
 package:
   name: {{ name }}
@@ -7,7 +7,7 @@ package:
 
 build:
   noarch: python
-  number: 0
+  number: 1
   script: {{ PYTHON }} -m pip install --no-deps --ignore-installed -vv .
 
 source:
