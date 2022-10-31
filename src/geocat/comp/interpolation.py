@@ -142,7 +142,7 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
                               new_levels: np.ndarray = __pres_lev_mandatory__,
                               lev_dim: str = None,
                               method: str = 'linear') -> xr.DataArray:
-    """Interpolate data from hybrid-sigma levels to isobaric levels. Keeps
+    """Interpolate data from hybrid-sigma levels to isobaric levels. Keeps the
     attributes (i.e. meta information) of the input data in the output as
     default.
 
@@ -156,14 +156,14 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
     Parameters
     ----------
     data : :class:`xarray.DataArray`
-        Multidimensional data array, which holds hybrid-sigma levels and has a `lev_dim` coordinate.
+        Multidimensional data array of hybrid-sigma levels and has a ``lev_dim`` coordinate.
 
     ps : :class:`xarray.DataArray`
         A multi-dimensional array of surface pressures (Pa), same time/space shape as data.
 
     hyam, hybm : :class:`xarray.DataArray`
         One-dimensional arrays containing the hybrid A and B coefficients. Must have the same
-        dimension size as the `lev_dim` dimension of data.
+        dimension size as the ``lev_dim`` dimension of data.
 
     p0 : float, optional
         Scalar numeric value equal to surface reference pressure (Pa). Defaults to 100000 Pa.
@@ -306,16 +306,16 @@ def interp_sigma_to_hybrid(data: xr.DataArray,
                            p0: float = 100000.,
                            lev_dim: str = None,
                            method: str = 'linear') -> xr.DataArray:
-    """Interpolate data from sigma to hybrid coordinates.  Keeps attributes
+    """Interpolate data from sigma to hybrid coordinates.  Keeps the attributes
     (i.e. meta information) of the input data in the output as default.
 
     Parameters
     ----------
     data : :class:`xarray.DataArray`
-        Multidimensional data array, which holds sigma levels and has a `lev_dim` coordinate.
+        Multidimensional data array, which holds sigma levels and has a ``lev_dim`` coordinate.
 
     sig_coords : :class:`xarray.DataArray`
-        A one-dimensional array of sigma coordinates of `lev_dim` of `data`.
+        A one-dimensional array of sigma coordinates of ``lev_dim`` of ``data``.
 
     ps : :class:`xarray.DataArray`
         A multi-dimensional array of surface pressures (Pa), same time/space shape as data.
@@ -403,7 +403,7 @@ def interp_multidim(
         missing_val: np.number = None,
         method: str = "linear",
         fill_value: typing.Union[str, np.number] = np.nan) -> supported_types:
-    """Multidimensional interpolation of variables. Uses xarray.interp to
+    """Multidimensional interpolation of variables. Uses ``xarray.interp`` to
     perform linear interpolation. Will not perform extrapolation, returns
     missing values if any surrounding points contain missing values.
 
@@ -411,7 +411,7 @@ def interp_multidim(
     ----------
     data_in : :class:`xarray.DataArray`, ndarray
         Data array with data to be interpolated and associated coords. If
-        it is a np array, then lat_in and lon_in must be provided. Length must
+        it is a np array, then ``lat_in`` and ``lon_in`` must be provided. Length must
         be coordinated with given coordinates.
 
     lat_out: ndarray
@@ -421,12 +421,12 @@ def interp_multidim(
         List of longitude coordinates to be interpolated to.
 
     lat_in: ndarray
-        List of latitude coordinates corresponding to data_in. Must be
-        given if data_in is not an xarray.
+        List of latitude coordinates corresponding to ``data_in``. Must be
+        given if ``data_in`` is not an xarray.
 
     lon_in: ndarray
-        List of longitude coordinates corresponding to data_in. Must be
-        given if data_in is not an xarray.
+        List of longitude coordinates corresponding to ``data_in``. Must be
+        given if ``data_in`` is not an xarray.
 
     cyclic: bool, optional
         Set as true if lon values are cyclical but do not fully wrap around
@@ -434,7 +434,7 @@ def interp_multidim(
         (0, 1.5, 3, ..., 354, 355.5) Default is false
 
     missing_val : :class:`np.number`, optional
-        Provide a number to represent missing data. Alternative to using np.nan
+        Provide a number to represent missing data. Alternative to using ``np.nan``
 
     method: str, optional
         Provide specific method of interpolation. Default is "linear"
@@ -447,24 +447,32 @@ def interp_multidim(
     Returns
     -------
     data_out : ndarray, :class:`xarray.DataArray`
-       Returns same data type as input data_in. Shape will be the same as
+       Returns same data type as input ``data_in``. Shape will be the same as
        input array except
-       for last two dimensions which will be equal to coordinates given in
-       data_out
+       for last two dimensions which will be equal to thecoordinates given in
+       ``data_out``
 
     Examples
     --------
     >>> import xarray as xr
     >>> import numpy as np
     >>> import geocat.comp
-    >>> data = np.asarray([[1, 2, 3, 4, 5, 99], [2, 4, 6, 8, 10, 12]])
+    >>> data = np.asarray([[1, 2, 3, 4, 5, 99],
+    ...                   [2, 4, 6, 8, 10, 12]])
     >>> lat_in = [0, 1]
     >>> lon_in = [0, 50, 100, 250, 300, 350]
-    >>> data_in = xr.DataArray(data, dims=['lat', 'lon'], coords={'lat':
-    lat_in, 'lon': lon_in})
-    >>> data_out = xr.DataArray(dims=['lat', 'lon'], coords={'lat': [0, 1],
-    'lon': [0, 50, 360]})
-    >>> do = interp_multidim(data_in, [0, 1], [0, 50, 360], cyclic=True, missing_val=99)
+    >>> data_in = xr.DataArray(data,
+    ...                        dims=['lat', 'lon'],
+    ...                        coords={'lat':lat_in,
+    ...                                'lon': lon_in})
+    >>> data_out = xr.DataArray(dims=['lat', 'lon'],
+    ...                         coords={'lat': [0, 1],
+    ...                                 'lon': [0, 50, 360]})
+    >>> do = interp_multidim(data_in,
+    ...                      [0, 1],
+    ...                      [0, 50, 360],
+    ...                      cyclic=True,
+    ...                      missing_val=99)
     >>> print(do)
     <xarray.DataArray (lat: 2, lon: 3)>
     array([[ 1.,  2., 99.],
