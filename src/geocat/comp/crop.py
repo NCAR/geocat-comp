@@ -186,8 +186,8 @@ def saturation_vapor_pressure(
     pressure with respect to liquid water that includes the variation of
     latent heat with temperature.
 
-    Note that if temperature = tdew, then this function computes actual vapor
-    pressure.
+    Note that if ``temperature`` = ``tdew``, then this function computes actual
+    vapor pressure.
 
     Parameters
     ----------

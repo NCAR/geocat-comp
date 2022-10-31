@@ -19,10 +19,9 @@ def rad_lat_wgs84(lat: SupportedTypes,):
     This returns the radius of the ellipsoid for a given latitude
     This is accurate to within floating point error.
 
-    note: This doesn't need to be a taylor series, though the taylor series
-    is faster
-    and a needed step for the arc_lat_wgs84 function to avoid the elliptic
-    integral
+    Note: This doesn't need to be a taylor series, though the taylor series
+    is faster and a needed step for the arc_lat_wgs84 function to avoid the
+    elliptic integral
 
     Parameters
     ----------
@@ -31,8 +30,7 @@ def rad_lat_wgs84(lat: SupportedTypes,):
 
     Returns
     -------
-    gradients : list of :class:`numpy.ndarray`, list of
-    :class:`xarray.DataArray`
+    gradients : list of :class:`numpy.ndarray`, list of :class:`xarray.DataArray`
         latitudinal radii calculated using th WGS84 geoid.
     """
     return \
@@ -83,8 +81,7 @@ def arc_lat_wgs84(lat: SupportedTypes,):
 
     Returns
     -------
-    gradients : list of :class:`numpy.ndarray`, list of
-    :class:`xarray.DataArray`
+    gradients : list of :class:`numpy.ndarray`, list of :class:`xarray.DataArray`
         latitudinal arc from equator calculated using th WGS84 geoid.
     """
     return \
@@ -129,7 +126,7 @@ def arc_lon_wgs84(
     This returns the distance from the Greenwich Meridian to a given latitude
     This is accurate to within floating point error.
 
-    note: This doesn't need to be a taylor series, though the taylor series
+    Note: This doesn't need to be a taylor series, though the taylor series
     is faster and a needed step for the arc_lat_wgs84 function to avoid the
     elliptic integral
 
@@ -143,9 +140,8 @@ def arc_lon_wgs84(
 
     Returns
     -------
-    gradients : list of :class:`numpy.ndarray`, list of
-    :class:`xarray.DataArray`
-        longitudinal arc from Prime Meridian calculated using th WGS84 geoid.
+    gradients : list of :class:`numpy.ndarray`, list of :class:`xarray.DataArray`
+        Longitudinal arc from Prime Meridian calculated using th WGS84 geoid.
     """
     return rad_lat_wgs84(lat) * np.cos(lat * d2r) * lon * d2r
 
