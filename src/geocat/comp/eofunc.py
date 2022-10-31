@@ -125,31 +125,31 @@ def eofunc_eofs(data,
 
     Returns
     -------
-        A multi-dimensional array containing EOFs. The returned array will be of the same size as data with the
-        leftmost dimension removed and an additional dimension of the size `neofs` added.
+    A multi-dimensional array containing EOFs. The returned array will be of the same size as data with the
+    leftmost dimension removed and an additional dimension of the size ``neofs`` added.
 
-        The return variable will have associated with it the following attributes:
+    The return variable will have associated with it the following attributes:
 
-        eigenvalues:
-            A one-dimensional array of size ``neofs`` that contains the eigenvalues associated with each EOF.
+    eigenvalues:
+        A one-dimensional array of size ``neofs`` that contains the eigenvalues associated with each EOF.
 
-        northTest:
-            (From ``eofs`` package): Typical errors for eigenvalues.
+    northTest:
+        (From ``eofs`` package): Typical errors for eigenvalues.
 
-            The method of North et al. (1982) is used to compute the typical error for each eigenvalue. It is
-            assumed that the number of times in the input data set is the same as the number of independent
-            realizations. If this assumption is not valid then the result may be inappropriate.
+        The method of North et al. (1982) is used to compute the typical error for each eigenvalue. It is
+        assumed that the number of times in the input data set is the same as the number of independent
+        realizations. If this assumption is not valid then the result may be inappropriate.
 
-            Note: The ``northTest`` attribute allows to perform the error analysis that was previously done via the NCL
-            function ``eofunc_north``.
+        Note: The ``northTest`` attribute allows to perform the error analysis that was previously done via the NCL
+        function ``eofunc_north``.
 
-        totalAnomalyVariance:
-            (From ``eofs`` package): Total variance associated with the field of anomalies (the sum of the eigenvalues).
+    totalAnomalyVariance:
+        (From ``eofs`` package): Total variance associated with the field of anomalies (the sum of the eigenvalues).
 
-        varianceFraction:
-            (From ``eofs`` package): Fractional EOF mode variances.
+    varianceFraction:
+        (From ``eofs`` package): Fractional EOF mode variances.
 
-            The fraction of the total variance explained by each EOF mode, values between 0 and 1 inclusive..
+        The fraction of the total variance explained by each EOF mode, values between 0 and 1 inclusive.
 
     See Also
     --------
