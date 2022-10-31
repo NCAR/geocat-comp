@@ -20,7 +20,7 @@ def _dewtemp(
         Temperature in Kelvin
 
     rh : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
-        Relative humidity. Must be the same dimensions as temperature
+        Relative humidity. Must be the same dimensions as ``temperature``
 
     Returns
     -------
@@ -196,15 +196,15 @@ def _relhum(
         Temperature in Kelvin
 
     w : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
-        Mixing ratio in kg/kg. Must have the same dimensions as temperature
+        Mixing ratio in kg/kg. Must have the same dimensions as ``temperature``
 
     p : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
-        Pressure in Pa. Must have the same dimensions as temperature
+        Pressure in Pa. Must have the same dimensions as ``temperature``
 
     Returns
     -------
     rh : ndarray
-        Relative humidity. Will have the same dimensions as temperature
+        Relative humidity. Will have the same dimensions as ``temperature``
 
 
     See Also
@@ -287,15 +287,15 @@ def _relhum_ice(t: typing.Union[np.ndarray, list, float],
         Temperature in Kelvin
 
     w : ndarray, :obj:`list`, :obj:`float`
-        Mixing ratio in kg/kg. Must have the same dimensions as temperature
+        Mixing ratio in kg/kg. Must have the same dimensions as ``temperature``
 
     p : ndarray, :obj:`list`, :obj:`float`
-        Pressure in Pa. Must have the same dimensions as temperature
+        Pressure in Pa. Must have the same dimensions as ``temperature``
 
     Returns
     -------
     rh : ndarray
-        Relative humidity. Will have the same dimensions as temperature
+        Relative humidity. Will have the same dimensions as ``temperature``
 
 
     See Also
@@ -351,15 +351,15 @@ def _relhum_water(t: typing.Union[np.ndarray, list, float],
         Temperature in Kelvin
 
     w : ndarray, :obj:`list`, :obj:`float`
-        Mixing ratio in kg/kg. Must have the same dimensions as temperature
+        Mixing ratio in kg/kg. Must have the same dimensions as ``temperature``
 
     p : ndarray, :obj:`list`, :obj:`float`
-        Pressure in Pa. Must have the same dimensions as temperature
+        Pressure in Pa. Must have the same dimensions as ``temperature``
 
     Returns
     -------
     rh : ndarray
-        Relative humidity. Will have the same dimensions as temperature
+        Relative humidity. Will have the same dimensions as ``temperature``
 
     See Also
     --------
@@ -495,15 +495,15 @@ def _xrelhum(t: xr.DataArray, w: xr.DataArray, p: xr.DataArray) -> xr.DataArray:
         Temperature in Kelvin
 
     w : :class:`xarray.DataArray`
-        Mixing ratio in kg/kg. Must have the same dimensions as temperature
+        Mixing ratio in kg/kg. Must have the same dimensions as ``temperature``
 
     p : :class:`xarray.DataArray`
-        Pressure in Pa. Must have the same dimensions as temperature
+        Pressure in Pa. Must have the same dimensions as ``temperature``
 
     Returns
     -------
     rh : :class:`xarray.DataArray`
-        Relative humidity. Will have the same dimensions as temperature
+        Relative humidity. Will have the same dimensions as ``temperature``
 
 
     See Also
@@ -584,7 +584,7 @@ def dewtemp(
         Temperature in Kelvin
 
     relative_humidity : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
-        Relative humidity. Must be the same dimensions as temperature
+        Relative humidity. Must be the same dimensions as ``temperature``
 
     Returns
     -------
@@ -783,15 +783,15 @@ def relhum(
         Temperature in Kelvin
 
     mixing_ratio : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
-        Mixing ratio in kg/kg. Must have the same dimensions as temperature
+        Mixing ratio in kg/kg. Must have the same dimensions as ``temperature``
 
     pressure : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
-        Pressure in Pa. Must have the same dimensions as temperature
+        Pressure in Pa. Must have the same dimensions as ``temperature``
 
     Returns
     -------
     relative_humidity : ndarray or :class:`xarray.DataArray`
-        Relative humidity. Will have the same dimensions as temperature
+        Relative humidity. Will have the same dimensions as ``temperature``
 
 
     See Also
@@ -862,15 +862,15 @@ def relhum_ice(temperature: typing.Union[np.ndarray, list, float],
         Temperature in Kelvin
 
     mixing_ratio : ndarray, :obj:`list`, or :obj:`float`
-        Mixing ratio in kg/kg. Must have the same dimensions as temperature
+        Mixing ratio in kg/kg. Must have the same dimensions as ``temperature``
 
     pressure : ndarray, :obj:`list`, or :obj:`float`
-        Pressure in Pa. Must have the same dimensions as temperature
+        Pressure in Pa. Must have the same dimensions as ``temperature``
 
     Returns
     -------
     relative_humidity : ndarray
-        Relative humidity. Will have the same dimensions as temperature
+        Relative humidity. Will have the same dimensions as ``temperature``
 
     See Also
     --------
@@ -937,15 +937,15 @@ def relhum_water(temperature: typing.Union[np.ndarray, list, float],
         Temperature in Kelvin
 
     mixing_ratio : ndarray, :obj:`list`, or :obj:`float`
-        Mixing ratio in kg/kg. Must have the same dimensions as temperature
+        Mixing ratio in kg/kg. Must have the same dimensions as ``temperature``
 
     pressure : ndarray, :obj:`list`, or :obj:`float`
-        Pressure in Pa. Must have the same dimensions as temperature
+        Pressure in Pa. Must have the same dimensions as ``temperature``
 
     Returns
     -------
     relative_humidity : ndarray
-        Relative humidity. Will have the same dimensions as temperature
+        Relative humidity. Will have the same dimensions as ``temperature``
 
     See Also
     --------
