@@ -76,16 +76,32 @@ def fourier_filter(
     >>> cflow2 = tide_freq2 - res*5
     >>> cfhigh2 = tide_freq2 + res*5
 
-    >>> fig, ax = plt.subplots(1,1,dpi=100,figsize=(8,4),constrained_layout=True)
+    >>> fig, ax = plt.subplots(1,
+    ...                        1,
+    ...                        dpi=100,
+    ...                        figsize=(8,4),
+    ...                        constrained_layout=True)
     >>> no_tide = xr_data
     >>> ax.plot(no_tide[2000:3000])
-    >>> no_tide = fourier_filter(no_tide, data_freq, cutoff_frequency_low=cflow1,cutoff_frequency_high=cfhigh1,band_block=True)
+    >>> no_tide = fourier_filter(no_tide,
+    ...                          data_freq,
+    ...                          cutoff_frequency_low=cflow1,
+    ...                          cutoff_frequency_high=cfhigh1,
+    ...                          band_block=True)
     >>> ax.plot(no_tide[2000:3000])
-    >>> no_tide = fourier_filter(no_tide, data_freq, cutoff_frequency_low=cflow2,cutoff_frequency_high=cfhigh2,band_block=True)
+    >>> no_tide = fourier_filter(no_tide,
+    ...                          data_freq,
+    ...                          cutoff_frequency_low=cflow2,
+    ...                          cutoff_frequency_high=cfhigh2,
+    ...                          band_block=True)
     >>> ax.plot(no_tide[2000:3000])
     >>> fig.show()
 
-    >>> fig, axs = plt.subplots(2,1, dpi=100,figsize=(8,4),constrained_layout=True)
+    >>> fig, axs = plt.subplots(2,
+    ...                         1,
+    ...                         dpi=100,
+    ...                         figsize=(8,4),
+    ...                         constrained_layout=True)
     >>> axs[0].set_title('real')
     >>> axs[0].plot(np.real(np.fft.fft(xr_data)[1:100]))
     >>> axs[0].plot(np.real(np.fft.fft(no_tide)[1:100]))
@@ -94,7 +110,11 @@ def fourier_filter(
     >>> axs[1].plot(np.imag(np.fft.fft(no_tide)[1:100]))
     >>> fig.show()
 
-    >>> fig, axs = plt.subplots(2,1, dpi=100,figsize=(8,4),constrained_layout=True)
+    >>> fig, axs = plt.subplots(2,
+    ...                         1,
+    ...                         dpi=100,
+    ...                         figsize=(8,4),
+    ...                         constrained_layout=True)
     >>> start = 0
     >>> end = -1
     >>> axs[0].set_title('real')
