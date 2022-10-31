@@ -276,10 +276,10 @@ def _relhum_ice(t: typing.Union[np.ndarray, list, float],
     """Calculates relative humidity with respect to ice, given temperature,
     mixing ratio, and pressure.
 
-     "Improved Magnus' Form Approx. of Saturation Vapor pressure"
-     Oleg A. Alduchov and Robert E. Eskridge
-     http://www.osti.gov/scitech/servlets/purl/548871/
-     https://doi.org/10.2172/548871
+    "Improved Magnus' Form Approx. of Saturation Vapor pressure"
+    Oleg A. Alduchov and Robert E. Eskridge
+    http://www.osti.gov/scitech/servlets/purl/548871/
+    https://doi.org/10.2172/548871
 
     Parameters
     ----------
@@ -336,14 +336,15 @@ def _relhum_water(t: typing.Union[np.ndarray, list, float],
     """Calculates relative humidity with respect to water, given temperature,
     mixing ratio, and pressure.
 
-    Definition of mixing ratio if,
+    Definition of mixing ratio if:
 
-    - es  - is the saturation mixing ratio
-    - ep  - is the ratio of the molecular weights of water vapor to dry air
-    - p   - is the atmospheric pressure
-    - rh  - is the relative humidity (given as a percent)
+    - ``es``  - is the saturation mixing ratio
+    - ``ep``  - is the ratio of the molecular weights of water vapor to dry air
+    - ``p``   - is the atmospheric pressure
+    - ``rh``  - is the relative humidity (given as a percent)
 
-    rh =  100*  q / ( (ep*es)/(p-es) )
+    .. math::
+        rh =  100*  q / ( (ep*es)/(p-es) )
 
     Parameters
     ----------
@@ -923,13 +924,15 @@ def relhum_water(temperature: typing.Union[np.ndarray, list, float],
     """Calculates relative humidity with respect to water, given temperature,
     mixing ratio, and pressure.
 
-    Definition of mixing ratio if,
-    es  - is the saturation mixing ratio
-    ep  - is the ratio of the molecular weights of water vapor to dry air
-    p   - is the atmospheric pressure
-    rh  - is the relative humidity (given as a percent)
+    Definition of mixing ratio if:
 
-    rh =  100*  q / ( (ep*es)/(p-es) )
+    - ``es``  - is the saturation mixing ratio
+    - ``ep``  - is the ratio of the molecular weights of water vapor to dry air
+    - ``p``   - is the atmospheric pressure
+    - ``rh``  - is the relative humidity (given as a percent)
+
+    .. math::
+        rh =  100*  q / ( (ep*es)/(p-es) )
 
     Parameters
     ----------
