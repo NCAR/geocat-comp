@@ -61,7 +61,7 @@ def _heat_index(temperature: np.ndarray,
 
     relative_humidity : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         relative humidity as a percentage. Must be the same shape as
-        temperature
+        ``temperature``
 
     alternate_coeffs : bool, optional
         flag to use alternate set of coefficients appropriate for
@@ -70,7 +70,7 @@ def _heat_index(temperature: np.ndarray,
     Returns
     -------
     heatindex : ndarray
-        Calculated heat index. Same shape as temperature
+        Calculated heat index. Same shape as ``temperature``
 
 
     See Also
@@ -147,12 +147,12 @@ def _nws_eqn(coeffs, temp, rel_hum):
 
     rel_hum : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         relative humidity as a percentage. Must be the same shape as
-        temperature
+        ``temperature``
 
     Returns
     -------
     heatindex : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
-        Intermediate calculated heat index. Same shape as temperature
+        Intermediate calculated heat index. Same shape as ``temperature``
 
 
     See Also
@@ -407,7 +407,7 @@ def _xheat_index(temperature: xr.DataArray,
 
     relative_humidity : :class:`xarray.DataArray`
         relative humidity as a percentage. Must be the same shape as
-        temperature
+        ``temperature``
 
     alternate_coeffs : bool, optional
         flag to use alternate set of coefficients appropriate for
@@ -416,7 +416,7 @@ def _xheat_index(temperature: xr.DataArray,
     Returns
     -------
     heatindex : :class:`xarray.DataArray`
-        Calculated heat index. Same shape as temperature
+        Calculated heat index. Same shape as ``temperature``
 
     eqtype : :class:`int`
         version of equations used, for xarray attrs output
@@ -645,9 +645,9 @@ def heat_index(
     The heat index calculation in this funtion is described at:
     https://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml
 
-    The 'Heat Index' is a measure of how hot weather "feels" to the body. The combination of temperature an humidity
+    The 'Heat Index' is a measure of how hot weather "feels" to the body. The combination of temperature and humidity
     produce an "apparent temperature" or the temperature the body "feels". The returned values are for shady
-    locations only. Exposure to full sunshine can increase heat index values by up to 15Â°F. Also, strong winds,
+    locations only. Exposure to full sunshine can increase heat index values by up to 15°F. Also, strong winds,
     particularly with very hot, dry air, can be extremely hazardous as the wind adds heat to the body
 
     The computation of the heat index is a refinement of a result obtained by multiple regression analysis carried
@@ -656,7 +656,7 @@ def heat_index(
 
     In practice, the Steadman formula is computed first and the result averaged with the temperature. If this heat
     index value is 80 degrees F or higher, the full regression equation along with any adjustment as described above
-    is applied. If the ambient temperature is less the 40F (4.4C/277.65K), the heat index is set to to the ambient
+    is applied. If the ambient temperature is less the 40F (4.4C/277.65K), the heat index is set to the ambient
     temperature.
 
     Parameters
@@ -666,7 +666,7 @@ def heat_index(
 
     relative_humidity : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         relative humidity as a percentage. Must be the same shape as
-        temperature
+        ``temperature``
 
     alternate_coeffs : bool, optional
         flag to use alternate set of coefficients appropriate for
@@ -675,7 +675,7 @@ def heat_index(
     Returns
     -------
     heatindex : ndarray, :class:`xarray.DataArray`
-        Calculated heat index. Same shape as temperature
+        Calculated heat index. Same shape as ``temperature``
 
     Examples
     --------
