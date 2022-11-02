@@ -13,18 +13,15 @@ import xarray as xr
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
 if "--cov" in str(sys.argv):
-    from src.geocat.comp.meteorology import (dewtemp, heat_index, relhum, relhum_ice,
-                                             relhum_water, showalter_index,
-                                             actual_saturation_vapor_pressure, max_daylight,
-                                             psychrometric_constant,
-                                             saturation_vapor_pressure,
-                                             saturation_vapor_pressure_slope)
+    from src.geocat.comp.meteorology import (
+        dewtemp, heat_index, relhum, relhum_ice, relhum_water, showalter_index,
+        actual_saturation_vapor_pressure, max_daylight, psychrometric_constant,
+        saturation_vapor_pressure, saturation_vapor_pressure_slope)
 else:
-    from geocat.comp.meteorology import (dewtemp, heat_index, relhum, relhum_ice,
-                                         relhum_water, showalter_index,
-                                         actual_saturation_vapor_pressure, max_daylight,
-                                         psychrometric_constant, saturation_vapor_pressure,
-                                         saturation_vapor_pressure_slope)
+    from geocat.comp.meteorology import (
+        dewtemp, heat_index, relhum, relhum_ice, relhum_water, showalter_index,
+        actual_saturation_vapor_pressure, max_daylight, psychrometric_constant,
+        saturation_vapor_pressure, saturation_vapor_pressure_slope)
 
 
 class Test_dewtemp(unittest.TestCase):
