@@ -5,7 +5,7 @@ import numpy as np
 import pint.quantity
 from metpy.units import units
 import warnings
-import geocat.comp as gc
+from .meteorology import showalter_index
 
 
 def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
@@ -46,7 +46,7 @@ def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
         "``showalter_index`` has been moved to the ``meteorology`` module for future "
         "use. Use ``geocat.comp.showalter_index`` or ``geocat.comp.meteorology.showalter_index`` "
         "for the same functionality.", DeprecationWarning)
-    return gc.meteorology.showalter_index(pressure, temperature, dewpt)
+    return showalter_index(pressure, temperature, dewpt)
 
 
 def get_skewt_vars(p: pint.Quantity, tc: pint.Quantity, tdc: pint.Quantity,

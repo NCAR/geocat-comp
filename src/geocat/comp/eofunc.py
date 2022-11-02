@@ -4,7 +4,7 @@ from typing import Iterable
 import numpy as np
 import xarray as xr
 from eofs.xarray import Eof
-import geocat.comp as gc
+from .stats import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts
 
 
 def _generate_eofs_solver(data, time_dim=0, weights=None, center=True, ddof=1):
@@ -172,8 +172,8 @@ def eofunc_eofs(data,
         "the ``stats`` module for future use. Use ``geocat.comp.eofunc_eofs`` "
         "or ``geocat.comp.stats.eofunc_eofs`` for the same functionality.",
         DeprecationWarning)
-    return gc.stats.eofunc_eofs(data, neofs, time_dim, eofscaling, weights,
-                                center, ddof, vfscaled, meta)
+    return eofunc_eofs(data, neofs, time_dim, eofscaling, weights, center, ddof,
+                       vfscaled, meta)
 
 
 def eofunc_pcs(data,
@@ -278,8 +278,8 @@ def eofunc_pcs(data,
         "``geocat.comp.stats.eofunc_pcs`` for the same functionality.",
         DeprecationWarning)
 
-    return gc.stats.eofunc_pcs(data, npcs, time_dim, pcscaling, weights, center,
-                               ddof, meta)
+    return eofunc_pcs(data, npcs, time_dim, pcscaling, weights, center, ddof,
+                      meta)
 
 
 # Transparent wrappers for geocat.comp backwards compatibility
