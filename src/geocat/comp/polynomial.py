@@ -681,7 +681,7 @@ def detrend(data: typing.Iterable, deg=1, axis=0, **kwargs) -> xr.DataArray:
     """Estimates and removes the trend of the leftmost dimension from all grid
     points. This method, at the minimum, provides all the functionality that is
     provided by NCL's ``dtrend``, ``dtrend_quadratic``, ``dtrend_quadratic_msg_n``,
-    ``dtrend_msg_n``, ``dtrend_msg``, ``dtrend_n`. However, this function is not
+    ``dtrend_msg_n``, ``dtrend_msg``, ``dtrend_n``. However, this function is not
     limited to quadratic detrending, and you could use higher polynomial degree
     as well.
 
@@ -715,39 +715,38 @@ def detrend(data: typing.Iterable, deg=1, axis=0, **kwargs) -> xr.DataArray:
     Examples
     --------
 
-        * Detrending a dataset:
+    * Detrending a dataset:
 
-        >>> from geocat.comp.polynomial import ndpolyfit
-        >>> from geocat.comp.polynomial import detrend
-        >>> # Creating synthetic data
-        >>> x = np.linspace(-8 * np.pi,
-        ...                 8 * np.pi,
-        ...                 33,
-        ...                 dtype=np.float64)
-        >>> y0 = 1.0 * x
-        >>> y1 = np.sin(x)
-        >>> y = y0 + y1
-        >>> p = ndpolyfit(np.arange(x.size), y, deg=1)
-        >>> y_trend = ndpolyval(p, np.arange(x.size))
-        >>> y_detrended = detrend(y)
-        >>> np.testing.assert_almost_equal(y_detrended + y_trend, y)
+    >>> from geocat.comp.polynomial import ndpolyfit
+    >>> from geocat.comp.polynomial import detrend
+    >>> # Creating synthetic data
+    >>> x = np.linspace(-8 * np.pi,
+    ...                 8 * np.pi,
+    ...                 33,
+    ...                 dtype=np.float64)
+    >>> y0 = 1.0 * x
+    >>> y1 = np.sin(x)
+    >>> y = y0 + y1
+    >>> p = ndpolyfit(np.arange(x.size), y, deg=1)
+    >>> y_trend = ndpolyval(p, np.arange(x.size))
+    >>> y_detrended = detrend(y)
+    >>> np.testing.assert_almost_equal(y_detrended + y_trend, y)
 
+    * Detrending a multi-dimensional dataset:
 
-        * Detrending a multi-dimensional data:
-
-        >>> # Creating synthetic data
-        >>> x = np.linspace(-8 * np.pi,
-        ...                 8 * np.pi,
-        ...                 33,
-        ...                 dtype=np.float64)
-        >>> y0 = 1.0 * x
-        >>> y1 = np.sin(x)
-        >>> y = np.tile((y0 + y1).reshape((1, -1, 1, 1)),
-        ...             (2, 1, 3, 4))
-        >>> p = ndpolyfit(x, y, deg=1, axis=1)
-        >>> y_trend = ndpolyval(p, x, axis=1)
-        >>> y_detrended = detrend(y, x=x, axis=1)
-        >>> np.testing.assert_almost_equal(y_detrended + y_trend, y)
+    >>> # Creating synthetic data
+    >>> x = np.linspace(-8 * np.pi,
+    ...                 8 * np.pi,
+    ...                 33,
+    ...                 dtype=np.float64)
+    >>> y0 = 1.0 * x
+    >>> y1 = np.sin(x)
+    >>> y = np.tile((y0 + y1).reshape((1, -1, 1, 1)),
+    ...             (2, 1, 3, 4))
+    >>> p = ndpolyfit(x, y, deg=1, axis=1)
+    >>> y_trend = ndpolyval(p, x, axis=1)
+    >>> y_detrended = detrend(y, x=x, axis=1)
+    >>> np.testing.assert_almost_equal(y_detrended + y_trend, y)
 
     See Also
     --------
