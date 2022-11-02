@@ -680,9 +680,9 @@ def _ndpolyval(p: np.ndarray,
 def detrend(data: typing.Iterable, deg=1, axis=0, **kwargs) -> xr.DataArray:
     """Estimates and removes the trend of the leftmost dimension from all grid
     points. This method, at the minimum, provides all the functionality that is
-    provided by NCL's 'dtrend', 'dtrend_quadratic', 'dtrend_quadratic_msg_n',
-    'dtrend_msg_n', 'dtrend_msg', 'dtrend_n'. However, this function is not
-    limited to quadratic detrending and you could use higher polynomial degree
+    provided by NCL's ``dtrend``, ``dtrend_quadratic``, ``dtrend_quadratic_msg_n``,
+    ``dtrend_msg_n``, ``dtrend_msg``, ``dtrend_n`. However, this function is not
+    limited to quadratic detrending, and you could use higher polynomial degree
     as well.
 
     Parameters
@@ -705,7 +705,7 @@ def detrend(data: typing.Iterable, deg=1, axis=0, **kwargs) -> xr.DataArray:
         If set to true, the fitted polynomial is returned as part of the attributes. Default value is ``True``.
 
     missing_value : :class:`numeric`
-        A value that must be ignored. Default is NaN.
+        A value that must be ignored. Default is ``NaN``.
 
     Returns
     -------
