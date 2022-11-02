@@ -218,47 +218,49 @@ class Test_relhum(unittest.TestCase):
         # make dask client to reference in subsequent tests
         cls.client = dd.Client()
 
-    def test_float_input(self):
+    def test_float_input(self, use_gpu=False):
         p = 1000. * 100
         t = 18. + 273.15
         q = 6. / 1000.
 
-        assert np.allclose(relhum(t, q, p), self.rh_gt_1, atol=0.1)
+        assert np.allclose(relhum(t, q, p, use_gpu), self.rh_gt_1, atol=0.1)
 
-    def test_list_input(self):
+    def test_list_input(self, use_gpu=False):
 
-        assert np.allclose(relhum(self.t_def, self.q_def, self.p_def),
+        assert np.allclose(relhum(self.t_def, self.q_def, self.p_def, use_gpu),
                            self.rh_gt_2,
                            atol=0.1)
 
-    def test_numpy_input(self):
+    def test_numpy_input(self, use_gpu=False):
         p = np.asarray(self.p_def)
         t = np.asarray(self.t_def)
         q = np.asarray(self.q_def)
 
-        assert np.allclose(relhum(t, q, p), self.rh_gt_2, atol=0.1)
+        assert np.allclose(relhum(t, q, p, use_gpu), self.rh_gt_2, atol=0.1)
 
-    def test_dims_error(self):
+    def test_dims_error(self, use_gpu=False):
         self.assertRaises(ValueError, relhum, self.t_def[:10], self.q_def[:10],
-                          self.p_def[:9])
+                          self.p_def[:9], use_gpu)
 
-    def test_xarray_type_error(self):
+    def test_xarray_type_error(self, use_gpu=False):
         self.assertRaises(TypeError, relhum, self.t_def,
-                          xr.DataArray(self.q_def), self.p_def)
+                          xr.DataArray(self.q_def), self.p_def, use_gpu)
 
-    def test_dask_compute(self):
+    def test_dask_compute(self, use_gpu=False):
         p = xr.DataArray(self.p_def).chunk(10)
         t = xr.DataArray(self.t_def).chunk(10)
         q = xr.DataArray(self.q_def).chunk(10)
 
-        assert np.allclose(relhum(t, q, p), self.rh_gt_2, atol=0.1)
+        assert np.allclose(relhum(t, q, p, use_gpu).data,
+                           self.rh_gt_2,
+                           atol=0.1)
 
-    def test_dask_lazy(self):
+    def test_dask_lazy(self, use_gpu=False):
         p = xr.DataArray(self.p_def).chunk(10)
         t = xr.DataArray(self.t_def).chunk(10)
         q = xr.DataArray(self.q_def).chunk(10)
 
-        assert isinstance(relhum(t, q, p).data, dask.array.Array)
+        assert isinstance(relhum(t, q, p, use_gpu).data, dask.array.Array)
 
 
 class Test_relhum_water(unittest.TestCase):
