@@ -46,24 +46,6 @@ tc = (ds[5].values + 2) * units.degC  # Temperature [C]
 tdc = ds[9].values * units.degC  # Dew pt temp  [C]
 pro = mpcalc.parcel_profile(p, tc[0], tdc[0]).to('degC')
 
-# Extract Showalter Index from NCL out file and convert to int
-Shox = np.round(out['Shox'])  # Use np.round to avoid rounding issues
-NCL_shox = int(Shox[0])  # Convert to int
-
-
-def test_shox_vals():
-
-    # Showalter index
-    shox = showalter_index(p, tc, tdc)
-    shox = shox[0].magnitude
-
-    # Place calculated values in iterable list
-    vals = np.round(shox).astype(int)
-
-    # Compare calculated values with expected
-    nt.assert_equal(vals, NCL_shox)
-
-
 def test_get_skewt_vars():
     """With respect to the note in test_vars, the MetPy calculated values for
     Plcl, Tlcl, Pwat, and CAPE along with the tested value for Showalter Index
