@@ -3,7 +3,7 @@ import typing
 import warnings
 import xarray as xr
 
-import geocat.comp as gc
+from .meteorology import max_daylight, psychrometric_constant, saturation_vapor_pressure, saturation_vapor_pressure_slope, actual_saturation_vapor_pressure
 
 
 def max_daylight(
@@ -60,7 +60,7 @@ def max_daylight(
         "or ``geocat.comp.meteorology.max_daylight`` for the same functionality.",
         DeprecationWarning)
 
-    return gc.meteorology.max_daylight(jday, lat)
+    return max_daylight(jday, lat)
 
 
 def psychrometric_constant(
@@ -122,7 +122,7 @@ def psychrometric_constant(
         "``geocat.comp.meteorology.psychrometric_constant`` for the same "
         "functionality.", DeprecationWarning)
 
-    return gc.meteorology.psychrometric_constant(pressure)
+    return psychrometric_constant(pressure)
 
 
 def saturation_vapor_pressure(
@@ -188,7 +188,7 @@ def saturation_vapor_pressure(
         "``geocat.comp.meteorology.saturation_vapor_pressure`` for the same "
         "functionality.", DeprecationWarning)
 
-    return gc.meteorology.saturation_vapor_pressure(temperature, tfill)
+    return saturation_vapor_pressure(temperature, tfill)
 
 
 def actual_saturation_vapor_pressure(
@@ -252,7 +252,7 @@ def actual_saturation_vapor_pressure(
         "or ``geocat.compmeteorology.actual_saturation_vapor_pressure`` for the "
         "same functionality.", DeprecationWarning)
 
-    return gc.meteorology.actual_saturation_vapor_pressure(tdew, tfill)
+    return actual_saturation_vapor_pressure(tdew, tfill)
 
 
 def saturation_vapor_pressure_slope(
@@ -311,4 +311,4 @@ def saturation_vapor_pressure_slope(
         "or ``geocat.comp.meteorology.saturation_vapor_pressure_slope`` for the "
         "same functionality.", DeprecationWarning)
 
-    return gc.meteorology.saturation_vapor_pressure_slope(temperature, tfill)
+    return saturation_vapor_pressure_slope(temperature, tfill)
