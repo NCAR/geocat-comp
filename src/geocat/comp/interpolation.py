@@ -1,5 +1,4 @@
 import typing
-from .errors import ChunkError, CoordinateError
 
 import cf_xarray
 import metpy.interpolate
@@ -492,7 +491,7 @@ def interp_multidim(
     # check for xarray/numpy
     if not isinstance(data_in, xr.DataArray):
         if lat_in is None or lon_in is None:
-            raise CoordinateError(
+            raise ValueError(
                 "Argument lat_in and lon_in must be provided if data_in is not an xarray"
             )
         data_in = xr.DataArray(data_in,

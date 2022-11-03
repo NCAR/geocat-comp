@@ -2,7 +2,8 @@ import numpy as np
 import typing
 import warnings
 import xarray as xr
-from .comp_util import _is_duck_array
+
+from .meteorology import max_daylight, psychrometric_constant, saturation_vapor_pressure, saturation_vapor_pressure_slope, actual_saturation_vapor_pressure
 
 
 def max_daylight(
@@ -10,7 +11,12 @@ def max_daylight(
                        float], lat: typing.Union[np.ndarray, xr.DataArray, list,
                                                  float]
 ) -> typing.Union[np.ndarray, xr.DataArray, float]:
-    """Computes maximum number of daylight hours as described in the Food and
+    r""".. deprecated:: 2022.10.0 The ``crop`` module is deprecated.
+        ``max_daylight`` has been moved to the ``meteorology`` module for
+        future use. Use ``geocat.comp.max_daylight`` or ``geocat.comp.meteorology.max_daylight``
+        for the same functionality.
+
+    Computes maximum number of daylight hours as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
 
     Crop evapotranspiration - Guidelines for computing crop water
@@ -48,63 +54,24 @@ def max_daylight(
     Related NCL Functions:
     `daylight_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/daylight_fao56.shtml>`__
     """
+    warnings.warn(
+        "The ``crop`` module is deprecated. ``max_daylight`` has been moved to "
+        "the ``meteorology`` module for future use. Use ``geocat.comp.max_daylight`` "
+        "or ``geocat.comp.meteorology.max_daylight`` for the same functionality.",
+        DeprecationWarning)
 
-    x_out = False
-    if isinstance(jday, xr.DataArray):
-        x_out = True
-
-    # convert inputs to numpy arrays for function call if necessary
-    if not _is_duck_array(jday):
-        jday = np.asarray(jday, dtype='float32')
-    if not _is_duck_array(lat):
-        lat = np.asarray(lat, dtype='float32')
-
-    # check to ensure dimension of lat is not greater than two
-    if lat.ndim > 1 or jday.ndim > 1:
-        raise ValueError('max_daylight: inputs must have at most one dimension')
-
-    # check if latitude is outside of acceptable ranges
-    # warn if more than abs(55)
-    # Give stronger warning if more than abs(66)
-    if (abs(lat) > 55).all() and (abs(lat) <= 66).all():
-        warnings.warn(
-            "WARNING: max_daylight has limited validity for abs(lat) > 55 ")
-    elif (abs(lat) > 66).all():
-        warnings.warn(
-            'WARNING: max_daylight: calculation not possible for abs(lat) > 66 for all values of jday, '
-            'errors may occur')
-
-    # define constants
-    pi = np.pi
-    rad = pi / 180
-    pi2yr = 2 * pi / 365
-    latrad = lat * rad
-    con = 24 / pi
-
-    # Equation 24 from FAO56
-    sdec = 0.409 * np.sin(pi2yr * jday - 1.39)
-
-    # Equation 25 from FAO56
-    ws = np.arccos(np.outer(-np.tan(latrad), np.tan(sdec)))
-
-    # Equation 34 from FAO56
-    dlm = np.transpose(con * ws)
-
-    # handle metadata if xarray output
-    if x_out:
-        dlm = xr.DataArray(dlm, coords=[jday, lat], dims=["doy", "lat"])
-        dlm.attrs['long_name'] = "maximum daylight: FAO_56"
-        dlm.attrs['units'] = "hours/day"
-        dlm.attrs['url'] = "http://www.fao.org/docrep/X0490E/x0490e07.htm"
-        dlm.attrs['info'] = "FAO 56; EQN 34; max_daylight"
-
-    return dlm
+    return max_daylight(jday, lat)
 
 
 def psychrometric_constant(
     pressure: typing.Union[np.ndarray, xr.DataArray, list, float]
 ) -> typing.Union[np.ndarray, xr.DataArray]:
-    """Compute psychrometric constant [kPa / C] as described in the Food and
+    r""".. deprecated:: 2022.10.0 The ``crop`` module is deprecated.
+        ``psychrometric_constant`` has been moved to the ``meteorology`` module for
+        future use. Use ``geocat.comp.psychrometric_constant`` or ``geocat.comp.meteorology.psychrometric_constant``
+        for the same functionality.
+
+    Compute psychrometric constant [kPa / C] as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
 
     Crop evapotranspiration - Guidelines for computing crop water
@@ -148,34 +115,27 @@ def psychrometric_constant(
     Related NCL Functions:
     `psychro_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/psychro_fao56.shtml>`__
     """
+    warnings.warn(
+        "The ``crop`` module is deprecated. ``psychrometric_constant`` has "
+        "been moved to the ``meteorology`` module for future use. Use "
+        "``geocat.comp.psychrometric_constant`` or "
+        "``geocat.comp.meteorology.psychrometric_constant`` for the same "
+        "functionality.", DeprecationWarning)
 
-    # Constant
-    con = 0.66474e-3
-
-    in_type = type(pressure)
-
-    # Psychrometric constant calculation
-    # if input not xarray, make sure in numpy for calculation
-    if in_type is not xr.DataArray:
-        psy_const = con * np.asarray(pressure)
-
-    # else if input is xarray, add relevant metadata for xarray output
-    else:
-        psy_const = con * pressure
-        psy_const.attrs['long_name'] = "psychrometric constant"
-        psy_const.attrs['units'] = "kPa/C"
-        psy_const.attrs[
-            'url'] = "https://www.fao.org/docrep/X0490E/x0490e07.htm"
-        psy_const.attrs['info'] = "FAO 56; EQN 8; psychrometric_constant"
-
-    return psy_const
+    return psychrometric_constant(pressure)
 
 
 def saturation_vapor_pressure(
     temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
     tfill: typing.Union[float] = np.nan
 ) -> typing.Union[np.ndarray, xr.DataArray]:
-    """Compute saturation vapor pressure as described in the Food and
+    r""".. deprecated:: 2022.10.0 The ``crop`` module is deprecated.
+        ``saturation_vapor_pressure`` has been moved to the ``meteorology``
+        module for future use. Use ``geocat.comp.saturation_vapor_pressure`` or
+        ``geocat.comp.meteorology.saturation_vapor_pressure`` for the same
+        functionality.
+
+    Compute saturation vapor pressure as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56
     entitled:
 
@@ -221,39 +181,27 @@ def saturation_vapor_pressure(
     Related NCL Functions:
     `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>`__
     """
+    warnings.warn(
+        "The ``crop`` module is deprecated. "
+        "``saturation_vapor_pressure`` has been moved to the ``meteorology`` "
+        "module for future use. Use ``geocat.comp.saturation_vapor_pressure`` or "
+        "``geocat.comp.meteorology.saturation_vapor_pressure`` for the same "
+        "functionality.", DeprecationWarning)
 
-    in_type = type(temperature)
-
-    if in_type is xr.DataArray:
-
-        # convert temperature to Celsius
-        temp_c = (temperature - 32) * 5 / 9
-
-        # calculate svp
-        svp = xr.where(temp_c > 0, 0.6108 * np.exp(
-            (17.27 * temp_c) / (temp_c + 237.3)), tfill)
-
-        # add relevant metadata
-        svp.attrs['long_name'] = "saturation vapor pressure"
-        svp.attrs['units'] = "kPa"
-        svp.attrs['url'] = "https://www.fao.org/docrep/X0490E/x0490e07.htm"
-        svp.attrs['info'] = "FAO 56; EQN 11; saturation_vapor_pressure"
-
-    else:
-        temperature = np.asarray(temperature)
-
-        temp_c = (temperature - 32) * 5 / 9
-        svp = np.where(temp_c > 0, 0.6108 * np.exp(
-            (17.27 * temp_c) / (temp_c + 237.3)), tfill)
-
-    return svp
+    return saturation_vapor_pressure(temperature, tfill)
 
 
 def actual_saturation_vapor_pressure(
     tdew: typing.Union[np.ndarray, xr.DataArray, list, float],
     tfill: typing.Union[float] = np.nan
 ) -> typing.Union[np.ndarray, xr.DataArray]:
-    """ Compute 'actual' saturation vapor pressure [kPa] as described in the
+    r""".. deprecated:: 2022.10.0 The ``crop`` module is deprecated.
+        ``actual_saturation_vapor_pressure`` has been moved to the ``meteorology``
+        module for future use. Use ``geocat.comp.actual_saturation_vapor_pressure``
+        or ``geocat.compmeteorology.actual_saturation_vapor_pressure`` for the
+        same functionality.
+
+    Compute 'actual' saturation vapor pressure [kPa] as described in the
     Food and Agriculture Organization (FAO) Irrigation and Drainage Paper 56
     entitled:
 
@@ -297,26 +245,27 @@ def actual_saturation_vapor_pressure(
     Related NCL Functions:
     `satvpr_tdew_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_tdew_fao56.shtml>`__
     """
+    warnings.warn(
+        "The ``crop`` module is deprecated. "
+        "``actual_saturation_vapor_pressure`` has been moved to the ``meteorology`` "
+        "module for future use. Use ``geocat.comp.actual_saturation_vapor_pressure`` "
+        "or ``geocat.compmeteorology.actual_saturation_vapor_pressure`` for the "
+        "same functionality.", DeprecationWarning)
 
-    in_type = type(tdew)
-
-    asvp = saturation_vapor_pressure(tdew, tfill)
-
-    # reformat metadata for xarray
-    if in_type is xr.DataArray:
-        asvp.attrs['long_name'] = "actual saturation vapor pressure via Tdew"
-        asvp.attrs['units'] = "kPa"
-        asvp.attrs['url'] = "https://www.fao.org/docrep/X0490E/x0490e07.htm"
-        asvp.attrs['info'] = "FAO 56; EQN 14; actual_saturation_vapor_pressure"
-
-    return asvp
+    return actual_saturation_vapor_pressure(tdew, tfill)
 
 
 def saturation_vapor_pressure_slope(
     temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
     tfill: typing.Union[float] = np.nan
 ) -> typing.Union[np.ndarray, xr.DataArray]:
-    """Compute the slope [kPa/C] of saturation vapor pressure curve as
+    r""".. deprecated:: 2022.10.0 The ``crop`` module is deprecated.
+        ``saturation_vapor_pressure_slope`` has been moved to the ``meteorology``
+        module for future use. Use ``geocat.comp.saturation_vapor_pressure_slope``
+        or ``geocat.comp.meteorology.saturation_vapor_pressure_slope`` for the
+        same functionality.
+
+    Compute the slope [kPa/C] of saturation vapor pressure curve as
     described in the Food and Agriculture Organization (FAO) Irrigation and
     Drainage Paper 56 entitled:
 
@@ -355,38 +304,11 @@ def saturation_vapor_pressure_slope(
     Related NCL Functions:
     `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>`__
     """
+    warnings.warn(
+        "The ``crop`` module is deprecated. "
+        "``saturation_vapor_pressure_slope`` has been moved to the ``meteorology`` "
+        "module for future use. Use ``geocat.comp.saturation_vapor_pressure_slope`` "
+        "or ``geocat.comp.meteorology.saturation_vapor_pressure_slope`` for the "
+        "same functionality.", DeprecationWarning)
 
-    in_type = type(temperature)
-
-    if in_type is xr.DataArray:
-
-        # convert to Celsius
-        temp_c = (temperature - 32) * 5 / 9
-
-        # calculate svp_slope
-        svp_slope = xr.where(
-            temp_c > 0, 4096 * (0.6108 * np.exp(
-                (17.27 * temp_c) / (temp_c + 237.3)) / (temp_c + 237.3)**2),
-            tfill)
-
-        # add relevant metadata
-        svp_slope.attrs['long_name'] = "slope saturation vapor pressure curve"
-        svp_slope.attrs['units'] = "kPa/C"
-        svp_slope.attrs[
-            'url'] = "https://www.fao.org/docrep/X0490E/x0490e07.htm"
-        svp_slope.attrs[
-            'info'] = "FAO 56; EQN 13; saturation_vapor_pressure_slope"
-
-    else:
-        temperature = np.asarray(temperature)
-
-        # convert to Celsius
-        temp_c = (temperature - 32) * 5 / 9
-
-        # calculate svp_slope
-        svp_slope = np.where(
-            temp_c > 0, 4096 * (0.6108 * np.exp(
-                (17.27 * temp_c) / (temp_c + 237.3)) / (temp_c + 237.3)**2),
-            tfill)
-
-    return svp_slope
+    return saturation_vapor_pressure_slope(temperature, tfill)

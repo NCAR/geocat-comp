@@ -3,6 +3,7 @@ import numbers
 import numpy as np
 import typing
 import xarray as xr
+import warnings
 
 
 def _get_missing_value(data: xr.DataArray, args: dict) -> typing.Any:
@@ -67,7 +68,11 @@ def ndpolyfit(x: typing.Iterable,
               deg: int,
               axis: int = 0,
               **kwargs) -> (xr.DataArray, da.Array):
-    """An extension to ``numpy.polyfit`` function to support multi-dimensional
+    r""".. deprecated:: 2022.10.0 ``ndpolyfit`` is deprecated. Use
+    `xarray.DataArray.polyfit <https://docs.xarray.dev/en/stable/generated/xarray.DataArray.polyfit.html>`__
+    or `xarray.Dataset.polyfit <https://docs.xarray.dev/en/stable/generated/xarray.Dataset.polyfit.html>`__ instead.
+
+    An extension to `numpy.polyfit` function to support multi-dimensional
     arrays, Dask arrays, and missing values.
 
     Parameters
@@ -217,7 +222,9 @@ def ndpolyfit(x: typing.Iterable,
         [  2.   9.  24.  47.  78. 117. 164. 219. 282. 353.]
         >>> p = ndpolyfit(x, y_md, deg=2, axis=1)
     """
-
+    warnings.warn(
+        "ndpolyfit is deprecated. Use xarray.DataArray.polyfit or xarray.Dataset.polyfit instead.",
+        DeprecationWarning)
     rcond = kwargs.get("rcond", None)
     full = kwargs.get("full", False)
     w = kwargs.get("w", None)
@@ -504,8 +511,11 @@ def ndpolyval(p: typing.Iterable,
               x: typing.Iterable,
               axis: int = 0,
               **kwargs) -> xr.DataArray:
-    """Extended version of ``numpy.polyval`` to support multi-dimensional
-    outputs provided by ``geocat.comp.ndpolyfit``.
+    r""".. deprecated:: 2022.10.0 ``ndpolyval`` is deprecated and should be
+        replaced by `xarray.polyval <https://docs.xarray.dev/en/stable/generated/xarray.polyval.html>`__.
+
+    Extended version of `numpy.polyval` to support multi-dimensional outputs
+    provided by `geocat.comp.ndpolyfit`.
 
     As the name suggest, this version supports a multi-dimensional ``p`` array. Let's say ``p`` is of dimension ``(s0,s1,s2)``
     and ``axis=1``, then the output would be of dimension ``(s0, M, s2)`` where M depends on ``x``.
@@ -619,6 +629,9 @@ def ndpolyval(p: typing.Iterable,
           ...
         ValueError: x has invalid shape.
     """
+    warnings.warn(
+        "ndpolyval is deprecated and should be replaced by xarray.polyval.",
+        DeprecationWarning)
     p_ndarr = _to_numpy_ndarray(p)
     axis = _check_axis(axis, p_ndarr.ndim)
     if isinstance(x, da.Array):
@@ -678,7 +691,10 @@ def _ndpolyval(p: np.ndarray,
 
 
 def detrend(data: typing.Iterable, deg=1, axis=0, **kwargs) -> xr.DataArray:
-    """Estimates and removes the trend of the leftmost dimension from all grid
+    r""".. deprecated:: 2022.10.0 ``detrend`` is deprecated and should be
+        replaced by `scipy.signal.detrend <https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.detrend.html>`__.
+
+    Estimates and removes the trend of the leftmost dimension from all grid
     points. This method, at the minimum, provides all the functionality that is
     provided by NCL's ``dtrend``, ``dtrend_quadratic``,
     ``dtrend_quadratic_msg_n``, ``dtrend_msg_n``, ``dtrend_msg``, ``dtrend_n``.
@@ -758,6 +774,9 @@ def detrend(data: typing.Iterable, deg=1, axis=0, **kwargs) -> xr.DataArray:
     `dtrend_quadratic <https://www.ncl.ucar.edu/Document/Functions/Built-in/dtrend_quadratic.shtml>`__,
     `dtrend_quadratic_msg_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/dtrend_quadratic_msg_n.shtml>`__
     """
+    warnings.warn(
+        "detrend is deprecated and should be replaced by scipy.signal.detrend.",
+        DeprecationWarning)
     if (int(deg) != deg) or (deg < 0):
         raise ValueError("deg must be non-negative integer value.")
 
