@@ -4,6 +4,7 @@ from typing import Iterable
 import numpy as np
 import xarray as xr
 from eofs.xarray import Eof
+from .stats import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts
 
 
 def _generate_eofs_solver(data, time_dim=0, weights=None, center=True, ddof=1):
@@ -46,7 +47,12 @@ def eofunc_eofs(data,
                 ddof=1,
                 vfscaled=False,
                 meta=False):
-    """Computes empirical orthogonal functions (EOFs, aka: Principal Component
+    r""".. deprecated:: 2022.10.0 The ``eofunc`` module is deprecated.
+        ``eofunc_eofs`` has been moved to the ``stats`` module for future use.
+        Use ``geocat.comp.eofunc_eofs`` or ``geocat.comp.stats.eofunc_eofs``
+        for the same functionality.
+
+    Computes empirical orthogonal functions (EOFs, aka: Principal Component
     Analysis).
 
     Note: `eofunc_eofs` allows to perform the EOF analysis that was previously done via the NCL function `eofunc`.
@@ -161,43 +167,13 @@ def eofunc_eofs(data,
     `eofunc_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc_n.shtml>`__,
     `eofunc_n_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_n_Wrap.shtml>`__
     """
-
-    data, solver = _generate_eofs_solver(data,
-                                         time_dim=time_dim,
-                                         weights=weights,
-                                         center=center,
-                                         ddof=ddof)
-
-    # Checking number of EOFs
-    if neofs <= 0:
-        raise ValueError(
-            "ERROR eofunc_eofs: num_eofs must be a positive non-zero integer value."
-        )
-
-    eofs = solver.eofs(neofs=neofs, eofscaling=eofscaling)
-
-    # Populate attributes for output
-    attrs = {}
-
-    if meta:
-        attrs = data.attrs
-
-    attrs['eigenvalues'] = solver.eigenvalues(neigs=neofs)
-    attrs['northTest'] = solver.northTest(neigs=neofs, vfscaled=vfscaled)
-    attrs['totalAnomalyVariance'] = solver.totalAnomalyVariance()
-    attrs['varianceFraction'] = solver.varianceFraction(neigs=neofs)
-
-    if meta:
-        dims = ["eof"
-               ] + [data.dims[i] for i in range(data.ndim) if i != time_dim]
-        coords = {
-            k: v for (k, v) in data.coords.items() if k != data.dims[time_dim]
-        }
-    else:
-        dims = ["eof"] + [f"dim_{i}" for i in range(data.ndim) if i != time_dim]
-        coords = {}
-
-    return xr.DataArray(eofs, attrs=attrs, dims=dims, coords=coords)
+    warnings.warn(
+        "The ``eofunc`` module is deprecated. ``eofunc_eofs`` has been moved to "
+        "the ``stats`` module for future use. Use ``geocat.comp.eofunc_eofs`` "
+        "or ``geocat.comp.stats.eofunc_eofs`` for the same functionality.",
+        DeprecationWarning)
+    return eofunc_eofs(data, neofs, time_dim, eofscaling, weights, center, ddof,
+                       vfscaled, meta)
 
 
 def eofunc_pcs(data,
@@ -208,7 +184,12 @@ def eofunc_pcs(data,
                center=True,
                ddof=1,
                meta=False):
-    """Computes the principal components (time projection) in the empirical
+    r""".. deprecated:: 2022.10.0 The ``eofunc`` module is deprecated.
+        ``eofunc_pcs`` has been moved to the ``stats`` module for future use.
+        Use ``geocat.comp.eofunc_pcs`` or ``geocat.comp.stats.eofunc_pcs`` for
+        the same functionality.
+
+    Computes the principal components (time projection) in the empirical
     orthogonal function analysis.
 
     Note: `eofunc_pcs` allows to perform the analysis that was previously done via the NCL function `eofunc_ts`.
@@ -291,37 +272,14 @@ def eofunc_pcs(data,
     `eofunc_ts_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc_ts_n.shtml>`__,
     `eofunc_ts_n_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_ts_n_Wrap.shtml>`__
     """
+    warnings.warn(
+        "The ``eofunc`` module is deprecated. ``eofunc_pcs`` has been moved to "
+        "the ``stats`` module for future use. Use ``geocat.comp.eofunc_pcs`` or "
+        "``geocat.comp.stats.eofunc_pcs`` for the same functionality.",
+        DeprecationWarning)
 
-    data, solver = _generate_eofs_solver(data,
-                                         time_dim=time_dim,
-                                         weights=weights,
-                                         center=center,
-                                         ddof=ddof)
-
-    # Checking number of EOFs
-    if npcs <= 0:
-        raise ValueError(
-            "ERROR eofunc_pcs: num_pcs must be a positive non-zero integer value."
-        )
-
-    solver = Eof(data, weights=weights, center=center, ddof=ddof)
-
-    pcs = solver.pcs(npcs=npcs, pcscaling=pcscaling)
-    pcs = pcs.transpose()
-
-    # Populate attributes for output
-    attrs = {}
-
-    if meta:
-        attrs = data.attrs
-
-    dims = ["pc", "time"]
-    if meta:
-        coords = {"time": data.coords[data.dims[time_dim]]}
-    else:
-        coords = {}
-
-    return xr.DataArray(pcs, attrs=attrs, dims=dims, coords=coords)
+    return eofunc_pcs(data, npcs, time_dim, pcscaling, weights, center, ddof,
+                      meta)
 
 
 # Transparent wrappers for geocat.comp backwards compatibility
