@@ -147,7 +147,7 @@ def climatology(
         - `season': for seasonal climatologies
 
     time_coord_name : str, optional
-         Name for time coordinate to use. Defaults to None and infers the name
+         Name for time coordinate to use. Defaults to ``None`` and infers the name
          from the data.
 
     Returns
@@ -240,8 +240,8 @@ def anomaly(
         - `year`: for annual anomalies
         - `season`: for seasonal anomalies
 
-    time_coord_name : str
-         Name for time coordinate to use. Defaults to None and infers the name
+    time_coord_name : str, optional
+         Name for time coordinate to use. Defaults to ``None`` and infers the name
          from the data.
 
     Returns
@@ -337,11 +337,11 @@ def month_to_season(
          - JAS {July, August, September}
          - ASO {August, September, October}
          - SON {September, October, November}
-         - OND {October, November, Decmber}
-         - NDJ {November, Decmber, January}
+         - OND {October, November, December}
+         - NDJ {November, December, January}
 
     time_coord_name : str, optional
-        Name for time coordinate to use. Defaults to None and infers the name
+        Name for time coordinate to use. Defaults to ``None`` and infers the name
         from the data.
 
     Returns
@@ -434,7 +434,7 @@ def calendar_average(
         - `year`: for yearly averages
 
     time_dim : str, optional
-        Name of the time coordinate for `xarray` objects. Defaults to None and
+        Name of the time coordinate for `xarray` objects. Defaults to ``None`` and
         infers the name from the data.
 
     Returns
@@ -533,7 +533,7 @@ def climatology_average(
         - `season`: for meteorological seasonal averages (DJF, MAM, JJA, and SON)
 
     time_dim : str, optional
-        Name of the time coordinate for `xarray` objects. Defaults to None and
+        Name of the time coordinate for `xarray` objects. Defaults to ``None`` and
         infers the name from the data.
 
 

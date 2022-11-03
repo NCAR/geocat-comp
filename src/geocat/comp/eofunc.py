@@ -105,7 +105,7 @@ def eofunc_eofs(data,
         (From ``eofs`` package): An array of weights whose shape is compatible with those of the input array dataset.
         The weights can have the same shape as dataset or a shape compatible with an array broadcast (i.e., the shape
         of the weights can can match the rightmost parts of the shape of the input array dataset). If the input array
-        dataset does not require weighting then the value None may be used. Defaults to None (no weighting).
+        dataset does not require weighting then the value None may be used. Defaults to ``None`` (no weighting).
 
     center : bool, optional
         (From ``eofs`` package): If True, the mean along the first axis of dataset (the time-mean) will be removed prior
@@ -240,7 +240,7 @@ def eofunc_pcs(data,
         (From ``eofs`` package): An array of weights whose shape is compatible with those of the input array dataset.
         The weights can have the same shape as dataset or a shape compatible with an array broadcast (i.e., the shape
         of the weights can can match the rightmost parts of the shape of the input array dataset). If the input array
-        dataset does not require weighting then the value None may be used. Defaults to None (no weighting).
+        dataset does not require weighting then the value None may be used. Defaults to ``None`` (no weighting).
 
     center : bool, optional
         (From ``eofs`` package): If True, the mean along the first axis of dataset (the time-mean) will be removed prior

@@ -930,13 +930,13 @@ def relhum_water(temperature: typing.Union[np.ndarray, list, float],
 
     Definition of mixing ratio if:
 
-    - ``es``  - is the saturation mixing ratio
-    - ``ep``  - is the ratio of the molecular weights of water vapor to dry air
-    - ``p``   - is the atmospheric pressure
-    - ``rh``  - is the relative humidity (given as a percent)
+    - `es`  - is the saturation mixing ratio
+    - `ep`  - is the ratio of the molecular weights of water vapor to dry air
+    - `p`   - is the atmospheric pressure
+    - `rh`  - is the relative humidity (given as a percent)
 
     .. math::
-        rh =  100*  q / ( (ep*es)/(p-es) )
+        rh =  100  q / ( (ep*es)/(p-es) )
 
     Parameters
     ----------
@@ -1005,9 +1005,10 @@ def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
     Showalter Index derived from `Gallway 1956 <https://journals.ametsoc.org/do
     wnloadpdf/journals/bams/37/10/1520-0477-37_10_528.xml>`__.
 
-    :math:`shox = T500 - Tp500` where:
-    - T500 is the measured temperature at 500 hPa
-    - Tp500 is the temperature of the lifted parcel at 500 hPa
+    :math:`shox = T500 - Tp500`
+
+    - `T500` is the measured temperature at 500 hPa
+    - `Tp500` is the temperature of the lifted parcel at 500 hPa
 
     Parameters
     ----------

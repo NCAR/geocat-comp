@@ -29,7 +29,7 @@ def pearson_r(a,
     b : :class:`xarray.DataArray`, :class:`xarray.Dataset`, ndarray
         Arrays over which to apply the function.
     dim : str, :class:`list`, optional
-        The dimension(s) to apply the correlation along. Note that this dimension will be reduced as a result. Defaults to None reducing all dimensions. Only used when ``a`` and ``b`` are of type ``xarray.DataArray`` or ``xarray.Dataset``.
+        The dimension(s) to apply the correlation along. Note that this dimension will be reduced as a result. Defaults to ``None`` reducing all dimensions. Only used when ``a`` and ``b`` are of type ``xarray.DataArray`` or ``xarray.Dataset``.
     weights : :class:`xarray.DataArray`, ndarray, optional
         Weights matching dimensions of ``dim`` to apply during the function.
     skipna : bool, optional
@@ -112,18 +112,23 @@ def eofunc_eofs(data,
     """Computes empirical orthogonal functions (EOFs, aka: Principal Component
     Analysis).
 
-    Note: `eofunc_eofs` allows to perform the EOF analysis that was previously done via the NCL function `eofunc`.
-    However, there are a few changes to the NCL flow such as : (1) Only `np.nan` is supported as missing value,
-    (2) EOFs are computed only from covariance matrix and there is no support for computation from correlation matrix,
-    (3) percentage of non-missing points that must exist at any single point is no longer an input.
+    Note: ``eofunc_eofs`` allows to perform the EOF analysis that was previously done
+    via the NCL function ``eofunc``.
 
-    This implementation uses `eofs` package (https://anaconda.org/conda-forge/eofs), which is built upon the
-    following study: Dawson, Andrew, "eofs: A library for EOF analysis of meteorological, oceanographic, and
-    climate data," Journal of Open Research Software, vol. 4, no. 1, 2016. Further information about this
-    package can be found at: https://ajdawson.github.io/eofs/latest/index.html#
+    However, there are a few changes to the NCL flow such as:
 
-    This implementation provides a few conveniences to the user on top of `eofs` package that are described below
-    in the Parameters section.
+    1. Only ``np.nan`` is supported as missing value,
+    2. EOFs are computed only from covariance matrix and there is no support for computation from correlation matrix,
+    3. percentage of non-missing points that must exist at any single point is no longer an input.
+
+    This implementation uses the `eofs package <https://anaconda.org/conda-forge/eofs>`__,
+    which is built upon the following study: Dawson, Andrew, "eofs: A library
+    for EOF analysis of meteorological, oceanographic, and climate data,"
+    Journal of Open Research Software, vol. 4, no. 1, 2016. Further information about this
+    package can be found `here <https://ajdawson.github.io/eofs/latest/index.html>`__.
+
+    This implementation provides a few conveniences to the user on top of
+    ``eofs`` package that are described below.
 
     Parameters
     ----------
@@ -163,7 +168,7 @@ def eofunc_eofs(data,
         (From `eofs` package): An array of weights whose shape is compatible with those of the input array dataset.
         The weights can have the same shape as dataset or a shape compatible with an array broadcast (i.e., the shape
         of the weights can can match the rightmost parts of the shape of the input array dataset). If the input array
-        dataset does not require weighting then the value None may be used. Defaults to None (no weighting).
+        dataset does not require weighting then the value None may be used. Defaults to ``None`` (no weighting).
 
     center : bool, optional
         (From `eofs` package): If True, the mean along the first axis of dataset (the time-mean) will be removed prior
@@ -273,31 +278,34 @@ def eofunc_pcs(data,
     """Computes the principal components (time projection) in the empirical
     orthogonal function analysis.
 
-    Note: `eofunc_pcs` allows to perform the analysis that was previously done via the NCL function `eofunc_ts`.
-    However, there are a few changes to the NCL flow such as : (1) Only `np.nan` is supported as missing value,
-    (2) EOFs are computed only from covariance matrix and there is no support for computation from correlation matrix,
-    (3) percentage of non-missing points that must exist at any single point is no longer an input.
+    Note: ``eofunc_pcs`` allows to perform the analysis that was previously done via the NCL function ``eofunc_ts``.
 
-    This implementation uses `eofs` package (https://anaconda.org/conda-forge/eofs), which is built upon the
+    However, there are a few changes to the NCL flow such as:
+
+    1. Only `np.nan` is supported as missing value,
+    2. EOFs are computed only from covariance matrix and there is no support for computation from correlation matrix,
+    3. percentage of non-missing points that must exist at any single point is no longer an input.
+
+    This implementation uses `eofs package <https://anaconda.org/conda-forge/eofs>`__, which is built upon the
     following study: Dawson, Andrew, "eofs: A library for EOF analysis of meteorological, oceanographic, and
     climate data," Journal of Open Research Software, vol. 4, no. 1, 2016. Further information about this
-    package can be found at: https://ajdawson.github.io/eofs/latest/index.html#
+    package can be found `here <https://ajdawson.github.io/eofs/latest/index.html>`__.
 
-    This implementation provides a few conveniences to the user on top of `eofs` package that are described below
+    This implementation provides a few conveniences to the user on top of ``eofs`` package that are described below
     in the Parameters section.
 
     Parameters
     ----------
     data : :class:`xarray.DataArray` or ndarray or list
-        Should contain numbers or `np.nan` for missing value representation. It must be at least a 2-dimensional array.
+        Should contain numbers or ``np.nan`` for missing value representation. It must be at least a 2-dimensional array.
 
-        When input data is of type `xarray.DataArray`, `eofs.xarray` interface assumes the left-most dimension
-        (i.e. `dim_0`) is the `time` dimension. In this case, that dimension should have the name "time".
+        When input data is of type ``xarray.DataArray``, ``eofs.xarray`` interface assumes the left-most dimension
+        (i.e. ``dim_0``) is the time dimension. In this case, that dimension should have the name "time".
 
-        When input data is of type `numpy.ndarray` or `list`, this function still assumes the leftmost dimension
-        to be the number of observations or `time` dimension: however, in this case, user is allowed to input otherwise.
-        If the input do not have its leftmost dimension as the `time` or number of observations, then the user should
-        specify with `time_dim=x` to define which dimension must be treated as time or number of observations
+        When input data is of type ``numpy.ndarray`` or ``list``, this function still assumes the leftmost dimension
+        to be the number of observations or time dimension: however, in this case, user is allowed to input otherwise.
+        If the input do not have its leftmost dimension as the time or number of observations, then the user should
+        specify with ``time_dim=x`` to define which dimension must be treated as time or number of observations
 
     npcs : int, optional
         A scalar integer that specifies the number of principal components (i.e. eigenvalues and eigenvectors) to be
@@ -314,19 +322,19 @@ def eofunc_pcs(data,
         function `eofunc_ts_n`.
 
     pcscaling : int, optional
-        (From `eofs` package): Sets the scaling of the retrieved PCs. The following values are accepted:
+        (From ``eofs`` package): Sets the scaling of the retrieved PCs. The following values are accepted:
             - 0 : Un-scaled PCs (default).
             - 1 : PCs are divided by the square-root of their eigenvalues.
             - 2 : PCs are multiplied by the square-root of their eigenvalues.
 
     weights : array_like, optional
-        (From `eofs` package): An array of weights whose shape is compatible with those of the input array dataset.
+        (From ``eofs`` package): An array of weights whose shape is compatible with those of the input array dataset.
         The weights can have the same shape as dataset or a shape compatible with an array broadcast (i.e., the shape
         of the weights can can match the rightmost parts of the shape of the input array dataset). If the input array
-        dataset does not require weighting then the value None may be used. Defaults to None (no weighting).
+        dataset does not require weighting then the value None may be used. Defaults to ``None`` (no weighting).
 
     center : bool, optional
-        (From `eofs` package): If True, the mean along the first axis of dataset (the time-mean) will be removed prior
+        (From ``eofs`` package): If True, the mean along the first axis of dataset (the time-mean) will be removed prior
         to analysis. If False, the mean along the first axis will not be removed. Defaults to True (mean is removed).
 
         The covariance interpretation relies on the input data being anomaly data with a time-mean of 0. Therefore this
@@ -335,11 +343,11 @@ def eofunc_pcs(data,
         in different locations at different times.
 
     ddof : int, optional
-        (From `eofs` package): ‘Delta degrees of freedom’. The divisor used to normalize the covariance matrix is
+        (From ``eofs`` package): ‘Delta degrees of freedom’. The divisor used to normalize the covariance matrix is
         N - ddof where N is the number of samples. Defaults to 1.
 
     meta : bool, optional
-        If set to True and the input array is an Xarray, the metadata from the input array will be copied to the
+        If set to ``True`` and the input array is an Xarray, the metadata from the input array will be copied to the
         output array. Defaults to False.
 
     Returns

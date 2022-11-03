@@ -301,13 +301,13 @@ def _ndpolyfit(x: typing.Iterable,
         Degree of the fitting polynomial. Defaults to 1.
 
     rcond : float, optional
-        Relative condition number of the fit. Defaults to None. Refer to ``numpy.polyfit`` for further details.
+        Relative condition number of the fit. Defaults to ``None``. Refer to ``numpy.polyfit`` for further details.
 
     full : bool, optional
         Switch determining nature of return value. Defaults to False. Refer to ``numpy.polyfit`` for further details.
 
     w : array_like, optional
-        Weights applied to the y-coordinates of the sample points. Defaults to None. Refer to ``numpy.polyfit`` for further details.
+        Weights applied to the y-coordinates of the sample points. Defaults to ``None``. Refer to ``numpy.polyfit`` for further details.
 
     cov : bool, optional
         Determines whether to return the covariance matrix. Defaults to False. Refer to ``numpy.polyfit`` for further details.
