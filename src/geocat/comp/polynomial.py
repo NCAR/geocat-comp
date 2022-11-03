@@ -6,8 +6,8 @@ import xarray as xr
 
 
 def _get_missing_value(data: xr.DataArray, args: dict) -> typing.Any:
-    """Attempts to extract ``missing_value`` or ``_FillValue`` from either ``data``
-    or ``dict``. If not found, returns ``numpy.nan``
+    """Attempts to extract ``missing_value`` or ``_FillValue`` from either
+    ``data`` or ``dict``. If not found, returns ``numpy.nan``
 
     Parameters
     ----------
@@ -504,8 +504,8 @@ def ndpolyval(p: typing.Iterable,
               x: typing.Iterable,
               axis: int = 0,
               **kwargs) -> xr.DataArray:
-    """Extended version of ``numpy.polyval`` to support multi-dimensional outputs
-    provided by ``geocat.comp.ndpolyfit``.
+    """Extended version of ``numpy.polyval`` to support multi-dimensional
+    outputs provided by ``geocat.comp.ndpolyfit``.
 
     As the name suggest, this version supports a multi-dimensional ``p`` array. Let's say ``p`` is of dimension ``(s0,s1,s2)``
     and ``axis=1``, then the output would be of dimension ``(s0, M, s2)`` where M depends on ``x``.
@@ -680,10 +680,10 @@ def _ndpolyval(p: np.ndarray,
 def detrend(data: typing.Iterable, deg=1, axis=0, **kwargs) -> xr.DataArray:
     """Estimates and removes the trend of the leftmost dimension from all grid
     points. This method, at the minimum, provides all the functionality that is
-    provided by NCL's ``dtrend``, ``dtrend_quadratic``, ``dtrend_quadratic_msg_n``,
-    ``dtrend_msg_n``, ``dtrend_msg``, ``dtrend_n``. However, this function is not
-    limited to quadratic detrending, and you could use higher polynomial degree
-    as well.
+    provided by NCL's ``dtrend``, ``dtrend_quadratic``,
+    ``dtrend_quadratic_msg_n``, ``dtrend_msg_n``, ``dtrend_msg``, ``dtrend_n``.
+    However, this function is not limited to quadratic detrending, and you
+    could use higher polynomial degree as well.
 
     Parameters
     ----------
