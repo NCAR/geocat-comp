@@ -15,3 +15,4 @@ Here's some examples of how to use geocat-comp.
 
    examples/calendar_average.ipynb
    examples/climatology_average.ipynb
+   examples/moc_globe_atl.ipynb

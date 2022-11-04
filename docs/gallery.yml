@@ -5,3 +5,7 @@
 - title: Climatology Averaging
   path: examples/climatology_average.ipynb
   thumbnail: _static/thumbnails/sphx_glr_calendar_average_example.png
+
+- title: Meridional Overturning Circulation
+  path: examples/moc_globe_atl.ipynb
+  thumbnail: _static/thumbnails/sphx_glr_calendar_average_example.png
