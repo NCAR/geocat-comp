@@ -1,6 +1,8 @@
 Please first refer to [GeoCAT Contributor's Guide](https://geocat.ucar.edu/pages/contributing.html) for overall
 contribution guidelines (such as detailed description of GeoCAT structure, forking, repository cloning,
-branching, etc.). Once you determine that a function should be contributed under this repo, please refer to the
+branching, etc.). If your contribution is related to GeoCat-Comp documentation, please see the separate [GeoCat-Comp documentation Contributor's Guide](examples/DOCS_CONTRIBUTING.md).
+
+Once you determine that a function should be contributed under this repo, please refer to the
 following contribution guidelines:
 
 # Adding new functions to the Geocat-comp repo
