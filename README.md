@@ -69,7 +69,7 @@ https://geocat-comp.readthedocs.io/en/latest/citation.html) page.
 [github-ci-badge]: https://img.shields.io/github/workflow/status/NCAR/geocat-comp/CI?label=CI&logo=github&style=for-the-badge
 [github-conda-build-badge]: https://img.shields.io/github/workflow/status/NCAR/geocat-comp/build_test?label=conda-builds&logo=github&style=for-the-badge
 [github-ci-link]: https://github.com/NCAR/geocat-comp/actions?query=workflow%3ACI
-[github-conda-build-link]: https://github.com/NCAR/geocat-comp/actions?query=workflow%3Abuild_test
+[github-conda-build-link]: https://github.com/NCAR/geocat-comp/actions/workflows/upstream-dev-ci.yml
 [codecov-badge]: https://img.shields.io/codecov/c/github/NCAR/geocat-comp.svg?logo=codecov&style=for-the-badge
 [codecov-link]: https://codecov.io/gh/NCAR/geocat-comp
 [rtd-badge]: https://img.shields.io/readthedocs/geocat-comp/latest.svg?style=for-the-badge
