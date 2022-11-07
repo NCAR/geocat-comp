@@ -135,6 +135,31 @@ def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0):
 
 
 def _temp_extrapolate(data, lev_dim, lev, p_sfc, ps, phi_sfc):
+    """
+    This helper function extrapolates temperature below ground using the ECMWF
+    formulation described in `Vertical Interpolation and Truncation of Model-Coordinate Data <http://dx.doi.org/10.5065/D6HX19NH>`__
+    by Trenberth, Berry, & Buja [NCAR/TN-396, 1993]. Specifically equation 16 is used.
+
+    Parameters
+    ----------
+    data: :class:`xarray.DataArray`
+        The temperature at the lowest level of the model.
+
+    lev_dim: str
+        The name of the vertical dimension.
+
+    lev: int
+        The pressure level of interest. Must be in the same units as ``ps`` and ``p_sfc``
+
+    p_sfc: :class:`xarray.DataArray`
+        The pressure at the lowest level of the model. Must be in the same units as ``lev`` and ``ps``
+
+    ps: :class:`xarray.DataArray`
+        An array of surface pressures. Must be in the same units as ``lev`` and ``p_sfc``
+
+    phi_sfc: :class:`xarray.DataArray`
+        The geopotential at the lowest level of the model.
+    """
     R_d = 287.04  # dry air gas constant
     g_inv = 1 / 9.80616  # inverse of gravity
     alpha = 0.0065 * R_d * g_inv
@@ -157,6 +182,24 @@ def _temp_extrapolate(data, lev_dim, lev, p_sfc, ps, phi_sfc):
 
 
 def _geo_height_extrapolate(t_bot, lev, p_sfc, ps, phi_sfc):
+    """
+
+    Parameters
+    ----------
+    t_bot: :class:`xarray.DataArray`
+
+    lev: int
+        The pressure level of interest. Must be in the same units as ``ps`` and ``p_sfc``
+
+    p_sfc: :class:`xarray.DataArray`
+        The pressure at the lowest level of the model. Must be in the same units as ``lev`` and ``ps``
+
+    ps : :class:`xarray.DataArray`
+        An array of surface pressures. Must be in the same units as ``lev`` and ``p_sfc``
+
+    phi_sfc:
+        The geopotential at the lowest level of the model.
+    """
     R_d = 287.04  # dry air gas constant
     g_inv = 1 / 9.80616  # inverse of gravity
     alpha = 0.0065 * R_d * g_inv
