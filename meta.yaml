@@ -1,5 +1,5 @@
 {% set name = "geocat-comp" %}
-{% set version = "2022.10.0" %}
+{% set version = "2022.10.1" %}
 
 package:
   name: {{ name }}

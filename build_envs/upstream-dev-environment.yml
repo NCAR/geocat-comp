@@ -1,7 +1,6 @@
 name: geocat_comp_build
 channels:
   - conda-forge
-  - ncar
 dependencies:
   - python
   - cftime
@@ -13,6 +12,7 @@ dependencies:
   - metpy
   - netcdf4  # for tests
   - numpy
+  - pint<0.20
   - pytest  # for tests
   - pytest-cov  # for tests
   - pip

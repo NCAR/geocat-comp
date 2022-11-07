@@ -25,9 +25,11 @@ import pandas as pd
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
 if "--cov" in str(sys.argv):
-    from src.geocat.comp import get_skewt_vars, showalter_index
+    from src.geocat.comp.meteorology import showalter_index
+    from src.geocat.comp.skewt_params import get_skewt_vars
 else:
-    from geocat.comp import get_skewt_vars, showalter_index
+    from geocat.comp.meteorology import showalter_index
+    from geocat.comp.skewt_params import get_skewt_vars
 
 ds = pd.read_csv(gdf.get('ascii_files/sounding.testdata'),
                  delimiter='\\s+',
@@ -45,23 +47,6 @@ p = ds[1].values * units.hPa  # Pressure [mb/hPa]
 tc = (ds[5].values + 2) * units.degC  # Temperature [C]
 tdc = ds[9].values * units.degC  # Dew pt temp  [C]
 pro = mpcalc.parcel_profile(p, tc[0], tdc[0]).to('degC')
-
-# Extract Showalter Index from NCL out file and convert to int
-Shox = np.round(out['Shox'])  # Use np.round to avoid rounding issues
-NCL_shox = int(Shox[0])  # Convert to int
-
-
-def test_shox_vals():
-
-    # Showalter index
-    shox = showalter_index(p, tc, tdc)
-    shox = shox[0].magnitude
-
-    # Place calculated values in iterable list
-    vals = np.round(shox).astype(int)
-
-    # Compare calculated values with expected
-    nt.assert_equal(vals, NCL_shox)
 
 
 def test_get_skewt_vars():
