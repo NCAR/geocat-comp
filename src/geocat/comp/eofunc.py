@@ -97,9 +97,9 @@ def eofunc_eofs(data,
     eofscaling : int, optional
         (From ``eofs`` package): Sets the scaling of the EOFs. The following values are accepted:
 
-        - 0 : Un-scaled EOFs (default).
-        - 1 : EOFs are divided by the square-root of their eigenvalues.
-        - 2 : EOFs are multiplied by the square-root of their eigenvalues.
+        0 : Un-scaled EOFs (default).
+        1 : EOFs are divided by the square-root of their eigenvalues.
+        2 : EOFs are multiplied by the square-root of their eigenvalues.
 
     weights : array_like, optional
         (From ``eofs`` package): An array of weights whose shape is compatible with those of the input array dataset.

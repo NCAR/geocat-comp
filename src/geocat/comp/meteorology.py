@@ -856,10 +856,10 @@ def relhum_ice(temperature: typing.Union[np.ndarray, list, float],
     """Calculates relative humidity with respect to ice, given temperature,
     mixing ratio, and pressure.
 
-     "Improved Magnus' Form Approx. of Saturation Vapor pressure"
-     Oleg A. Alduchov and Robert E. Eskridge
-     http://www.osti.gov/scitech/servlets/purl/548871/
-     https://doi.org/10.2172/548871
+    "Improved Magnus' Form Approx. of Saturation Vapor pressure"
+    Oleg A. Alduchov and Robert E. Eskridge
+    http://www.osti.gov/scitech/servlets/purl/548871/
+    https://doi.org/10.2172/548871
 
     Parameters
     ----------
