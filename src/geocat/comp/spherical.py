@@ -27,30 +27,30 @@ def decomposition(
     scale : ndarray, :class:`xarray.DataArray`
         2-dimensional array containing the weighting of each point in the data.
         This is usually the area of the voronoi cell centered on the corresponding datapoint.
-        the geocat.comp.spherical.scale_voronoi(theta,phi) function can provide a scale array.
+        the ``geocat.comp.spherical.scale_voronoi(theta,phi)`` function can provide a scale array.
 
     theta : ndarray, :class:`xarray.DataArray`
         2-dimensional array containing the theta (longitude in radians) values for each datapoint in data.
 
     phi : ndarray, :class:`xarray.DataArray`
-        2-dimensional array containing the theta (latitude in radians) values for each datapoint in data.
-        Phi is zero at the top of the sphere and pi at the bottom, phi = (lat_degrees-90)*(-1)*pi/180
+        2-dimensional array containing the ``theta`` (latitude in radians) values for each datapoint in data.
+        ``Phi`` is zero at the top of the sphere and ``pi`` at the bottom, ``phi = (lat_degrees-90)*(-1)*pi/180``
 
     max_harm: int, optional
         The maximum harmonic value for both m and n.
-        The total of harmonics calculated is (max_harm+1)*(max_harm+2)/2
+        The total of harmonics calculated is ``(max_harm+1)*(max_harm+2)/2``
         Defaults to 23, for 300 total harmonics.
 
     chunk_size: int, optional
-        The size of the each edge of the dask chunks if using xarray.DataArray inputs.
+        The size of each edge of the dask chunks if using xarray.DataArray inputs.
         Some arrays will be 2d, and others 1d, and the final calculation operates on a 3d array.
-        thus the chunks used in the largest calculation scale at chunk_size^3
+        thus the chunks used in the largest calculation scale at ``chunk_size^3``
         A chunk size of 256 is recommended. Defaults to 'auto'
 
     Returns
     -------
     decomposition : ndarray, :class:`xarray.DataArray`
-        the spherical harmonic decomposition of the input data
+        The spherical harmonic decomposition of the input data
     """
 
     # scale_val is the inverse of the total sphere area times the magnitude of
@@ -121,31 +121,31 @@ def recomposition(
     ----------
     data : ndarray, :class:`xarray.DataArray`
         1-dimensional array of spherical harmonics.
-        These must by in the same order output by geocat.comp.spherical.decomposition.
+        These must be in the same order output by ``geocat.comp.spherical.decomposition``.
 
     theta : ndarray, :class:`xarray.DataArray`
         2-dimensional array containing the theta (longitude in radians) values for each datapoint in data.
 
     phi : ndarray, :class:`xarray.DataArray`
         2-dimensional array containing the theta (latitude in radians) values for each datapoint in data.
-        Phi is zero at the top of the sphere and pi at the bottom, phi = (lat_degrees-90)*(-1)*pi/180
+        ``Phi`` is zero at the top of the sphere and ``pi`` at the bottom, ``phi = (lat_degrees-90)*(-1)*pi/180``
 
     max_harm: int, optional
         The maximum harmonic value for both m and n.
-        The total of harmonics calculated is (max_harm+1)*(max_harm+2)/2
+        The total of harmonics calculated is ``(max_harm+1)*(max_harm+2)/2``
         The number of total harmonics must equal the number of harmoncs in the input data.
         Defaults to 23, for 300 total harmonics.
 
     chunk_size: int, optional
-        The size of the each edge of the dask chunks if using xarray.DataArray inputs.
+        The size of each edge of the dask chunks if using xarray.DataArray inputs.
         Some arrays will be 2d, and others 1d, and the final calculation operates on a 3d array.
-        thus the chunks used in the largest calculation scale at chunk_size^3
+        thus the chunks used in the largest calculation scale at ``chunk_size^3``
         A chunk size of 256 is recommended. Defaults to 'auto'
 
     Returns
     -------
     recomposition : ndarray, :class:`xarray.DataArray`
-        the spherical harmonic recomposition of the input data
+        The spherical harmonic recomposition of the input data
     """
 
     mlist = []  # ordered list of the m harmonics sspecial.sphere(m,n,theta,phi)
@@ -198,18 +198,18 @@ def scale_voronoi(
 
     phi : ndarray, :class:`xarray.DataArray`
         2-dimensional array containing the theta (latitude in radians) values for each datapoint in data.
-        Phi is zero at the top of the sphere and pi at the bottom, phi = (lat_degrees-90)*(-1)*pi/180
+        ``Phi`` is zero at the top of the sphere and ``pi`` at the bottom, ``phi = (lat_degrees-90)*(-1)*pi/180``
 
     chunk_size: int, optional
-        The size of the each edge of the dask chunks if using xarray.DataArray inputs.
+        The size of each edge of the dask chunks if using xarray.DataArray inputs.
         Some arrays will be 2d, and others 1d, and the final calculation operates on a 3d array.
-        thus the chunks used in the largest calculation scale at chunk_size^3
+        thus the chunks used in the largest calculation scale at ``chunk_size^3``
         A chunk size of 256 is recommended. Defaults to 'auto'
 
     Returns
     -------
     scale : ndarray, :class:`xarray.DataArray`
-        2-dimensional array containing the area of the spherical voronoi cell for each theta and phi pair.
+        2-dimensional array containing the area of the spherical voronoi cell for each ``theta`` and ``phi`` pair.
     """
 
     if type(theta) is xr.DataArray:
