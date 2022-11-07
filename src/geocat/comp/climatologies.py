@@ -161,6 +161,7 @@ def climatology(
     >>> import pandas as pd
     >>> import numpy as np
     >>> import geocat.comp
+    >>> # Create toy data set
     >>> dates = pd.date_range(start="2000/01/01",
     ...                       freq="M",
     ...                       periods=24)
@@ -180,6 +181,7 @@ def climatology(
     * time     (time) datetime64[ns] 2000-01-31 2000-02-29 ... 2001-12-31
     Dimensions without coordinates: lat, lon
 
+    >>> # Calculate yearly climate averages
     >>> geocat.comp.climatology(ts, 'year')
     <xarray.DataArray (year: 2, lat: 1, lon: 1)>
     array([[[ 5.5]],
@@ -188,6 +190,7 @@ def climatology(
     * year     (year) int64 2000 2001
     Dimensions without coordinates: lat, lon
 
+    >>> # Calculate seasonal climate averages
     >>> geocat.comp.climatology(ts, 'season')
     <xarray.DataArray (season: 4, lat: 1, lon: 1)>
     array([[[10.]],
@@ -255,6 +258,7 @@ def anomaly(
     >>> import pandas as pd
     >>> import numpy as np
     >>> import geocat.comp
+    >>> # Create toy data
     >>> dates = pd.date_range(start="2000/01/01",
     ...                       freq="M",
     ...                       dates=24)
@@ -274,6 +278,7 @@ def anomaly(
     * time     (time) datetime64[ns] 2000-01-31 2000-02-29 ... 2001-12-31
     Dimensions without coordinates: lat, lon
 
+    >>> # Compute seasonal anomalies
     >>> geocat.comp.anomaly(ts, 'season')
     <xarray.DataArray (time: 24, lat: 1, lon: 1)>
     array([[[-10.]],
@@ -441,6 +446,10 @@ def calendar_average(
     -------
     computed_dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
         The computed data with the same type as `dset`
+
+    Examples
+    --------
+    See this `example notebook <https://geocat-comp.readthedocs.io/en/latest/examples/calendar_average.html>`__.
 
     Note
     ----
