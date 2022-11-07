@@ -7,20 +7,20 @@ import warnings
 
 
 def _get_missing_value(data: xr.DataArray, args: dict) -> typing.Any:
-    """Attempts to extract `missing_value` or `_FillValue` from either `data`
-    or `dict`. If not found, returns `numpy.nan`
+    """Attempts to extract ``missing_value`` or ``_FillValue`` from either
+    ``data`` or ``dict``. If not found, returns ``numpy.nan``
 
     Parameters
     ----------
     data : :class:`xarray.DataArray`
-        Data which may contain `missing_value` or `_FillValue` attributes.
+        Data which may contain ``missing_value`` or ``_FillValue`` attributes.
     args : :class:`dict`
-        Dictionary which may contain `missing_value` key.
+        Dictionary which may contain ``missing_value`` key.
 
     Returns
     -------
     missing_value : :class:`Any`
-        The `missing_value` representation.
+        The ``missing_value`` representation.
     """
     if "missing_value" in args:
         missing_value = args["missing_value"]
@@ -38,12 +38,12 @@ def _get_missing_value(data: xr.DataArray, args: dict) -> typing.Any:
 
 
 def _unchunk_ifneeded(data: da.Array, axis: int) -> da.Array:
-    """Returns `data` unchunked along `axis`.
+    """Returns ``data`` unchunked along ``axis``.
 
     Parameters
     ----------
     data : :class:`dask.array.Array`
-        Data which may be chunked along `axis`.
+        Data which may be chunked along ``axis``.
     axis : :class:`int`
         Axis number which specifies the axis to unchunk.
 
@@ -69,8 +69,8 @@ def ndpolyfit(x: typing.Iterable,
               axis: int = 0,
               **kwargs) -> (xr.DataArray, da.Array):
     r""".. deprecated:: 2022.10.0 ``ndpolyfit`` is deprecated. Use
-        `xarray.DataArray.polyfit <https://docs.xarray.dev/en/stable/generated/xarray.DataArray.polyfit.html>`__
-        or `xarray.Dataset.polyfit <https://docs.xarray.dev/en/stable/generated/xarray.Dataset.polyfit.html>`__ instead.
+    `xarray.DataArray.polyfit <https://docs.xarray.dev/en/stable/generated/xarray.DataArray.polyfit.html>`__
+    or `xarray.Dataset.polyfit <https://docs.xarray.dev/en/stable/generated/xarray.Dataset.polyfit.html>`__ instead.
 
     An extension to `numpy.polyfit` function to support multi-dimensional
     arrays, Dask arrays, and missing values.
@@ -79,13 +79,13 @@ def ndpolyfit(x: typing.Iterable,
     ----------
 
     x : :class:`array_like`
-        X-coordinate, an iterable object of shape `(M,)`, `(M, 1)`, or `(1, M)` where `M = y.shape(axis)`. It cannot
-        have `nan` or missing values.
+        X-coordinate, an iterable object of shape ``(M,)``, ``(M, 1)``, or ``(1, M)`` where ``M = y.shape(axis)``. It cannot
+        have ``nan`` or missing values.
 
     y : :class:`array_like`
-        Y-coordinate, an iterable containing the data. It could be list, `numpy.ndarray`, `xarray.DataArray`, Dask array.
-        or any Iterable convertible to `numpy.ndarray`. In case of Dask Array, The data could be chunked. It is
-        recommended not to chunk along the `axis` provided.
+        Y-coordinate, an iterable containing the data. It could be list, ``numpy.ndarray``, ``xarray.DataArray``, Dask array.
+        or any Iterable convertible to ``numpy.ndarray``. In case of Dask Array, The data could be chunked. It is
+        recommended not to chunk along the ``axis`` provided.
 
     deg : :class:`int`
         Degree of the fitting polynomial
@@ -99,22 +99,22 @@ def ndpolyfit(x: typing.Iterable,
     Keyword Args
     ------------
     rcond : float, optional
-        Relative condition number of the fit. Refer to `numpy.polyfit` for further details.
+        Relative condition number of the fit. Refer to ``numpy.polyfit`` for further details.
 
     full : bool, optional
-        Switch determining nature of return value. Refer to `numpy.polyfit` for further details.
+        Switch determining nature of return value. Refer to ``numpy.polyfit`` for further details.
 
     w : array_like optional
-        Weights applied to the y-coordinates of the sample points. Refer to `numpy.polyfit` for further details.
+        Weights applied to the y-coordinates of the sample points. Refer to ``numpy.polyfit`` for further details.
 
     cov : bool, optional
-        Determines whether to return the covariance matrix. Refer to `numpy.polyfit` for further details.
+        Determines whether to return the covariance matrix. Refer to ``numpy.polyfit`` for further details.
 
     missing_value : :class:`number` or numpy.nan, optional
-        The value to be treated as missing. Default is `numpy.nan`
+        The value to be treated as missing. Default is ``numpy.nan``
 
     meta : bool, optional
-        If set to `True` and the input, i.e. `y`, is of type `xarray.DataArray`, the attributes associated to the
+        If set to ``True`` and the input, i.e. ``y``, is of type ``xarray.DataArray``, the attributes associated to the
         input are transferred to the output.
 
     Returns
@@ -212,7 +212,8 @@ def ndpolyfit(x: typing.Iterable,
 
         * Fitting a line to a multi-dimensional array
 
-        >>> y_md = np.tile(y.reshape(1, 10, 1, 1), [2, 1, 3, 4])
+        >>> y_md = np.tile(y.reshape(1, 10, 1, 1),
+        ...                [2, 1, 3, 4])
         >>> y_md.shape
         (2, 10, 3, 4)
         >>> print(y)
@@ -278,20 +279,20 @@ def _ndpolyfit(x: typing.Iterable,
                cov: bool = False,
                missing_value: typing.Union[numbers.Number] = np.nan,
                xarray_output: bool = True) -> (np.ndarray, xr.DataArray):
-    """An extension to `numpy.polyfit` function to support multi-dimensional
+    """An extension to ``numpy.polyfit`` function to support multi-dimensional
     arrays, Dask arrays, and missing values.
 
     Parameters
     ----------
 
     x : array_like
-        X-coordinate, an iterable object of shape `(M,)`, `(M, 1)`, or `(1, M)` where `M = y.shape(axis)`.
-        It cannot have `nan` or missing values.
+        X-coordinate, an iterable object of shape ``(M,)``, ``(M, 1)``, or ``(1, M)`` where ``M = y.shape(axis)``.
+        It cannot have ``nan`` or missing values.
 
     y : array_like
-        Y-coordinate, an iterable containing the data. It could be list, `numpy.ndarray`, `xarray.DataArray`, Dask array.
-        or any Iterable convertible to `numpy.ndarray`. In case of Dask Array, The data could be chunked. It is
-        recommended not to chunk along the `axis` provided.
+        Y-coordinate, an iterable containing the data. It could be list, ``numpy.ndarray``, ``xarray.DataArray``, Dask array.
+        or any Iterable convertible to ``numpy.ndarray``. In case of Dask Array, The data could be chunked. It is
+        recommended not to chunk along the ``axis`` provided.
 
     axis : int, optional
         Axis to fit the polynomial to. Defaults to 0.
@@ -300,28 +301,28 @@ def _ndpolyfit(x: typing.Iterable,
         Degree of the fitting polynomial. Defaults to 1.
 
     rcond : float, optional
-        Relative condition number of the fit. Defaults to None. Refer to `numpy.polyfit` for further details.
+        Relative condition number of the fit. Defaults to ``None``. Refer to ``numpy.polyfit`` for further details.
 
     full : bool, optional
-        Switch determining nature of return value. Defaults to False. Refer to `numpy.polyfit` for further details.
+        Switch determining nature of return value. Defaults to False. Refer to ``numpy.polyfit`` for further details.
 
     w : array_like, optional
-        Weights applied to the y-coordinates of the sample points. Defaults to None. Refer to `numpy.polyfit` for further details.
+        Weights applied to the y-coordinates of the sample points. Defaults to ``None``. Refer to ``numpy.polyfit`` for further details.
 
     cov : bool, optional
-        Determines whether to return the covariance matrix. Defaults to False. Refer to `numpy.polyfit` for further details.
+        Determines whether to return the covariance matrix. Defaults to False. Refer to ``numpy.polyfit`` for further details.
 
     missing_value : int, float, or numpy.nan, optional
-        The value to be treated as missing. Default is `numpy.nan`
+        The value to be treated as missing. Default is ``numpy.nan``
 
     xarray_output : bool, optional
-        Determines the type of the output. If set to `True` the output would be of type `xarray.DataArray`
+        Determines the type of the output. If set to ``True`` the output would be of type ``xarray.DataArray``
         and the some extra information are attached to the output as attributes. Otherwise, the output
-        would be of type `numpy.ndarray` containing only the coefficients of the fitted polynomial. Defaults to True.
+        would be of type ``numpy.ndarray`` containing only the coefficients of the fitted polynomial. Defaults to True.
 
     Returns
     -------
-    coefficients : :class:`xarray.DataArray` or ndarray
+    coefficients : :class:``xarray.DataArray`` or ndarray
         An array containing the coefficients of the fitted polynomial.
     """
 
@@ -452,9 +453,9 @@ def _check_axis(axis, ndim) -> int:
 
 def _rearrange_axis(data: np.ndarray,
                     axis: int = 0) -> tuple([np.ndarray, tuple]):
-    """rearranges the `numpy.ndarray` as a two-dimensional array of size (n,
+    """rearranges the ``numpy.ndarray`` as a two-dimensional array of size (n,
 
-    -1), where n is the number of elements of the dimension defined by `axis`.
+    -1), where n is the number of elements of the dimension defined by ``axis``.
 
     Parameters
     ----------
@@ -516,11 +517,11 @@ def ndpolyval(p: typing.Iterable,
     Extended version of `numpy.polyval` to support multi-dimensional outputs
     provided by `geocat.comp.ndpolyfit`.
 
-    As the name suggest, this version supports a multi-dimensional `p` array. Let's say `p` is of dimension `(s0,s1,s2)`
-    and `axis=1`, then the output would be of dimension `(s0, M, s2)` where M depends on `x`.
-    The same way, `x` could be a multi dimensional array or a single array. In another word, `x` is either of
-    dimension `(M, )`, `(M, 1)`, `(1, M)` or, in this example, of dimension `(s0, M, s2)`. When `x` is not the vector,
-    it must have the same dimension as of `p` except for the dimension that is defined by `axis`.
+    As the name suggest, this version supports a multi-dimensional ``p`` array. Let's say ``p`` is of dimension ``(s0,s1,s2)``
+    and ``axis=1``, then the output would be of dimension ``(s0, M, s2)`` where M depends on ``x``.
+    The same way, ``x`` could be a multi dimensional array or a single array. In another word, ``x`` is either of
+    dimension ``(M, )``, ``(M, 1)``, ``(1, M)`` or, in this example, of dimension ``(s0, M, s2)``. When ``x`` is not the vector,
+    it must have the same dimension as of ``p`` except for the dimension that is defined by ``axis``.
 
     Parameters
     ----------
@@ -563,7 +564,8 @@ def ndpolyval(p: typing.Iterable,
 
         * evaluating a multi-dimensional fitted polynomial:
 
-        >>> p = np.tile(np.asarray(p).reshape(1, 2, 1, 1), [3, 1, 4, 5])
+        >>> p = np.tile(np.asarray(p).reshape(1, 2, 1, 1),
+        ...             [3, 1, 4, 5])
         >>> p.shape
         (3, 2, 4, 5)
         >>> p[1, :, 1, 1]
@@ -694,10 +696,10 @@ def detrend(data: typing.Iterable, deg=1, axis=0, **kwargs) -> xr.DataArray:
 
     Estimates and removes the trend of the leftmost dimension from all grid
     points. This method, at the minimum, provides all the functionality that is
-    provided by NCL's 'dtrend', 'dtrend_quadratic', 'dtrend_quadratic_msg_n',
-    'dtrend_msg_n', 'dtrend_msg', 'dtrend_n'. However, this function is not
-    limited to quadratic detrending and you could use higher polynomial degree
-    as well.
+    provided by NCL's ``dtrend``, ``dtrend_quadratic``,
+    ``dtrend_quadratic_msg_n``, ``dtrend_msg_n``, ``dtrend_msg``, ``dtrend_n``.
+    However, this function is not limited to quadratic detrending, and you
+    could use higher polynomial degree as well.
 
     Parameters
     ----------
@@ -716,10 +718,10 @@ def detrend(data: typing.Iterable, deg=1, axis=0, **kwargs) -> xr.DataArray:
     Keyword Args
     ------------
     return_info : :class:`bool`
-        If set to true, the fitted polynomial is returned as part of the attributes. Default value is `True`.
+        If set to true, the fitted polynomial is returned as part of the attributes. Default value is ``True``.
 
     missing_value : :class:`numeric`
-        A value that must be ignored. Default is NaN.
+        A value that must be ignored. Default is ``NaN``.
 
     Returns
     -------
@@ -729,32 +731,38 @@ def detrend(data: typing.Iterable, deg=1, axis=0, **kwargs) -> xr.DataArray:
     Examples
     --------
 
-        * Detrending a data:
+    * Detrending a dataset:
 
-        >>> from geocat.comp.polynomial import ndpolyfit
-        >>> from geocat.comp.polynomial import detrend
-        >>> # Creating synthetic data
-        >>> x = np.linspace(-8*np.pi, 8 * np.pi, 33, dtype=np.float64)
-        >>> y0 = 1.0 * x
-        >>> y1 = np.sin(x)
-        >>> y = y0 + y1
-        >>> p = ndpolyfit(np.arange(x.size), y, deg=1)
-        >>> y_trend = ndpolyval(p, np.arange(x.size))
-        >>> y_detrended = detrend(y)
-        >>> np.testing.assert_almost_equal(y_detrended + y_trend, y)
+    >>> from geocat.comp.polynomial import ndpolyfit
+    >>> from geocat.comp.polynomial import detrend
+    >>> # Creating synthetic data
+    >>> x = np.linspace(-8 * np.pi,
+    ...                 8 * np.pi,
+    ...                 33,
+    ...                 dtype=np.float64)
+    >>> y0 = 1.0 * x
+    >>> y1 = np.sin(x)
+    >>> y = y0 + y1
+    >>> p = ndpolyfit(np.arange(x.size), y, deg=1)
+    >>> y_trend = ndpolyval(p, np.arange(x.size))
+    >>> y_detrended = detrend(y)
+    >>> np.testing.assert_almost_equal(y_detrended + y_trend, y)
 
+    * Detrending a multi-dimensional dataset:
 
-        * Detrending a multi-dimensional data:
-
-        >>> # Creating synthetic data
-        >>> x = np.linspace(-8*np.pi, 8 * np.pi, 33, dtype=np.float64)
-        >>> y0 = 1.0 * x
-        >>> y1 = np.sin(x)
-        >>> y = np.tile((y0 + y1).reshape((1, -1, 1, 1)), (2, 1, 3, 4))
-        >>> p = ndpolyfit(x, y, deg=1, axis=1)
-        >>> y_trend = ndpolyval(p, x, axis=1)
-        >>> y_detrended = detrend(y, x=x, axis=1)
-        >>> np.testing.assert_almost_equal(y_detrended + y_trend, y)
+    >>> # Creating synthetic data
+    >>> x = np.linspace(-8 * np.pi,
+    ...                 8 * np.pi,
+    ...                 33,
+    ...                 dtype=np.float64)
+    >>> y0 = 1.0 * x
+    >>> y1 = np.sin(x)
+    >>> y = np.tile((y0 + y1).reshape((1, -1, 1, 1)),
+    ...             (2, 1, 3, 4))
+    >>> p = ndpolyfit(x, y, deg=1, axis=1)
+    >>> y_trend = ndpolyval(p, x, axis=1)
+    >>> y_detrended = detrend(y, x=x, axis=1)
+    >>> np.testing.assert_almost_equal(y_detrended + y_trend, y)
 
     See Also
     --------
