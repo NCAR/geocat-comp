@@ -224,9 +224,8 @@ def _geo_height_extrapolate(t_bot, lev, p_sfc, ps, phi_sfc):
 
 def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, ps,
                            variable, t_bot, phi_sfc):
-    """
-    A helper function to call the appropriate extrapolation function based on
-    the user's inputs.
+    """A helper function to call the appropriate extrapolation function based
+    on the user's inputs.
 
     Parameters
     ----------
@@ -262,7 +261,6 @@ def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, ps,
         The geopotential at the lowest level of the model.
     Returns
     -------
-
     """
     plev_name = pressure.cf['vertical'].name
     sfc_index = pressure[plev_name].argmax().data  # index of the model surface
