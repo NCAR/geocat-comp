@@ -186,6 +186,7 @@ def _geo_height_extrapolate(t_bot, lev, p_sfc, ps, phi_sfc):
     Parameters
     ----------
     t_bot: :class:`xarray.DataArray`
+        Temperature at the lowest (bottom) level of the model.
 
     lev: int
         The pressure level of interest. Must be in the same units as ``ps`` and ``p_sfc``
@@ -223,6 +224,46 @@ def _geo_height_extrapolate(t_bot, lev, p_sfc, ps, phi_sfc):
 
 def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, ps,
                            variable, t_bot, phi_sfc):
+    """
+    A helper function to call the appropriate extrapolation function based on
+    the user's inputs.
+
+    Parameters
+    ----------
+    new_levels: array-like
+        The desired pressure levels for extrapolation in Pascals.
+
+    lev_dim: str
+        The name of the vertical dimension.
+
+    data: :class:`xarray.DataArray`
+        The data to extrapolate
+
+    output: :class:`xarray.DataArray`
+        An array to hold the output data
+
+    pressure: :class:`xarray.DataArray`
+        The pressure at the lowest level of the model. Must be in the same units as ``lev`` and ``ps``
+
+    ps : :class:`xarray.DataArray`
+        An array of surface pressures. Must be in the same units as ``lev`` and ``p_sfc``
+
+    variable : str, optional
+        String representing what variable is extrapolated below surface level.
+        Temperature extrapolation = "temperature". Geopotential height
+        extrapolation = "geopotential". All other variables = "other". If
+        "other", the value of ``data`` at the lowest model level will be used
+        as the below ground fill value. Required if extrapolate is True.
+
+    t_bot: :class:`xarray.DataArray`
+        Temperature at the lowest (bottom) level of the model.
+
+    phi_sfc:
+        The geopotential at the lowest level of the model.
+    Returns
+    -------
+
+    """
     plev_name = pressure.cf['vertical'].name
     sfc_index = pressure[plev_name].argmax().data  # index of the model surface
     p_sfc = pressure.isel(**dict({plev_name: sfc_index
