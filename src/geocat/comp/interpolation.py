@@ -134,10 +134,10 @@ def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0):
 
 
 def _temp_extrapolate(data, lev_dim, lev, p_sfc, ps, phi_sfc):
-    """
-    This helper function extrapolates temperature below ground using the ECMWF
-    formulation described in `Vertical Interpolation and Truncation of Model-Coordinate Data <http://dx.doi.org/10.5065/D6HX19NH>`__
-    by Trenberth, Berry, & Buja [NCAR/TN-396, 1993]. Specifically equation 16 is used.
+    """This helper function extrapolates temperature below ground using the
+    ECMWF formulation described in `Vertical Interpolation and Truncation of
+    Model-Coordinate Data <http://dx.doi.org/10.5065/D6HX19NH>`__ by Trenberth,
+    Berry, & Buja [NCAR/TN-396, 1993]. Specifically equation 16 is used.
 
     Parameters
     ----------
@@ -260,8 +260,8 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
                               t_bot: xr.DataArray = None,
                               phi_sfc: xr.DataArray = None) -> xr.DataArray:
     """Interpolate and extrapolate data from hybrid-sigma levels to isobaric
-    levels. Keeps attributes (i.e. metadata) of the input data in the
-    output as default.
+    levels. Keeps attributes (i.e. metadata) of the input data in the output as
+    default.
 
     Notes
     -----
