@@ -25,11 +25,17 @@ Internal API
 
    geocat.comp.interpolation._func_interpolate
 
+   geocat.comp.interpolation._geo_height_extrapolate
+
    geocat.comp.interpolation._pressure_from_hybrid
 
    geocat.comp.interpolation._sigma_from_hybrid
 
+   geocat.comp.interpolation._temp_extrapolate
+
    geocat.comp.interpolation._vertical_remap
+
+   geocat.comp.interpolation._vertical_remap_extrap
 
    geocat.comp.interpolation._pre_interp_multidim
 
