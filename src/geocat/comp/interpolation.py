@@ -182,6 +182,10 @@ def _temp_extrapolate(data, lev_dim, lev, p_sfc, ps, phi_sfc):
 
 def _geo_height_extrapolate(t_bot, lev, p_sfc, ps, phi_sfc):
     """
+    This helper function extrapolates geopotential height below ground using the
+    ECMWF formulation described in `Vertical Interpolation and Truncation of
+    Model-Coordinate Data <http://dx.doi.org/10.5065/D6HX19NH>`__ by Trenberth,
+    Berry, & Buja [NCAR/TN-396, 1993]. Specifically equation 15 is used.
 
     Parameters
     ----------
