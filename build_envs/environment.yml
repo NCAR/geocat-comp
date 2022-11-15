@@ -12,7 +12,6 @@ dependencies:
   - metpy
   - numpy
   - pint<0.20
-  - pre-commit
   - xarray
   - xskillscore
 # Packages listed below are for testing
@@ -20,3 +19,5 @@ dependencies:
   - netcdf4
   - pytest
   - pytest-cov
+# The package below is for formatting standards
+  - pre-commit
