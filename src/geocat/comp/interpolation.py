@@ -140,7 +140,7 @@ def _temp_extrapolate(data, lev_dim, lev, p_sfc, ps, phi_sfc):
     Berry, & Buja [NCAR/TN-396, 1993]. Specifically equation 16 is used:
 
     .. math::
-        T = T_* \left( 1 + aln \frac{p}{p_s} + \frac{1}{2}\left( aln \frac{p}{p_s} \right)^2 + \frac{1}{6} \left( aln \frac{p}{p_s} \right)^3 \right)
+        T = T_* \left( 1 + \alpha ln \frac{p}{p_s} + \frac{1}{2}\left( \alpha ln \frac{p}{p_s} \right)^2 + \frac{1}{6} \left( \alpha ln \frac{p}{p_s} \right)^3 \right)
 
     Parameters
     ----------
@@ -184,11 +184,14 @@ def _temp_extrapolate(data, lev_dim, lev, p_sfc, ps, phi_sfc):
 
 
 def _geo_height_extrapolate(t_bot, lev, p_sfc, ps, phi_sfc):
-    """This helper function extrapolates geopotential height below ground using
+    r"""This helper function extrapolates geopotential height below ground using
     the ECMWF formulation described in `Vertical Interpolation and Truncation
     of Model-Coordinate Data <http://dx.doi.org/10.5065/D6HX19NH>`__ by
     Trenberth, Berry, & Buja [NCAR/TN-396, 1993]. Specifically equation 15 is
-    used.
+    used:
+
+    .. math::
+        \Phi = \Phi_s - R_d T_* ln \frac{p}{p_s} \left[ 1 + \frac{1}{2}\alpha ln\frac{p}{p_s} + \frac{1}{6} \left( \alpha ln \frac{p}{p_s} \right)^2 \right]
 
     Parameters
     ----------
