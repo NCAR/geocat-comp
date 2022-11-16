@@ -9,12 +9,12 @@ import xarray as xr
 
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
-#if "--cov" in str(sys.argv):
-from src.geocat.comp import interp_multidim, interp_hybrid_to_pressure, \
+if "--cov" in str(sys.argv):
+    from src.geocat.comp import interp_multidim, interp_hybrid_to_pressure, \
         interp_sigma_to_hybrid
-#else:
-#    from geocat.comp import interp_multidim, interp_hybrid_to_pressure, \
-#        interp_sigma_to_hybrid
+else:
+    from geocat.comp import interp_multidim, interp_hybrid_to_pressure, \
+        interp_sigma_to_hybrid
 
 # Global input data
 
