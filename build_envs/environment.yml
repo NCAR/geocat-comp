@@ -2,20 +2,22 @@ name: geocat_comp_build
 channels:
   - conda-forge
 dependencies:
-  - python>=3.8, <3.11
-  - cf_xarray>=0.3.1
+  - python>=3.8, <3.11  # minimum support 3.8, 3.11 not yet fully supported
+  - cf_xarray>=0.3.1    # min version 0.3.1 for dependencies
   - cftime
   - dask
   - distributed
   - eofs
-  - geocat-datafiles  # for tests
   - geocat-f2py
   - metpy
-  - netcdf4  # for tests
   - numpy
-  - pint<0.20
-  - pre-commit
-  - pytest  # for tests
-  - pytest-cov  # for tests
+  - pint<0.20           # pint 0.20+ currently breaks geocat-comp
   - xarray
   - xskillscore
+# Packages listed below are for testing
+  - geocat-datafiles
+  - netcdf4
+  - pytest
+  - pytest-cov
+# The package below is for formatting standards
+  - pre-commit
