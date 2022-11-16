@@ -148,7 +148,7 @@ def _temp_extrapolate(data, lev_dim, lev, p_sfc, ps, phi_sfc):
         The name of the vertical dimension.
 
     lev: int
-        The pressure level of interest. Must be in the same units as ``ps`` and ``p_sfc``
+        The pressure levels of interest. Must be in the same units as ``ps`` and ``p_sfc``
 
     p_sfc: :class:`xarray.DataArray`
         The pressure at the lowest level of the model. Must be in the same units as ``lev`` and ``ps``
@@ -158,6 +158,11 @@ def _temp_extrapolate(data, lev_dim, lev, p_sfc, ps, phi_sfc):
 
     phi_sfc: :class:`xarray.DataArray`
         The geopotential at the lowest level of the model.
+
+    Returns
+    -------
+    result: :class:`xarray.DataArray`
+        The extrapolated temepratures at the provided pressure levels.
     """
     R_d = 287.04  # dry air gas constant
     g_inv = 1 / 9.80616  # inverse of gravity
@@ -203,6 +208,11 @@ def _geo_height_extrapolate(t_bot, lev, p_sfc, ps, phi_sfc):
 
     phi_sfc:
         The geopotential at the lowest level of the model.
+
+    Returns
+    -------
+    result: :class:`xarray.DataArray`
+        The extrapolated geopotential height in geopotential meters at the provided pressure levels.
     """
     R_d = 287.04  # dry air gas constant
     g_inv = 1 / 9.80616  # inverse of gravity
@@ -263,8 +273,11 @@ def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, ps,
 
     phi_sfc:
         The geopotential at the lowest level of the model.
+
     Returns
     -------
+    output: :class:`xarray.DataArray`
+        A DataArray containing the data after extrapolation.
     """
     plev_name = pressure.cf['vertical'].name
     sfc_index = pressure[plev_name].argmax().data  # index of the model surface
