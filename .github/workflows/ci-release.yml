@@ -36,8 +36,13 @@ jobs:
       - name: Install released geocat-comp
         run: |
           conda create -n import_test geocat-comp
+
+      - name: See environment info
+        run: |
           conda activate import_test
+          conda list
 
       - name: Import
         run: |
+          conda activate import_test
           python -c "import geocat.comp"
