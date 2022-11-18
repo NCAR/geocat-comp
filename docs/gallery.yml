@@ -6,6 +6,14 @@
   path: examples/climatology_average.ipynb
   thumbnail: _static/thumbnails/sphx_glr_calendar_average_example.png
 
-- title: Meridional Overturning Circulation
-  path: examples/moc_globe_atl.ipynb
+- title: Fourier Filter
+  path: examples/fourier_filter_example.ipynb
+  thumbnail:
+
+- title: Linints2
+  path: examples/linint2_example.ipynb
+  thumbnail:
+
+- title: Linits2Pts
+  path: examples/linint2pts_example.ipynb
   thumbnail:
