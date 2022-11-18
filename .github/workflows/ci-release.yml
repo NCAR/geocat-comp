@@ -37,6 +37,10 @@ jobs:
         run: |
           conda create -n import_test geocat-comp
           conda activate import_test
+      
+      - name: See environment info
+        run: |
+          conda list
 
       - name: Import
         run: |
