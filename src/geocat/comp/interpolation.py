@@ -133,6 +133,182 @@ def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0):
     return func_interpolate(new_levels, xcoords, data, axis=interp_axis)
 
 
+def _temp_extrapolate(data, lev_dim, lev, p_sfc, ps, phi_sfc):
+    r"""This helper function extrapolates temperature below ground using the
+    ECMWF formulation described in `Vertical Interpolation and Truncation of
+    Model-Coordinate Data <http://dx.doi.org/10.5065/D6HX19NH>`__ by Trenberth,
+    Berry, & Buja [NCAR/TN-396, 1993]. Specifically equation 16 is used:
+
+    .. math::
+        T = T_* \left( 1 + \alpha ln \frac{p}{p_s} + \frac{1}{2}\left( \alpha ln \frac{p}{p_s} \right)^2 + \frac{1}{6} \left( \alpha ln \frac{p}{p_s} \right)^3 \right)
+
+    Parameters
+    ----------
+    data: :class:`xarray.DataArray`
+        The temperature at the lowest level of the model.
+
+    lev_dim: str
+        The name of the vertical dimension.
+
+    lev: int
+        The pressure levels of interest. Must be in the same units as ``ps`` and ``p_sfc``
+
+    p_sfc: :class:`xarray.DataArray`
+        The pressure at the lowest level of the model. Must be in the same units as ``lev`` and ``ps``
+
+    ps: :class:`xarray.DataArray`
+        An array of surface pressures. Must be in the same units as ``lev`` and ``p_sfc``
+
+    phi_sfc: :class:`xarray.DataArray`
+        The geopotential at the lowest level of the model.
+
+    Returns
+    -------
+    result: :class:`xarray.DataArray`
+        The extrapolated temepratures at the provided pressure levels.
+    """
+    R_d = 287.04  # dry air gas constant
+    g_inv = 1 / 9.80616  # inverse of gravity
+    alpha = 0.0065 * R_d * g_inv
+
+    tstar = data.isel(**{lev_dim: -1}) * (1 + alpha * (ps / p_sfc - 1))
+    hgt = phi_sfc * g_inv
+    t0 = tstar + 0.0065 * hgt
+    tplat = xr.apply_ufunc(np.minimum, 298, t0, dask='parallelized')
+
+    tprime0 = xr.where((2000 <= hgt) & (hgt <= 2500),
+                       0.002 * ((2500 - hgt) * t0 + ((hgt - 2000) * tplat)),
+                       np.nan)
+    tprime0 = xr.where(2500 < hgt, tplat, np.nan)
+
+    alnp = xr.where(hgt < 2000, alpha * np.log(lev / ps),
+                    R_d * (tprime0 - tstar) / phi_sfc * np.log(lev / ps))
+    alnp = xr.where(tprime0 < tstar, 0, alnp)
+
+    return tstar * (1 + alnp + (0.5 * (alnp**2)) + (1 / 6 * (alnp**3)))
+
+
+def _geo_height_extrapolate(t_bot, lev, p_sfc, ps, phi_sfc):
+    r"""This helper function extrapolates geopotential height below ground using
+    the ECMWF formulation described in `Vertical Interpolation and Truncation
+    of Model-Coordinate Data <http://dx.doi.org/10.5065/D6HX19NH>`__ by
+    Trenberth, Berry, & Buja [NCAR/TN-396, 1993]. Specifically equation 15 is
+    used:
+
+    .. math::
+        \Phi = \Phi_s - R_d T_* ln \frac{p}{p_s} \left[ 1 + \frac{1}{2}\alpha ln\frac{p}{p_s} + \frac{1}{6} \left( \alpha ln \frac{p}{p_s} \right)^2 \right]
+
+    Parameters
+    ----------
+    t_bot: :class:`xarray.DataArray`
+        Temperature at the lowest (bottom) level of the model.
+
+    lev: int
+        The pressure level of interest. Must be in the same units as ``ps`` and ``p_sfc``
+
+    p_sfc: :class:`xarray.DataArray`
+        The pressure at the lowest level of the model. Must be in the same units as ``lev`` and ``ps``
+
+    ps : :class:`xarray.DataArray`
+        An array of surface pressures. Must be in the same units as ``lev`` and ``p_sfc``
+
+    phi_sfc:
+        The geopotential at the lowest level of the model.
+
+    Returns
+    -------
+    result: :class:`xarray.DataArray`
+        The extrapolated geopotential height in geopotential meters at the provided pressure levels.
+    """
+    R_d = 287.04  # dry air gas constant
+    g_inv = 1 / 9.80616  # inverse of gravity
+    alpha = 0.0065 * R_d * g_inv
+
+    tstar = t_bot * (1 + alpha * (ps / p_sfc - 1))
+    hgt = phi_sfc * g_inv
+    t0 = tstar + 0.0065 * hgt
+
+    alph = xr.where((tstar <= 290.5) & (t0 > 290.5),
+                    R_d / phi_sfc * (290.5 - tstar), alpha)
+
+    alph = xr.where((tstar > 290.5) & (t0 > 290.5), 0, alph)
+    tstar = xr.where((tstar > 290.5) & (t0 > 290.5), 0.5 * (290.5 + tstar),
+                     tstar)
+
+    tstar = xr.where((tstar < 255), 0.5 * (tstar + 255), tstar)
+
+    alnp = alph * np.log(lev / ps)
+    return hgt - R_d * tstar * g_inv * np.log(
+        lev / ps) * (1 + 0.5 * alnp + 1 / 6 * alnp**2)
+
+
+def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, ps,
+                           variable, t_bot, phi_sfc):
+    """A helper function to call the appropriate extrapolation function based
+    on the user's inputs.
+
+    Parameters
+    ----------
+    new_levels: array-like
+        The desired pressure levels for extrapolation in Pascals.
+
+    lev_dim: str
+        The name of the vertical dimension.
+
+    data: :class:`xarray.DataArray`
+        The data to extrapolate
+
+    output: :class:`xarray.DataArray`
+        An array to hold the output data
+
+    pressure: :class:`xarray.DataArray`
+        The pressure at the lowest level of the model. Must be in the same units as ``lev`` and ``ps``
+
+    ps : :class:`xarray.DataArray`
+        An array of surface pressures. Must be in the same units as ``lev`` and ``p_sfc``
+
+    variable : str, optional
+        String representing what variable is extrapolated below surface level.
+        Temperature extrapolation = "temperature". Geopotential height
+        extrapolation = "geopotential". All other variables = "other". If
+        "other", the value of ``data`` at the lowest model level will be used
+        as the below ground fill value. Required if extrapolate is True.
+
+    t_bot: :class:`xarray.DataArray`
+        Temperature at the lowest (bottom) level of the model.
+
+    phi_sfc:
+        The geopotential at the lowest level of the model.
+
+    Returns
+    -------
+    output: :class:`xarray.DataArray`
+        A DataArray containing the data after extrapolation.
+    """
+    plev_name = pressure.cf['vertical'].name
+    sfc_index = pressure[plev_name].argmax().data  # index of the model surface
+    p_sfc = pressure.isel(**dict({plev_name: sfc_index
+                                 }))  # extract pressure at lowest level
+
+    if variable == 'temperature':
+        for lev in new_levels:
+            output.loc[dict(plev=lev)] = xr.where(
+                lev <= p_sfc, output.sel(plev=lev),
+                _temp_extrapolate(data, lev_dim, lev, p_sfc, ps, phi_sfc))
+
+    elif variable == 'geopotential':
+        for lev in new_levels:
+            output.loc[dict(plev=lev)] = xr.where(
+                lev <= p_sfc, output.sel(plev=lev),
+                _geo_height_extrapolate(t_bot, lev, p_sfc, ps, phi_sfc))
+    else:
+        for lev in new_levels:
+            output.loc[dict(plev=lev)] = xr.where(
+                lev <= p_sfc, output.sel(plev=lev),
+                data.isel(**dict({plev_name: sfc_index})))
+    return output
+
+
 def interp_hybrid_to_pressure(data: xr.DataArray,
                               ps: xr.DataArray,
                               hyam: xr.DataArray,
@@ -140,9 +316,13 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
                               p0: float = 100000.,
                               new_levels: np.ndarray = __pres_lev_mandatory__,
                               lev_dim: str = None,
-                              method: str = 'linear') -> xr.DataArray:
-    """Interpolate data from hybrid-sigma levels to isobaric levels. Keeps the
-    attributes (i.e. meta information) of the input data in the output as
+                              method: str = 'linear',
+                              extrapolate: bool = False,
+                              variable: str = None,
+                              t_bot: xr.DataArray = None,
+                              phi_sfc: xr.DataArray = None) -> xr.DataArray:
+    """Interpolate and extrapolate data from hybrid-sigma levels to isobaric
+    levels. Keeps attributes (i.e. metadata) of the input data in the output as
     default.
 
     Notes
@@ -177,6 +357,26 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
     method : str, optional
         String that is the interpolation method; can be either "linear" or "log". Defaults to "linear".
 
+    extrapolate : bool, optional
+        If True, below ground extrapolation for ``variable`` will be done using
+        an `ECMWF formulation <http://dx.doi.org/10.5065/D6HX19NH>`__. Defaults
+        to False.
+
+    variable : str, optional
+        String representing what variable is extrapolated below surface level.
+        Temperature extrapolation = "temperature". Geopotential height
+        extrapolation = "geopotential". All other variables = "other". If
+        "other", the value of ``data`` at the lowest model level will be used
+        as the below ground fill value. Required if extrapolate is True.
+
+    t_bot : :class:`xarray.DataArray`, optional
+        Temperature in Kelvin at the lowest layer of the model. Not necessarily
+        the same as surface temperature. Required if ``extrapolate`` is True.
+
+    phi_sfc: :class:`xarray.DataArray`, optional
+        Geopotential in J/kg at the lowest layer of the model. Not necessarily
+        the same as surface geopotential. Required if ``extrapolate`` is True.
+
     Returns
     -------
     output : :class:`xarray.DataArray`
@@ -189,13 +389,26 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
     `vinth2p_ecmwf <https://www.ncl.ucar.edu/Document/Functions/Built-in/vinth2p_ecmwf.shtml>`__
     """
 
+    # Check inputs
+    if extrapolate and ((variable is None) or (t_bot is None) or
+                        (phi_sfc is None)):
+        raise ValueError(
+            "If `extrapolate` is True, `variable`, `t_bot`, and `phi_sfc` must be provided."
+        )
+
+    if (variable != "temperature") and (variable != "geopotential") and (
+            variable != "other") and (variable is not None):
+        raise ValueError(
+            "The value of `variable` is " + variable +
+            ", but the accepted values are 'temperature', 'geopotential', 'other', or None."
+        )
     # Determine the level dimension and then the interpolation axis
     if lev_dim is None:
         try:
             lev_dim = data.cf["vertical"].name
         except Exception:
             raise ValueError(
-                "Unable to determine vertical dimension name. Please specify the name via `lev_dim` argument.'"
+                "Unable to determine vertical dimension name. Please specify the name via `lev_dim` argument."
             )
 
     try:
@@ -293,6 +506,10 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
             coords.update({"plev": new_levels})
 
     output = output.transpose(*dims).assign_coords(coords)
+
+    if extrapolate:
+        output = _vertical_remap_extrap(new_levels, lev_dim, data, output,
+                                        pressure, ps, variable, t_bot, phi_sfc)
 
     return output
 
