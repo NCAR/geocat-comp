@@ -107,6 +107,130 @@ class Test_interp_hybrid_to_pressure(TestCase):
         nt.assert_array_almost_equal(self.uzon_expected, uzon, 5)
 
 
+class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
+    # Open the netCDF data file with the input data
+    try:
+        ds_ccsm = xr.open_dataset(
+            gdf.get("netcdf_files/ccsm35.h0.0021-01.demo.nc"),
+            decode_times=False)
+    except:
+        ds_ccsm = xr.open_dataset("test/ccsm35.h0.0021-01.demo.nc",
+                                  decode_times=False)
+
+    # Open the netCDF file with the output data from running vinth2p_ecmwf.ncl
+    try:
+        ds_out = xr.open_dataset("test/vinth2p_ecmwf_output.nc",
+                                 decode_times=False)
+    except:
+        ds_out = xr.open_dataset("vinth2p_ecmwf_output.nc", decode_times=False)
+
+    # Pull out inputs
+    _hyam = ds_ccsm.hyam
+    _hybm = ds_ccsm.hybm
+    temp_in = ds_ccsm.T[:, :, :3, :2]
+    t_bot = ds_ccsm.TS[:, :3, :2]
+    geopotential_in = ds_ccsm.Z3[:, :, :3, :2]
+    humidity_in = ds_ccsm.Q[:, :, :3, :2] * 1000  # g/kg
+    press_in = ds_ccsm.PS[:, :3, :2]
+    phis = ds_ccsm.PHIS[:, :3, :2]
+
+    temp_interp_expected = ds_out.Tp.rename(lev_p='plev')
+    temp_extrap_expected = ds_out.Tpx.rename(lev_p='plev')
+    geopotential_extrap_expected = ds_out.Zpx.rename(lev_p='plev')
+    humidity_extrap_expected = ds_out.Qpx.rename(lev_p='plev')
+
+    new_levels = np.asarray([500, 925, 950, 1000])
+    new_levels *= 100  # new levels in Pa
+    _p0 = 1000 * 100  # reference pressure in Pa
+
+    def test_interp_hybrid_to_pressure_interp_temp(self):
+        result = interp_hybrid_to_pressure(self.temp_in,
+                                           self.press_in,
+                                           self._hyam,
+                                           self._hybm,
+                                           p0=self._p0,
+                                           new_levels=self.new_levels,
+                                           method="linear")
+        result = result.transpose('time', 'plev', 'lat', 'lon')
+        result = result.assign_coords(dict(plev=self.new_levels / 100))
+        xr.testing.assert_allclose(self.temp_interp_expected, result)
+
+    def test_interp_hybrid_to_pressure_extrap_temp(self):
+        result = interp_hybrid_to_pressure(self.temp_in,
+                                           self.press_in,
+                                           self._hyam,
+                                           self._hybm,
+                                           p0=self._p0,
+                                           new_levels=self.new_levels,
+                                           method="linear",
+                                           extrapolate=True,
+                                           variable='temperature',
+                                           t_bot=self.t_bot,
+                                           phi_sfc=self.phis)
+        result = result.transpose('time', 'plev', 'lat', 'lon')
+        result = result.assign_coords(dict(plev=self.new_levels / 100))
+        xr.testing.assert_allclose(self.temp_extrap_expected, result)
+
+    def test_interp_hybrid_to_pressure_extrap_geopotential(self):
+        result = interp_hybrid_to_pressure(self.geopotential_in,
+                                           self.press_in,
+                                           self._hyam,
+                                           self._hybm,
+                                           p0=self._p0,
+                                           new_levels=self.new_levels,
+                                           method="linear",
+                                           extrapolate=True,
+                                           variable='geopotential',
+                                           t_bot=self.t_bot,
+                                           phi_sfc=self.phis)
+        result = result.transpose('time', 'plev', 'lat', 'lon')
+        result = result.assign_coords(dict(plev=self.new_levels / 100))
+        xr.testing.assert_allclose(self.geopotential_extrap_expected, result)
+
+    def test_interp_hybrid_to_pressure_extrap_other(self):
+        result = interp_hybrid_to_pressure(self.humidity_in,
+                                           self.press_in,
+                                           self._hyam,
+                                           self._hybm,
+                                           p0=self._p0,
+                                           new_levels=self.new_levels,
+                                           method="linear",
+                                           extrapolate=True,
+                                           variable='other',
+                                           t_bot=self.t_bot,
+                                           phi_sfc=self.phis)
+        result = result.transpose('time', 'plev', 'lat', 'lon')
+        result = result.assign_coords(dict(plev=self.new_levels / 100))
+        xr.testing.assert_allclose(self.humidity_extrap_expected, result)
+
+    def test_interp_hybrid_to_pressure_extrap_kwargs(self):
+        self.assertRaises(ValueError,
+                          interp_hybrid_to_pressure,
+                          self.humidity_in,
+                          self.press_in,
+                          self._hyam,
+                          self._hybm,
+                          p0=self._p0,
+                          new_levels=self.new_levels,
+                          method="linear",
+                          extrapolate=True)
+
+    def test_interp_hybrid_to_pressure_extrap_invalid_var(self):
+        self.assertRaises(ValueError,
+                          interp_hybrid_to_pressure,
+                          self.humidity_in,
+                          self.press_in,
+                          self._hyam,
+                          self._hybm,
+                          p0=self._p0,
+                          new_levels=self.new_levels,
+                          method="linear",
+                          extrapolate=True,
+                          variable=' ',
+                          t_bot=self.t_bot,
+                          phi_sfc=self.phis)
+
+
 class Test_interp_sigma_to_hybrid(TestCase):
     hyam = xr.DataArray([0.0108093, 0.0130731, 0.03255911, 0.0639471])
     hybm = xr.DataArray([0.0108093, 0.0173664, 0.06069280, 0.1158237])

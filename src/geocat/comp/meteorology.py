@@ -24,7 +24,7 @@ def _dewtemp(
         Temperature in Kelvin
 
     rh : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
-        Relative humidity. Must be the same dimensions as temperature
+        Relative humidity. Must be the same dimensions as ``temperature``
 
     Returns
     -------
@@ -65,7 +65,7 @@ def _heat_index(temperature: np.ndarray,
 
     relative_humidity : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         relative humidity as a percentage. Must be the same shape as
-        temperature
+        ``temperature``
 
     alternate_coeffs : bool, optional
         flag to use alternate set of coefficients appropriate for
@@ -74,7 +74,7 @@ def _heat_index(temperature: np.ndarray,
     Returns
     -------
     heatindex : ndarray
-        Calculated heat index. Same shape as temperature
+        Calculated heat index. Same shape as ``temperature``
 
 
     See Also
@@ -151,12 +151,12 @@ def _nws_eqn(coeffs, temp, rel_hum):
 
     rel_hum : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         relative humidity as a percentage. Must be the same shape as
-        temperature
+        ``temperature``
 
     Returns
     -------
     heatindex : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
-        Intermediate calculated heat index. Same shape as temperature
+        Intermediate calculated heat index. Same shape as ``temperature``
 
 
     See Also
@@ -200,15 +200,15 @@ def _relhum(
         Temperature in Kelvin
 
     w : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
-        Mixing ratio in kg/kg. Must have the same dimensions as temperature
+        Mixing ratio in kg/kg. Must have the same dimensions as ``temperature``
 
     p : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
-        Pressure in Pa. Must have the same dimensions as temperature
+        Pressure in Pa. Must have the same dimensions as ``temperature``
 
     Returns
     -------
     rh : ndarray
-        Relative humidity. Will have the same dimensions as temperature
+        Relative humidity. Will have the same dimensions as ``temperature``
 
 
     See Also
@@ -280,10 +280,10 @@ def _relhum_ice(t: typing.Union[np.ndarray, list, float],
     """Calculates relative humidity with respect to ice, given temperature,
     mixing ratio, and pressure.
 
-     "Improved Magnus' Form Approx. of Saturation Vapor pressure"
-     Oleg A. Alduchov and Robert E. Eskridge
-     http://www.osti.gov/scitech/servlets/purl/548871/
-     https://doi.org/10.2172/548871
+    "Improved Magnus' Form Approx. of Saturation Vapor pressure"
+    Oleg A. Alduchov and Robert E. Eskridge
+    http://www.osti.gov/scitech/servlets/purl/548871/
+    https://doi.org/10.2172/548871
 
     Parameters
     ----------
@@ -291,15 +291,15 @@ def _relhum_ice(t: typing.Union[np.ndarray, list, float],
         Temperature in Kelvin
 
     w : ndarray, :obj:`list`, :obj:`float`
-        Mixing ratio in kg/kg. Must have the same dimensions as temperature
+        Mixing ratio in kg/kg. Must have the same dimensions as ``temperature``
 
     p : ndarray, :obj:`list`, :obj:`float`
-        Pressure in Pa. Must have the same dimensions as temperature
+        Pressure in Pa. Must have the same dimensions as ``temperature``
 
     Returns
     -------
     rh : ndarray
-        Relative humidity. Will have the same dimensions as temperature
+        Relative humidity. Will have the same dimensions as ``temperature``
 
 
     See Also
@@ -340,14 +340,15 @@ def _relhum_water(t: typing.Union[np.ndarray, list, float],
     """Calculates relative humidity with respect to water, given temperature,
     mixing ratio, and pressure.
 
-    Definition of mixing ratio if,
+    Definition of mixing ratio if:
 
-    - es  - is the saturation mixing ratio
-    - ep  - is the ratio of the molecular weights of water vapor to dry air
-    - p   - is the atmospheric pressure
-    - rh  - is the relative humidity (given as a percent)
+    - ``es``  - is the saturation mixing ratio
+    - ``ep``  - is the ratio of the molecular weights of water vapor to dry air
+    - ``p``   - is the atmospheric pressure
+    - ``rh``  - is the relative humidity (given as a percent)
 
-    rh =  100*  q / ( (ep*es)/(p-es) )
+    .. math::
+        rh =  100*  q / ( (ep*es)/(p-es) )
 
     Parameters
     ----------
@@ -355,15 +356,15 @@ def _relhum_water(t: typing.Union[np.ndarray, list, float],
         Temperature in Kelvin
 
     w : ndarray, :obj:`list`, :obj:`float`
-        Mixing ratio in kg/kg. Must have the same dimensions as temperature
+        Mixing ratio in kg/kg. Must have the same dimensions as ``temperature``
 
     p : ndarray, :obj:`list`, :obj:`float`
-        Pressure in Pa. Must have the same dimensions as temperature
+        Pressure in Pa. Must have the same dimensions as ``temperature``
 
     Returns
     -------
     rh : ndarray
-        Relative humidity. Will have the same dimensions as temperature
+        Relative humidity. Will have the same dimensions as ``temperature``
 
     See Also
     --------
@@ -411,7 +412,7 @@ def _xheat_index(temperature: xr.DataArray,
 
     relative_humidity : :class:`xarray.DataArray`
         relative humidity as a percentage. Must be the same shape as
-        temperature
+        ``temperature``
 
     alternate_coeffs : bool, optional
         flag to use alternate set of coefficients appropriate for
@@ -420,7 +421,7 @@ def _xheat_index(temperature: xr.DataArray,
     Returns
     -------
     heatindex : :class:`xarray.DataArray`
-        Calculated heat index. Same shape as temperature
+        Calculated heat index. Same shape as ``temperature``
 
     eqtype : :class:`int`
         version of equations used, for xarray attrs output
@@ -499,15 +500,15 @@ def _xrelhum(t: xr.DataArray, w: xr.DataArray, p: xr.DataArray) -> xr.DataArray:
         Temperature in Kelvin
 
     w : :class:`xarray.DataArray`
-        Mixing ratio in kg/kg. Must have the same dimensions as temperature
+        Mixing ratio in kg/kg. Must have the same dimensions as ``temperature``
 
     p : :class:`xarray.DataArray`
-        Pressure in Pa. Must have the same dimensions as temperature
+        Pressure in Pa. Must have the same dimensions as ``temperature``
 
     Returns
     -------
     rh : :class:`xarray.DataArray`
-        Relative humidity. Will have the same dimensions as temperature
+        Relative humidity. Will have the same dimensions as ``temperature``
 
 
     See Also
@@ -588,7 +589,7 @@ def dewtemp(
         Temperature in Kelvin
 
     relative_humidity : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
-        Relative humidity. Must be the same dimensions as temperature
+        Relative humidity. Must be the same dimensions as ``temperature``
 
     Returns
     -------
@@ -649,9 +650,9 @@ def heat_index(
     The heat index calculation in this funtion is described at:
     https://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml
 
-    The 'Heat Index' is a measure of how hot weather "feels" to the body. The combination of temperature an humidity
+    The 'Heat Index' is a measure of how hot weather "feels" to the body. The combination of temperature and humidity
     produce an "apparent temperature" or the temperature the body "feels". The returned values are for shady
-    locations only. Exposure to full sunshine can increase heat index values by up to 15Â°F. Also, strong winds,
+    locations only. Exposure to full sunshine can increase heat index values by up to 15°F. Also, strong winds,
     particularly with very hot, dry air, can be extremely hazardous as the wind adds heat to the body
 
     The computation of the heat index is a refinement of a result obtained by multiple regression analysis carried
@@ -660,7 +661,7 @@ def heat_index(
 
     In practice, the Steadman formula is computed first and the result averaged with the temperature. If this heat
     index value is 80 degrees F or higher, the full regression equation along with any adjustment as described above
-    is applied. If the ambient temperature is less the 40F (4.4C/277.65K), the heat index is set to to the ambient
+    is applied. If the ambient temperature is less the 40F (4.4C/277.65K), the heat index is set to the ambient
     temperature.
 
     Parameters
@@ -670,7 +671,7 @@ def heat_index(
 
     relative_humidity : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         relative humidity as a percentage. Must be the same shape as
-        temperature
+        ``temperature``
 
     alternate_coeffs : bool, optional
         flag to use alternate set of coefficients appropriate for
@@ -679,7 +680,7 @@ def heat_index(
     Returns
     -------
     heatindex : ndarray, :class:`xarray.DataArray`
-        Calculated heat index. Same shape as temperature
+        Calculated heat index. Same shape as ``temperature``
 
     Examples
     --------
@@ -787,15 +788,15 @@ def relhum(
         Temperature in Kelvin
 
     mixing_ratio : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
-        Mixing ratio in kg/kg. Must have the same dimensions as temperature
+        Mixing ratio in kg/kg. Must have the same dimensions as ``temperature``
 
     pressure : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
-        Pressure in Pa. Must have the same dimensions as temperature
+        Pressure in Pa. Must have the same dimensions as ``temperature``
 
     Returns
     -------
     relative_humidity : ndarray or :class:`xarray.DataArray`
-        Relative humidity. Will have the same dimensions as temperature
+        Relative humidity. Will have the same dimensions as ``temperature``
 
 
     See Also
@@ -855,10 +856,10 @@ def relhum_ice(temperature: typing.Union[np.ndarray, list, float],
     """Calculates relative humidity with respect to ice, given temperature,
     mixing ratio, and pressure.
 
-     "Improved Magnus' Form Approx. of Saturation Vapor pressure"
-     Oleg A. Alduchov and Robert E. Eskridge
-     http://www.osti.gov/scitech/servlets/purl/548871/
-     https://doi.org/10.2172/548871
+    "Improved Magnus' Form Approx. of Saturation Vapor pressure"
+    Oleg A. Alduchov and Robert E. Eskridge
+    http://www.osti.gov/scitech/servlets/purl/548871/
+    https://doi.org/10.2172/548871
 
     Parameters
     ----------
@@ -866,15 +867,15 @@ def relhum_ice(temperature: typing.Union[np.ndarray, list, float],
         Temperature in Kelvin
 
     mixing_ratio : ndarray, :obj:`list`, or :obj:`float`
-        Mixing ratio in kg/kg. Must have the same dimensions as temperature
+        Mixing ratio in kg/kg. Must have the same dimensions as ``temperature``
 
     pressure : ndarray, :obj:`list`, or :obj:`float`
-        Pressure in Pa. Must have the same dimensions as temperature
+        Pressure in Pa. Must have the same dimensions as ``temperature``
 
     Returns
     -------
     relative_humidity : ndarray
-        Relative humidity. Will have the same dimensions as temperature
+        Relative humidity. Will have the same dimensions as ``temperature``
 
     See Also
     --------
@@ -927,13 +928,15 @@ def relhum_water(temperature: typing.Union[np.ndarray, list, float],
     """Calculates relative humidity with respect to water, given temperature,
     mixing ratio, and pressure.
 
-    Definition of mixing ratio if,
-    es  - is the saturation mixing ratio
-    ep  - is the ratio of the molecular weights of water vapor to dry air
-    p   - is the atmospheric pressure
-    rh  - is the relative humidity (given as a percent)
+    Definition of mixing ratio if:
 
-    rh =  100*  q / ( (ep*es)/(p-es) )
+    - `es`  - is the saturation mixing ratio
+    - `ep`  - is the ratio of the molecular weights of water vapor to dry air
+    - `p`   - is the atmospheric pressure
+    - `rh`  - is the relative humidity (given as a percent)
+
+    .. math::
+        rh =  100  q / ( (ep*es)/(p-es) )
 
     Parameters
     ----------
@@ -941,15 +944,15 @@ def relhum_water(temperature: typing.Union[np.ndarray, list, float],
         Temperature in Kelvin
 
     mixing_ratio : ndarray, :obj:`list`, or :obj:`float`
-        Mixing ratio in kg/kg. Must have the same dimensions as temperature
+        Mixing ratio in kg/kg. Must have the same dimensions as ``temperature``
 
     pressure : ndarray, :obj:`list`, or :obj:`float`
-        Pressure in Pa. Must have the same dimensions as temperature
+        Pressure in Pa. Must have the same dimensions as ``temperature``
 
     Returns
     -------
     relative_humidity : ndarray
-        Relative humidity. Will have the same dimensions as temperature
+        Relative humidity. Will have the same dimensions as ``temperature``
 
     See Also
     --------
@@ -1002,9 +1005,10 @@ def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
     Showalter Index derived from `Gallway 1956 <https://journals.ametsoc.org/do
     wnloadpdf/journals/bams/37/10/1520-0477-37_10_528.xml>`__.
 
-    :math:`shox = T500 - Tp500` where:
-    - T500 is the measured temperature at 500 hPa
-    - Tp500 is the temperature of the lifted parcel at 500 hPa
+    :math:`shox = T500 - Tp500`
+
+    - `T500` is the measured temperature at 500 hPa
+    - `Tp500` is the temperature of the lifted parcel at 500 hPa
 
     Parameters
     ----------
