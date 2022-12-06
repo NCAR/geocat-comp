@@ -4,6 +4,8 @@ import numpy as np
 import typing
 import xarray as xr
 
+xr.set_options(keep_attrs=True)
+
 _FREQUENCIES = {"day", "month", "year", "season"}
 
 
