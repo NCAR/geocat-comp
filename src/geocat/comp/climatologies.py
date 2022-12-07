@@ -605,8 +605,9 @@ def climatology_average(
     calendar = _infer_calendar_name(dset[time_dim])
 
     if freq == 'season':
-        # Calculate monthly average before calculating seasonal climatologies
-        dset = dset.resample({time_dim: frequency}).mean().dropna(time_dim)
+        if xr.infer_freq(dset[time_dim]) != 'MS':
+            # Calculate monthly average before calculating seasonal climatologies
+            dset = dset.resample({time_dim: frequency}).mean().dropna(time_dim)
 
         # Compute the weights for the months in each season so that the
         # seasonal averages account for months being of different lengths
