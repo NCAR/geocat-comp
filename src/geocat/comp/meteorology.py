@@ -191,7 +191,7 @@ def _relhum(
 
      "Improved Magnus' Form Approx. of Saturation Vapor pressure"
      Oleg A. Alduchov and Robert E. Eskridge
-     https://doi.org/10.2172/548871
+     https://www.osti.gov/biblio/548871
 
     Parameters
     ----------
@@ -281,7 +281,7 @@ def _relhum_ice(t: typing.Union[np.ndarray, list, float],
 
     "Improved Magnus' Form Approx. of Saturation Vapor pressure"
     Oleg A. Alduchov and Robert E. Eskridge
-    https://doi.org/10.2172/548871
+    https://www.osti.gov/biblio/548871
 
     Parameters
     ----------
@@ -489,7 +489,7 @@ def _xrelhum(t: xr.DataArray, w: xr.DataArray, p: xr.DataArray) -> xr.DataArray:
 
      "Improved Magnus' Form Approx. of Saturation Vapor pressure"
      Oleg A. Alduchov and Robert E. Eskridge
-     https://doi.org/10.2172/548871
+     https://www.osti.gov/biblio/548871
 
     Parameters
     ----------
@@ -776,7 +776,7 @@ def relhum(
 
     "Improved Magnus' Form Approx. of Saturation Vapor pressure"
     Oleg A. Alduchov and Robert E. Eskridge
-    https://doi.org/10.2172/548871
+    https://www.osti.gov/biblio/548871
 
     Parameters
     ----------
@@ -832,7 +832,7 @@ def relhum(
         # set xarray attributes
         relative_humidity.attrs['long_name'] = "relative humidity"
         relative_humidity.attrs['units'] = 'percentage'
-        relative_humidity.attrs['info'] = 'https://doi.org/10.2172/548871'
+        relative_humidity.attrs['info'] = 'https://www.osti.gov/biblio/548871'
 
     else:
         # ensure in numpy array for function call
@@ -854,7 +854,7 @@ def relhum_ice(temperature: typing.Union[np.ndarray, list, float],
 
     "Improved Magnus' Form Approx. of Saturation Vapor pressure"
     Oleg A. Alduchov and Robert E. Eskridge
-    https://doi.org/10.2172/548871
+    https://www.osti.gov/biblio/548871
 
     Parameters
     ----------
