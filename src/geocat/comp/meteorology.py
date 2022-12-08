@@ -281,7 +281,7 @@ def _relhum_ice(t: typing.Union[np.ndarray, list, float],
 
     "Improved Magnus' Form Approx. of Saturation Vapor pressure"
     Oleg A. Alduchov and Robert E. Eskridge
-    https://doi.org/10.1175/1520-0450(1996)035<0601:IMFAOS>2.0.CO;2
+    https://journals.ametsoc.org/view/journals/apme/35/4/1520-0450_1996_035_0601_imfaos_2_0_co_2.xml
 
     Parameters
     ----------
