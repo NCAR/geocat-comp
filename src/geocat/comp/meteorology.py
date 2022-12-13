@@ -995,8 +995,10 @@ def relhum_water(temperature: typing.Union[np.ndarray, list, float],
     return relative_humidity
 
 
-def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
-                    dewpt: pint.Quantity) -> pint.Quantity:
+def showalter_index(
+        pressure: typing.Union[pint.Quantity, list, float, int],
+        temperature: typing.Union[pint.Quantity, list, float, int],
+        dewpt: typing.Union[pint.Quantity, list, float, int]) -> pint.Quantity:
     """Calculate Showalter Index from pressure temperature and 850 hPa lcl.
     Showalter Index derived from `Gallway 1956 <https://journals.ametsoc.org/do
     wnloadpdf/journals/bams/37/10/1520-0477-37_10_528.xml>`__.
@@ -1008,21 +1010,27 @@ def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
 
     Parameters
     ----------
-    pressure : :class:`pint.Quantity`
+    pressure : :class:`pint.Quantity`, array-like, int, float
         Atmospheric pressure level(s) of interest, in order from highest
-        to lowest pressure
-    temperature : :class:`pint.Quantity`
-        Parcel temperature for corresponding pressure
-    dewpt : :class:`pint.Quantity`
-        Parcel dew point temperatures for corresponding pressure
+        to lowest pressure in hectoPascals
+    temperature : :class:`pint.Quantity`, array-like, int, float
+        Parcel temperature for corresponding pressure in degrees Celcius
+    dewpt : :class:`pint.Quantity`, array-like, int, float
+        Parcel dew point temperatures for corresponding pressure in degrees Celcius
 
     Returns
     -------
     shox : :class:`pint.Quantity`
-       Showalter index in delta degrees celsius
+       Showalter index in delta degrees Celsius
     """
-    shox = mpcalc.showalter_index(pressure, temperature, dewpt)
-    return shox
+    if not isinstance(pressure, pint.Quantity):
+        pressure = pint.Quantity(pressure, 'hPa')
+    if not isinstance(temperature, pint.Quantity):
+        temperature = pint.Quantity(temperature, 'degC')
+    if not isinstance(dewpt, pint.Quantity):
+        dewpt = pint.Quantity(dewpt, 'degC')
+
+    return mpcalc.showalter_index(pressure, temperature, dewpt)
 
 
 def max_daylight(
