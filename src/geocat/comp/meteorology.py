@@ -1023,15 +1023,17 @@ def showalter_index(
     shox : :class:`pint.Quantity`
        Showalter index in delta degrees Celsius
     """
-    warn('showalter_index is deprecated in favor of metpy.calc.showalter_index',
-         DeprecationWarning,
-         stacklevel=2)
+    warnings.warn('showalter_index is deprecated in favor of metpy.calc.showalter_index',
+                  DeprecationWarning,
+                  stacklevel=2)
+
+    ureg = pint.UnitRegistry()
     if not isinstance(pressure, pint.Quantity):
-        pressure = pint.Quantity(pressure, 'hPa')
+        pressure = pint.Quantity(pressure, ureg.hPa)
     if not isinstance(temperature, pint.Quantity):
-        temperature = pint.Quantity(temperature, 'degC')
+        temperature = pint.Quantity(temperature, ureg.degC)
     if not isinstance(dewpt, pint.Quantity):
-        dewpt = pint.Quantity(dewpt, 'degC')
+        dewpt = pint.Quantity(dewpt, ureg.degC)
 
     return mpcalc.showalter_index(pressure, temperature, dewpt)
 

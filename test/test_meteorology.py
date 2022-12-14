@@ -319,6 +319,7 @@ class Test_showalter_index(unittest.TestCase):
     NCL_shox = int(Shox[0])  # Convert to int
 
     def test_shox_vals(self):
+        self.assertWarns(DeprecationWarning)
         parameters = [((self.p, self.tc, self.tdc), self.NCL_shox),
                       ((self.p.magnitude, self.tc.magnitude,
                         self.tdc.magnitude), self.NCL_shox)]
