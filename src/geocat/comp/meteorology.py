@@ -1,7 +1,6 @@
 import dask.array as da
 import metpy.calc as mpcalc
 import numpy as np
-import pint.quantity
 import typing
 import warnings
 import xarray as xr
