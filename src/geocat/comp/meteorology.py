@@ -1029,11 +1029,11 @@ def showalter_index(
 
     ureg = pint.UnitRegistry()
     if not isinstance(pressure, pint.Quantity):
-        pressure = pint.Quantity(pressure, ureg.hPa)
+        pressure = pressure * units.hPa
     if not isinstance(temperature, pint.Quantity):
-        temperature = pint.Quantity(temperature, ureg.degC)
+        temperature = temperature * units.degC
     if not isinstance(dewpt, pint.Quantity):
-        dewpt = pint.Quantity(dewpt, ureg.degC)
+        dewpt = dewpt * units.degC
 
     return mpcalc.showalter_index(pressure, temperature, dewpt)
 
