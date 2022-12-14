@@ -1023,6 +1023,9 @@ def showalter_index(
     shox : :class:`pint.Quantity`
        Showalter index in delta degrees Celsius
     """
+    warn('showalter_index is deprecated in favor of metpy.calc.showalter_index',
+         DeprecationWarning,
+         stacklevel=2)
     if not isinstance(pressure, pint.Quantity):
         pressure = pint.Quantity(pressure, 'hPa')
     if not isinstance(temperature, pint.Quantity):
