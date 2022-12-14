@@ -3,6 +3,7 @@ from itertools import chain
 import metpy.calc as mpcalc
 import numpy as np
 from metpy.units import units
+import pint
 import warnings
 from .meteorology import showalter_index as showalter
 
