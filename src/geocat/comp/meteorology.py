@@ -999,7 +999,11 @@ def showalter_index(
         pressure: typing.Union[pint.Quantity, list, float, int],
         temperature: typing.Union[pint.Quantity, list, float, int],
         dewpt: typing.Union[pint.Quantity, list, float, int]) -> pint.Quantity:
-    """Calculate Showalter Index from pressure temperature and 850 hPa lcl.
+    r"""
+    .. deprecated:: 2022.12.0 ``showalter_index`` is deprecated. Use ``metpy.calc.showalter_index``
+        instead. See the MetPy `documentation <https://unidata.github.io/MetPy/latest/api/generated/metpy.calc.showalter_index.html>`_.
+
+    Calculate Showalter Index from pressure temperature and 850 hPa lcl.
     Showalter Index derived from `Gallway 1956 <https://journals.ametsoc.org/do
     wnloadpdf/journals/bams/37/10/1520-0477-37_10_528.xml>`__.
 
@@ -1023,9 +1027,10 @@ def showalter_index(
     shox : :class:`pint.Quantity`
        Showalter index in delta degrees Celsius
     """
-    warnings.warn('showalter_index is deprecated in favor of metpy.calc.showalter_index',
-                  DeprecationWarning,
-                  stacklevel=2)
+    warnings.warn(
+        'showalter_index is deprecated in favor of metpy.calc.showalter_index',
+        DeprecationWarning,
+        stacklevel=2)
 
     ureg = pint.UnitRegistry()
     if not isinstance(pressure, pint.Quantity):

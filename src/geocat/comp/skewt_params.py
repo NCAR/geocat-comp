@@ -10,10 +10,9 @@ from .meteorology import showalter_index as showalter
 
 def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
                     dewpt: pint.Quantity) -> pint.Quantity:
-    r""".. deprecated:: 2022.10.0 The ``skewt_params`` module is deprecated, and
-        ``showalter_index`` has been moved to the ``meteorology`` module for future
-        use. Use ``geocat.comp.showalter_index`` or ``geocat.comp.meteorology.showalter_index``
-        for the same functionality.
+    r""".. deprecated:: 2022.10.0 The ``skewt_params`` module is deprecated.
+        Use ``metpy.calc.showalter_index`` instead. See the MetPy
+        `documentation <https://unidata.github.io/MetPy/latest/api/generated/metpy.calc.showalter_index.html>`_.
 
     Calculate Showalter Index from pressure temperature and 850 hPa lcl.
     Showalter Index derived from `Gallway 1956 <https://journals.ametsoc.org/do
