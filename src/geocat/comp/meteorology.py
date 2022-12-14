@@ -1024,23 +1024,27 @@ def showalter_index(
 
     Returns
     -------
-    shox : :class:`pint.Quantity`
+    shox : same type as input
        Showalter index in delta degrees Celsius
+
+    Note
+    ----
+    ``pressure``, ``temperature``, and ``dewpt`` must all be ``pint.Quantity`` objects or all plain, unitless numbers.
     """
     warnings.warn(
         'showalter_index is deprecated in favor of metpy.calc.showalter_index',
         DeprecationWarning,
         stacklevel=2)
 
-    ureg = pint.UnitRegistry()
-    if not isinstance(pressure, pint.Quantity):
+    if not (isinstance(pressure, pint.Quantity)\
+            and isinstance(temperature, pint.Quantity)\
+            and isinstance(dewpt, pint.Quantity)):
         pressure = pressure * units.hPa
-    if not isinstance(temperature, pint.Quantity):
         temperature = temperature * units.degC
-    if not isinstance(dewpt, pint.Quantity):
         dewpt = dewpt * units.degC
-
-    return mpcalc.showalter_index(pressure, temperature, dewpt)
+        return mpcalc.showalter_index(pressure, temperature, dewpt).magnitude
+    else:
+        return mpcalc.showalter_index(pressure, temperature, dewpt)
 
 
 def max_daylight(
