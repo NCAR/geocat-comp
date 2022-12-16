@@ -9,7 +9,7 @@ dependencies:
     - geocat-viz
     - xarray
     - netcdf4
-    - pint<0.20
+    - pint
     - ipykernel
     - ipython
     - jupyter_client

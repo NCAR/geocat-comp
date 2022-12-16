@@ -11,7 +11,7 @@ dependencies:
   - geocat-f2py
   - metpy
   - numpy
-  - pint<0.20           # pint 0.20+ currently breaks geocat-comp
+  - pint
   - xarray
   - xskillscore
 # Packages listed below are for testing
