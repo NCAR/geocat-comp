@@ -319,15 +319,20 @@ class Test_showalter_index(unittest.TestCase):
     NCL_shox = int(Shox[0])  # Convert to int
 
     def test_shox_vals(self):
-        # Showalter index
-        shox = showalter_index(self.p, self.tc, self.tdc)
-        shox = shox[0].magnitude
+        self.assertWarns(DeprecationWarning)
+        parameters = [((self.p, self.tc, self.tdc),
+                       units.Quantity(self.NCL_shox, 'delta_degree_Celsius')),
+                      ((self.p.magnitude, self.tc.magnitude,
+                        self.tdc.magnitude), self.NCL_shox)]
+        for params in parameters:
+            # Showalter index
+            shox = showalter_index(*params[0])
 
-        # Place calculated values in iterable list
-        vals = np.round(shox).astype(int)
+            # Place calculated values in iterable list
+            vals = np.round(shox).astype(int)
 
-        # Compare calculated values with expected
-        np.testing.assert_equal(vals, self.NCL_shox)
+            # Compare calculated values with expected
+            np.testing.assert_equal(vals, params[1])
 
 
 class Test_actual_saturation_vapor_pressure(unittest.TestCase):
