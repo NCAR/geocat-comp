@@ -45,3 +45,29 @@ class test_climatology(unittest.TestCase):
     def test_climatology_setup(self, name, dataset, freq):
         computed_dset = climatology(dataset, freq)
         assert type(dataset) == type(computed_dset)
+
+
+class test_anomaly(unittest.TestCase):
+    dset_a = xr.tutorial.open_dataset("rasm")
+    dset_b = xr.tutorial.open_dataset("air_temperature")
+    dset_c = dset_a.copy().rename({"time": "Times"})
+    dset_encoded = xr.tutorial.open_dataset("rasm", decode_cf=False)
+
+    @parameterized.expand([
+        ('dset_a, day', dset_a, 'day'),
+        ('dset_a, month', dset_a, 'month'),
+        ('dset_a, season', dset_a, 'season'),
+        ('dset_a, year', dset_a, 'year'),
+        ('dset_b, day', dset_b, 'day'),
+        ('dset_b, month', dset_b, 'month'),
+        ('dset_b, season', dset_b, 'season'),
+        ('dset_b, year', dset_b, 'year'),
+        ('dset_c[\'Tair\'], day', dset_c['Tair'], 'day'),
+        ('dset_c[\'Tair\'], month', dset_c['Tair'], 'month'),
+        ('dset_c[\'Tair\'], season', dset_c['Tair'], 'season'),
+        ('dset_c[\'Tair\'], year', dset_c['Tair'], 'year'),
+    ])
+    def test_anomaly_setup(self, name, dataset, freq):
+        computed_dset = anomaly(dataset, freq)
+        assert type(dataset) == type(computed_dset)
+
