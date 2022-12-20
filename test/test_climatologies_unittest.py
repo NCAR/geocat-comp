@@ -223,6 +223,55 @@ class test_calendar_average(unittest.TestCase):
     daily = _get_dummy_data('2020-01-01', '2021-12-31', 'D', 1, 1)
     monthly = _get_dummy_data('2020-01-01', '2021-12-01', 'MS', 1, 1)
 
+    season_avg = np.array(
+        [29.5, 105.5, 197.5, 289, 379.5, 470.5, 562.5, 654,
+         715]).reshape(9, 1, 1)
+    season_avg_time = xr.cftime_range('2019-12-01', '2022-03-01',
+                                      freq='QS-DEC')
+    season_avg_time = xr.DataArray(
+        np.vstack((season_avg_time[:-1], season_avg_time[1:])).T,
+        dims=['time', 'nbd']) \
+        .mean(dim='nbd')
+    day_2_season_avg = xr.Dataset(
+        data_vars={'data': (('time', 'lat', 'lon'), season_avg)},
+        coords={
+            'time': season_avg_time,
+            'lat': [-90.0],
+            'lon': [-180.0]
+        })
+
+    season_avg = np.array(
+        [0.483333333, 3, 6.010869565, 9, 11.96666667, 15, 18.01086957, 21,
+         23]).reshape(9, 1, 1)
+    month_2_season_avg = xr.Dataset(
+        data_vars={'data': (('time', 'lat', 'lon'), season_avg)},
+        coords={
+            'time': season_avg_time,
+            'lat': [-90.0],
+            'lon': [-180.0]
+        })
+
+    year_avg_time = [
+        cftime.datetime(2020, 7, 2),
+        cftime.datetime(2021, 7, 2, hour=12)
+    ]
+    day_2_year_avg = [[[182.5]], [[548]]]
+    day_2_year_avg = xr.Dataset(
+        data_vars={'data': (('time', 'lat', 'lon'), day_2_year_avg)},
+        coords={
+            'time': year_avg_time,
+            'lat': [-90.0],
+            'lon': [-180.0]
+        })
+    month_2_year_avg = [[[5.513661202]], [[17.5260274]]]
+    month_2_year_avg = xr.Dataset(
+        data_vars={'data': (('time', 'lat', 'lon'), month_2_year_avg)},
+        coords={
+            'time': year_avg_time,
+            'lat': [-90.0],
+            'lon': [-180.0]
+        })
+
     def test_30min_to_hourly_calendar_average(self):
         hour_avg = np.arange(0.5, 35088.5, 2).reshape((365 + 366) * 24, 1, 1)
         hour_avg_time = xr.cftime_range('2020-01-01 00:30:00',
@@ -278,59 +327,12 @@ class test_calendar_average(unittest.TestCase):
         result = calendar_average(self.daily, freq='month')
         xr.testing.assert_equal(result, day_2_month_avg)
 
-    season_avg = np.array(
-        [29.5, 105.5, 197.5, 289, 379.5, 470.5, 562.5, 654,
-         715]).reshape(9, 1, 1)
-    season_avg_time = xr.cftime_range('2019-12-01', '2022-03-01',
-                                      freq='QS-DEC')
-    season_avg_time = xr.DataArray(
-        np.vstack((season_avg_time[:-1], season_avg_time[1:])).T,
-        dims=['time', 'nbd']) \
-        .mean(dim='nbd')
-    day_2_season_avg = xr.Dataset(
-        data_vars={'data': (('time', 'lat', 'lon'), season_avg)},
-        coords={
-            'time': season_avg_time,
-            'lat': [-90.0],
-            'lon': [-180.0]
-        })
-
-    season_avg = np.array(
-        [0.483333333, 3, 6.010869565, 9, 11.96666667, 15, 18.01086957, 21,
-         23]).reshape(9, 1, 1)
-    month_2_season_avg = xr.Dataset(
-        data_vars={'data': (('time', 'lat', 'lon'), season_avg)},
-        coords={
-            'time': season_avg_time,
-            'lat': [-90.0],
-            'lon': [-180.0]
-        })
     @parameterized.expand([('daily to seasonal', daily, day_2_season_avg),
                            ('monthly to seasonal', monthly, month_2_season_avg)])
     def test_daily_monthly_to_seasonal_calendar_average(self, name, dset, expected):
         result = calendar_average(dset, freq='season')
         xr.testing.assert_allclose(result, expected)
 
-    year_avg_time = [
-        cftime.datetime(2020, 7, 2),
-        cftime.datetime(2021, 7, 2, hour=12)
-    ]
-    day_2_year_avg = [[[182.5]], [[548]]]
-    day_2_year_avg = xr.Dataset(
-        data_vars={'data': (('time', 'lat', 'lon'), day_2_year_avg)},
-        coords={
-            'time': year_avg_time,
-            'lat': [-90.0],
-            'lon': [-180.0]
-        })
-    month_2_year_avg = [[[5.513661202]], [[17.5260274]]]
-    month_2_year_avg = xr.Dataset(
-        data_vars={'data': (('time', 'lat', 'lon'), month_2_year_avg)},
-        coords={
-            'time': year_avg_time,
-            'lat': [-90.0],
-            'lon': [-180.0]
-        })
     @parameterized.expand([('daily to yearly', daily, day_2_year_avg),
                            ('monthly to yearly', monthly, month_2_year_avg)])
     def test_daily_monthly_to_yearly_calendar_average(self, name, dset, expected):
