@@ -10,7 +10,8 @@ dependencies:
   - eofs
   - geocat-f2py
   - metpy
-  - numpy
+  - numba
+  - numpy<1.24
   - pint
   - xarray
   - xskillscore
