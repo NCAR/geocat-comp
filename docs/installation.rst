@@ -102,19 +102,11 @@ installed.
 
 Required dependencies for building and testing GeoCAT-comp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Below are the contents of ``environment.yml``. This file contains all of
+the dependencies for building and testing GeoCAT-comp.
 
-- Python 3.8+
-- `GeoCAT-datafiles <https://github.com/NCAR/geocat-datafiles>`__  (For tests only)
-- `GeoCAT-f2py <https://github.com/NCAR/geocat-f2py>`__
-- `cf_xarray <https://cf-xarray.readthedocs.io/en/latest/>`__
-- `cftime <https://unidata.github.io/cftime/>`__
-- `eofs <https://ajdawson.github.io/eofs/latest/index.html>`__
-- `dask <https://dask.org/>`__
-- `distributed <https://distributed.readthedocs.io/en/latest/>`__
-- `netcdf4 <https://unidata.github.io/netcdf4-python/>`__  (For tests only)
-- `numpy <https://numpy.org/doc/stable/>`__
-- `pytest <https://docs.pytest.org/en/stable/>`__  (For tests only)
-- `xarray <http://xarray.pydata.org/en/stable/>`__
+.. include:: ../build_envs/environment.yml
+    :literal:
 
 Note: `GeoCAT-f2py <https://github.com/NCAR/geocat-f2py>`__ dependency will automatically
 install further dependencies for compiled language implementation.

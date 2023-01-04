@@ -30,12 +30,16 @@ jobs:
           channel-priority: strict
           mamba-version: '*'
           python-version: 3.8
-          channels: conda-forge, ncar
+          channels: conda-forge
           environment-file: build_envs/upstream-dev-environment.yml
 
       - name: Install geocat-comp
         run: |
           python -m pip install . --no-deps
+
+      - name: conda list
+        run: |
+          conda list
 
       - name: Running Tests
         run: |

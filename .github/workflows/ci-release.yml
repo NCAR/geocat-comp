@@ -1,0 +1,48 @@
+name: CI-release-test
+on:
+  schedule:
+    - cron: '0 0 * * *' # Daily “At 00:00”
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Python (${{ matrix.python-version }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ "ubuntu-latest", "macos-latest"]
+        python-version: [ "3.8", "3.9", "3.10" ]
+    steps:
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.11.0
+        with:
+          access_token: ${{ github.token }}
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          token: ${{ github.token }}
+      - name: conda_setup
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          channel-priority: strict
+          python-version: ${{ matrix.python-version }}
+          channels: conda-forge
+
+      - name: Install released geocat-comp
+        run: |
+          conda create -n import_test geocat-comp
+
+      - name: See environment info
+        run: |
+          conda activate import_test
+          conda list
+
+      - name: Import
+        run: |
+          conda activate import_test
+          python -c "import geocat.comp"

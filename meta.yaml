@@ -1,5 +1,5 @@
 {% set name = "geocat-comp" %}
-{% set version = "2022.08.0" %}
+{% set version = "2022.11.0" %}
 
 package:
   name: {{ name }}
@@ -17,7 +17,7 @@ source:
 
 requirements:
   build:
-    - python                              # [build_platform != target_platform]
+    - python>=3/8, <3.11                              # [build_platform != target_platform]
     - pip                                 # [build_platform != target_platform]
     - setuptools                          # [build_platform != target_platform]
     - cross-python_{{ target_platform }}  # [build_platform != target_platform]
