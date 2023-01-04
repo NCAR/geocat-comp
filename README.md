@@ -65,9 +65,9 @@ If you use this software, please cite it as described at the [GeoCAT-comp - Cita
 https://geocat-comp.readthedocs.io/en/latest/citation.html) page.
 
 
-[github-ci-badge]: https://img.shields.io/github/workflow/status/NCAR/geocat-comp/CI?label=CI&style=for-the-badge
+[github-ci-badge]: https://img.shields.io/github/actions/workflow/status/NCAR/geocat-comp/ci.yml?branch=main&label=CI&style=for-the-badge
 [github-ci-link]: https://github.com/NCAR/geocat-comp/actions/workflows/ci.yml
-[github-upstream-ci-badge]: https://img.shields.io/github/workflow/status/NCAR/geocat-comp/Upstream-dev%20CI?label=Upstream-dev%20CI&style=for-the-badge
+[github-upstream-ci-badge]: https://img.shields.io/github/actions/workflow/status/NCAR/geocat-comp/upstream-dev-ci.yml?branch=main&label=Upstream%20CI&style=for-the-badge
 [github-upstream-ci-link]: https://github.com/NCAR/geocat-comp/actions/workflows/upstream-dev-ci.yml
 [codecov-badge]: https://img.shields.io/codecov/c/github/NCAR/geocat-comp.svg?logo=codecov&style=for-the-badge&color=brightgreen
 [codecov-link]: https://codecov.io/gh/NCAR/geocat-comp/coverage.yml

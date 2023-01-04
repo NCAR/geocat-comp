@@ -1,7 +1,7 @@
 import dask.array as da
 import metpy.calc as mpcalc
 import numpy as np
-import pint.quantity
+import pint
 import typing
 import warnings
 import xarray as xr
@@ -995,9 +995,15 @@ def relhum_water(temperature: typing.Union[np.ndarray, list, float],
     return relative_humidity
 
 
-def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
-                    dewpt: pint.Quantity) -> pint.Quantity:
-    """Calculate Showalter Index from pressure temperature and 850 hPa lcl.
+def showalter_index(
+        pressure: typing.Union[pint.Quantity, list, float, int],
+        temperature: typing.Union[pint.Quantity, list, float, int],
+        dewpt: typing.Union[pint.Quantity, list, float, int]) -> pint.Quantity:
+    r"""
+    .. deprecated:: 2022.12.0 ``showalter_index`` is deprecated. Use ``metpy.calc.showalter_index``
+        instead. See the MetPy `documentation <https://unidata.github.io/MetPy/latest/api/generated/metpy.calc.showalter_index.html>`_.
+
+    Calculate Showalter Index from pressure temperature and 850 hPa lcl.
     Showalter Index derived from `Gallway 1956 <https://journals.ametsoc.org/do
     wnloadpdf/journals/bams/37/10/1520-0477-37_10_528.xml>`__.
 
@@ -1008,21 +1014,37 @@ def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
 
     Parameters
     ----------
-    pressure : :class:`pint.Quantity`
+    pressure : :class:`pint.Quantity`, array-like, int, float
         Atmospheric pressure level(s) of interest, in order from highest
-        to lowest pressure
-    temperature : :class:`pint.Quantity`
-        Parcel temperature for corresponding pressure
-    dewpt : :class:`pint.Quantity`
-        Parcel dew point temperatures for corresponding pressure
+        to lowest pressure in hectoPascals
+    temperature : :class:`pint.Quantity`, array-like, int, float
+        Parcel temperature for corresponding pressure in degrees Celcius
+    dewpt : :class:`pint.Quantity`, array-like, int, float
+        Parcel dew point temperatures for corresponding pressure in degrees Celcius
 
     Returns
     -------
-    shox : :class:`pint.Quantity`
-       Showalter index in delta degrees celsius
+    shox : same type as input
+       Showalter index in delta degrees Celsius
+
+    Note
+    ----
+    ``pressure``, ``temperature``, and ``dewpt`` must all be ``pint.Quantity`` objects or all plain, unitless numbers.
     """
-    shox = mpcalc.showalter_index(pressure, temperature, dewpt)
-    return shox
+    warnings.warn(
+        'showalter_index is deprecated in favor of metpy.calc.showalter_index',
+        DeprecationWarning,
+        stacklevel=2)
+
+    if not (isinstance(pressure, pint.Quantity)\
+            and isinstance(temperature, pint.Quantity)\
+            and isinstance(dewpt, pint.Quantity)):
+        pressure = pressure * units.hPa
+        temperature = temperature * units.degC
+        dewpt = dewpt * units.degC
+        return mpcalc.showalter_index(pressure, temperature, dewpt).magnitude
+    else:
+        return mpcalc.showalter_index(pressure, temperature, dewpt)
 
 
 def max_daylight(
