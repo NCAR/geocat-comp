@@ -1,4 +1,4 @@
-| CI           | [![GitHub Workflow Status][github-ci-badge]][github-ci-link] [![GitHub Workflow Status][github-conda-build-badge]][github-conda-build-link] [![Code Coverage Status][codecov-badge]][codecov-link] |
+| CI           | [![GitHub Workflow Status][github-ci-badge]][github-ci-link] [![GitHub Workflow Status][github-upstream-ci-badge]][github-upstream-ci-link] [![Code Coverage Status][codecov-badge]][codecov-link] |
 | :----------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 | **Docs**     |                                                                    [![Documentation Status][rtd-badge]][rtd-link]                                                                    |
 | **Package**  |                                                         [![Conda][conda-badge]][conda-link] [![PyPI][pypi-badge]][pypi-link]                                                         |
@@ -65,13 +65,12 @@ If you use this software, please cite it as described at the [GeoCAT-comp - Cita
 https://geocat-comp.readthedocs.io/en/latest/citation.html) page.
 
 
-
-[github-ci-badge]: https://img.shields.io/github/workflow/status/NCAR/geocat-comp/CI?label=CI&logo=github&style=for-the-badge
-[github-conda-build-badge]: https://img.shields.io/github/workflow/status/NCAR/geocat-comp/build_test?label=conda-builds&logo=github&style=for-the-badge
-[github-ci-link]: https://github.com/NCAR/geocat-comp/actions?query=workflow%3ACI
-[github-conda-build-link]: https://github.com/NCAR/geocat-comp/actions?query=workflow%3Abuild_test
-[codecov-badge]: https://img.shields.io/codecov/c/github/NCAR/geocat-comp.svg?logo=codecov&style=for-the-badge
-[codecov-link]: https://codecov.io/gh/NCAR/geocat-comp
+[github-ci-badge]: https://img.shields.io/github/actions/workflow/status/NCAR/geocat-comp/ci.yml?branch=main&label=CI&style=for-the-badge
+[github-ci-link]: https://github.com/NCAR/geocat-comp/actions/workflows/ci.yml
+[github-upstream-ci-badge]: https://img.shields.io/github/actions/workflow/status/NCAR/geocat-comp/upstream-dev-ci.yml?branch=main&label=Upstream%20CI&style=for-the-badge
+[github-upstream-ci-link]: https://github.com/NCAR/geocat-comp/actions/workflows/upstream-dev-ci.yml
+[codecov-badge]: https://img.shields.io/codecov/c/github/NCAR/geocat-comp.svg?logo=codecov&style=for-the-badge&color=brightgreen
+[codecov-link]: https://codecov.io/gh/NCAR/geocat-comp/coverage.yml
 [rtd-badge]: https://img.shields.io/readthedocs/geocat-comp/latest.svg?style=for-the-badge
 [rtd-link]: https://geocat-comp.readthedocs.io/en/latest/?badge=latest
 [pypi-badge]: https://img.shields.io/pypi/v/geocat-comp?logo=pypi&style=for-the-badge

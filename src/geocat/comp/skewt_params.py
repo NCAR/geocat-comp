@@ -2,13 +2,19 @@ from itertools import chain
 
 import metpy.calc as mpcalc
 import numpy as np
-import pint.quantity
 from metpy.units import units
+import pint
+import warnings
+from .meteorology import showalter_index as showalter
 
 
 def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
                     dewpt: pint.Quantity) -> pint.Quantity:
-    """Calculate Showalter Index from pressure temperature and 850 hPa lcl.
+    r""".. deprecated:: 2022.10.0 The ``skewt_params`` module is deprecated.
+        Use ``metpy.calc.showalter_index`` instead. See the MetPy
+        `documentation <https://unidata.github.io/MetPy/latest/api/generated/metpy.calc.showalter_index.html>`_.
+
+    Calculate Showalter Index from pressure temperature and 850 hPa lcl.
     Showalter Index derived from `Gallway 1956 <https://journals.ametsoc.org/do
     wnloadpdf/journals/bams/37/10/1520-0477-37_10_528.xml>`__.
 
@@ -34,13 +40,22 @@ def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
     shox : :class:`pint.Quantity`
        Showalter index in delta degrees celsius
     """
-    shox = mpcalc.showalter_index(pressure, temperature, dewpt)
-    return shox
+    warnings.warn(
+        "The ``skewt_params`` module is deprecated, and "
+        "``showalter_index`` has been moved to the ``meteorology`` module for future "
+        "use. Use ``geocat.comp.showalter_index`` or ``geocat.comp.meteorology.showalter_index`` "
+        "for the same functionality.", DeprecationWarning)
+    return showalter(pressure, temperature, dewpt)
 
 
 def get_skewt_vars(p: pint.Quantity, tc: pint.Quantity, tdc: pint.Quantity,
                    pro: pint.Quantity) -> str:
-    """This function processes the dataset values and returns a string element
+    r""".. deprecated:: 2022.10.0 The ``skewt_params`` module is deprecated, and
+        ``get_skewt_vars`` has been moved to the
+        `geocat.viz <https://geocat-viz.readthedocs.io/en/latest/index.html>`__
+        package for future use.
+
+    This function processes the dataset values and returns a string element
     which can be used as a subtitle to replicate the styles of NCL Skew-T
     Diagrams.
 
@@ -75,6 +90,10 @@ def get_skewt_vars(p: pint.Quantity, tc: pint.Quantity, tdc: pint.Quantity,
     `skewT_PlotData <https://www.ncl.ucar.edu/Document/Functions/Skewt_func/skewT_PlotData.shtml>`__,
     `skewt_BackGround <https://www.ncl.ucar.edu/Document/Functions/Skewt_func/skewT_BackGround.shtml>`__
     """
+    warnings.warn(
+        "The ``skewt_params`` module is deprecated, and ``get_skewt_vars`` has "
+        "been moved to the geocat.viz package for future use.",
+        DeprecationWarning)
 
     # CAPE
     cape = mpcalc.cape_cin(p, tc, tdc, pro)
