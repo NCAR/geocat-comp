@@ -46,6 +46,7 @@ def get_fake_dataset(start_month, nmonths, nlats, nlons):
             "lat": lats,
             "lon": lons
         },
+        attrs={'Description': 'This is dummy data for testing.'}
     )
     return ds
 
@@ -76,8 +77,19 @@ def _get_dummy_data(start_date,
                         'time': time,
                         'lat': lats,
                         'lon': lons
-                    })
+                    },
+                    attrs={'Description': 'This is dummy data for testing.'})
     return ds
+
+@pytest.mark.parametrize("dataset", [dset_a, dset_b, dset_c["Tair"]])
+@pytest.mark.parametrize("freq", ["day", "month", "year", "season"])
+@pytest.mark.parametrize("keep_attrs", [None, True, False])
+def test_climatology_keep_attrs(dataset, freq, keep_attrs):
+    computed_dset = climatology(dataset, freq, keep_attrs=keep_attrs)
+    if keep_attrs or keep_attrs==None:
+        assert computed_dset.attrs == dataset.attrs
+    elif not keep_attrs:
+        assert computed_dset.attrs == {}
 
 
 def test_climatology_invalid_freq():
@@ -133,6 +145,13 @@ complex_dataset = get_fake_dataset(start_month="2001-01",
                                    nlats=10,
                                    nlons=10)
 
+@pytest.mark.parametrize("keep_attrs", [None, True, False])
+def test_month_to_season_keep_attrs(keep_attrs):
+    season_ds = month_to_season(ds1, 'JFM', keep_attrs=keep_attrs)
+    if keep_attrs or keep_attrs == None:
+        assert season_ds.attrs == ds1.attrs
+    elif not keep_attrs:
+        assert season_ds.attrs == {}
 
 @pytest.mark.parametrize("dataset, season, expected", [(ds1, "JFM", 2.0),
                                                        (ds1, "JJA", 7.0)])

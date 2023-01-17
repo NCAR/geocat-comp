@@ -229,7 +229,10 @@ def climatology(
     # TODO: Compute weighted climatologies when `time_bounds` are available
     clim = grouped.mean(time_coord_name, keep_attrs=keep_attrs)
     if time_invariant_vars:
-        return xr.concat([dset[time_invariant_vars], clim], dim=time_coord_name)
+        if keep_attrs == False:
+            return xr.concat([dset[time_invariant_vars], clim], combine_attrs='drop', dim=time_coord_name)
+        else:
+            return xr.concat([dset[time_invariant_vars], clim], dim=time_coord_name)
     else:
         return clim
 
