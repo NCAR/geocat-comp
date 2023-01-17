@@ -66,7 +66,7 @@ def _calculate_center_of_time_bounds(
         calendar: str,
         start: typing.Union[str, cftime.datetime],
         end: typing.Union[str, cftime.datetime],
-        keep_attrs: bool = False) -> typing.Union[xr.Dataset, xr.DataArray]:
+        keep_attrs: bool = None) -> typing.Union[xr.Dataset, xr.DataArray]:
     """Helper function to determine the time bounds based on the given dataset
     and frequency and then calculate the averages of them.
 
@@ -96,7 +96,8 @@ def _calculate_center_of_time_bounds(
 
     keep_attrs : bool, optional
         If True, attrs will be copied from the original object to the new one.
-        If False, the new object will be returned without attributes. Defaults to False.
+        If False, the new object will be returned without attributes.
+        Defaults to None which means the attrs will only be kept in unambiguous circumstances.
 
     Returns
     -------
@@ -134,7 +135,7 @@ def climatology(
         dset: typing.Union[xr.DataArray, xr.Dataset],
         freq: str,
         time_coord_name: str = None,
-        keep_attrs: bool = False) -> typing.Union[xr.DataArray, xr.Dataset]:
+        keep_attrs: bool = None) -> typing.Union[xr.DataArray, xr.Dataset]:
     """Compute climatologies for a specified time frequency.
 
     Parameters
@@ -156,7 +157,8 @@ def climatology(
 
     keep_attrs : bool, optional
         If True, attrs will be copied from the original object to the new one.
-        If False, the new object will be returned without attributes. Defaults to False.
+        If False, the new object will be returned without attributes.
+        Defaults to None which means the attrs will only be kept in unambiguous circumstances.
 
     Returns
     -------
@@ -327,7 +329,7 @@ def month_to_season(
         dset: typing.Union[xr.Dataset, xr.DataArray],
         season: str,
         time_coord_name: str = None,
-        keep_attrs: bool = False) -> typing.Union[xr.Dataset, xr.DataArray]:
+        keep_attrs: bool = None) -> typing.Union[xr.Dataset, xr.DataArray]:
     """Computes a user-specified three-month seasonal mean.
 
     This function takes an xarray dataset containing monthly data spanning years and
@@ -359,7 +361,8 @@ def month_to_season(
 
     keep_attrs : bool, optional
         If True, attrs will be copied from the original object to the new one.
-        If False, the new object will be returned without attributes. Defaults to False.
+        If False, the new object will be returned without attributes.
+        Defaults to None which means the attrs will only be kept in unambiguous circumstances.
 
     Returns
     -------
@@ -432,7 +435,7 @@ def calendar_average(
         dset: typing.Union[xr.DataArray, xr.Dataset],
         freq: str,
         time_dim: str = None,
-        keep_attrs: bool = False) -> typing.Union[xr.DataArray, xr.Dataset]:
+        keep_attrs: bool = None) -> typing.Union[xr.DataArray, xr.Dataset]:
     """This function divides the data into time periods (months, seasons, etc)
     and computes the average for the data in each one.
 
@@ -462,7 +465,8 @@ def calendar_average(
 
     keep_attrs : bool, optional
         If True, attrs will be copied from the original object to the new one.
-        If False, the new object will be returned without attributes. Defaults to False.
+        If False, the new object will be returned without attributes.
+        Defaults to None which means the attrs will only be kept in unambiguous circumstances.
 
     Examples
     --------
@@ -546,7 +550,7 @@ def climatology_average(
         dset: typing.Union[xr.DataArray, xr.Dataset],
         freq: str,
         time_dim: str = None,
-        keep_attrs: bool = False) -> typing.Union[xr.DataArray, xr.Dataset]:
+        keep_attrs: bool = None) -> typing.Union[xr.DataArray, xr.Dataset]:
     """This function calculates long term hourly, daily, monthly, or seasonal
     averages across all years in the given dataset.
 
@@ -570,7 +574,8 @@ def climatology_average(
 
     keep_attrs : bool, optional
         If True, attrs will be copied from the original object to the new one.
-        If False, the new object will be returned without attributes. Defaults to False.
+        If False, the new object will be returned without attributes.
+        Defaults to None which means the attrs will only be kept in unambiguous circumstances.
 
     Returns
     -------
