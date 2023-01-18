@@ -438,7 +438,7 @@ def calendar_average(
         dset: typing.Union[xr.DataArray, xr.Dataset],
         freq: str,
         time_dim: str = None,
-        keep_attrs: bool = None) -> typing.Union[xr.DataArray, xr.Dataset]:
+        keep_attrs: bool = 'default') -> typing.Union[xr.DataArray, xr.Dataset]:
     """This function divides the data into time periods (months, seasons, etc)
     and computes the average for the data in each one.
 
@@ -532,21 +532,24 @@ def calendar_average(
         # Compute the weights for the months in each season so that the
         # seasonal/yearly averages account for months being of different lengths
         month_length = dset[time_dim].dt.days_in_month.resample(
-            {time_dim: frequency})
+            {time_dim: frequency}, keep_attrs=keep_attrs)
         weights = month_length.map(
             lambda group: group / group.sum(keep_attrs=keep_attrs))
-        dset = (dset * weights).resample({
+        with xr.set_options(keep_attrs=keep_attrs):
+            dset_weighted = dset * weights
+        dset_weighted = (dset_weighted).resample({
             time_dim: frequency
         }).sum(keep_attrs=keep_attrs)
 
     # Center the time coordinate by inferring and then averaging the time bounds
-    dset = _calculate_center_of_time_bounds(dset,
+    dset_weighted = _calculate_center_of_time_bounds(dset_weighted,
                                             time_dim,
                                             frequency,
                                             calendar,
-                                            start=dset[time_dim].values[0],
-                                            end=dset[time_dim].values[-1])
-    return dset
+                                            start=dset_weighted[time_dim].values[0],
+                                            end=dset_weighted[time_dim].values[-1],
+                                            keep_attrs=keep_attrs)
+    return dset_weighted
 
 
 def climatology_average(

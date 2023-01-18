@@ -225,6 +225,19 @@ daily = _get_dummy_data('2020-01-01', '2021-12-31', 'D', 1, 1)
 monthly = _get_dummy_data('2020-01-01', '2021-12-01', 'MS', 1, 1)
 
 # Computational Tests for calendar_average()
+@pytest.mark.parametrize('dset, freq', [(minute, 'hour'),
+                                        (hourly, 'day'),
+                                        (daily, 'month'),
+                                        (monthly, 'season'),
+                                        (monthly, 'year')])
+@pytest.mark.parametrize('keep_attrs', [None, True, False])
+def test_calendar_average_keep_attrs(dset, freq, keep_attrs):
+    result = calendar_average(dset, freq, keep_attrs=keep_attrs)
+    if keep_attrs or keep_attrs == None:
+        assert result.attrs == dset.attrs
+    elif not keep_attrs:
+        assert result.attrs == {}
+
 hour_avg = np.arange(0.5, 35088.5, 2).reshape((365 + 366) * 24, 1, 1)
 hour_avg_time = xr.cftime_range('2020-01-01 00:30:00',
                                 '2021-12-31 23:30:00',
