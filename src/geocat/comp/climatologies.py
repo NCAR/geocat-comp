@@ -651,6 +651,9 @@ def climatology_average(
     calendar = _infer_calendar_name(dset[time_dim])
 
     if freq == 'season':
+        attrs = {}
+        if keep_attrs or keep_attrs is None:
+            attrs = dset.attrs
         if xr.infer_freq(dset[time_dim]) != 'MS':
             # Calculate monthly average before calculating seasonal climatologies
             dset = dset.resample({
@@ -664,6 +667,7 @@ def climatology_average(
         weights = month_length / month_length.sum(keep_attrs=keep_attrs)
         dset = (dset * weights).groupby(f"{time_dim}.season")
         dset = dset.sum(dim=time_dim, keep_attrs=keep_attrs)
+        return dset.assign_attrs(attrs)
     else:
         # Retrieve floor of median year
         median_yr = np.median(dset[time_dim].dt.year.values)
@@ -681,6 +685,7 @@ def climatology_average(
             frequency,
             calendar,
             start=f'{median_yr:.0f}-{start_time}',
-            end=f'{median_yr:.0f}-{end_time}')
+            end=f'{median_yr:.0f}-{end_time}',
+            keep_attrs=keep_attrs)
 
-    return dset
+        return dset

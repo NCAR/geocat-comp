@@ -362,6 +362,18 @@ def test_daily_monthly_to_yearly_calendar_average(dset, expected):
 
 
 # Computational Tests for climatology_average()
+@pytest.mark.parametrize('dset, freq', [(minute, 'hour'),
+                                        (hourly, 'day'),
+                                        (daily, 'month'),
+                                        (monthly, 'season')])
+@pytest.mark.parametrize('keep_attrs', [None, True, False])
+def test_climatology_average_keep_attrs(dset, freq, keep_attrs):
+    result = climatology_average(dset, freq, keep_attrs=keep_attrs)
+    if keep_attrs or keep_attrs == None:
+        assert result.attrs == dset.attrs
+    elif not keep_attrs:
+        assert result.attrs == {}
+
 hour_clim = np.concatenate([np.arange(8784.5, 11616.5, 2),
                             np.arange(2832.5, 2880.5, 2),
                             np.arange(11640.5, 26328.5, 2)])\
