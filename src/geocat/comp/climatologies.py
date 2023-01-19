@@ -230,9 +230,12 @@ def climatology(
     clim = grouped.mean(time_coord_name, keep_attrs=keep_attrs)
     if time_invariant_vars:
         if keep_attrs == False:
-            return xr.concat([dset[time_invariant_vars], clim], combine_attrs='drop', dim=time_coord_name)
+            return xr.concat([dset[time_invariant_vars], clim],
+                             combine_attrs='drop',
+                             dim=time_coord_name)
         else:
-            return xr.concat([dset[time_invariant_vars], clim], dim=time_coord_name)
+            return xr.concat([dset[time_invariant_vars], clim],
+                             dim=time_coord_name)
     else:
         return clim
 
@@ -537,16 +540,13 @@ def calendar_average(
         # seasonal/yearly averages account for months being of different lengths
         month_length = dset[time_dim].dt.days_in_month.resample(
             {time_dim: frequency})
-        weights = month_length.map(
-            lambda group: group / group.sum())
+        weights = month_length.map(lambda group: group / group.sum())
 
         dset_weighted = dset * weights
-        dset = (dset_weighted).resample({
-            time_dim: frequency
-        }).sum()
+        dset = (dset_weighted).resample({time_dim: frequency}).sum()
 
     # Center the time coordinate by inferring and then averaging the time bounds
-    dset= _calculate_center_of_time_bounds(dset,
+    dset = _calculate_center_of_time_bounds(dset,
                                             time_dim,
                                             frequency,
                                             calendar,
