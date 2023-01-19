@@ -527,29 +527,36 @@ def calendar_average(
 
     # Weight the data by the number of days in each month
     if freq in ['season', 'year']:
+        attrs = {}
+        if keep_attrs or keep_attrs is None:
+            attrs = dset.attrs
+
         key = freq
         format, frequency = freq_dict[key]
         # Compute the weights for the months in each season so that the
         # seasonal/yearly averages account for months being of different lengths
         month_length = dset[time_dim].dt.days_in_month.resample(
-            {time_dim: frequency}, keep_attrs=keep_attrs)
+            {time_dim: frequency})
         weights = month_length.map(
-            lambda group: group / group.sum(keep_attrs=keep_attrs))
-        with xr.set_options(keep_attrs=keep_attrs):
-            dset_weighted = dset * weights
-        dset_weighted = (dset_weighted).resample({
+            lambda group: group / group.sum())
+
+        dset_weighted = dset * weights
+        dset = (dset_weighted).resample({
             time_dim: frequency
-        }).sum(keep_attrs=keep_attrs)
+        }).sum()
 
     # Center the time coordinate by inferring and then averaging the time bounds
-    dset_weighted = _calculate_center_of_time_bounds(dset_weighted,
+    dset= _calculate_center_of_time_bounds(dset,
                                             time_dim,
                                             frequency,
                                             calendar,
-                                            start=dset_weighted[time_dim].values[0],
-                                            end=dset_weighted[time_dim].values[-1],
+                                            start=dset[time_dim].values[0],
+                                            end=dset[time_dim].values[-1],
                                             keep_attrs=keep_attrs)
-    return dset_weighted
+    if freq in ['season', 'year']:
+        return dset.assign_attrs(attrs)
+    else:
+        return dset
 
 
 def climatology_average(
