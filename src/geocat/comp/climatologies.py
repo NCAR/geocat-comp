@@ -60,12 +60,13 @@ def _setup_clim_anom_input(dset, freq, time_coord_name):
 
 
 def _calculate_center_of_time_bounds(
-    dset: typing.Union[xr.Dataset,
-                       xr.DataArray], time_dim: str, freq: str, calendar: str,
-    start: typing.Union[str,
-                        cftime.datetime], end: typing.Union[str,
-                                                            cftime.datetime]
-) -> typing.Union[xr.Dataset, xr.DataArray]:
+        dset: typing.Union[xr.Dataset, xr.DataArray],
+        time_dim: str,
+        freq: str,
+        calendar: str,
+        start: typing.Union[str, cftime.datetime],
+        end: typing.Union[str, cftime.datetime],
+        keep_attrs: bool = None) -> typing.Union[xr.Dataset, xr.DataArray]:
     """Helper function to determine the time bounds based on the given dataset
     and frequency and then calculate the averages of them.
 
@@ -93,6 +94,11 @@ def _calculate_center_of_time_bounds(
     end : str, :class:`cftime.datetime`
         The ending date of the data. The string representation must be in ISO format
 
+    keep_attrs : bool, optional
+        If True, attrs will be copied from the original object to the new one.
+        If False, the new object will be returned without attributes.
+        Defaults to None which means the attrs will only be kept in unambiguous circumstances.
+
     Returns
     -------
     computed_dset: :class:`xarray.Dataset`, :class:`xarray.DataArray`
@@ -107,7 +113,7 @@ def _calculate_center_of_time_bounds(
     time_bounds = time_bounds.append(time_bounds[-1:].shift(1, freq=freq))
     time =  xr.DataArray(np.vstack((time_bounds[:-1], time_bounds[1:])).T,
                          dims=[time_dim, 'nbd']) \
-        .mean(dim='nbd')
+        .mean(dim='nbd', keep_attrs=keep_attrs)
     return dset.assign_coords({time_dim: time})
 
 
@@ -128,7 +134,8 @@ def _infer_calendar_name(dates):
 def climatology(
         dset: typing.Union[xr.DataArray, xr.Dataset],
         freq: str,
-        time_coord_name: str = None) -> typing.Union[xr.DataArray, xr.Dataset]:
+        time_coord_name: str = None,
+        keep_attrs: bool = None) -> typing.Union[xr.DataArray, xr.Dataset]:
     """Compute climatologies for a specified time frequency.
 
     Parameters
@@ -147,6 +154,11 @@ def climatology(
     time_coord_name : str, optional
          Name for time coordinate to use. Defaults to ``None`` and infers the name
          from the data.
+
+    keep_attrs : bool, optional
+        If True, attrs will be copied from the original object to the new one.
+        If False, the new object will be returned without attributes.
+        Defaults to None which means the attrs will only be kept in unambiguous circumstances.
 
     Returns
     -------
@@ -215,9 +227,15 @@ def climatology(
 
     grouped = data.groupby(time_dot_freq)
     # TODO: Compute weighted climatologies when `time_bounds` are available
-    clim = grouped.mean(time_coord_name)
+    clim = grouped.mean(time_coord_name, keep_attrs=keep_attrs)
     if time_invariant_vars:
-        return xr.concat([dset[time_invariant_vars], clim], dim=time_coord_name)
+        if keep_attrs == False:
+            return xr.concat([dset[time_invariant_vars], clim],
+                             combine_attrs='drop',
+                             dim=time_coord_name)
+        else:
+            return xr.concat([dset[time_invariant_vars], clim],
+                             dim=time_coord_name)
     else:
         return clim
 
@@ -314,10 +332,10 @@ def anomaly(
 
 
 def month_to_season(
-    dset: typing.Union[xr.Dataset, xr.DataArray],
-    season: str,
-    time_coord_name: str = None,
-) -> typing.Union[xr.Dataset, xr.DataArray]:
+        dset: typing.Union[xr.Dataset, xr.DataArray],
+        season: str,
+        time_coord_name: str = None,
+        keep_attrs: bool = None) -> typing.Union[xr.Dataset, xr.DataArray]:
     """Computes a user-specified three-month seasonal mean.
 
     This function takes an xarray dataset containing monthly data spanning years and
@@ -346,6 +364,11 @@ def month_to_season(
     time_coord_name : str, optional
         Name for time coordinate to use. Defaults to ``None`` and infers the name
         from the data.
+
+    keep_attrs : bool, optional
+        If True, attrs will be copied from the original object to the new one.
+        If False, the new object will be returned without attributes.
+        Defaults to None which means the attrs will only be kept in unambiguous circumstances.
 
     Returns
     -------
@@ -406,7 +429,7 @@ def month_to_season(
     # Group the months into three and take the mean
     means = data_filter.resample({
         time_coord_name: quarter
-    }, loffset='MS').mean()
+    }, loffset='MS').mean(keep_attrs=keep_attrs)
 
     # The line above tries to take the mean for all quarters even if there is not data for some of them
     # Therefore, we must filter out the NaNs
@@ -417,7 +440,8 @@ def month_to_season(
 def calendar_average(
         dset: typing.Union[xr.DataArray, xr.Dataset],
         freq: str,
-        time_dim: str = None) -> typing.Union[xr.DataArray, xr.Dataset]:
+        time_dim: str = None,
+        keep_attrs: bool = 'default') -> typing.Union[xr.DataArray, xr.Dataset]:
     """This function divides the data into time periods (months, seasons, etc)
     and computes the average for the data in each one.
 
@@ -444,6 +468,11 @@ def calendar_average(
     -------
     computed_dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
         The computed data with the same type as `dset`
+
+    keep_attrs : bool, optional
+        If True, attrs will be copied from the original object to the new one.
+        If False, the new object will be returned without attributes.
+        Defaults to None which means the attrs will only be kept in unambiguous circumstances.
 
     Examples
     --------
@@ -495,10 +524,16 @@ def calendar_average(
     calendar = _infer_calendar_name(dset[time_dim])
 
     # Group data
-    dset = dset.resample({time_dim: frequency}).mean().dropna(time_dim)
+    dset = dset.resample({
+        time_dim: frequency
+    }).mean(keep_attrs=keep_attrs).dropna(time_dim)
 
     # Weight the data by the number of days in each month
     if freq in ['season', 'year']:
+        attrs = {}
+        if keep_attrs or keep_attrs is None:
+            attrs = dset.attrs
+
         key = freq
         format, frequency = freq_dict[key]
         # Compute the weights for the months in each season so that the
@@ -506,7 +541,9 @@ def calendar_average(
         month_length = dset[time_dim].dt.days_in_month.resample(
             {time_dim: frequency})
         weights = month_length.map(lambda group: group / group.sum())
-        dset = (dset * weights).resample({time_dim: frequency}).sum()
+
+        dset_weighted = dset * weights
+        dset = (dset_weighted).resample({time_dim: frequency}).sum()
 
     # Center the time coordinate by inferring and then averaging the time bounds
     dset = _calculate_center_of_time_bounds(dset,
@@ -514,14 +551,19 @@ def calendar_average(
                                             frequency,
                                             calendar,
                                             start=dset[time_dim].values[0],
-                                            end=dset[time_dim].values[-1])
-    return dset
+                                            end=dset[time_dim].values[-1],
+                                            keep_attrs=keep_attrs)
+    if freq in ['season', 'year']:
+        return dset.assign_attrs(attrs)
+    else:
+        return dset
 
 
 def climatology_average(
         dset: typing.Union[xr.DataArray, xr.Dataset],
         freq: str,
-        time_dim: str = None) -> typing.Union[xr.DataArray, xr.Dataset]:
+        time_dim: str = None,
+        keep_attrs: bool = None) -> typing.Union[xr.DataArray, xr.Dataset]:
     """This function calculates long term hourly, daily, monthly, or seasonal
     averages across all years in the given dataset.
 
@@ -543,6 +585,10 @@ def climatology_average(
         Name of the time coordinate for `xarray` objects. Defaults to ``None`` and
         infers the name from the data.
 
+    keep_attrs : bool, optional
+        If True, attrs will be copied from the original object to the new one.
+        If False, the new object will be returned without attributes.
+        Defaults to None which means the attrs will only be kept in unambiguous circumstances.
 
     Returns
     -------
@@ -605,24 +651,30 @@ def climatology_average(
     calendar = _infer_calendar_name(dset[time_dim])
 
     if freq == 'season':
+        attrs = {}
+        if keep_attrs or keep_attrs is None:
+            attrs = dset.attrs
         if xr.infer_freq(dset[time_dim]) != 'MS':
             # Calculate monthly average before calculating seasonal climatologies
-            dset = dset.resample({time_dim: frequency}).mean().dropna(time_dim)
+            dset = dset.resample({
+                time_dim: frequency
+            }).mean(keep_attrs=keep_attrs).dropna(time_dim)
 
         # Compute the weights for the months in each season so that the
         # seasonal averages account for months being of different lengths
         month_length = dset[time_dim].dt.days_in_month.groupby(
             f"{time_dim}.season")
-        weights = month_length / month_length.sum()
+        weights = month_length / month_length.sum(keep_attrs=keep_attrs)
         dset = (dset * weights).groupby(f"{time_dim}.season")
-        dset = dset.sum(dim=time_dim)
+        dset = dset.sum(dim=time_dim, keep_attrs=keep_attrs)
+        return dset.assign_attrs(attrs)
     else:
         # Retrieve floor of median year
         median_yr = np.median(dset[time_dim].dt.year.values)
 
         # Group data by format then calculate average of groups
-        dset = dset.groupby(dset[time_dim].dt.strftime(format)).mean().rename(
-            {'strftime': time_dim})
+        dset = dset.groupby(dset[time_dim].dt.strftime(format)).mean(
+            keep_attrs=keep_attrs).rename({'strftime': time_dim})
 
         # Center the time coordinate by inferring and then averaging the time bounds
         start_time = dset[time_dim].values[0]
@@ -633,6 +685,7 @@ def climatology_average(
             frequency,
             calendar,
             start=f'{median_yr:.0f}-{start_time}',
-            end=f'{median_yr:.0f}-{end_time}')
+            end=f'{median_yr:.0f}-{end_time}',
+            keep_attrs=keep_attrs)
 
-    return dset
+        return dset

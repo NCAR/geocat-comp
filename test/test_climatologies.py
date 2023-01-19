@@ -37,16 +37,15 @@ def get_fake_dataset(start_month, nmonths, nlats, nlons):
                                   axis=(1, 2))
     var_values = np.tile(month_values, (1, nlats, nlons))
 
-    ds = xr.Dataset(
-        data_vars={
-            "my_var": (("time", "lat", "lon"), var_values.astype("float32")),
-        },
-        coords={
-            "time": months,
-            "lat": lats,
-            "lon": lons
-        },
-    )
+    ds = xr.Dataset(data_vars={
+        "my_var": (("time", "lat", "lon"), var_values.astype("float32")),
+    },
+                    coords={
+                        "time": months,
+                        "lat": lats,
+                        "lon": lons
+                    },
+                    attrs={'Description': 'This is dummy data for testing.'})
     return ds
 
 
@@ -76,8 +75,20 @@ def _get_dummy_data(start_date,
                         'time': time,
                         'lat': lats,
                         'lon': lons
-                    })
+                    },
+                    attrs={'Description': 'This is dummy data for testing.'})
     return ds
+
+
+@pytest.mark.parametrize("dataset", [dset_a, dset_b, dset_c["Tair"]])
+@pytest.mark.parametrize("freq", ["day", "month", "year", "season"])
+@pytest.mark.parametrize("keep_attrs", [None, True, False])
+def test_climatology_keep_attrs(dataset, freq, keep_attrs):
+    computed_dset = climatology(dataset, freq, keep_attrs=keep_attrs)
+    if keep_attrs or keep_attrs == None:
+        assert computed_dset.attrs == dataset.attrs
+    elif not keep_attrs:
+        assert computed_dset.attrs == {}
 
 
 def test_climatology_invalid_freq():
@@ -132,6 +143,15 @@ complex_dataset = get_fake_dataset(start_month="2001-01",
                                    nmonths=12,
                                    nlats=10,
                                    nlons=10)
+
+
+@pytest.mark.parametrize("keep_attrs", [None, True, False])
+def test_month_to_season_keep_attrs(keep_attrs):
+    season_ds = month_to_season(ds1, 'JFM', keep_attrs=keep_attrs)
+    if keep_attrs or keep_attrs == None:
+        assert season_ds.attrs == ds1.attrs
+    elif not keep_attrs:
+        assert season_ds.attrs == {}
 
 
 @pytest.mark.parametrize("dataset, season, expected", [(ds1, "JFM", 2.0),
@@ -205,7 +225,19 @@ daily = _get_dummy_data('2020-01-01', '2021-12-31', 'D', 1, 1)
 
 monthly = _get_dummy_data('2020-01-01', '2021-12-01', 'MS', 1, 1)
 
+
 # Computational Tests for calendar_average()
+@pytest.mark.parametrize('dset, freq', [(daily, 'month'), (monthly, 'season'),
+                                        (monthly, 'year')])
+@pytest.mark.parametrize('keep_attrs', [None, True, False])
+def test_calendar_average_keep_attrs(dset, freq, keep_attrs):
+    result = calendar_average(dset, freq, keep_attrs=keep_attrs)
+    if keep_attrs or keep_attrs == None:
+        assert result.attrs == dset.attrs
+    elif not keep_attrs:
+        assert result.attrs == {}
+
+
 hour_avg = np.arange(0.5, 35088.5, 2).reshape((365 + 366) * 24, 1, 1)
 hour_avg_time = xr.cftime_range('2020-01-01 00:30:00',
                                 '2021-12-31 23:30:00',
@@ -330,6 +362,15 @@ def test_daily_monthly_to_yearly_calendar_average(dset, expected):
 
 
 # Computational Tests for climatology_average()
+@pytest.mark.parametrize('dset, freq', [(daily, 'month'), (monthly, 'season')])
+@pytest.mark.parametrize('keep_attrs', [None, True, False])
+def test_climatology_average_keep_attrs(dset, freq, keep_attrs):
+    result = climatology_average(dset, freq, keep_attrs=keep_attrs)
+    if keep_attrs or keep_attrs == None:
+        assert result.attrs == dset.attrs
+    elif not keep_attrs:
+        assert result.attrs == {}
+
 hour_clim = np.concatenate([np.arange(8784.5, 11616.5, 2),
                             np.arange(2832.5, 2880.5, 2),
                             np.arange(11640.5, 26328.5, 2)])\
