@@ -512,92 +512,91 @@ class test_climatology_average(unittest.TestCase):
 
     monthly = _get_dummy_data('2020-01-01', '2021-12-01', 'MS', 1, 1)
 
-    def test_30min_to_hourly_climatology_average(self):
-        hour_clim = np.concatenate([np.arange(8784.5, 11616.5, 2),
-                                    np.arange(2832.5, 2880.5, 2),
-                                    np.arange(11640.5, 26328.5, 2)]) \
-            .reshape(8784, 1, 1)
-        hour_clim_time = xr.cftime_range('2020-01-01 00:30:00',
-                                         '2020-12-31 23:30:00',
-                                         freq='H')
-        min_2_hourly_clim = xr.Dataset(
-            data_vars={'data': (('time', 'lat', 'lon'), hour_clim)},
-            coords={
-                'time': hour_clim_time,
-                'lat': [-90.0],
-                'lon': [-180.0]
-            })
+    hour_clim = np.concatenate([np.arange(8784.5, 11616.5, 2),
+                                np.arange(2832.5, 2880.5, 2),
+                                np.arange(11640.5, 26328.5, 2)]) \
+        .reshape(8784, 1, 1)
+    hour_clim_time = xr.cftime_range('2020-01-01 00:30:00',
+                                     '2020-12-31 23:30:00',
+                                     freq='H')
+    min_2_hourly_clim = xr.Dataset(
+        data_vars={'data': (('time', 'lat', 'lon'), hour_clim)},
+        coords={
+            'time': hour_clim_time,
+            'lat': [-90.0],
+            'lon': [-180.0]
+        })
+    day_clim = np.concatenate([np.arange(4403.5, 5819.5, 24),
+                               [1427.5],
+                               np.arange(5831.5, 13175.5, 24)]) \
+        .reshape(366, 1, 1)
+    day_clim_time = xr.cftime_range('2020-01-01 12:00:00',
+                                    '2020-12-31 12:00:00',
+                                    freq='24H')
 
+    hour_2_day_clim = xr.Dataset(
+        data_vars={'data': (('time', 'lat', 'lon'), day_clim)},
+        coords={
+            'time': day_clim_time,
+            'lat': [-90.0],
+            'lon': [-180.0]
+        })
+    month_clim = np.array([
+        198, 224.5438596, 257.5, 288, 318.5, 349, 379.5, 410.5, 441, 471.5,
+        502,
+        532.5
+    ]).reshape(12, 1, 1)
+    month_clim_time = xr.cftime_range('2020-01-01', '2021-01-01',
+                                      freq='MS')
+    month_clim_time = xr.DataArray(np.vstack(
+        (month_clim_time[:-1], month_clim_time[1:])).T,
+                                   dims=['time', 'nbd']).mean(dim='nbd')
+    day_2_month_clim = xr.Dataset(
+        data_vars={'data': (('time', 'lat', 'lon'), month_clim)},
+        coords={
+            'time': month_clim_time,
+            'lat': [-90.0],
+            'lon': [-180.0]
+        })
+
+    season_clim = np.array([320.9392265, 380, 288, 471.5]).reshape(4, 1, 1)
+    season_clim_time = ['DJF', 'JJA', 'MAM', 'SON']
+    day_2_season_clim = xr.Dataset(
+        data_vars={'data': (('season', 'lat', 'lon'), season_clim)},
+        coords={
+            'season': season_clim_time,
+            'lat': [-90.0],
+            'lon': [-180.0]
+        })
+
+    season_clim = np.array([10.04972376, 12.01086957, 9, 15]).reshape(4, 1,
+                                                                      1)
+    month_2_season_clim = xr.Dataset(
+        data_vars={'data': (('season', 'lat', 'lon'), season_clim)},
+        coords={
+            'season': season_clim_time,
+            'lat': [-90.0],
+            'lon': [-180.0]
+        })
+
+    def test_30min_to_hourly_climatology_average(self):
         result = climatology_average(self.minute, freq='hour')
-        xr.testing.assert_allclose(result, min_2_hourly_clim)
+        xr.testing.assert_allclose(result, self.min_2_hourly_clim)
 
     def test_hourly_to_daily_climatology_average(self):
-        day_clim = np.concatenate([np.arange(4403.5, 5819.5, 24),
-                                   [1427.5],
-                                   np.arange(5831.5, 13175.5, 24)]) \
-            .reshape(366, 1, 1)
-        day_clim_time = xr.cftime_range('2020-01-01 12:00:00',
-                                        '2020-12-31 12:00:00',
-                                        freq='24H')
-
-        hour_2_day_clim = xr.Dataset(
-            data_vars={'data': (('time', 'lat', 'lon'), day_clim)},
-            coords={
-                'time': day_clim_time,
-                'lat': [-90.0],
-                'lon': [-180.0]
-            })
-
         result = climatology_average(self.hourly, freq='day')
-        xr.testing.assert_equal(result, hour_2_day_clim)
+        xr.testing.assert_equal(result, self.hour_2_day_clim)
 
     def test_daily_to_monthly_climatology_average(self):
-        month_clim = np.array([
-            198, 224.5438596, 257.5, 288, 318.5, 349, 379.5, 410.5, 441, 471.5,
-            502,
-            532.5
-        ]).reshape(12, 1, 1)
-        month_clim_time = xr.cftime_range('2020-01-01', '2021-01-01',
-                                          freq='MS')
-        month_clim_time = xr.DataArray(np.vstack(
-            (month_clim_time[:-1], month_clim_time[1:])).T,
-                                       dims=['time', 'nbd']).mean(dim='nbd')
-        day_2_month_clim = xr.Dataset(
-            data_vars={'data': (('time', 'lat', 'lon'), month_clim)},
-            coords={
-                'time': month_clim_time,
-                'lat': [-90.0],
-                'lon': [-180.0]
-            })
         result = climatology_average(self.daily, freq='month')
-        xr.testing.assert_allclose(result, day_2_month_clim)
+        xr.testing.assert_allclose(result, self.day_2_month_clim)
 
     def test_daily_monthly_to_seasonal_climatology_average(self):
-        season_clim = np.array([320.9392265, 380, 288, 471.5]).reshape(4, 1, 1)
-        season_clim_time = ['DJF', 'JJA', 'MAM', 'SON']
-        day_2_season_clim = xr.Dataset(
-            data_vars={'data': (('season', 'lat', 'lon'), season_clim)},
-            coords={
-                'season': season_clim_time,
-                'lat': [-90.0],
-                'lon': [-180.0]
-            })
-
-        season_clim = np.array([10.04972376, 12.01086957, 9, 15]).reshape(4, 1,
-                                                                          1)
-        month_2_season_clim = xr.Dataset(
-            data_vars={'data': (('season', 'lat', 'lon'), season_clim)},
-            coords={
-                'season': season_clim_time,
-                'lat': [-90.0],
-                'lon': [-180.0]
-            })
-
         result = climatology_average(self.daily, freq='season')
-        xr.testing.assert_allclose(result, day_2_season_clim)
+        xr.testing.assert_allclose(result, self.day_2_season_clim)
 
         result = climatology_average(self.monthly, freq='season')
-        xr.testing.assert_allclose(result, month_2_season_clim)
+        xr.testing.assert_allclose(result, self.month_2_season_clim)
 
     def test_invalid_freq_climatology_average(self):
         with self.assertRaises(KeyError):
@@ -610,24 +609,7 @@ class test_climatology_average(unittest.TestCase):
         time_dim = 'my_time'
         custom_time = self.daily.rename({'time': time_dim})
 
-        month_clim = np.array([
-            198, 224.5438596, 257.5, 288, 318.5, 349, 379.5, 410.5, 441, 471.5,
-            502,
-            532.5
-        ]).reshape(12, 1, 1)
-        month_clim_time = xr.cftime_range('2020-01-01', '2021-01-01',
-                                          freq='MS')
-        month_clim_time = xr.DataArray(np.vstack(
-            (month_clim_time[:-1], month_clim_time[1:])).T,
-                                       dims=['time', 'nbd']).mean(dim='nbd')
-        day_2_month_clim = xr.Dataset(
-            data_vars={'data': (('time', 'lat', 'lon'), month_clim)},
-            coords={
-                'time': month_clim_time,
-                'lat': [-90.0],
-                'lon': [-180.0]
-            })
-        custom_time_expected = day_2_month_clim.rename({'time': time_dim})
+        custom_time_expected = self.day_2_month_clim.rename({'time': time_dim})
 
         result = climatology_average(custom_time, freq='month', time_dim=time_dim)
         xr.testing.assert_allclose(result, custom_time_expected)
