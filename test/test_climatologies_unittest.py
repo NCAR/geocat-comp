@@ -497,7 +497,7 @@ class test_calendar_average(unittest.TestCase):
     @parameterized.expand([('julian_calendar', julian_daily, julian_day_2_month_avg),
                           ('no_leap_calendar', noleap_daily, noleap_day_2_month_avg),
                           ('all_leap_calendar', all_leap_daily, all_leap_day_2_month_avg),
-                          ('day_3600_calendar', day_360_daily, day_360_leap_day_2_month_avg)])
+                          ('day_360_calendar', day_360_daily, day_360_leap_day_2_month_avg)])
     def test_non_standard_calendars_calendar_average(self, name, dset, expected):
         result = calendar_average(dset, freq='month')
         xr.testing.assert_equal(result, expected)
