@@ -579,6 +579,109 @@ class test_climatology_average(unittest.TestCase):
             'lon': [-180.0]
         })
 
+    julian_daily = _get_dummy_data('2020-01-01',
+                                   '2021-12-31',
+                                   'D',
+                                   1,
+                                   1,
+                                   calendar='julian')
+    noleap_daily = _get_dummy_data('2020-01-01',
+                                   '2021-12-31',
+                                   'D',
+                                   1,
+                                   1,
+                                   calendar='noleap')
+    all_leap_daily = _get_dummy_data('2020-01-01',
+                                     '2021-12-31',
+                                     'D',
+                                     1,
+                                     1,
+                                     calendar='all_leap')
+    day_360_daily = _get_dummy_data('2020-01-01',
+                                    '2021-12-30',
+                                    'D',
+                                    1,
+                                    1,
+                                    calendar='360_day')
+
+    # Daily -> Monthly Climatologies for Julian Calendar
+    julian_month_clim = np.array([198, 224.54385965, 257.5, 288, 318.5, 349,
+                                  379.5, 410.5, 441, 471.5, 502, 532.5]) \
+        .reshape(12, 1, 1)
+    julian_month_clim_time = xr.cftime_range('2020-01-01',
+                                             '2021-01-01',
+                                             freq='MS',
+                                             calendar='julian')
+    julian_month_clim_time = xr.DataArray(
+        np.vstack((julian_month_clim_time[:-1], julian_month_clim_time[1:])).T,
+        dims=['time', 'nbd']) \
+        .mean(dim='nbd')
+    julian_day_2_month_clim = xr.Dataset(
+        data_vars={'data': (('time', 'lat', 'lon'), julian_month_clim)},
+        coords={
+            'time': julian_month_clim_time,
+            'lat': [-90.0],
+            'lon': [-180.0]
+        })
+    # Daily -> Monthly Climatologies for NoLeap Calendar
+    noleap_month_clim = np.array([197.5, 227, 256.5, 287, 317.5, 348,
+                                  378.5, 409.5, 440, 470.5, 501, 531.5]) \
+        .reshape(12, 1, 1)
+    noleap_month_clim_time = xr.cftime_range('2020-01-01',
+                                             '2021-01-01',
+                                             freq='MS',
+                                             calendar='noleap')
+    noleap_month_clim_time = xr.DataArray(
+        np.vstack((noleap_month_clim_time[:-1], noleap_month_clim_time[1:])).T,
+        dims=['time', 'nbd']) \
+        .mean(dim='nbd')
+    noleap_day_2_month_clim = xr.Dataset(
+        data_vars={'data': (('time', 'lat', 'lon'), noleap_month_clim)},
+        coords={
+            'time': noleap_month_clim_time,
+            'lat': [-90.0],
+            'lon': [-180.0]
+        })
+    # Daily -> Monthly Climatologies for AllLeap Calendar
+    all_leap_month_clim = np.array([198, 228, 258, 288.5, 319, 349.5,
+                                    380, 411, 441.5, 472, 502.5, 533]) \
+        .reshape(12, 1, 1)
+    all_leap_month_clim_time = xr.cftime_range('2020-01-01',
+                                               '2021-01-01',
+                                               freq='MS',
+                                               calendar='all_leap')
+    all_leap_month_clim_time = xr.DataArray(np.vstack(
+        (all_leap_month_clim_time[:-1], all_leap_month_clim_time[1:])).T,
+                                            dims=['time', 'nbd']) \
+        .mean(dim='nbd')
+    all_leap_day_2_month_clim = xr.Dataset(
+        data_vars={'data': (('time', 'lat', 'lon'), all_leap_month_clim)},
+        coords={
+            'time': all_leap_month_clim_time,
+            'lat': [-90.0],
+            'lon': [-180.0]
+        })
+    # Daily -> Monthly Climatologies for 360 Day Calendar
+    day_360_leap_month_clim = np.arange(194.5, 554.5, 30).reshape(12, 1, 1)
+    day_360_leap_month_clim_time = xr.cftime_range('2020-01-01',
+                                                   '2021-01-01',
+                                                   freq='MS',
+                                                   calendar='360_day')
+    day_360_leap_month_clim_time = xr.DataArray(np.vstack((
+                                                          day_360_leap_month_clim_time[
+                                                          :-1],
+                                                          day_360_leap_month_clim_time[
+                                                          1:])).T,
+                                                dims=['time', 'nbd']) \
+        .mean(dim='nbd')
+    day_360_leap_day_2_month_clim = xr.Dataset(
+        data_vars={'data': (('time', 'lat', 'lon'), day_360_leap_month_clim)},
+        coords={
+            'time': day_360_leap_month_clim_time,
+            'lat': [-90.0],
+            'lon': [-180.0]
+        })
+
     def test_30min_to_hourly_climatology_average(self):
         result = climatology_average(self.minute, freq='hour')
         xr.testing.assert_allclose(result, self.min_2_hourly_clim)
@@ -591,19 +694,16 @@ class test_climatology_average(unittest.TestCase):
         result = climatology_average(self.daily, freq='month')
         xr.testing.assert_allclose(result, self.day_2_month_clim)
 
-    def test_daily_monthly_to_seasonal_climatology_average(self):
-        result = climatology_average(self.daily, freq='season')
-        xr.testing.assert_allclose(result, self.day_2_season_clim)
-
-        result = climatology_average(self.monthly, freq='season')
-        xr.testing.assert_allclose(result, self.month_2_season_clim)
-
-    def test_invalid_freq_climatology_average(self):
+    @parameterized.expand([('daily to seasonal', daily, day_2_season_clim),
+                           ('monthly to seasonal', monthly, month_2_season_clim)])
+    def test_daily_monthly_to_seasonal_climatology_average(self, name, dset, expected):
+        result = climatology_average(dset, freq='season')
+        xr.testing.assert_allclose(result, expected)
+    @parameterized.expand([('freq=TEST', 'TEST'),
+                           ('freq=None', None)])
+    def test_invalid_freq_climatology_average(self, name, freq):
         with self.assertRaises(KeyError):
-            climatology_average(self.monthly, freq='TEST')
-
-        with self.assertRaises(KeyError):
-            climatology_average(self.monthly, freq=None)
+            climatology_average(self.monthly, freq=freq)
 
     def test_custom_time_coord_climatology_average(self):
         time_dim = 'my_time'
@@ -613,3 +713,31 @@ class test_climatology_average(unittest.TestCase):
 
         result = climatology_average(custom_time, freq='month', time_dim=time_dim)
         xr.testing.assert_allclose(result, custom_time_expected)
+
+    def test_xr_DataArray_support_climatology_average(self):
+        array = self.daily['data']
+        array_expected = self.day_2_month_clim['data']
+
+        result = climatology_average(array, freq='month')
+        xr.testing.assert_allclose(result, array_expected)
+
+    def test_non_datetime_like_objects_climatology_average(self):
+        dset_encoded = xr.tutorial.open_dataset("air_temperature",
+                                                decode_cf=False)
+        with self.assertRaises(ValueError):
+            climatology_average(dset_encoded, 'month')
+
+    def test_non_uniformly_spaced_data_climatology_average(self):
+        time = pd.to_datetime(['2020-01-01', '2020-01-02', '2020-01-04'])
+        non_uniform = xr.Dataset(data_vars={'data': (('time'), np.arange(3))},
+                                 coords={'time': time})
+        with self.assertRaises(ValueError):
+            climatology_average(non_uniform, freq='day')
+
+    @parameterized.expand([('julian_calendar', julian_daily, julian_day_2_month_clim),
+                          ('no_leap_calendar', noleap_daily, noleap_day_2_month_clim),
+                          ('all_leap_calendar', all_leap_daily, all_leap_day_2_month_clim),
+                          ('day_360_calendar', day_360_daily, day_360_leap_day_2_month_clim)])
+    def test_non_standard_calendars_climatology_average(self, name, dset, expected):
+        result = climatology_average(dset, freq='month')
+        xr.testing.assert_allclose(result, expected)
