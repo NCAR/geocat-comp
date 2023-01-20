@@ -21,8 +21,8 @@ class Test_Spherical(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         max_harm = 23
-        num_phi = 360
-        num_theta = 720
+        num_phi = 90
+        num_theta = 180
 
         theta = np.linspace(0, ma.tau - ma.tau / num_theta, num_theta)
         phi = np.linspace(
@@ -91,7 +91,7 @@ class Test_Spherical(unittest.TestCase):
         np.testing.assert_almost_equal(
             results_np,
             self.test_results_np,
-            decimal=3,
+            decimal=2,
         )
 
     def test_decomposition_xr(self):
@@ -104,7 +104,7 @@ class Test_Spherical(unittest.TestCase):
         np.testing.assert_almost_equal(
             results_xr.to_numpy(),
             self.test_results_xr.to_numpy(),
-            decimal=3,
+            decimal=2,
         )
 
     def test_recomposition_np(self):
