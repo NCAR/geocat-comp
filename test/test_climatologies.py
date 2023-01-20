@@ -33,16 +33,15 @@ def get_fake_dataset(start_month, nmonths, nlats, nlons):
                                   axis=(1, 2))
     var_values = np.tile(month_values, (1, nlats, nlons))
 
-    ds = xr.Dataset(
-        data_vars={
-            "my_var": (("time", "lat", "lon"), var_values.astype("float32")),
-        },
-        coords={
-            "time": months,
-            "lat": lats,
-            "lon": lons
-        },
-    )
+    ds = xr.Dataset(data_vars={
+        "my_var": (("time", "lat", "lon"), var_values.astype("float32")),
+    },
+                    coords={
+                        "time": months,
+                        "lat": lats,
+                        "lon": lons
+                    },
+                    attrs={'Description': 'This is dummy data for testing.'})
     return ds
 
 
@@ -72,7 +71,8 @@ def _get_dummy_data(start_date,
                         'time': time,
                         'lat': lats,
                         'lon': lons
-                    })
+                    },
+                    attrs={'Description': 'This is dummy data for testing.'})
     return ds
 
 
@@ -84,6 +84,25 @@ class test_climatology(unittest.TestCase):
     dset_b = xr.tutorial.open_dataset("air_temperature")
     dset_c = dset_a.copy().rename({"time": "Times"})
     dset_encoded = xr.tutorial.open_dataset("rasm", decode_cf=False)
+
+    @parameterized.expand([('dset_a, day, None', dset_a, 'day', None),
+                           ('dset_a, month, None', dset_a, 'month', None),
+                           ('dset_a, season, None', dset_a, 'season', None),
+                           ('dset_a, year, None', dset_a, 'year', None),
+                           ('dset_a, day, True', dset_a, 'day', True),
+                           ('dset_a, month, True', dset_a, 'month', True),
+                           ('dset_a, season, True', dset_a, 'season', True),
+                           ('dset_a, year, True', dset_a, 'year', True),
+                           ('dset_a, day, False', dset_a, 'day', False),
+                           ('dset_a, month, False', dset_a, 'month', False),
+                           ('dset_a, season, False', dset_a, 'season', False),
+                           ('dset_a, year, False', dset_a, 'year', False)])
+    def test_climatology_keep_attrs(self, name, dataset, freq, keep_attrs):
+        computed_dset = climatology(dataset, freq, keep_attrs=keep_attrs)
+        if keep_attrs or keep_attrs == None:
+            assert computed_dset.attrs == dataset.attrs
+        elif not keep_attrs:
+            assert computed_dset.attrs == {}
 
     def test_climatology_invalid_freq(self):
         with self.assertRaises(ValueError):
@@ -168,6 +187,14 @@ class test_month_to_season(unittest.TestCase):
                                        nmonths=12,
                                        nlats=10,
                                        nlons=10)
+
+    @parameterized.expand([('None', None), ('True', True), ('False', False)])
+    def test_month_to_season_keep_attrs(self, name, keep_attrs):
+        season_ds = month_to_season(self.ds1, 'JFM', keep_attrs=keep_attrs)
+        if keep_attrs or keep_attrs == None:
+            assert season_ds.attrs == self.ds1.attrs
+        elif not keep_attrs:
+            assert season_ds.attrs == {}
 
     @parameterized.expand([('ds1, JFM', ds1, 'JFM', 2.0),
                            ('ds2, JAA', ds1, 'JJA', 7.0)])
@@ -388,6 +415,23 @@ class test_calendar_average(unittest.TestCase):
             'lat': [-90.0],
             'lon': [-180.0]
         })
+
+    @parameterized.expand([('daily, "month", None', daily, 'month', None),
+                           ('daily, "month", True', daily, 'month', True),
+                           ('daily, "month", False', daily, 'month', False),
+                           ('monthly, "season", None', monthly, 'season', None),
+                           ('monthly, "season", True', monthly, 'season', True),
+                           ('monthly, "season", False', monthly, 'season',
+                            False),
+                           ('monthly, "year", None', monthly, 'year', None),
+                           ('monthly, "year", True', monthly, 'year', True),
+                           ('monthly, "year", False', monthly, 'year', False)])
+    def test_calendar_average_keep_attrs(self, name, dset, freq, keep_attrs):
+        result = calendar_average(dset, freq, keep_attrs=keep_attrs)
+        if keep_attrs or keep_attrs == None:
+            assert result.attrs == dset.attrs
+        elif not keep_attrs:
+            assert result.attrs == {}
 
     def test_30min_to_hourly_calendar_average(self):
         hour_avg = np.arange(0.5, 35088.5, 2).reshape((365 + 366) * 24, 1, 1)
@@ -673,6 +717,20 @@ class test_climatology_average(unittest.TestCase):
             'lat': [-90.0],
             'lon': [-180.0]
         })
+
+    @parameterized.expand([('daily, "month", None', daily, 'month', None),
+                           ('daily, "month", True', daily, 'month', True),
+                           ('daily, "month", False', daily, 'month', False),
+                           ('monthly, "season", None', monthly, 'season', None),
+                           ('monthly, "season", True', monthly, 'season', True),
+                           ('monthly, "season", False', monthly, 'season',
+                            False)])
+    def test_climatology_average_keep_attrs(self, name, dset, freq, keep_attrs):
+        result = climatology_average(dset, freq, keep_attrs=keep_attrs)
+        if keep_attrs or keep_attrs == None:
+            assert result.attrs == dset.attrs
+        elif not keep_attrs:
+            assert result.attrs == {}
 
     def test_30min_to_hourly_climatology_average(self):
         result = climatology_average(self.minute, freq='hour')
