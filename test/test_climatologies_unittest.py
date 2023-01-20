@@ -13,6 +13,7 @@ if "--cov" in str(sys.argv):
 else:
     from geocat.comp import anomaly, climatology, month_to_season, calendar_average, climatology_average
 
+
 ##### Helper Functions #####
 def get_fake_dataset(start_month, nmonths, nlats, nlons):
     """Returns a very simple xarray dataset for testing.
@@ -44,6 +45,7 @@ def get_fake_dataset(start_month, nmonths, nlats, nlons):
     )
     return ds
 
+
 def _get_dummy_data(start_date,
                     end_date,
                     freq,
@@ -72,6 +74,8 @@ def _get_dummy_data(start_date,
                         'lon': lons
                     })
     return ds
+
+
 ##### End Helper Functions #####
 
 
@@ -165,11 +169,10 @@ class test_month_to_season(unittest.TestCase):
                                        nlats=10,
                                        nlons=10)
 
-    @parameterized.expand([
-        ('ds1, JFM', ds1, 'JFM', 2.0),
-        ('ds2, JAA', ds1, 'JJA', 7.0)
-    ])
-    def test_month_to_season_returns_middle_month_value(self, name, dset, season, expected):
+    @parameterized.expand([('ds1, JFM', ds1, 'JFM', 2.0),
+                           ('ds2, JAA', ds1, 'JJA', 7.0)])
+    def test_month_to_season_returns_middle_month_value(self, name, dset,
+                                                        season, expected):
         season_ds = month_to_season(dset, season)
         np.testing.assert_equal(season_ds["my_var"].data, expected)
 
@@ -185,20 +188,10 @@ class test_month_to_season(unittest.TestCase):
         season_ds = month_to_season(self.ds1, 'NDJ')
         np.testing.assert_equal(season_ds["my_var"].data, 11.5)
 
-    @parameterized.expand([
-        ('DJF', 'DJF'),
-        ('JFM', 'JFM'),
-        ('FMA', 'FMA'),
-        ('MAM', 'MAM'),
-        ('AMJ', 'AMJ'),
-        ('MJJ', 'MJJ'),
-        ('JJA', 'JJA'),
-        ('JAS', 'JAS'),
-        ('ASO', 'ASO'),
-        ('SON', 'SON'),
-        ('OND', 'OND'),
-        ('NDJ', 'NDJ')
-    ])
+    @parameterized.expand([('DJF', 'DJF'), ('JFM', 'JFM'), ('FMA', 'FMA'),
+                           ('MAM', 'MAM'), ('AMJ', 'AMJ'), ('MJJ', 'MJJ'),
+                           ('JJA', 'JJA'), ('JAS', 'JAS'), ('ASO', 'ASO'),
+                           ('SON', 'SON'), ('OND', 'OND'), ('NDJ', 'NDJ')])
     def test_month_to_season_returns_one_point_per_year(self, name, season):
         nyears_of_data = self.ds3.sizes["time"] / 12
         season_ds = month_to_season(self.ds3, season)
@@ -208,9 +201,11 @@ class test_month_to_season(unittest.TestCase):
         ('custom_time_dataset', custom_time_dataset, "my_time", "my_var", 2.0),
         ('ds4', ds4.isel(x=110, y=200), None, "Tair", [-10.56, -8.129, -7.125]),
     ])
-    def test_month_to_season_custom_time_coordinate(self, name, dataset, time_coordinate,
-                                                    var_name, expected):
-        season_ds = month_to_season(dataset, "JFM",
+    def test_month_to_season_custom_time_coordinate(self, name, dataset,
+                                                    time_coordinate, var_name,
+                                                    expected):
+        season_ds = month_to_season(dataset,
+                                    "JFM",
                                     time_coord_name=time_coordinate)
         np.testing.assert_almost_equal(season_ds[var_name].data,
                                        expected,
@@ -224,10 +219,8 @@ class test_calendar_average(unittest.TestCase):
     monthly = _get_dummy_data('2020-01-01', '2021-12-01', 'MS', 1, 1)
 
     month_avg = np.array([
-        15, 45, 75, 105.5, 136, 166.5, 197, 228, 258.5, 289, 319.5, 350,
-        381,
-        410.5,
-        440, 470.5, 501, 531.5, 562, 593, 623.5, 654, 684.5, 715
+        15, 45, 75, 105.5, 136, 166.5, 197, 228, 258.5, 289, 319.5, 350, 381,
+        410.5, 440, 470.5, 501, 531.5, 562, 593, 623.5, 654, 684.5, 715
     ]).reshape(24, 1, 1)
     month_avg_time = xr.cftime_range('2020-01-01', '2022-01-01', freq='MS')
     month_avg_time = xr.DataArray(
@@ -245,8 +238,7 @@ class test_calendar_average(unittest.TestCase):
     season_avg = np.array(
         [29.5, 105.5, 197.5, 289, 379.5, 470.5, 562.5, 654,
          715]).reshape(9, 1, 1)
-    season_avg_time = xr.cftime_range('2019-12-01', '2022-03-01',
-                                      freq='QS-DEC')
+    season_avg_time = xr.cftime_range('2019-12-01', '2022-03-01', freq='QS-DEC')
     season_avg_time = xr.DataArray(
         np.vstack((season_avg_time[:-1], season_avg_time[1:])).T,
         dims=['time', 'nbd']) \
@@ -322,8 +314,7 @@ class test_calendar_average(unittest.TestCase):
     # Daily -> Monthly Means for Julian Calendar
     julian_month_avg = np.array([
         15, 45, 75, 105.5, 136, 166.5, 197, 228, 258.5, 289, 319.5, 350, 381,
-        410.5,
-        440, 470.5, 501, 531.5, 562, 593, 623.5, 654, 684.5, 715
+        410.5, 440, 470.5, 501, 531.5, 562, 593, 623.5, 654, 684.5, 715
     ]).reshape(24, 1, 1)
     julian_month_avg_time = xr.cftime_range('2020-01-01',
                                             '2022-01-01',
@@ -363,8 +354,7 @@ class test_calendar_average(unittest.TestCase):
     # Daily -> Monthly Means for AllLeap Calendar
     all_leap_month_avg = np.array([
         15, 45, 75, 105.5, 136, 166.5, 197, 228, 258.5, 289, 319.5, 350, 381,
-        411,
-        441, 471.5, 502, 532.5, 563, 594, 624.5, 655, 685.5, 716
+        411, 441, 471.5, 502, 532.5, 563, 594, 624.5, 655, 685.5, 716
     ]).reshape(24, 1, 1)
     all_leap_month_avg_time = xr.cftime_range('2020-01-01',
                                               '2022-01-01',
@@ -433,9 +423,7 @@ class test_calendar_average(unittest.TestCase):
     def test_daily_to_monthly_calendar_average(self):
         month_avg = np.array([
             15, 45, 75, 105.5, 136, 166.5, 197, 228, 258.5, 289, 319.5, 350,
-            381,
-            410.5,
-            440, 470.5, 501, 531.5, 562, 593, 623.5, 654, 684.5, 715
+            381, 410.5, 440, 470.5, 501, 531.5, 562, 593, 623.5, 654, 684.5, 715
         ]).reshape(24, 1, 1)
         month_avg_time = xr.cftime_range('2020-01-01', '2022-01-01', freq='MS')
         month_avg_time = xr.DataArray(
@@ -450,30 +438,33 @@ class test_calendar_average(unittest.TestCase):
                 'lon': [-180.0]
             })
 
-
         result = calendar_average(self.daily, freq='month')
         xr.testing.assert_equal(result, day_2_month_avg)
 
     @parameterized.expand([('daily to seasonal', daily, day_2_season_avg),
-                           ('monthly to seasonal', monthly, month_2_season_avg)])
-    def test_daily_monthly_to_seasonal_calendar_average(self, name, dset, expected):
+                           ('monthly to seasonal', monthly, month_2_season_avg)]
+                         )
+    def test_daily_monthly_to_seasonal_calendar_average(self, name, dset,
+                                                        expected):
         result = calendar_average(dset, freq='season')
         xr.testing.assert_allclose(result, expected)
 
     @parameterized.expand([('daily to yearly', daily, day_2_year_avg),
                            ('monthly to yearly', monthly, month_2_year_avg)])
-    def test_daily_monthly_to_yearly_calendar_average(self, name, dset, expected):
+    def test_daily_monthly_to_yearly_calendar_average(self, name, dset,
+                                                      expected):
         result = calendar_average(dset, freq='year')
         xr.testing.assert_allclose(result, expected)
 
-    @parameterized.expand([('freq=TEST', 'TEST'),
-                           ('freq=None', None)])
+    @parameterized.expand([('freq=TEST', 'TEST'), ('freq=None', None)])
     def test_invalid_freq_calendar_average(self, name, freq):
         with self.assertRaises(KeyError):
             calendar_average(self.monthly, freq=freq)
 
     def test_custom_time_coord_calendar_average(self):
-        result = calendar_average(self.custom_time, freq='month', time_dim=self.time_dim)
+        result = calendar_average(self.custom_time,
+                                  freq='month',
+                                  time_dim=self.time_dim)
         xr.testing.assert_allclose(result, self.custom_time_expected)
 
     def test_xr_DataArray_support_calendar_average(self):
@@ -483,7 +474,8 @@ class test_calendar_average(unittest.TestCase):
         xr.testing.assert_equal(result, array_expected)
 
     def test_non_datetime_like_objects_calendar_average(self):
-        dset_encoded = xr.tutorial.open_dataset("air_temperature",                                                decode_cf=False)
+        dset_encoded = xr.tutorial.open_dataset("air_temperature",
+                                                decode_cf=False)
         with self.assertRaises(ValueError):
             calendar_average(dset_encoded, 'month')
 
@@ -494,17 +486,20 @@ class test_calendar_average(unittest.TestCase):
         with self.assertRaises(ValueError):
             calendar_average(non_uniform, freq='day')
 
-    @parameterized.expand([('julian_calendar', julian_daily, julian_day_2_month_avg),
-                          ('no_leap_calendar', noleap_daily, noleap_day_2_month_avg),
-                          ('all_leap_calendar', all_leap_daily, all_leap_day_2_month_avg),
-                          ('day_360_calendar', day_360_daily, day_360_leap_day_2_month_avg)])
-    def test_non_standard_calendars_calendar_average(self, name, dset, expected):
+    @parameterized.expand([
+        ('julian_calendar', julian_daily, julian_day_2_month_avg),
+        ('no_leap_calendar', noleap_daily, noleap_day_2_month_avg),
+        ('all_leap_calendar', all_leap_daily, all_leap_day_2_month_avg),
+        ('day_360_calendar', day_360_daily, day_360_leap_day_2_month_avg)
+    ])
+    def test_non_standard_calendars_calendar_average(self, name, dset,
+                                                     expected):
         result = calendar_average(dset, freq='month')
         xr.testing.assert_equal(result, expected)
 
+
 class test_climatology_average(unittest.TestCase):
-    minute = _get_dummy_data('2020-01-01', '2021-12-31 23:30:00', '30min', 1,
-                             1)
+    minute = _get_dummy_data('2020-01-01', '2021-12-31 23:30:00', '30min', 1, 1)
 
     hourly = _get_dummy_data('2020-01-01', '2021-12-31 23:00:00', 'H', 1, 1)
 
@@ -542,12 +537,10 @@ class test_climatology_average(unittest.TestCase):
             'lon': [-180.0]
         })
     month_clim = np.array([
-        198, 224.5438596, 257.5, 288, 318.5, 349, 379.5, 410.5, 441, 471.5,
-        502,
+        198, 224.5438596, 257.5, 288, 318.5, 349, 379.5, 410.5, 441, 471.5, 502,
         532.5
     ]).reshape(12, 1, 1)
-    month_clim_time = xr.cftime_range('2020-01-01', '2021-01-01',
-                                      freq='MS')
+    month_clim_time = xr.cftime_range('2020-01-01', '2021-01-01', freq='MS')
     month_clim_time = xr.DataArray(np.vstack(
         (month_clim_time[:-1], month_clim_time[1:])).T,
                                    dims=['time', 'nbd']).mean(dim='nbd')
@@ -569,8 +562,7 @@ class test_climatology_average(unittest.TestCase):
             'lon': [-180.0]
         })
 
-    season_clim = np.array([10.04972376, 12.01086957, 9, 15]).reshape(4, 1,
-                                                                      1)
+    season_clim = np.array([10.04972376, 12.01086957, 9, 15]).reshape(4, 1, 1)
     month_2_season_clim = xr.Dataset(
         data_vars={'data': (('season', 'lat', 'lon'), season_clim)},
         coords={
@@ -695,12 +687,14 @@ class test_climatology_average(unittest.TestCase):
         xr.testing.assert_allclose(result, self.day_2_month_clim)
 
     @parameterized.expand([('daily to seasonal', daily, day_2_season_clim),
-                           ('monthly to seasonal', monthly, month_2_season_clim)])
-    def test_daily_monthly_to_seasonal_climatology_average(self, name, dset, expected):
+                           ('monthly to seasonal', monthly, month_2_season_clim)
+                          ])
+    def test_daily_monthly_to_seasonal_climatology_average(
+            self, name, dset, expected):
         result = climatology_average(dset, freq='season')
         xr.testing.assert_allclose(result, expected)
-    @parameterized.expand([('freq=TEST', 'TEST'),
-                           ('freq=None', None)])
+
+    @parameterized.expand([('freq=TEST', 'TEST'), ('freq=None', None)])
     def test_invalid_freq_climatology_average(self, name, freq):
         with self.assertRaises(KeyError):
             climatology_average(self.monthly, freq=freq)
@@ -711,7 +705,9 @@ class test_climatology_average(unittest.TestCase):
 
         custom_time_expected = self.day_2_month_clim.rename({'time': time_dim})
 
-        result = climatology_average(custom_time, freq='month', time_dim=time_dim)
+        result = climatology_average(custom_time,
+                                     freq='month',
+                                     time_dim=time_dim)
         xr.testing.assert_allclose(result, custom_time_expected)
 
     def test_xr_DataArray_support_climatology_average(self):
@@ -734,10 +730,13 @@ class test_climatology_average(unittest.TestCase):
         with self.assertRaises(ValueError):
             climatology_average(non_uniform, freq='day')
 
-    @parameterized.expand([('julian_calendar', julian_daily, julian_day_2_month_clim),
-                          ('no_leap_calendar', noleap_daily, noleap_day_2_month_clim),
-                          ('all_leap_calendar', all_leap_daily, all_leap_day_2_month_clim),
-                          ('day_360_calendar', day_360_daily, day_360_leap_day_2_month_clim)])
-    def test_non_standard_calendars_climatology_average(self, name, dset, expected):
+    @parameterized.expand([
+        ('julian_calendar', julian_daily, julian_day_2_month_clim),
+        ('no_leap_calendar', noleap_daily, noleap_day_2_month_clim),
+        ('all_leap_calendar', all_leap_daily, all_leap_day_2_month_clim),
+        ('day_360_calendar', day_360_daily, day_360_leap_day_2_month_clim)
+    ])
+    def test_non_standard_calendars_climatology_average(self, name, dset,
+                                                        expected):
         result = climatology_average(dset, freq='month')
         xr.testing.assert_allclose(result, expected)
