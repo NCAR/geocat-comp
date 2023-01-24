@@ -231,6 +231,27 @@ class test_climate_anomaly(unittest.TestCase):
         anom = climate_anomaly(self.daily, 'month', time_dim='time')
         xarray.testing.assert_allclose(anom, expected_anom)
 
+    def test_yearly_anomaly(self):
+        expected_anom = np.concatenate([
+            np.arange(-182.5, 183),
+            np.arange(-182, 183)
+        ])
+        expected_anom = xr.Dataset(
+            data_vars={
+                'data': (('time', 'lat', 'lon'),
+                         np.reshape(expected_anom, (731, 1, 1)))
+            },
+            coords={
+                'time':
+                    xr.cftime_range(start='2020-01-01',
+                                    end='2021-12-31',
+                                    freq='D'),
+                'lat': [-90],
+                'lon': [-180]
+            },
+            attrs={'Description': 'This is dummy data for testing.'})
+        anom = climate_anomaly(self.daily, 'year', time_dim='time')
+        xarray.testing.assert_allclose(anom, expected_anom)
 
 class test_month_to_season(unittest.TestCase):
     ds1 = get_fake_dataset(start_month="2000-01", nmonths=12, nlats=1, nlons=1)
