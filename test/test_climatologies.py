@@ -156,6 +156,7 @@ class test_anomaly(unittest.TestCase):
         computed_dset = anomaly(dataset, freq)
         assert type(dataset) == type(computed_dset)
 
+
 class test_climate_anomaly(unittest.TestCase):
     minute = _get_dummy_data('2020-01-01', '2021-12-31 23:30:00', '30min', 1, 1)
     hourly = _get_dummy_data('2020-01-01', '2021-12-31 23:00:00', 'H', 1, 1)
@@ -163,14 +164,26 @@ class test_climate_anomaly(unittest.TestCase):
     monthly = _get_dummy_data('2020-01-01', '2021-12-01', 'MS', 1, 1)
 
     def test_daily_anomaly(self):
-        expected_anom = np.concatenate([np.full(59, -183), [0], np.full(306, -182.5), np.full(59, 183), np.full(306, 182.5)])
-        expected_anom = xr.Dataset(data_vars={'data': (('time', 'lat', 'lon'), np.reshape(expected_anom, (731, 1, 1)))},
-                                   coords={
-                                       'time': xr.cftime_range(start='2020-01-01', end='2021-12-31', freq='D'),
-                                       'lat': [-90],
-                                       'lon': [-180]
-                                   },
-                                   attrs={'Description': 'This is dummy data for testing.'})
+        expected_anom = np.concatenate([
+            np.full(59, -183), [0],
+            np.full(306, -182.5),
+            np.full(59, 183),
+            np.full(306, 182.5)
+        ])
+        expected_anom = xr.Dataset(
+            data_vars={
+                'data': (('time', 'lat', 'lon'),
+                         np.reshape(expected_anom, (731, 1, 1)))
+            },
+            coords={
+                'time':
+                    xr.cftime_range(start='2020-01-01',
+                                    end='2021-12-31',
+                                    freq='D'),
+                'lat': [-90],
+                'lon': [-180]
+            },
+            attrs={'Description': 'This is dummy data for testing.'})
         anom = climate_anomaly(self.daily, 'day', time_dim='time')
         xarray.testing.assert_allclose(anom, expected_anom)
 

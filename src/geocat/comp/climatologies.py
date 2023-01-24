@@ -329,6 +329,8 @@ def anomaly(
         return xr.merge([dset[time_invariant_vars], anom])
     else:
         return anom
+
+
 def climate_anomaly(
         dset: typing.Union[xr.DataArray, xr.Dataset],
         freq: str,
@@ -400,14 +402,15 @@ def climate_anomaly(
         )
     format, frequency = freq_dict[freq]
 
-    if freq=='year':
+    if freq == 'year':
         clim = calendar_average(dset, freq, time_dim, keep_attrs)
     else:
         clim = climatology_average(dset, freq, time_dim, keep_attrs)
 
-
-    anom =  dset.groupby(dset[time_dim].dt.strftime(format)) - clim.groupby(clim[time_dim].dt.strftime(format)).sum()
+    anom = dset.groupby(dset[time_dim].dt.strftime(format)) - clim.groupby(
+        clim[time_dim].dt.strftime(format)).sum()
     return anom.drop_vars('strftime')
+
 
 def month_to_season(
         dset: typing.Union[xr.Dataset, xr.DataArray],
