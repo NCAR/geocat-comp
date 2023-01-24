@@ -231,11 +231,46 @@ class test_climate_anomaly(unittest.TestCase):
         anom = climate_anomaly(self.daily, 'month', time_dim='time')
         xarray.testing.assert_allclose(anom, expected_anom)
 
-    def test_yearly_anomaly(self):
+    def test_seasonal_anomaly(self):
         expected_anom = np.concatenate([
-            np.arange(-182.5, 183),
-            np.arange(-182, 183)
+            np.arange(-320.9392265, -261),
+            np.arange(-228, -136),
+            np.arange(-228, -136),
+            np.arange(-227.5, -137),
+            np.arange(14.06077348, 104),
+            np.arange(137, 229),
+            np.arange(137, 229),
+            np.arange(137.5, 228),
+            np.arange(379.0607735, 410)
         ])
+        seasons = ['DJF'] * 60 + ['MAM'] * 92 + ['JJA'] * 92 + ['SON'] * 91 + [
+            'DFJ'
+        ] * 90 + ['MAM'] * 92 + ['JJA'] * 92 + ['SON'] * 91 + ['DJF'] * 31
+
+        expected_anom = xr.Dataset(
+            data_vars={
+                'data': (('time', 'lat', 'lon'),
+                         np.reshape(expected_anom, (731, 1, 1)))
+            },
+            coords={
+                'time':
+                    xr.cftime_range(start='2020-01-01',
+                                    end='2021-12-31',
+                                    freq='D'),
+                'lat': [-90],
+                'lon': [-180],
+                'season': ('time', seasons)
+            },
+            attrs={'Description': 'This is dummy data for testing.'})
+        anom = climate_anomaly(self.daily, 'season', time_dim='time')
+        print(anom.season, type(anom.season))
+        print(expected_anom.season, type(expected_anom.season))
+        xarray.testing.assert_allclose(anom, expected_anom)
+
+    def test_yearly_anomaly(self):
+        expected_anom = np.concatenate(
+            [np.arange(-182.5, 183),
+             np.arange(-182, 183)])
         expected_anom = xr.Dataset(
             data_vars={
                 'data': (('time', 'lat', 'lon'),
@@ -252,6 +287,7 @@ class test_climate_anomaly(unittest.TestCase):
             attrs={'Description': 'This is dummy data for testing.'})
         anom = climate_anomaly(self.daily, 'year', time_dim='time')
         xarray.testing.assert_allclose(anom, expected_anom)
+
 
 class test_month_to_season(unittest.TestCase):
     ds1 = get_fake_dataset(start_month="2000-01", nmonths=12, nlats=1, nlons=1)
