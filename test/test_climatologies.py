@@ -291,12 +291,9 @@ class test_climate_anomaly(unittest.TestCase):
                            ('daily, "season", False', daily, 'season', False),
                            ('daily, "year", None', daily, 'year', None),
                            ('daily, "year", True', daily, 'year', True),
-                           ('daily, "year", False', daily, 'year', False)
-                           ])
+                           ('daily, "year", False', daily, 'year', False)])
     def test_keep_attrs(self, name, dset, freq, keep_attrs):
-        result = climate_anomaly(dset,
-                                 freq,
-                                 keep_attrs=keep_attrs)
+        result = climate_anomaly(dset, freq, keep_attrs=keep_attrs)
         if keep_attrs or keep_attrs == None:
             assert result.attrs == dset.attrs
         elif not keep_attrs:
@@ -346,9 +343,10 @@ class test_climate_anomaly(unittest.TestCase):
             attrs={'Description': 'This is dummy data for testing.'})
 
         anom = climate_anomaly(self.daily.rename({'time': time_dim}),
-                                freq='month',
-                                time_dim=time_dim)
+                               freq='month',
+                               time_dim=time_dim)
         xr.testing.assert_allclose(anom, expected_anom)
+
 
 class test_month_to_season(unittest.TestCase):
     ds1 = get_fake_dataset(start_month="2000-01", nmonths=12, nlats=1, nlons=1)
