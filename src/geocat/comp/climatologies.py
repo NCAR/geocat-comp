@@ -352,7 +352,8 @@ def climate_anomaly(
         time_dim: str = None,
         keep_attrs: bool = 'default') -> typing.Union[xr.DataArray, xr.Dataset]:
     '''This function calculates climate anomalies by subtracting the long term mean
-    of each `freq` period (day, month, season, or year) from each datapoint.
+    of each ``freq`` period (day, month, season, or year) from each datapoint.
+
     Parameters
     ----------
     dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
@@ -360,9 +361,9 @@ def climate_anomaly(
         dimension.
 
     freq : str
-        Frequency alias. When the `year` allias is used, the yearly average is
+        Frequency alias. When the ``'year'`` allias is used, the yearly average is
         subtracted from each data point. Multiyear climatologies are not yet possible
-        with this function. Accepted alias:
+        with this function. Accepted aliases:
 
         - `day`: for anomalies from the daily climatology
         - `month`: for anomalies from the monthly climatology
@@ -370,7 +371,7 @@ def climate_anomaly(
         - `year`: for anomalies from the yearly average
 
     time_dim : str, optional
-        Name of the time coordinate for `xarray` objects. Defaults to ``None`` and
+        Name of the time coordinate for ``xarray`` objects. Defaults to ``None`` and
         infers the name from the data.
 
     keep_attrs : bool, optional
@@ -381,7 +382,7 @@ def climate_anomaly(
     Returns
     -------
     computed_dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
-        The computed data
+        The computed anomalies
 
     Note
     ----
