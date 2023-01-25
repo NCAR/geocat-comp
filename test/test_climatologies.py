@@ -244,7 +244,7 @@ class test_climate_anomaly(unittest.TestCase):
             np.arange(379.0607735, 410)
         ])
         seasons = ['DJF'] * 60 + ['MAM'] * 92 + ['JJA'] * 92 + ['SON'] * 91 + [
-            'DFJ'
+            'DJF'
         ] * 90 + ['MAM'] * 92 + ['JJA'] * 92 + ['SON'] * 91 + ['DJF'] * 31
 
         expected_anom = xr.Dataset(
@@ -263,8 +263,6 @@ class test_climate_anomaly(unittest.TestCase):
             },
             attrs={'Description': 'This is dummy data for testing.'})
         anom = climate_anomaly(self.daily, 'season', time_dim='time')
-        print(anom.season, type(anom.season))
-        print(expected_anom.season, type(expected_anom.season))
         xarray.testing.assert_allclose(anom, expected_anom)
 
     def test_yearly_anomaly(self):
