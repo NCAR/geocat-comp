@@ -136,7 +136,13 @@ def climatology(
         freq: str,
         time_coord_name: str = None,
         keep_attrs: bool = None) -> typing.Union[xr.DataArray, xr.Dataset]:
-    """Compute climatologies for a specified time frequency.
+    r""".. deprecated:: 2023.02.0 The ``climatology`` function is deprecated due to
+        inaccuracies in monthly climatology calculations and when using monthly
+        data to calculate seasonal or yearly climatologies. Use
+        `climatology_average <https://geocat-comp.readthedocs.io/en/stable/user_api/generated/geocat.comp.climatologies.climatology_average.html>`__
+        instead.
+
+    Compute climatologies for a specified time frequency.
 
     Parameters
     ----------
@@ -213,6 +219,9 @@ def climatology(
 
     See Also
     --------
+    Related GeoCAT Functions:
+    `climatology_average <https://geocat-comp.readthedocs.io/en/stable/user_api/generated/geocat.comp.climatologies.climatology_average.html>`__
+
     Related NCL Functions:
     `clmDayTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayTLL.shtml>`__,
     `clmDayTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayTLLL.shtml>`__,
@@ -244,7 +253,10 @@ def anomaly(
         dset: typing.Union[xr.DataArray, xr.Dataset],
         freq: str,
         time_coord_name: str = None) -> typing.Union[xr.DataArray, xr.Dataset]:
-    """Compute anomalies for a specified time frequency.
+    r""".. deprecated:: 2023.02.0 The ``anomaly`` function is deprecated due to
+        inaccuracies in monthly anomaly calculations and when using monthly
+        data to calculate seasonal or yearly anomalies. Use `climate_anomaly <https://geocat-comp.readthedocs.io/en/stable/user_api/generated/geocat.comp.climatologies.climate_anomaly.html>`__
+        instead.
 
     Parameters
     ----------
@@ -311,6 +323,9 @@ def anomaly(
 
     See Also
     --------
+    Related GeoCAT Functions:
+    `climate_anomaly <https://geocat-comp.readthedocs.io/en/stable/user_api/generated/geocat.comp.climatologies.climate_anomaly.html>`__
+
     Related NCL Functions:
     `clmDayAnomTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcDayAnomTLL.shtml>`__,
     `clmDayAnomTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomTLLL.shtml>`__,
