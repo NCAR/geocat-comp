@@ -181,7 +181,7 @@ class test_climate_anomaly(unittest.TestCase):
                 'lon': [-180]
             },
             attrs={'Description': 'This is dummy data for testing.'})
-        anom = climate_anomaly(self.daily, 'day', time_dim='time')
+        anom = climate_anomaly(self.daily, 'day')
         xarray.testing.assert_allclose(anom, expected_anom)
 
     def test_monthly_anomaly(self):
@@ -225,7 +225,7 @@ class test_climate_anomaly(unittest.TestCase):
                 'lon': [-180]
             },
             attrs={'Description': 'This is dummy data for testing.'})
-        anom = climate_anomaly(self.daily, 'month', time_dim='time')
+        anom = climate_anomaly(self.daily, 'month')
         xarray.testing.assert_allclose(anom, expected_anom)
 
     def test_seasonal_anomaly(self):
@@ -259,7 +259,7 @@ class test_climate_anomaly(unittest.TestCase):
                 'season': ('time', seasons)
             },
             attrs={'Description': 'This is dummy data for testing.'})
-        anom = climate_anomaly(self.daily, 'season', time_dim='time')
+        anom = climate_anomaly(self.daily, 'season')
         xarray.testing.assert_allclose(anom, expected_anom)
 
     def test_yearly_anomaly(self):
@@ -280,7 +280,7 @@ class test_climate_anomaly(unittest.TestCase):
                 'lon': [-180]
             },
             attrs={'Description': 'This is dummy data for testing.'})
-        anom = climate_anomaly(self.daily, 'year', time_dim='time')
+        anom = climate_anomaly(self.daily, 'year')
         xarray.testing.assert_allclose(anom, expected_anom)
 
     @parameterized.expand([('daily, "month", None', daily, 'month', None),
@@ -296,13 +296,59 @@ class test_climate_anomaly(unittest.TestCase):
     def test_keep_attrs(self, name, dset, freq, keep_attrs):
         result = climate_anomaly(dset,
                                  freq,
-                                 time_dim='time',
                                  keep_attrs=keep_attrs)
         if keep_attrs or keep_attrs == None:
             assert result.attrs == dset.attrs
         elif not keep_attrs:
             assert result.attrs == {}
 
+    def test_custom_time_dim(self):
+        time_dim = 'my_time'
+        expected_anom = np.concatenate([
+            np.arange(-198, -167),
+            np.arange(-193.54386, -165),
+            np.arange(-197.5, -166.5),
+            np.arange(-197, -167),
+            np.arange(-197.5, -166.5),
+            np.arange(-197, -167),
+            np.arange(-197.5, -166.5),
+            np.arange(-197.5, -166.5),
+            np.arange(-197, -167),
+            np.arange(-197.5, -166.5),
+            np.arange(-197, -167),
+            np.arange(-197.5, -166.5),
+            np.arange(168, 199),
+            np.arange(172.4561404, 200),
+            np.arange(167.5, 198.5),
+            np.arange(168, 198),
+            np.arange(167.5, 198.5),
+            np.arange(168, 198),
+            np.arange(167.5, 198.5),
+            np.arange(167.5, 198.5),
+            np.arange(168, 198),
+            np.arange(167.5, 198.5),
+            np.arange(168, 198),
+            np.arange(167.5, 198.5),
+        ])
+        expected_anom = xr.Dataset(
+            data_vars={
+                'data': ((time_dim, 'lat', 'lon'),
+                         np.reshape(expected_anom, (731, 1, 1)))
+            },
+            coords={
+                time_dim:
+                    xr.cftime_range(start='2020-01-01',
+                                    end='2021-12-31',
+                                    freq='D'),
+                'lat': [-90],
+                'lon': [-180]
+            },
+            attrs={'Description': 'This is dummy data for testing.'})
+
+        anom = climate_anomaly(self.daily.rename({'time': time_dim}),
+                                freq='month',
+                                time_dim=time_dim)
+        xr.testing.assert_allclose(anom, expected_anom)
 
 class test_month_to_season(unittest.TestCase):
     ds1 = get_fake_dataset(start_month="2000-01", nmonths=12, nlats=1, nlons=1)

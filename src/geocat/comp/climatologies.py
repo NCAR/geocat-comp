@@ -404,6 +404,7 @@ def climate_anomaly(
     `calcMonAnomTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomTLL.shtml>`__
     '''
     # TODO add support for user specified seasons
+    time_dim = _get_time_coordinate_info(dset, time_dim)
     attrs = {}
     if keep_attrs or keep_attrs is None:
         attrs = dset.attrs
