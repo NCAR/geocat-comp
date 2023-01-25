@@ -404,6 +404,10 @@ def climate_anomaly(
     `calcMonAnomTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomTLL.shtml>`__
     '''
     # TODO add support for user specified seasons
+    attrs = {}
+    if keep_attrs or keep_attrs is None:
+        attrs = dset.attrs
+
     freq_dict = {
         'day': ('%m-%d', 'D'),
         'month': ('%m', 'MS'),
@@ -423,11 +427,11 @@ def climate_anomaly(
         clim = climatology_average(dset, freq, time_dim, keep_attrs)
     if freq == 'season':
         anom = dset.groupby(f"{time_dim}.season") - clim
-        return anom
+        return anom.assign_attrs(attrs)
     else:
         anom = dset.groupby(dset[time_dim].dt.strftime(format)) - clim.groupby(
             clim[time_dim].dt.strftime(format)).sum()
-        return anom.drop_vars('strftime')
+        return anom.drop_vars('strftime').assign_attrs(attrs)
 
 
 def month_to_season(

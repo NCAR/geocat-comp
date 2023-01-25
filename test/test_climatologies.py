@@ -158,10 +158,7 @@ class test_anomaly(unittest.TestCase):
 
 
 class test_climate_anomaly(unittest.TestCase):
-    minute = _get_dummy_data('2020-01-01', '2021-12-31 23:30:00', '30min', 1, 1)
-    hourly = _get_dummy_data('2020-01-01', '2021-12-31 23:00:00', 'H', 1, 1)
     daily = _get_dummy_data('2020-01-01', '2021-12-31', 'D', 1, 1)
-    monthly = _get_dummy_data('2020-01-01', '2021-12-01', 'MS', 1, 1)
 
     def test_daily_anomaly(self):
         expected_anom = np.concatenate([
@@ -285,6 +282,26 @@ class test_climate_anomaly(unittest.TestCase):
             attrs={'Description': 'This is dummy data for testing.'})
         anom = climate_anomaly(self.daily, 'year', time_dim='time')
         xarray.testing.assert_allclose(anom, expected_anom)
+
+    @parameterized.expand([('daily, "month", None', daily, 'month', None),
+                           ('daily, "month", True', daily, 'month', True),
+                           ('daily, "month", False', daily, 'month', False),
+                           ('daily, "season", None', daily, 'season', None),
+                           ('daily, "season", True', daily, 'season', True),
+                           ('daily, "season", False', daily, 'season', False),
+                           ('daily, "year", None', daily, 'year', None),
+                           ('daily, "year", True', daily, 'year', True),
+                           ('daily, "year", False', daily, 'year', False)
+                           ])
+    def test__keep_attrs(self, name, dset, freq, keep_attrs):
+        result = climate_anomaly(dset,
+                                 freq,
+                                 time_dim='time',
+                                 keep_attrs=keep_attrs)
+        if keep_attrs or keep_attrs == None:
+            assert result.attrs == dset.attrs
+        elif not keep_attrs:
+            assert result.attrs == {}
 
 
 class test_month_to_season(unittest.TestCase):
