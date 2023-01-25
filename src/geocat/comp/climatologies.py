@@ -351,8 +351,9 @@ def climate_anomaly(
         freq: str,
         time_dim: str = None,
         keep_attrs: bool = 'default') -> typing.Union[xr.DataArray, xr.Dataset]:
-    '''This function calculates climate anomalies by subtracting the long term mean
-    of each ``freq`` period (day, month, season, or year) from each datapoint.
+    """This function calculates climate anomalies by subtracting the long term
+    mean of each ``freq`` period (day, month, season, or year) from each
+    datapoint.
 
     Parameters
     ----------
@@ -403,7 +404,7 @@ def climate_anomaly(
     `calcMonAnomLLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomLLLT.shtml>`__
     `calcMonAnomLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomLLT.shtml>`__
     `calcMonAnomTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomTLL.shtml>`__
-    '''
+    """
     # TODO add support for user specified seasons
     time_dim = _get_time_coordinate_info(dset, time_dim)
     attrs = {}
