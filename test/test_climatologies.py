@@ -293,7 +293,7 @@ class test_climate_anomaly(unittest.TestCase):
                            ('daily, "year", True', daily, 'year', True),
                            ('daily, "year", False', daily, 'year', False)
                            ])
-    def test__keep_attrs(self, name, dset, freq, keep_attrs):
+    def test_keep_attrs(self, name, dset, freq, keep_attrs):
         result = climate_anomaly(dset,
                                  freq,
                                  time_dim='time',
