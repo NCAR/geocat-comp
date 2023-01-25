@@ -338,7 +338,7 @@ def anomaly(
     data, time_invariant_vars, time_coord_name, time_dot_freq = _setup_clim_anom_input(
         dset, freq, time_coord_name)
 
-    clim = climatology_average(data, freq, time_coord_name)
+    clim = climatology(data, freq, time_coord_name)
     anom = data.groupby(time_dot_freq) - clim.groupby(time_dot_freq).sum()
     if time_invariant_vars:
         return xr.merge([dset[time_invariant_vars], anom])
