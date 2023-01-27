@@ -93,7 +93,7 @@ def calc_deltapressure(pressure_lev, surface_pressure):
         for i in range(shape[0]):
             delta_pressure_1D = _calc_deltapressure_1D(pressure_lev, surface_pressure[i])
             delta_pressure[i] = delta_pressure_1D
-    elif dims ==2:
+    elif dims == 2:
         for i in range(shape[0]):
             for j in range(shape[1]):
                 delta_pressure_1D = _calc_deltapressure_1D(pressure_lev, surface_pressure[i][j])
