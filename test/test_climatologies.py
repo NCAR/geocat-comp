@@ -3,15 +3,16 @@ import unittest
 import cftime
 import numpy as np
 import pandas as pd
+import xarray.testing
 from parameterized import parameterized
 import xarray as xr
 
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
 if "--cov" in str(sys.argv):
-    from src.geocat.comp import anomaly, climatology, month_to_season, calendar_average, climatology_average
+    from src.geocat.comp import climate_anomaly, anomaly, climatology, month_to_season, calendar_average, climatology_average
 else:
-    from geocat.comp import anomaly, climatology, month_to_season, calendar_average, climatology_average
+    from geocat.comp import climate_anomaly, anomaly, climatology, month_to_season, calendar_average, climatology_average
 
 
 ##### Helper Functions #####
@@ -154,6 +155,197 @@ class test_anomaly(unittest.TestCase):
     def test_anomaly_setup(self, name, dataset, freq):
         computed_dset = anomaly(dataset, freq)
         assert type(dataset) == type(computed_dset)
+
+
+class test_climate_anomaly(unittest.TestCase):
+    daily = _get_dummy_data('2020-01-01', '2021-12-31', 'D', 1, 1)
+
+    def test_daily_anomaly(self):
+        expected_anom = np.concatenate([
+            np.full(59, -183), [0],
+            np.full(306, -182.5),
+            np.full(59, 183),
+            np.full(306, 182.5)
+        ])
+        expected_anom = xr.Dataset(
+            data_vars={
+                'data': (('time', 'lat', 'lon'),
+                         np.reshape(expected_anom, (731, 1, 1)))
+            },
+            coords={
+                'time':
+                    xr.cftime_range(start='2020-01-01',
+                                    end='2021-12-31',
+                                    freq='D'),
+                'lat': [-90],
+                'lon': [-180]
+            },
+            attrs={'Description': 'This is dummy data for testing.'})
+        anom = climate_anomaly(self.daily, 'day')
+        xarray.testing.assert_allclose(anom, expected_anom)
+
+    def test_monthly_anomaly(self):
+        expected_anom = np.concatenate([
+            np.arange(-198, -167),
+            np.arange(-193.54386, -165),
+            np.arange(-197.5, -166.5),
+            np.arange(-197, -167),
+            np.arange(-197.5, -166.5),
+            np.arange(-197, -167),
+            np.arange(-197.5, -166.5),
+            np.arange(-197.5, -166.5),
+            np.arange(-197, -167),
+            np.arange(-197.5, -166.5),
+            np.arange(-197, -167),
+            np.arange(-197.5, -166.5),
+            np.arange(168, 199),
+            np.arange(172.4561404, 200),
+            np.arange(167.5, 198.5),
+            np.arange(168, 198),
+            np.arange(167.5, 198.5),
+            np.arange(168, 198),
+            np.arange(167.5, 198.5),
+            np.arange(167.5, 198.5),
+            np.arange(168, 198),
+            np.arange(167.5, 198.5),
+            np.arange(168, 198),
+            np.arange(167.5, 198.5),
+        ])
+        expected_anom = xr.Dataset(
+            data_vars={
+                'data': (('time', 'lat', 'lon'),
+                         np.reshape(expected_anom, (731, 1, 1)))
+            },
+            coords={
+                'time':
+                    xr.cftime_range(start='2020-01-01',
+                                    end='2021-12-31',
+                                    freq='D'),
+                'lat': [-90],
+                'lon': [-180]
+            },
+            attrs={'Description': 'This is dummy data for testing.'})
+        anom = climate_anomaly(self.daily, 'month')
+        xarray.testing.assert_allclose(anom, expected_anom)
+
+    def test_seasonal_anomaly(self):
+        expected_anom = np.concatenate([
+            np.arange(-320.9392265, -261),
+            np.arange(-228, -136),
+            np.arange(-228, -136),
+            np.arange(-227.5, -137),
+            np.arange(14.06077348, 104),
+            np.arange(137, 229),
+            np.arange(137, 229),
+            np.arange(137.5, 228),
+            np.arange(379.0607735, 410)
+        ])
+        seasons = ['DJF'] * 60 + ['MAM'] * 92 + ['JJA'] * 92 + ['SON'] * 91 + [
+            'DJF'
+        ] * 90 + ['MAM'] * 92 + ['JJA'] * 92 + ['SON'] * 91 + ['DJF'] * 31
+
+        expected_anom = xr.Dataset(
+            data_vars={
+                'data': (('time', 'lat', 'lon'),
+                         np.reshape(expected_anom, (731, 1, 1)))
+            },
+            coords={
+                'time':
+                    xr.cftime_range(start='2020-01-01',
+                                    end='2021-12-31',
+                                    freq='D'),
+                'lat': [-90],
+                'lon': [-180],
+                'season': ('time', seasons)
+            },
+            attrs={'Description': 'This is dummy data for testing.'})
+        anom = climate_anomaly(self.daily, 'season')
+        xarray.testing.assert_allclose(anom, expected_anom)
+
+    def test_yearly_anomaly(self):
+        expected_anom = np.concatenate(
+            [np.arange(-182.5, 183),
+             np.arange(-182, 183)])
+        expected_anom = xr.Dataset(
+            data_vars={
+                'data': (('time', 'lat', 'lon'),
+                         np.reshape(expected_anom, (731, 1, 1)))
+            },
+            coords={
+                'time':
+                    xr.cftime_range(start='2020-01-01',
+                                    end='2021-12-31',
+                                    freq='D'),
+                'lat': [-90],
+                'lon': [-180]
+            },
+            attrs={'Description': 'This is dummy data for testing.'})
+        anom = climate_anomaly(self.daily, 'year')
+        xarray.testing.assert_allclose(anom, expected_anom)
+
+    @parameterized.expand([('daily, "month", None', daily, 'month', None),
+                           ('daily, "month", True', daily, 'month', True),
+                           ('daily, "month", False', daily, 'month', False),
+                           ('daily, "season", None', daily, 'season', None),
+                           ('daily, "season", True', daily, 'season', True),
+                           ('daily, "season", False', daily, 'season', False),
+                           ('daily, "year", None', daily, 'year', None),
+                           ('daily, "year", True', daily, 'year', True),
+                           ('daily, "year", False', daily, 'year', False)])
+    def test_keep_attrs(self, name, dset, freq, keep_attrs):
+        result = climate_anomaly(dset, freq, keep_attrs=keep_attrs)
+        if keep_attrs or keep_attrs == None:
+            assert result.attrs == dset.attrs
+        elif not keep_attrs:
+            assert result.attrs == {}
+
+    def test_custom_time_dim(self):
+        time_dim = 'my_time'
+        expected_anom = np.concatenate([
+            np.arange(-198, -167),
+            np.arange(-193.54386, -165),
+            np.arange(-197.5, -166.5),
+            np.arange(-197, -167),
+            np.arange(-197.5, -166.5),
+            np.arange(-197, -167),
+            np.arange(-197.5, -166.5),
+            np.arange(-197.5, -166.5),
+            np.arange(-197, -167),
+            np.arange(-197.5, -166.5),
+            np.arange(-197, -167),
+            np.arange(-197.5, -166.5),
+            np.arange(168, 199),
+            np.arange(172.4561404, 200),
+            np.arange(167.5, 198.5),
+            np.arange(168, 198),
+            np.arange(167.5, 198.5),
+            np.arange(168, 198),
+            np.arange(167.5, 198.5),
+            np.arange(167.5, 198.5),
+            np.arange(168, 198),
+            np.arange(167.5, 198.5),
+            np.arange(168, 198),
+            np.arange(167.5, 198.5),
+        ])
+        expected_anom = xr.Dataset(
+            data_vars={
+                'data': ((time_dim, 'lat', 'lon'),
+                         np.reshape(expected_anom, (731, 1, 1)))
+            },
+            coords={
+                time_dim:
+                    xr.cftime_range(start='2020-01-01',
+                                    end='2021-12-31',
+                                    freq='D'),
+                'lat': [-90],
+                'lon': [-180]
+            },
+            attrs={'Description': 'This is dummy data for testing.'})
+
+        anom = climate_anomaly(self.daily.rename({'time': time_dim}),
+                               freq='month',
+                               time_dim=time_dim)
+        xr.testing.assert_allclose(anom, expected_anom)
 
 
 class test_month_to_season(unittest.TestCase):
