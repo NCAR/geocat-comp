@@ -12,9 +12,8 @@ Climatologies
    :nosignatures:
    :toctree: ./generated/
 
-   anomaly
    calendar_average
-   climatology
+   climate_anomaly
    climatology_average
    month_to_season
 
@@ -103,6 +102,16 @@ GeoCAT-comp routines from GeoCAT-f2py
 
 Deprecated Functions
 --------------------
+Climatologies
+^^^^^^^^^^^^^
+.. currentmodule:: geocat.comp.climatologies
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
+
+   anomaly
+   climatology
+
 Crop
 ^^^^
 .. currentmodule:: geocat.comp.crop

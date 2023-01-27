@@ -136,7 +136,13 @@ def climatology(
         freq: str,
         time_coord_name: str = None,
         keep_attrs: bool = None) -> typing.Union[xr.DataArray, xr.Dataset]:
-    """Compute climatologies for a specified time frequency.
+    r""".. deprecated:: 2023.02.0 The ``climatology`` function is deprecated due to
+        inaccuracies in monthly climatology calculations and when using monthly
+        data to calculate seasonal or yearly climatologies. Use
+        `climatology_average <https://geocat-comp.readthedocs.io/en/stable/user_api/generated/geocat.comp.climatologies.climatology_average.html>`__
+        instead.
+
+    Compute climatologies for a specified time frequency.
 
     Parameters
     ----------
@@ -213,6 +219,9 @@ def climatology(
 
     See Also
     --------
+    Related GeoCAT Functions:
+    `climatology_average <https://geocat-comp.readthedocs.io/en/stable/user_api/generated/geocat.comp.climatologies.climatology_average.html>`__
+
     Related NCL Functions:
     `clmDayTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayTLL.shtml>`__,
     `clmDayTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayTLLL.shtml>`__,
@@ -244,7 +253,10 @@ def anomaly(
         dset: typing.Union[xr.DataArray, xr.Dataset],
         freq: str,
         time_coord_name: str = None) -> typing.Union[xr.DataArray, xr.Dataset]:
-    """Compute anomalies for a specified time frequency.
+    r""".. deprecated:: 2023.02.0 The ``anomaly`` function is deprecated due to
+        inaccuracies in monthly anomaly calculations and when using monthly
+        data to calculate seasonal or yearly anomalies. Use `climate_anomaly <https://geocat-comp.readthedocs.io/en/stable/user_api/generated/geocat.comp.climatologies.climate_anomaly.html>`__
+        instead.
 
     Parameters
     ----------
@@ -311,6 +323,9 @@ def anomaly(
 
     See Also
     --------
+    Related GeoCAT Functions:
+    `climate_anomaly <https://geocat-comp.readthedocs.io/en/stable/user_api/generated/geocat.comp.climatologies.climate_anomaly.html>`__
+
     Related NCL Functions:
     `clmDayAnomTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcDayAnomTLL.shtml>`__,
     `clmDayAnomTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomTLLL.shtml>`__,
@@ -329,6 +344,97 @@ def anomaly(
         return xr.merge([dset[time_invariant_vars], anom])
     else:
         return anom
+
+
+def climate_anomaly(
+        dset: typing.Union[xr.DataArray, xr.Dataset],
+        freq: str,
+        time_dim: str = None,
+        keep_attrs: bool = 'default') -> typing.Union[xr.DataArray, xr.Dataset]:
+    """This function calculates climate anomalies by subtracting the long term
+    mean of each ``freq`` period (day, month, season, or year) from each
+    datapoint.
+
+    Parameters
+    ----------
+    dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
+        The data on which to operate. It must be uniformly spaced in the time
+        dimension.
+
+    freq : str
+        Frequency alias. When the ``'year'`` allias is used, the yearly average is
+        subtracted from each data point. Multiyear climatologies are not yet possible
+        with this function. Accepted aliases:
+
+        - `day`: for anomalies from the daily climatology
+        - `month`: for anomalies from the monthly climatology
+        - `season`: for anomalies from the seasonal climatology (seasons are DJF, MAM, JJA, and SON)
+        - `year`: for anomalies from the yearly average
+
+    time_dim : str, optional
+        Name of the time coordinate for ``xarray`` objects. Defaults to ``None`` and
+        infers the name from the data.
+
+    keep_attrs : bool, optional
+        If True, attrs will be copied from the original object to the new one.
+        If False, the new object will be returned without attributes.
+        Defaults to None which means the attrs will only be kept in unambiguous circumstances.
+
+    Returns
+    -------
+    computed_dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
+        The computed anomalies
+
+    Note
+    ----
+    Seasonal averages are weighted based on the number of days in each month.
+    This means that the given data must be uniformly spaced (i.e. data every 6
+    hours, every two days, every month, etc.) and must not cross month
+    boundaries (i.e. don't use weekly averages where the week falls in two
+    different months)
+
+    See Also
+    --------
+    Related GeoCAT Functions:
+    `climatology_average <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.climatologies.climatology_average.html#geocat.comp.climatologies.climatology_average>`__
+    `calendar_average <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.climatologies.calendar_average.html#geocat.comp.climatologies.calendar_average>`__
+
+    Related NCL Functions:
+    `calcDayAnomTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcDayAnomTLL.shtml>`__
+    `calcMonAnomLLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomLLLT.shtml>`__
+    `calcMonAnomLLT <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomLLT.shtml>`__
+    `calcMonAnomTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcMonAnomTLL.shtml>`__
+    """
+    # TODO add support for user specified seasons
+    time_dim = _get_time_coordinate_info(dset, time_dim)
+    attrs = {}
+    if keep_attrs or keep_attrs is None:
+        attrs = dset.attrs
+
+    freq_dict = {
+        'day': ('%m-%d', 'D'),
+        'month': ('%m', 'MS'),
+        'season': (None, 'QS-DEC'),
+        'year': ('%y', 'Y')
+    }
+
+    if freq not in freq_dict:
+        raise KeyError(
+            f"Received bad period {freq!r}. Expected one of {list(freq_dict.keys())!r}"
+        )
+    format, frequency = freq_dict[freq]
+
+    if freq == 'year':
+        clim = calendar_average(dset, freq, time_dim, keep_attrs)
+    else:
+        clim = climatology_average(dset, freq, time_dim, keep_attrs)
+    if freq == 'season':
+        anom = dset.groupby(f"{time_dim}.season") - clim
+        return anom.assign_attrs(attrs)
+    else:
+        anom = dset.groupby(dset[time_dim].dt.strftime(format)) - clim.groupby(
+            clim[time_dim].dt.strftime(format)).sum()
+        return anom.drop_vars('strftime').assign_attrs(attrs)
 
 
 def month_to_season(
