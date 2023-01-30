@@ -7,7 +7,7 @@ v2023.02.0
 
 What's Changed
 --------------
-* Add rendered equations to docstrings (:pr:`294`) `Anissa Zacharias`_
+* Add rendered equations to docstrings by `Anissa Zacharias`_ in (:pr:`294`)
 * Add extrapolation feature to interp_hybrid_to_pressure by `Heather Craker`_ in (:pr:`237`)
 
 

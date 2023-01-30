@@ -64,6 +64,7 @@ extensions = [
     'myst_nb',
     "sphinx_design",
     "nbsphinx",
+    'sphinx.ext.extlinks',
 ]
 
 #mathjax_path = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
