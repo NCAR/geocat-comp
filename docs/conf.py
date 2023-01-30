@@ -77,6 +77,11 @@ intersphinx_mapping = {
     'pint': ('https://pint.readthedocs.io/en/stable/', None),
     'cftime': ('https://unidata.github.io/cftime/', None),
 }
+# allows us to easily link PRs and issues in the change log
+extlinks = {
+    "issue": ("https://github.com/NCAR/geocat-comp/issues/%s", "GH#"),
+    "pr": ("https://github.com/NCAR/geocat-comp/pull/%s", "GH#"),
+}
 
 # napoleon settings
 napoleon_use_admonition_for_examples = True
