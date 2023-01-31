@@ -33,13 +33,13 @@ jobs:
       - name: Install select upstream dependencies
         run: |
           pip install git+https://github.com/Unidata/MetPy.git
-          pip install https://github.com/numpy/numpy/archive/main.zip
-          pip install https://github.com/dask/dask/archive/main.zip
-          pip install https://github.com/dask/distributed/archive/main.zip
-          pip install https://github.com/hgrecco/pint/archive/main.zip
-          pip install https://github.com/pydata/xarray/archive/main.zip
-          pip install https://github.com/xarray-contrib/cf-xarray/archive/main.zip
-          pip install https://github.com/xarray-contrib/xskillscore/archive/main.zip
+          pip install git+https://github.com/numpy/numpy.git
+          pip install git+https://github.com/dask/dask.git
+          pip install git+https://github.com/dask/distributed.git
+          pip install git+https://github.com/hgrecco/pint.git
+          pip install git+https://github.com/pydata/xarray.git
+          pip installgit+https://github.com/xarray-contrib/cf-xarray.git
+          pip install git+https://github.com/xarray-contrib/xskillscore.git
 
       - name: Install conda dependencies
         run: |
