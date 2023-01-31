@@ -9,7 +9,7 @@ changelog:
       labels:
         - enhancement
     - title: Deprecations
-        labels:
+      labels:
         - deprecation
     - title: Bug Fixes
       labels:
