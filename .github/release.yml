@@ -8,12 +8,12 @@ changelog:
     - title: Enhancements
       labels:
         - enhancement
+    - title: Deprecations
+        labels:
+        - deprecation
     - title: Bug Fixes
       labels:
         - bug
-    - title: Deprecations
-      labels:
-        - deprecation
     - title: Documentation
       labels:
         - documentation
