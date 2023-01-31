@@ -38,7 +38,7 @@ jobs:
           pip install git+https://github.com/dask/distributed.git
           pip install git+https://github.com/hgrecco/pint.git
           pip install git+https://github.com/pydata/xarray.git
-          pip installgit+https://github.com/xarray-contrib/cf-xarray.git
+          pip install git+https://github.com/xarray-contrib/cf-xarray.git
           pip install git+https://github.com/xarray-contrib/xskillscore.git
 
       - name: Install conda dependencies
