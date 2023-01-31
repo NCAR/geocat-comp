@@ -10,13 +10,15 @@ dependencies:
   - eofs
   - geocat-f2py
   - metpy
-  - numpy
-  - pint<0.20           # pint 0.20+ currently breaks geocat-comp
+  - numba
+  - numpy<1.24  # 1.24 not yet fully compatible with numba
+  - pint
   - xarray
   - xskillscore
 # Packages listed below are for testing
   - geocat-datafiles
   - netcdf4
+  - parameterized
   - pytest
   - pytest-cov
 # The package below is for formatting standards

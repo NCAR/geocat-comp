@@ -12,9 +12,8 @@ Climatologies
    :nosignatures:
    :toctree: ./generated/
 
-   anomaly
    calendar_average
-   climatology
+   climate_anomaly
    climatology_average
    month_to_season
 
@@ -59,7 +58,6 @@ Meteorology
    relhum_water
    saturation_vapor_pressure
    saturation_vapor_pressure_slope
-   showalter_index
 
 Spherical Harmonics
 ^^^^^^^^^^^^^^^^^^^
@@ -104,6 +102,16 @@ GeoCAT-comp routines from GeoCAT-f2py
 
 Deprecated Functions
 --------------------
+Climatologies
+^^^^^^^^^^^^^
+.. currentmodule:: geocat.comp.climatologies
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
+
+   anomaly
+   climatology
+
 Crop
 ^^^^
 .. currentmodule:: geocat.comp.crop
@@ -126,6 +134,15 @@ EOF Functions
 
    eofunc_eofs
    eofunc_pcs
+
+Meteorology
+^^^^^^^^^^^
+.. currentmodule:: geocat.comp.meteorology
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
+
+   showalter_index
 
 Polynomial
 ^^^^^^^^^^
