@@ -1,9 +1,11 @@
 .. currentmodule:: geocat.comp
 
 .. _release:
+Release Notes
+=============
 
 v2023.02.0 (Feb 2, 2023)
-==========
+------------------------
 
 New Features
 ^^^^^^^^^^^^
@@ -23,7 +25,6 @@ Documentation
 ^^^^^^^^^^^^^
 * Add rendered equations to docstrings by `Anissa Zacharias`_ in (:pr:`294`)
 * Fix badge links by `Anissa Zacharias`_ in (:pr:`321`)
-
 
 Maintenance
 ^^^^^^^^^^^
