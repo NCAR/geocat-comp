@@ -32,7 +32,7 @@ jobs:
 
       - name: Install select upstream dependencies
         run: |
-          pip install https://github.com/Unidata/MetPy/archive/main.zip
+          pip install git+https://github.com/Unidata/MetPy.git
           pip install https://github.com/numpy/numpy/archive/main.zip
           pip install https://github.com/dask/dask/archive/main.zip
           pip install https://github.com/dask/distributed/archive/main.zip
