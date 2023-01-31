@@ -5,29 +5,43 @@
 v2023.02.0
 ==========
 
-What's Changed
---------------
-* Add rendered equations to docstrings by `Anissa Zacharias`_ in (:pr:`294`)
+New Features
+^^^^^^^^^^^^
 * Add extrapolation feature to interp_hybrid_to_pressure by `Heather Craker`_ in (:pr:`237`)
 
-
-Public Facing Bug Fixes
-^^^^^^^^^^^^^^^^^^^^^^^
+Enhancements
+^^^^^^^^^^^^
 * Add check to avoid calculating monthly averages on monthly data by `Heather Craker`_ in (:pr:`304`)
+* Add ``keep_attrs`` to functions by `Heather Craker`_ in (:pr:`315`)
+
+Deprecations
+^^^^^^^^^^^^
 * Fix pint bug in showalter_index and deprecate by `Heather Craker`_ in (:pr:`319`)
+* Replace and deprecate ``anomaly`` and ``climatology`` by `Heather Craker`_ in (:pr:`332`)
+
+Documentation
+^^^^^^^^^^^^^
+* Add rendered equations to docstrings by `Anissa Zacharias`_ in (:pr:`294`)
 * Fix badge links by `Anissa Zacharias`_ in (:pr:`321`)
 
-Internal changes/fixes
-^^^^^^^^^^^^^^^^^^^^^^
+
+Maintenance
+^^^^^^^^^^^
 * Adding import nightly CI test by `Anissa Zacharias`_ in (:pr:`300`)
 * Expand upstream CI by `Anissa Zacharias`_ in (:pr:`301`)
-* Patch for import test by `Anissa Zacharias`_ in(:pr:`302`)
+* Patch for import test by `Anissa Zacharias`_ in (:pr:`302`)
 * Fix the import package CI test by `Anissa Zacharias`_ in (:pr:`303`)
 * CI failures quick patch by `Anissa Zacharias`_ in (:pr:`312`)
 * Resolve CI link-check issue by `Anissa Zacharias`_ in (:pr:`316`)
+* Pin numpy for numba compatibility by `Anissa Zacharias`_ in (:pr:`325`)
+* Bump actions/setup-python from 4.3.0 to 4.4.0 by `Dependabot`_ in (:pr:`322`)
+* Bump pypa/gh-action-pypi-publish from 1.5.1 to 1.6.4 by `Dependabot`_ in (:pr:`317`)
+* Fastertest by @pilotchute in (:pr:`327`)
+* Converting pytest to unittest for climatology.py by `Heather Craker`_ in (:pr:`331`)
+* Allow upstream-dev to run on forks by `Anissa Zacharias`_ in (:pr:`335`)
 
 
-**Full Changelog**: `v2022.11.0...v2023.1.0 <https://github.com/NCAR/geocat-comp/compare/v2022.11.0...v2023.1.0>`__
+**Full Changelog**: https://github.com/NCAR/geocat-comp/compare/v2022.11.0...v2023.02.0
 
 
 ..
@@ -35,3 +49,4 @@ Internal changes/fixes
 
 .. _`Heather Craker`: https://github.com/hCraker
 .. _`Anissa Zacharias`: https://github.com/anissa111
+.. _`Dependabot`: https://github.com/dependabot
