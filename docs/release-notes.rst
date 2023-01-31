@@ -34,8 +34,6 @@ Maintenance
 * CI failures quick patch by `Anissa Zacharias`_ in (:pr:`312`)
 * Resolve CI link-check issue by `Anissa Zacharias`_ in (:pr:`316`)
 * Pin numpy for numba compatibility by `Anissa Zacharias`_ in (:pr:`325`)
-* Bump actions/setup-python from 4.3.0 to 4.4.0 by `Dependabot`_ in (:pr:`322`)
-* Bump pypa/gh-action-pypi-publish from 1.5.1 to 1.6.4 by `Dependabot`_ in (:pr:`317`)
 * Fastertest by @pilotchute in (:pr:`327`)
 * Converting pytest to unittest for climatology.py by `Heather Craker`_ in (:pr:`331`)
 * Allow upstream-dev to run on forks by `Anissa Zacharias`_ in (:pr:`335`)
@@ -49,4 +47,3 @@ Maintenance
 
 .. _`Heather Craker`: https://github.com/hCraker
 .. _`Anissa Zacharias`: https://github.com/anissa111
-.. _`Dependabot`: https://github.com/dependabot
