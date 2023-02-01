@@ -18,6 +18,7 @@ from .meteorology import (dewtemp, heat_index, showalter_index, relhum,
 from .skewt_params import get_skewt_vars, showalter_index
 from .spherical import decomposition, recomposition, scale_voronoi
 from .stats import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts, pearson_r
+from .calc_deltapressure import calc_deltapressure
 # bring all functions from geocat.f2py into the geocat.comp namespace
 try:
     from geocat.f2py import *
