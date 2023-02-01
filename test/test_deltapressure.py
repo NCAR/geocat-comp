@@ -4,7 +4,7 @@ import numpy as np
 from geocat.comp.delta_pressure import _calc_deltapressure_1D, calc_deltapressure
 
 
-class TestDeltaPressure():
+class TestDeltaPressure(TestCase):
     pressure_lev = [1, 2, 50, 100, 200, 500, 700, 1000]
     pressure_lev_da = xr.DataArray(pressure_lev)
     pressure_lev_da.attrs = {
@@ -45,8 +45,8 @@ class TestDeltaPressure():
         pressure_top = min(self.pressure_lev)
         delta_pressure = _calc_deltapressure_1D(self.pressure_lev,
                                                 self.surface_pressure_scalar)
-        assert sum(
-            delta_pressure) == self.surface_pressure_scalar - pressure_top
+        self.assertEqual(sum(delta_pressure),
+                         self.surface_pressure_scalar - pressure_top)
 
     def test_missing_surface_pressure_warning(self):
         surface_pressure_missing = NaN
