@@ -1,7 +1,7 @@
 from unittest import TestCase
 import xarray as xr
-from geocat_comp import _calc_deltapressure_1D, calc_deltapressure
 import numpy as np
+from geocat.comp import _calc_deltapressure_1D, calc_deltapressure
 
 
 class TestDeltaPressure():
