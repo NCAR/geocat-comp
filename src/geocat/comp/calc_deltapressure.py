@@ -64,7 +64,7 @@ def calc_deltapressure(pressure_lev, surface_pressure):
     
     Parameters
     ----------
-    pressure_lev : :class:`np.Array`
+    pressure_lev : :class:`np.Array`, :class:'xr.dataArray`
         The pressure level array. May be in ascending or descending order.
         Must have the same units as `surface_pressure`.
     surface_pressure : :class:`np.Array`, :class:'xr.dataArray`
@@ -80,12 +80,36 @@ def calc_deltapressure(pressure_lev, surface_pressure):
         array will have an additional dimension [e.g. (lat, lon, time) becomes
         (lat, lon, time, lev)].
     """
+    # Get original array types
+    type_surface_pressure = type(surface_pressure) # save type for delta_pressure to same type as surface_pressure at end
+    type_pressure_level = type(pressure_lev)
+    
+    # Preserve attributes for Xarray
+    if type_surface_pressure == xr.DataArray:
+        coords = surface_pressure.coords
+        attrs = surface_pressure.attrs
+        dims = surface_pressure.dims
+        name = surface_pressure.name
+    if type_pressure_level == xr.DataArray:
+        attrs = pressure_lev.attrs # Overwrite attributes to match pressure_lev
+    
+    # Convert inputs to numpy arrays  
+    try:
+        pressure_lev = np.asarray(pressure_lev)
+    except AttributeError:
+        print("`pressure_lev` must be array-like.")
+
+    try:
+        surface_pressure = np.asarray(surface_pressure)
+    except AttributeError:
+        print("`surface_pressure` must be array-like.")
+        
     # Get dimensions of `surface_pressure`
     try:
         dims = len(surface_pressure.shape)
     except:
         dims = 0
-
+        
     # Safety check
     if dims > 3:
         warnings.warn("`surface_pressure` cannot have more than 3 dimensions.")
@@ -115,10 +139,12 @@ def calc_deltapressure(pressure_lev, surface_pressure):
     if type_surface_pressure == xr.dataArray:
         coords['lev'] = pressure_lev
         dims["lev"] = "lev"
+        attrs["long name"] = "pressure layer thickness"
         delta_pressure = xr.DataArray(delta_pressure,
                                 coords = coords,
                                 dims = dims,
                                 attrs = attrs,
                                 name = name)
+        
 
     return delta_pressure
