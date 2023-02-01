@@ -15,7 +15,7 @@ def _calc_deltapressure_1D(pressure_lev, surface_pressure):
         The pressure level array. May be in ascending or descending order.
         Must have the same units as `surface_pressure`.
 
-    surface_pressure : :class:`float`, :class:`int`
+    surface_pressure : :class:`float`
         The scalar surface pressure. Must have the same units as
         pressure_lev`.
 
@@ -28,7 +28,7 @@ def _calc_deltapressure_1D(pressure_lev, surface_pressure):
     pressure_top = min(pressure_lev)
 
     # Safety checks
-    if surface_pressure != True:
+    if not surface_pressure:
         warnings.warn("'surface_pressure` can't equal a missing value.")
     if pressure_top <= 0:
         warnings.warn("'pressure_lev` values must all be positive.")
@@ -68,16 +68,16 @@ def calc_deltapressure(pressure_lev, surface_pressure):
 
     Parameters
     ----------
-    pressure_lev : :class:`np.Array`, :class:'xr.dataArray`
+    pressure_lev : :class:`np.Array`, :class:'xr.DataArray`
         The pressure level array. May be in ascending or descending order.
         Must have the same units as `surface_pressure`.
-    surface_pressure : :class:`np.Array`, :class:'xr.dataArray`
+    surface_pressure : :class:`np.Array`, :class:'xr.DataArray`
         The scalar or N-dimensional surface pressure array. Must have the same
         units as `pressure_lev`. Cannot exceed 3 dimensions.
 
     Returns
     -------
-    delta_pressure : :class:`np.Array`, :class:'xr.dataArray`
+    delta_pressure : :class:`np.Array`, :class:'xr.DataArray`
         The pressure layer thickness array. Shares units with `pressure_lev`.
         If `surface_pressure` is scalar, shares dimensions with
         `pressure_level`. If `surface_pressure` is an array than the returned
@@ -123,11 +123,14 @@ def calc_deltapressure(pressure_lev, surface_pressure):
     # If Xarray save attributes
     type_surface_pressure = type(
         surface_pressure)  # save type for promoting back to Xarray at end
-    if type_surface_pressure == xr.DataArray:
+    if type_surface_pressure == xr.core.dataarray.DataArray:
         coords = surface_pressure.coords
         attrs = surface_pressure.attrs
         dims = surface_pressure.dims
         name = surface_pressure.name
+
+    # Convert to floats to prevent integer division rounding errors
+    pressure_lev = [float(i) for i in pressure_lev]
 
     # Calculate delta pressure
     if dims == 0:  # scalar case
@@ -140,7 +143,7 @@ def calc_deltapressure(pressure_lev, surface_pressure):
         surface_pressure_flattened = np.ravel(
             surface_pressure)  # flatten to avoid nested for loops
         delta_pressure = [
-            _calc_deltapressure_1D(pressure_lev, e)
+            _calc_deltapressure_1D(pressure_lev, float(e))
             for e in surface_pressure_flattened
         ]
 
@@ -148,7 +151,7 @@ def calc_deltapressure(pressure_lev, surface_pressure):
 
     # If passed in an Xarray array, return an Xarray array
     # Change this to return a dataset that has both surface pressure and delta pressure?
-    if type_surface_pressure == xr.dataArray:
+    if type_surface_pressure == xr.core.dataarray.DataArray:
         coords['lev'] = pressure_lev
         dims["lev"] = "lev"
         attrs["long name"] = "pressure layer thickness"
