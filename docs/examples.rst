@@ -14,3 +14,4 @@ Here's some examples of how to use geocat-comp.
    :hidden:
 
    examples/calendar_average.ipynb
+   examples/fourier_filter_example.ipynb
