@@ -49,7 +49,7 @@ Meteorology
    :toctree: ./generated/
 
    actual_saturation_vapor_pressure
-   calc_deltapressure
+   delta_pressure
    dewtemp
    heat_index
    max_daylight

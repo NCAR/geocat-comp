@@ -1433,15 +1433,15 @@ def saturation_vapor_pressure_slope(
     return svp_slope
 
 
-def _calc_deltapressure_1D(pressure_lev, surface_pressure):
-    """Helper function for `calc_deltapressure`. Calculates the pressure layer
+def _delta_pressure1D(pressure_lev, surface_pressure):
+    """Helper function for `delta_pressure`. Calculates the pressure layer
     thickness (delta pressure) of a one-dimensional pressure level array.
 
     Returns an array of length matching `pressure_lev`.
 
     Parameters
     ----------
-    pressure_lev : :class:`np.Array`
+    pressure_lev : :class:`numpy.ndarray`
         The pressure level array. May be in ascending or descending order.
         Must have the same units as `surface_pressure`.
 
@@ -1451,7 +1451,7 @@ def _calc_deltapressure_1D(pressure_lev, surface_pressure):
 
     Returns
     -------
-    delta_pressure : :class:`np.Array`
+    delta_pressure : :class:`numpy.ndarray`
         The pressure layer thickness array. Shares dimensions and units of
         `pressure_lev`.
     """
@@ -1490,15 +1490,15 @@ def _calc_deltapressure_1D(pressure_lev, surface_pressure):
     return delta_pressure
 
 
-def calc_deltapressure(pressure_lev, surface_pressure):
+def delta_pressure(pressure_lev, surface_pressure):
     """Calculates the pressure layer thickness (delta pressure) of a constant
     pressure level coordinate system.
 
-    Returns an array of length matching `pressure_lev`.
+    Returns an array of shape matching (`surface_pressure`, `pressure_lev`).
 
     Parameters
     ----------
-    pressure_lev : :class:`np.Array`, :class:'xr.DataArray`
+    pressure_lev : :class:`numpy.ndarray`, :class:'xarray.DataArray`
         The pressure level array. May be in ascending or descending order.
         Must have the same units as `surface_pressure`.
     surface_pressure : :class:`np.Array`, :class:'xr.DataArray`
@@ -1507,7 +1507,7 @@ def calc_deltapressure(pressure_lev, surface_pressure):
 
     Returns
     -------
-    delta_pressure : :class:`np.Array`, :class:'xr.DataArray`
+    delta_pressure : :class:`numpy.ndarray`, :class:'xarray.DataArray`
         The pressure layer thickness array. Shares units with `pressure_lev`.
         If `surface_pressure` is scalar, shares dimensions with
         `pressure_level`. If `surface_pressure` is an array than the returned
@@ -1550,12 +1550,9 @@ def calc_deltapressure(pressure_lev, surface_pressure):
     if dims > 3:
         warnings.warn("`surface_pressure` cannot have more than 3 dimensions.")
 
-    # Convert to floats to prevent integer division rounding errors
-    pressure_lev = [float(i) for i in pressure_lev]
-
     # Calculate delta pressure
     if dims == 0:  # scalar case
-        delta_pressure = _calc_deltapressure_1D(pressure_lev, surface_pressure)
+        delta_pressure = _delta_pressure1D(pressure_lev, surface_pressure)
     else:  # 1, 2, and 3 dimensional cases
         shape = surface_pressure.shape
         delta_pressure_shape = shape + (len(pressure_lev),
@@ -1564,7 +1561,7 @@ def calc_deltapressure(pressure_lev, surface_pressure):
         surface_pressure_flattened = np.ravel(
             surface_pressure)  # flatten to avoid nested for loops
         delta_pressure = [
-            _calc_deltapressure_1D(pressure_lev, float(e))
+            _delta_pressure1D(pressure_lev, e)
             for e in surface_pressure_flattened
         ]
 
