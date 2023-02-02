@@ -1447,7 +1447,7 @@ def _calc_deltapressure_1D(pressure_lev, surface_pressure):
 
     surface_pressure : :class:`float`
         The scalar surface pressure. Must have the same units as
-        pressure_lev`.
+        `pressure_lev`.
 
     Returns
     -------
