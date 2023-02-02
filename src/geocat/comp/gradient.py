@@ -22,7 +22,7 @@ def _rad_lat_wgs84(lat: SupportedTypes,):
     Note
     ----
     This doesn't need to be a taylor series, though the taylor series
-    is faster and a needed step for the arc_lat_wgs84 function to avoid the
+    is faster and a needed step for the _arc_lat_wgs84 function to avoid the
     elliptic integral
 
     Parameters
@@ -149,7 +149,7 @@ def _arc_lon_wgs84(
     Note
     ----
     This doesn't need to be a taylor series, though the taylor series
-    is faster and a needed step for the arc_lat_wgs84 function to avoid the
+    is faster and a needed step for the _arc_lat_wgs84 function to avoid the
     elliptic integral
 
     Parameters
@@ -173,7 +173,7 @@ def _arc_lon_wgs84(
     `gradsg <https://www.ncl.ucar.edu/Document/Functions/Built-in/gradsg.shtml>`__
     """
 
-    return rad_lat_wgs84(lat) * np.cos(lat * d2r) * lon * d2r
+    return _rad_lat_wgs84(lat) * np.cos(lat * d2r) * lon * d2r
 
 
 def gradient(data: xr.DataArray) -> [xr.DataArray]:
@@ -202,12 +202,12 @@ def gradient(data: xr.DataArray) -> [xr.DataArray]:
     lon2d, lat2d = np.meshgrid(data.coords['lon'], data.coords['lat'])
 
     axis0loc = xr.DataArray(
-        arc_lat_wgs84(lat2d),
+        _arc_lat_wgs84(lat2d),
         coords=data.coords,
         dims=data.dims,
     )
     axis1loc = xr.DataArray(
-        arc_lon_wgs84(lon2d, lat2d),
+        _arc_lon_wgs84(lon2d, lat2d),
         coords=data.coords,
         dims=data.dims,
     )
