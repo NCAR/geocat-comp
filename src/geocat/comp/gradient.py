@@ -9,7 +9,7 @@ XTypes = Union[xr.DataArray, xr.Dataset]
 d2r = 1.74532925199432957692369e-02  # degrees to radians conversion factor
 
 
-def rad_lat_wgs84(lat: SupportedTypes,):
+def _rad_lat_wgs84(lat: SupportedTypes,):
     r"""The radius calculation for the wgs84 ellipsoid at a latitude uses a
     taylor series from.
 
@@ -69,7 +69,7 @@ def rad_lat_wgs84(lat: SupportedTypes,):
         6378137.0
 
 
-def arc_lat_wgs84(lat: SupportedTypes,):
+def _arc_lat_wgs84(lat: SupportedTypes,):
     r"""The arc length calculation for the wgs84 ellipsoid at a latitude uses a
     taylor series to obtain the value of the elliptic integral.
 
@@ -128,7 +128,7 @@ def arc_lat_wgs84(lat: SupportedTypes,):
         111319.490793273572647713 * lat
 
 
-def arc_lon_wgs84(
+def _arc_lon_wgs84(
     lon: SupportedTypes,
     lat: SupportedTypes,
 ):
