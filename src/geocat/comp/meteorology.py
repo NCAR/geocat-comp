@@ -1434,7 +1434,7 @@ def saturation_vapor_pressure_slope(
 
 
 def _calc_deltapressure_1D(pressure_lev, surface_pressure):
-    """Helper function for `calc_deltapressure1. Calculates the pressure layer
+    """Helper function for `calc_deltapressure`. Calculates the pressure layer
     thickness (delta pressure) of a one-dimensional pressure level array.
 
     Returns an array of length matching `pressure_lev`.
