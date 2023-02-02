@@ -88,6 +88,7 @@ novel computational functions for geosciences data.
    :maxdepth: 2
    :hidden:
    :caption: For Developers
+
    Release Notes <release-notes.rst>
    Contributor's Guide <https://geocat.ucar.edu/pages/contributing.html>
    Roadmap <https://geocat.ucar.edu/pages/roadmap.html>
