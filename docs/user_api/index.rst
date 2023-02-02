@@ -30,7 +30,16 @@ Fourier Filters
    fourier_high_pass
    fourier_low_pass
 
-Interpolation
+Gradient
+^^^^^^^^
+.. currentmodule:: geocat.comp.gradient
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
+
+   gradient
+
+Iterpolation
 ^^^^^^^^^^^^
 .. currentmodule:: geocat.comp.interpolation
 .. autosummary::

@@ -9,7 +9,7 @@ XTypes = Union[xr.DataArray, xr.Dataset]
 d2r = 1.74532925199432957692369e-02  # degrees to radians conversion factor
 
 
-def rad_lat_wgs84(lat: SupportedTypes,):
+def _rad_lat_wgs84(lat: SupportedTypes,):
     r"""The radius calculation for the wgs84 ellipsoid at a latitude uses a
     taylor series from.
 
@@ -19,8 +19,10 @@ def rad_lat_wgs84(lat: SupportedTypes,):
     This returns the radius of the ellipsoid for a given latitude
     This is accurate to within floating point error.
 
-    Note: This doesn't need to be a taylor series, though the taylor series
-    is faster and a needed step for the arc_lat_wgs84 function to avoid the
+    Note
+    ----
+    This doesn't need to be a taylor series, though the taylor series
+    is faster and a needed step for the _arc_lat_wgs84 function to avoid the
     elliptic integral
 
     Parameters
@@ -69,7 +71,7 @@ def rad_lat_wgs84(lat: SupportedTypes,):
         6378137.0
 
 
-def arc_lat_wgs84(lat: SupportedTypes,):
+def _arc_lat_wgs84(lat: SupportedTypes,):
     r"""The arc length calculation for the wgs84 ellipsoid at a latitude uses a
     taylor series to obtain the value of the elliptic integral.
 
@@ -80,7 +82,9 @@ def arc_lat_wgs84(lat: SupportedTypes,):
     This returns the distance from the equator to a given latitude
     This is accurate to within floating point error.
 
-    note: This needs to be a taylor series to avoid the elliptic integral
+    Note
+    ----
+    This needs to be a taylor series to avoid the elliptic integral
 
     Parameters
     ----------
@@ -128,7 +132,7 @@ def arc_lat_wgs84(lat: SupportedTypes,):
         111319.490793273572647713 * lat
 
 
-def arc_lon_wgs84(
+def _arc_lon_wgs84(
     lon: SupportedTypes,
     lat: SupportedTypes,
 ):
@@ -142,8 +146,10 @@ def arc_lon_wgs84(
     This returns the distance from the Greenwich Meridian to a given latitude
     This is accurate to within floating point error.
 
-    Note: This doesn't need to be a taylor series, though the taylor series
-    is faster and a needed step for the arc_lat_wgs84 function to avoid the
+    Note
+    ----
+    This doesn't need to be a taylor series, though the taylor series
+    is faster and a needed step for the _arc_lat_wgs84 function to avoid the
     elliptic integral
 
     Parameters
@@ -167,7 +173,7 @@ def arc_lon_wgs84(
     `gradsg <https://www.ncl.ucar.edu/Document/Functions/Built-in/gradsg.shtml>`__
     """
 
-    return rad_lat_wgs84(lat) * np.cos(lat * d2r) * lon * d2r
+    return _rad_lat_wgs84(lat) * np.cos(lat * d2r) * lon * d2r
 
 
 def gradient(data: xr.DataArray) -> [xr.DataArray]:
@@ -196,12 +202,12 @@ def gradient(data: xr.DataArray) -> [xr.DataArray]:
     lon2d, lat2d = np.meshgrid(data.coords['lon'], data.coords['lat'])
 
     axis0loc = xr.DataArray(
-        arc_lat_wgs84(lat2d),
+        _arc_lat_wgs84(lat2d),
         coords=data.coords,
         dims=data.dims,
     )
     axis1loc = xr.DataArray(
-        arc_lon_wgs84(lon2d, lat2d),
+        _arc_lon_wgs84(lon2d, lat2d),
         coords=data.coords,
         dims=data.dims,
     )
