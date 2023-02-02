@@ -19,7 +19,9 @@ def _rad_lat_wgs84(lat: SupportedTypes,):
     This returns the radius of the ellipsoid for a given latitude
     This is accurate to within floating point error.
 
-    Note: This doesn't need to be a taylor series, though the taylor series
+    Note
+    ----
+    This doesn't need to be a taylor series, though the taylor series
     is faster and a needed step for the arc_lat_wgs84 function to avoid the
     elliptic integral
 
@@ -80,7 +82,9 @@ def _arc_lat_wgs84(lat: SupportedTypes,):
     This returns the distance from the equator to a given latitude
     This is accurate to within floating point error.
 
-    note: This needs to be a taylor series to avoid the elliptic integral
+    Note
+    ----
+    This needs to be a taylor series to avoid the elliptic integral
 
     Parameters
     ----------
@@ -142,7 +146,9 @@ def _arc_lon_wgs84(
     This returns the distance from the Greenwich Meridian to a given latitude
     This is accurate to within floating point error.
 
-    Note: This doesn't need to be a taylor series, though the taylor series
+    Note
+    ----
+    This doesn't need to be a taylor series, though the taylor series
     is faster and a needed step for the arc_lat_wgs84 function to avoid the
     elliptic integral
 
