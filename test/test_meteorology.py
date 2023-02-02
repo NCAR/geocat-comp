@@ -715,22 +715,22 @@ class TestDeltaPressure(unittest.TestCase):
     def test_delta_pressure1D(self):
         pressure_lev = [float(i) for i in self.pressure_lev]
         pressure_top = min(pressure_lev)
-        delta_pressure = delta_pressure(pressure_lev,
+        delta_p = delta_pressure(pressure_lev,
                                             self.surface_pressure_scalar)
-        self.assertEqual(sum(delta_pressure),
+        self.assertEqual(sum(delta_p),
                          self.surface_pressure_scalar - pressure_top)
 
     def test_negative_pressure_warning(self):
         pressure_lev_negative = self.pressure_lev.copy()
         pressure_lev_negative[0] = -5
         with self.assertWarns(Warning):
-            delta_pressure = delta_pressure(pressure_lev_negative,
+            delta_p = delta_pressure(pressure_lev_negative,
                                                 self.surface_pressure_scalar)
 
     def test_relative_pressure_warning(self):
         surface_pressure_low = 0.5
         with self.assertWarns(Warning):
-            delta_pressure = delta_pressure(self.pressure_lev,
+            delta_p = delta_pressure(self.pressure_lev,
                                                 surface_pressure_low)
 
     def test_4_dimensions(self):
@@ -739,7 +739,7 @@ class TestDeltaPressure(unittest.TestCase):
                                         [[[1018, 1019], [1017, 1019.5]],
                                          [[1019, 1020], [1018, 1020.5]]]])
         with self.assertWarns(Warning):
-            delta_pressure = delta_pressure(self.pressure_lev,
+            delta_p = delta_pressure(self.pressure_lev,
                                                 surface_pressure_4D)
 
     def test_output_type(self):

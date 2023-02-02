@@ -1529,17 +1529,6 @@ def delta_pressure(pressure_lev, surface_pressure):
         da_attrs = dict(
             pressure_lev.attrs)  # Overwrite attributes to match pressure_lev
 
-    # Convert inputs to numpy arrays
-    try:
-        pressure_lev = np.asarray(pressure_lev)
-    except AttributeError:
-        print("`pressure_lev` must be array-like.")
-
-    try:
-        surface_pressure = np.asarray(surface_pressure)
-    except AttributeError:
-        print("`surface_pressure` must be array-like.")
-
     # Get dimensions of `surface_pressure`
     try:
         dims = len(surface_pressure.shape)
@@ -1570,7 +1559,7 @@ def delta_pressure(pressure_lev, surface_pressure):
     # If passed in an Xarray array, return an Xarray array
     # Change this to return a dataset that has both surface pressure and delta pressure?
     if type_surface_pressure == xr.DataArray:
-        da_coords['lev'] = pressure_lev
+        da_coords['lev'] = pressure_lev.values
         da_dims = da_dims + ("lev",)
         da_attrs.update({"long name": "pressure layer thickness"})
         delta_pressure = xr.DataArray(delta_pressure,
