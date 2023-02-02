@@ -1432,6 +1432,7 @@ def saturation_vapor_pressure_slope(
 
     return svp_slope
 
+
 def _calc_deltapressure_1D(pressure_lev, surface_pressure):
     """Helper function for `calc_deltapressure1. Calculates the pressure layer
     thickness (delta pressure) of a one-dimensional pressure level array.
@@ -1521,12 +1522,12 @@ def calc_deltapressure(pressure_lev, surface_pressure):
 
     # Preserve attributes for Xarray
     if type_surface_pressure == xr.DataArray:
-        coords = surface_pressure.coords
-        attrs = surface_pressure.attrs
-        dims = surface_pressure.dims
-        name = surface_pressure.name
+        da_coords = dict(surface_pressure.coords)
+        da_attrs = dict(surface_pressure.attrs)
+        da_dims = surface_pressure.dims
     if type_pressure_level == xr.DataArray:
-        attrs = pressure_lev.attrs  # Overwrite attributes to match pressure_lev
+        da_attrs = dict(
+            pressure_lev.attrs)  # Overwrite attributes to match pressure_lev
 
     # Convert inputs to numpy arrays
     try:
@@ -1548,15 +1549,6 @@ def calc_deltapressure(pressure_lev, surface_pressure):
     # Safety check
     if dims > 3:
         warnings.warn("`surface_pressure` cannot have more than 3 dimensions.")
-
-    # If Xarray save attributes
-    type_surface_pressure = type(
-        surface_pressure)  # save type for promoting back to Xarray at end
-    if type_surface_pressure == xr.core.dataarray.DataArray:
-        coords = surface_pressure.coords
-        attrs = surface_pressure.attrs
-        dims = surface_pressure.dims
-        name = surface_pressure.name
 
     # Convert to floats to prevent integer division rounding errors
     pressure_lev = [float(i) for i in pressure_lev]
@@ -1580,14 +1572,14 @@ def calc_deltapressure(pressure_lev, surface_pressure):
 
     # If passed in an Xarray array, return an Xarray array
     # Change this to return a dataset that has both surface pressure and delta pressure?
-    if type_surface_pressure == xr.core.dataarray.DataArray:
-        coords['lev'] = pressure_lev
-        dims["lev"] = "lev"
-        attrs["long name"] = "pressure layer thickness"
+    if type_surface_pressure == xr.DataArray:
+        da_coords['lev'] = pressure_lev
+        da_dims = da_dims + ("lev",)
+        da_attrs.update({"long name": "pressure layer thickness"})
         delta_pressure = xr.DataArray(delta_pressure,
-                                      coords=coords,
-                                      dims=dims,
-                                      attrs=attrs,
-                                      name=name)
+                                      coords=da_coords,
+                                      dims=da_dims,
+                                      attrs=da_attrs,
+                                      name="delta pressure")
 
     return delta_pressure
