@@ -7,7 +7,7 @@ from .eofunc import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts
 from .fourier_filters import (fourier_band_block, fourier_band_pass,
                               fourier_filter, fourier_high_pass,
                               fourier_low_pass)
-from .gradient import gradient, arc_lon_wgs84, arc_lat_wgs84, rad_lat_wgs84
+from .gradient import gradient, _arc_lon_wgs84, _arc_lat_wgs84, _rad_lat_wgs84
 from .interpolation import interp_hybrid_to_pressure, interp_sigma_to_hybrid, interp_multidim
 from .polynomial import detrend, ndpolyfit, ndpolyval
 from .meteorology import (dewtemp, heat_index, showalter_index, relhum,
