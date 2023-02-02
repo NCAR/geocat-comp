@@ -23,6 +23,12 @@ Internal API
 
    geocat.comp.eofunc._generate_eofs_solver
 
+   geocat.comp.gradient._arc_lat_wgs84
+
+   geocat.comp.gradient._arc_lon_wgs84
+
+   geocat.comp.gradient._rad_lat_wgs84
+
    geocat.comp.interpolation._func_interpolate
 
    geocat.comp.interpolation._geo_height_extrapolate
