@@ -41,6 +41,8 @@ Internal API
 
    geocat.comp.interpolation._post_interp_multidim
 
+   geocat.comp.meteorology._calc_deltapressure_1D
+
    geocat.comp.meteorology._dewtemp
 
    geocat.comp.meteorology._heat_index

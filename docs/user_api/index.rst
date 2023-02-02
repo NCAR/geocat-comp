@@ -30,7 +30,7 @@ Fourier Filters
    fourier_high_pass
    fourier_low_pass
 
-Iterpolation
+Interpolation
 ^^^^^^^^^^^^
 .. currentmodule:: geocat.comp.interpolation
 .. autosummary::
@@ -49,6 +49,7 @@ Meteorology
    :toctree: ./generated/
 
    actual_saturation_vapor_pressure
+   calc_deltapressure
    dewtemp
    heat_index
    max_daylight
@@ -99,6 +100,14 @@ GeoCAT-comp routines from GeoCAT-f2py
    rcm2rgrid
    rgrid2rcm
    triple_to_grid
+
+NCL Function Name Wrappers
+--------------------------
+.. currentmodule:: geocat.comp
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
+
 
 Deprecated Functions
 --------------------
