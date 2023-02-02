@@ -99,4 +99,3 @@ Maintenance
 .. _`Anissa Zacharias`: https://github.com/anissa111
 .. _`Alea Kootz`: https://github.com/pilotchute
 .. _`Mario Rodriguez`: https://github.com/marodrig
-
