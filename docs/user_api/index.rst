@@ -99,7 +99,6 @@ GeoCAT-comp routines from GeoCAT-f2py
    :nosignatures:
    :toctree: ./generated/
 
-   dpres_plevel
    grid_to_triple
    linint1
    linint2
@@ -117,7 +116,7 @@ NCL Function Name Wrappers
    :nosignatures:
    :toctree: ./generated/
 
-   dpres_plev
+   meteorology.dpres_plev
 
 
 Deprecated Functions
