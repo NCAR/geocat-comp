@@ -1513,6 +1513,11 @@ def delta_pressure(pressure_lev, surface_pressure):
         `pressure_level`. If `surface_pressure` is an array than the returned
         array will have an additional dimension [e.g. (lat, lon, time) becomes
         (lat, lon, time, lev)].
+
+    See Also
+    --------
+    Related NCL Functions:
+    `dpres_plev <https://www.ncl.ucar.edu/Document/Functions/Built-in/dpres_plevel.shtml>`__
     """
     # Get original array types
     type_surface_pressure = type(
@@ -1575,11 +1580,8 @@ def dpres_plev(pressure_lev, surface_pressure):
     return delta_pressure(pressure_lev, surface_pressure)
 
 
-dpres_plev_doc_str = """
-        This method is a wrapper for [`delta_pressure`](https://geocat-comp.readthedocs.io/en/stable/user_api/generated/geocat.comp.meteorology.delta_pressure.html).
+dpres_plev_doc_str = f"""
+        This method is a wrapper for `delta_pressure <https://geocat-comp.readthedocs.io/en/stable/user_api/generated/geocat.comp.meteorology.delta_pressure.html>`_.
 
-        Reference the [NCL `dpres_plev` documentation page](https://www.ncl.ucar.edu/Document/Functions/Built-in/dpres_plevel.shtml).
-
-        """
-dpres_plev_doc_str += delta_pressure.__doc__
+        {delta_pressure.__doc__}"""
 setattr(dpres_plev, '__doc__', dpres_plev_doc_str)
