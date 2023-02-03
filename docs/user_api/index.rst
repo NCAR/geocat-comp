@@ -117,6 +117,8 @@ NCL Function Name Wrappers
    :nosignatures:
    :toctree: ./generated/
 
+   dpres_plev
+
 
 Deprecated Functions
 --------------------

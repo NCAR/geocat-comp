@@ -1569,3 +1569,17 @@ def delta_pressure(pressure_lev, surface_pressure):
                                       name="delta pressure")
 
     return delta_pressure
+
+
+def dpres_plev(pressure_lev, surface_pressure):
+    return delta_pressure(pressure_lev, surface_pressure)
+
+
+dpres_plev_doc_str = """
+        This method is a wrapper for [`delta_pressure`](https://geocat-comp.readthedocs.io/en/stable/user_api/generated/geocat.comp.meteorology.delta_pressure.html).
+
+        Reference the [NCL `dpres_plev` documentation page](https://www.ncl.ucar.edu/Document/Functions/Built-in/dpres_plevel.shtml).
+
+        """
+dpres_plev_doc_str += delta_pressure.__doc__
+setattr(dpres_plev, '__doc__', dpres_plev_doc_str)
