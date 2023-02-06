@@ -4,18 +4,27 @@ Closes XXX
 
 ## PR Checklist
 <!-- Please mark any checkboxes that do not apply to this PR as [N/A]. -->
+**Functionality**
+- [ ] Function is in appropriate module file
+- [ ] New function(s) intended for public API added to `src/geocat/comp/__init__.py` file
+
 **Testing**
-- [ ] function is in appropriate module file
-- [ ] tests for function exists in associated module test file
-- [ ] tests cover all possible logical paths in your function
+- [ ] Tests for function exists in associated module test file
+- [ ] Tests cover all possible logical paths in your function
 
 **Documentation**
-- [ ] Passes `precommit`. If it fails, try running `pre-commit run --all` and push changes
+- [ ] Passes `precommit`. To set up on your local, run `pre-commit install` from the top level of the repository. To manually run pre-commits, use `pre-commit run --all-files` and re-add any changed files before committing again and pushing.
 - [ ] Docstrings have been added to all new functions ([Documentation Standards](https://geocat.ucar.edu/pages/contributing.html#422-documentation))
 - [ ] Docstrings have updated with any function changes
 - [ ] Internal functions have a preceeding underscore (`_`) and have been added to `docs/internal_api/index.rst`
 - [ ] User facing functions have been added to `docs/user_api/index.rst` under their module
 - [ ] Appropriate labels have been added to this PR
+
+**Examples**
+- [ ] Any new notebook examples added to `docs/examples/` folder
+- [ ] Pre-run all notebook cells
+- [ ] New notebook files added to `docs/examples.rst` toctree
+- [ ] New notebook files added to new entry in `docs/gallery.yml` with appropriate thumbnail photo in `docs/_static/thumbnails/`
 
 **PR Etiquette Reminders**
 - This PR should be listed as a draft PR until you are ready to request reviewers
