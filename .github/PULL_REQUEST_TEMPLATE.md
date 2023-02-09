@@ -13,6 +13,7 @@ apply to this PR, comment it out or delete it. -->
 - [ ] Open this PR as a draft if it is not ready for review
 - [ ] Convert this PR from a draft to a full PR before requesting reviewers
 - [ ] Request @NCAR/geocat for reviews
+- [ ] Passes `precommit`. To set up on your local, run `pre-commit install` from the top level of the repository. To manually run pre-commits, use `pre-commit run --all-files` and re-add any changed files before committing again and pushing.
 
 **Functionality**
 - [ ] Function is in appropriate module file
@@ -23,7 +24,6 @@ apply to this PR, comment it out or delete it. -->
 - [ ] Tests cover all possible logical paths in your function
 
 **Documentation**
-- [ ] Passes `precommit`. To set up on your local, run `pre-commit install` from the top level of the repository. To manually run pre-commits, use `pre-commit run --all-files` and re-add any changed files before committing again and pushing.
 - [ ] Docstrings have been added to all new functions ([Documentation Standards](https://geocat.ucar.edu/pages/contributing.html#422-documentation))
 - [ ] Docstrings have updated with any function changes
 - [ ] Internal functions have a preceeding underscore (`_`) and have been added to `docs/internal_api/index.rst`
