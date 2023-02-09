@@ -11,7 +11,7 @@ Closes #XXX
 - [ ] Make your changes in a forked repository rather than directly in this repo
 - [ ] Open this PR as a draft if it is not ready for review
 - [ ] Convert this PR from a draft to a full PR before requesting reviewers
-- [ ] Request @geocat for reviews
+- [ ] Request @NCAR/geocat for reviews
 
 **Functionality**
 - [ ] Function is in appropriate module file
@@ -59,10 +59,10 @@ consider the following points:
 
 - Do *not* mark conversations as resolved if you didn't start them
 
-- Do mark conversations as resolved *if you opened them* and are satified with the changes/discussion.
+- Do mark conversations as resolved *if you opened them* and are satisfied with the changes/discussion.
 
 If you need assistance with your PR, please let the GeoCAT team know by
-tagging us with @geocat. We can help if reviews are unclear, the recommended changes
+tagging us with @NCAR/geocat. We can help if reviews are unclear, the recommended changes
 seem overly demanding, you would like help in addressing a reviewer's comments,
 or if you have been waiting more than a week to hear back on your PR.
 -->
