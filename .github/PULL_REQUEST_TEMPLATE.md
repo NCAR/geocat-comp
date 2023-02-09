@@ -3,7 +3,8 @@
 Closes #XXX
 
 ## PR Checklist
-<!-- Please mark any checkboxes that do not apply to this PR as [N/A]. -->
+<!-- Please mark any checkboxes that do not apply to this PR as [N/A]. If an entire section doesn't
+apply to this PR, comment it out or delete it. -->
 **General**
 - [ ] Make an issue if one doesn't already exist
 - [ ] Link the issue this PR resolves by adding `closes #XXX` to the PR description where XXX is the number of the issue.
