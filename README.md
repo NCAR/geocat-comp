@@ -75,8 +75,8 @@ https://geocat-comp.readthedocs.io/en/latest/citation.html) page.
 [rtd-link]: https://geocat-comp.readthedocs.io/en/latest/?badge=latest
 [pypi-badge]: https://img.shields.io/pypi/v/geocat-comp?logo=pypi&style=for-the-badge
 [pypi-link]: https://pypi.org/project/geocat-comp
-[conda-badge]: https://img.shields.io/conda/vn/ncar/geocat-comp?logo=anaconda&style=for-the-badge
-[conda-link]: https://anaconda.org/ncar/geocat-comp
+[conda-badge]: https://img.shields.io/conda/vn/conda-forge/geocat-comp?logo=anaconda&style=for-the-badge
+[conda-link]: https://anaconda.org/conda-forge/geocat-comp
 [license-badge]: https://img.shields.io/github/license/NCAR/geocat-comp?style=for-the-badge
 [comment]: <> ([doi-badge]: https://img.shields.io/badge/DOI-10.5065%2Fa8pp--4358-brightgreen?style=for-the-badge)
 [comment]: <> ([doi-link]: https://doi.org/10.5065/a8pp-4358)

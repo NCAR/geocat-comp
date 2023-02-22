@@ -12,9 +12,8 @@ Climatologies
    :nosignatures:
    :toctree: ./generated/
 
-   anomaly
    calendar_average
-   climatology
+   climate_anomaly
    climatology_average
    month_to_season
 
@@ -30,6 +29,15 @@ Fourier Filters
    fourier_filter
    fourier_high_pass
    fourier_low_pass
+
+Gradient
+^^^^^^^^
+.. currentmodule:: geocat.comp.gradient
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
+
+   gradient
 
 Iterpolation
 ^^^^^^^^^^^^
@@ -103,6 +111,16 @@ GeoCAT-comp routines from GeoCAT-f2py
 
 Deprecated Functions
 --------------------
+Climatologies
+^^^^^^^^^^^^^
+.. currentmodule:: geocat.comp.climatologies
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
+
+   anomaly
+   climatology
+
 Crop
 ^^^^
 .. currentmodule:: geocat.comp.crop
