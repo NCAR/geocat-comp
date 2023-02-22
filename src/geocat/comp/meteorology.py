@@ -1477,9 +1477,7 @@ def _delta_pressure1D(pressure_lev, surface_pressure):
 
     delta_pressure[0] = (pressure_lev[0] +
                          pressure_lev[1]) / 2 - pressure_top  # top level
-    for i in (np.arange(1, len(pressure_lev) - 1)):  # middle levels
-        delta_pressure[i] = (pressure_lev[i + 1] - pressure_lev[i - 1]) / 2
-        i += 1
+    delta_pressure[1:-1] = [(a-b)/2 for a, b in zip(pressure_lev[2:], pressure_lev[:-1])]
     delta_pressure[-1] = surface_pressure - (
         pressure_lev[-1] + pressure_lev[-2]) / 2  # bottom level
 
