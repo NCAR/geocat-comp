@@ -3,16 +3,17 @@ import typing
 
 def _generate_wrapper_docstring(wrapper_fcn: typing.Callable,
                                 base_fcn: typing.Callable) -> None:
-    """ Generatte the docstring for a wrapper function in the form of: 'This
-    method is a wrapper for base_fcn', with a generated link to the base function.
+    """Generate the docstring for a wrapper function in the form of: 'This
+    method is a wrapper for base_fcn', with a generated link to the base
+    function.
 
     Parameters
     ----------
     wrapper_fcn : function
-        The wrapper function to generate the docstring for.
+        The wrapper function to generate the docstring for
 
-    base_fcn : functiion t
-        The wrapped function to pull base doctring from.
+    base_fcn : function
+        The wrapped function
     """
 
     # create wrapper docstring

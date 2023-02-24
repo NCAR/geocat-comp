@@ -82,3 +82,5 @@ Internal API
    geocat.comp.polynomial._to_numpy_ndarray
 
    geocat.comp.polynomial._unchunk_ifneeded
+
+   geocat.comp.util._generate_wrapper_docstring
