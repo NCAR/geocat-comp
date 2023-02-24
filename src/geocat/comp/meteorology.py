@@ -1477,7 +1477,9 @@ def _delta_pressure1D(pressure_lev, surface_pressure):
 
     delta_pressure[0] = (pressure_lev[0] +
                          pressure_lev[1]) / 2 - pressure_top  # top level
-    delta_pressure[1:-1] = [(a-b)/2 for a, b in zip(pressure_lev[2:], pressure_lev[:-1])]
+    delta_pressure[1:-1] = [
+        (a - b) / 2 for a, b in zip(pressure_lev[2:], pressure_lev[:-1])
+    ]
     delta_pressure[-1] = surface_pressure - (
         pressure_lev[-1] + pressure_lev[-2]) / 2  # bottom level
 
@@ -1578,5 +1580,5 @@ def dpres_plev(pressure_lev, surface_pressure):
     return delta_pressure(pressure_lev, surface_pressure)
 
 
-_dpres_plev_doc_str = f"""This method is a wrapper for `delta_pressure <https://geocat-comp.readthedocs.io/en/stable/user_api/generated/geocat.comp.meteorology.delta_pressure.html>`_.\n {delta_pressure.__doc__}"""
+_dpres_plev_doc_str = f".. attention:: This method is a wrapper for `delta_pressure <https://geocat-comp.readthedocs.io/en/stable/user_api/generated/geocat.comp.meteorology.delta_pressure.html>`_.\n\n    {delta_pressure.__doc__}"
 setattr(dpres_plev, '__doc__', _dpres_plev_doc_str)
