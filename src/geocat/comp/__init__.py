@@ -6,7 +6,7 @@ from .fourier_filters import (fourier_band_block, fourier_band_pass,
 from .gradient import gradient, _arc_lon_wgs84, _arc_lat_wgs84, _rad_lat_wgs84
 from .interpolation import interp_hybrid_to_pressure, interp_sigma_to_hybrid, interp_multidim
 from .polynomial import detrend, ndpolyfit, ndpolyval
-from .meteorology import (dewtemp, heat_index, showalter_index, relhum,
+from .meteorology import (dewtemp, heat_index, relhum,
                           relhum_ice, relhum_water,
                           actual_saturation_vapor_pressure, max_daylight,
                           psychrometric_constant, saturation_vapor_pressure,
