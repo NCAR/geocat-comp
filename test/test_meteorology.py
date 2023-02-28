@@ -18,10 +18,12 @@ if "--cov" in str(sys.argv):
         actual_saturation_vapor_pressure, max_daylight, psychrometric_constant,
         saturation_vapor_pressure, saturation_vapor_pressure_slope)
 else:
-    from geocat.comp.meteorology import (
-        dewtemp, heat_index, relhum, relhum_ice, relhum_water,
-        actual_saturation_vapor_pressure, max_daylight, psychrometric_constant,
-        saturation_vapor_pressure, saturation_vapor_pressure_slope)
+    from geocat.comp.meteorology import (dewtemp, heat_index, relhum,
+                                         relhum_ice, relhum_water,
+                                         actual_saturation_vapor_pressure,
+                                         max_daylight, psychrometric_constant,
+                                         saturation_vapor_pressure,
+                                         saturation_vapor_pressure_slope)
 
 
 class Test_dewtemp(unittest.TestCase):
