@@ -1,6 +1,5 @@
 # move functions into geocat.comp namespace
 from .climatologies import anomaly, climatology, month_to_season, calendar_average, climatology_average, climate_anomaly
-from .eofunc import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts
 from .fourier_filters import (fourier_band_block, fourier_band_pass,
                               fourier_filter, fourier_high_pass,
                               fourier_low_pass)
