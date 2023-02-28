@@ -21,8 +21,6 @@ Internal API
 
    geocat.comp.comp_util._is_duck_array
 
-   geocat.comp.eofunc._generate_eofs_solver
-
    geocat.comp.gradient._arc_lat_wgs84
 
    geocat.comp.gradient._arc_lon_wgs84
@@ -62,21 +60,3 @@ Internal API
    geocat.comp.meteorology._xheat_index
 
    geocat.comp.meteorology._xrelhum
-
-   geocat.comp.polynomial._check_axis
-
-   geocat.comp.polynomial._get_missing_value
-
-   geocat.comp.polynomial._isvector
-
-   geocat.comp.polynomial._ndpolyfit
-
-   geocat.comp.polynomial._ndpolyval
-
-   geocat.comp.polynomial._rearrange_axis
-
-   geocat.comp.polynomial._reverse_rearrange_axis
-
-   geocat.comp.polynomial._to_numpy_ndarray
-
-   geocat.comp.polynomial._unchunk_ifneeded
