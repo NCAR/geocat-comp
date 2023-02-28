@@ -19,8 +19,6 @@ Internal API
 
    geocat.comp.climatologies._validate_freq
 
-   geocat.comp.comp_util._is_duck_array
-
    geocat.comp.gradient._arc_lat_wgs84
 
    geocat.comp.gradient._arc_lon_wgs84
