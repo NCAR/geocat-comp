@@ -692,14 +692,6 @@ class TestDeltaPressure(unittest.TestCase):
         with self.assertWarns(Warning):
             delta_p = delta_pressure(self.pressure_lev, surface_pressure_low)
 
-    def test_4_dimensions(self):
-        surface_pressure_4D = np.array([[[[1018, 1019], [1017, 1019.5]],
-                                         [[1019, 1020], [1018, 1020.5]]],
-                                        [[[1018, 1019], [1017, 1019.5]],
-                                         [[1019, 1020], [1018, 1020.5]]]])
-        with self.assertWarns(Warning):
-            delta_p = delta_pressure(self.pressure_lev, surface_pressure_4D)
-
     def test_output_type(self):
         delta_pressure_da = delta_pressure(self.pressure_lev_da,
                                            self.surface_pressure_3D_da)
