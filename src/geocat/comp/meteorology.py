@@ -1406,8 +1406,6 @@ def _delta_pressure1D(pressure_lev, surface_pressure):
     pressure_top = min(pressure_lev)
 
     # Safety checks
-    if not surface_pressure:
-        warnings.warn("'surface_pressure` can't equal a missing value.")
     if pressure_top <= 0:
         warnings.warn("'pressure_lev` values must all be positive.")
     if pressure_top > surface_pressure:
@@ -1451,7 +1449,7 @@ def delta_pressure(pressure_lev, surface_pressure):
         Must have the same units as `surface_pressure`.
     surface_pressure : :class:`np.Array`, :class:'xr.DataArray`
         The scalar or N-dimensional surface pressure array. Must have the same
-        units as `pressure_lev`. Cannot exceed 3 dimensions.
+        units as `pressure_lev`.
 
     Returns
     -------
@@ -1482,20 +1480,10 @@ def delta_pressure(pressure_lev, surface_pressure):
         da_attrs = dict(
             pressure_lev.attrs)  # Overwrite attributes to match pressure_lev
 
-    # Get dimensions of `surface_pressure`
-    try:
-        dims = len(surface_pressure.shape)
-    except:
-        dims = 0
-
-    # Safety check
-    if dims > 3:
-        warnings.warn("`surface_pressure` cannot have more than 3 dimensions.")
-
     # Calculate delta pressure
-    if dims == 0:  # scalar case
+    if np.isscalar(surface_pressure):  # scalar case
         delta_pressure = _delta_pressure1D(pressure_lev, surface_pressure)
-    else:  # 1, 2, and 3 dimensional cases
+    else:  # multi-dimensional cases
         shape = surface_pressure.shape
         delta_pressure_shape = shape + (len(pressure_lev),
                                        )  # preserve shape for reshaping
