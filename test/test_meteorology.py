@@ -20,7 +20,7 @@ if "--cov" in str(sys.argv):
         delta_pressure)
 else:
     from geocat.comp.meteorology import (
-        dewtemp, heat_index, relhum, relhum_ice, relhum_water
+        dewtemp, heat_index, relhum, relhum_ice, relhum_water,
         actual_saturation_vapor_pressure, max_daylight, psychrometric_constant,
         saturation_vapor_pressure, saturation_vapor_pressure_slope,
         delta_pressure)
