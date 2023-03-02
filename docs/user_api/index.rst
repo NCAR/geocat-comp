@@ -58,6 +58,7 @@ Meteorology
    :toctree: ./generated/
 
    actual_saturation_vapor_pressure
+   delta_pressure
    dewtemp
    heat_index
    max_daylight
@@ -98,7 +99,6 @@ GeoCAT-comp routines from GeoCAT-f2py
    :nosignatures:
    :toctree: ./generated/
 
-   dpres_plevel
    grid_to_triple
    linint1
    linint2
@@ -108,6 +108,16 @@ GeoCAT-comp routines from GeoCAT-f2py
    rcm2rgrid
    rgrid2rcm
    triple_to_grid
+
+NCL Function Name Wrappers
+--------------------------
+.. currentmodule:: geocat.comp
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
+
+   meteorology.dpres_plev
+
 
 Deprecated Functions
 --------------------

@@ -1379,3 +1379,142 @@ def saturation_vapor_pressure_slope(
             tfill)
 
     return svp_slope
+
+
+def _delta_pressure1D(pressure_lev, surface_pressure):
+    """Helper function for `delta_pressure`. Calculates the pressure layer
+    thickness (delta pressure) of a one-dimensional pressure level array.
+
+    Returns an array of length matching `pressure_lev`.
+
+    Parameters
+    ----------
+    pressure_lev : :class:`numpy.ndarray`
+        The pressure level array. May be in ascending or descending order.
+        Must have the same units as `surface_pressure`.
+
+    surface_pressure : :class:`float`
+        The scalar surface pressure. Must have the same units as
+        `pressure_lev`.
+
+    Returns
+    -------
+    delta_pressure : :class:`numpy.ndarray`
+        The pressure layer thickness array. Shares dimensions and units of
+        `pressure_lev`.
+    """
+    pressure_top = min(pressure_lev)
+
+    # Safety checks
+    if pressure_top <= 0:
+        warnings.warn("'pressure_lev` values must all be positive.")
+    if pressure_top > surface_pressure:
+        warnings.warn(
+            "`surface_pressure` must be greater than minimum `pressure_lev` value."
+        )
+
+    # Sort so pressure increases (array goes from top of atmosphere to bottom)
+    is_pressuredecreasing = pressure_lev[1] < pressure_lev[0]
+    if is_pressuredecreasing:
+        pressure_lev = np.flip(pressure_lev)
+
+    # Calculate delta pressure
+    delta_pressure = np.empty_like(pressure_lev)
+
+    delta_pressure[0] = (pressure_lev[0] +
+                         pressure_lev[1]) / 2 - pressure_top  # top level
+    delta_pressure[1:-1] = [
+        (a - b) / 2 for a, b in zip(pressure_lev[2:], pressure_lev[:-1])
+    ]
+    delta_pressure[-1] = surface_pressure - (
+        pressure_lev[-1] + pressure_lev[-2]) / 2  # bottom level
+
+    # Return delta_pressure to original order
+    if is_pressuredecreasing:
+        delta_pressure = np.flip(delta_pressure)
+
+    return delta_pressure
+
+
+def delta_pressure(pressure_lev, surface_pressure):
+    """Calculates the pressure layer thickness (delta pressure) of a constant
+    pressure level coordinate system.
+
+    Returns an array of shape matching (`surface_pressure`, `pressure_lev`).
+
+    Parameters
+    ----------
+    pressure_lev : :class:`numpy.ndarray`, :class:'xarray.DataArray`
+        The pressure level array. May be in ascending or descending order.
+        Must have the same units as `surface_pressure`.
+    surface_pressure : :class:`np.Array`, :class:'xr.DataArray`
+        The scalar or N-dimensional surface pressure array. Must have the same
+        units as `pressure_lev`.
+
+    Returns
+    -------
+    delta_pressure : :class:`numpy.ndarray`, :class:'xarray.DataArray`
+        The pressure layer thickness array. Shares units with `pressure_lev`.
+        If `surface_pressure` is scalar, shares dimensions with
+        `pressure_level`. If `surface_pressure` is an array than the returned
+        array will have an additional dimension [e.g. (lat, lon, time) becomes
+        (lat, lon, time, lev)].
+
+    See Also
+    --------
+    Related NCL Functions:
+    `dpres_plev <https://www.ncl.ucar.edu/Document/Functions/Built-in/dpres_plevel.shtml>`__
+    """
+    # Get original array types
+    type_surface_pressure = type(
+        surface_pressure
+    )  # save type for delta_pressure to same type as surface_pressure at end
+    type_pressure_level = type(pressure_lev)
+
+    # Preserve attributes for Xarray
+    if type_surface_pressure == xr.DataArray:
+        da_coords = dict(surface_pressure.coords)
+        da_attrs = dict(surface_pressure.attrs)
+        da_dims = surface_pressure.dims
+    if type_pressure_level == xr.DataArray:
+        da_attrs = dict(
+            pressure_lev.attrs)  # Overwrite attributes to match pressure_lev
+
+    # Calculate delta pressure
+    if np.isscalar(surface_pressure):  # scalar case
+        delta_pressure = _delta_pressure1D(pressure_lev, surface_pressure)
+    else:  # multi-dimensional cases
+        shape = surface_pressure.shape
+        delta_pressure_shape = shape + (len(pressure_lev),
+                                       )  # preserve shape for reshaping
+
+        surface_pressure_flattened = np.ravel(
+            surface_pressure)  # flatten to avoid nested for loops
+        delta_pressure = [
+            _delta_pressure1D(pressure_lev, e)
+            for e in surface_pressure_flattened
+        ]
+
+        delta_pressure = np.array(delta_pressure).reshape(delta_pressure_shape)
+
+    # If passed in an Xarray array, return an Xarray array
+    # Change this to return a dataset that has both surface pressure and delta pressure?
+    if type_surface_pressure == xr.DataArray:
+        da_coords['lev'] = pressure_lev.values
+        da_dims = da_dims + ("lev",)
+        da_attrs.update({"long name": "pressure layer thickness"})
+        delta_pressure = xr.DataArray(delta_pressure,
+                                      coords=da_coords,
+                                      dims=da_dims,
+                                      attrs=da_attrs,
+                                      name="delta pressure")
+
+    return delta_pressure
+
+
+def dpres_plev(pressure_lev, surface_pressure):
+    return delta_pressure(pressure_lev, surface_pressure)
+
+
+_dpres_plev_doc_str = f".. attention:: This method is a wrapper for `delta_pressure <https://geocat-comp.readthedocs.io/en/stable/user_api/generated/geocat.comp.meteorology.delta_pressure.html>`_.\n\n    {delta_pressure.__doc__}"
+setattr(dpres_plev, '__doc__', _dpres_plev_doc_str)
