@@ -1,6 +1,16 @@
 Internal API
 ============
 
+Utility Functions
+-----------------
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
+
+   geocat.comp.gc_util._generate_wrapper_docstring
+
+Internal Functionality Helpers
+------------------------------
 .. autosummary::
    :nosignatures:
    :toctree: ./generated/

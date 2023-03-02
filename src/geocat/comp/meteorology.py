@@ -1,12 +1,10 @@
 import dask.array as da
-import metpy.calc as mpcalc
 import numpy as np
-import pint
 import typing
 import warnings
 import xarray as xr
-from itertools import chain
-from metpy.units import units
+
+from .gc_util import _generate_wrapper_docstring
 
 
 def _dewtemp(
@@ -1448,7 +1446,7 @@ def delta_pressure(pressure_lev, surface_pressure):
         The pressure level array. May be in ascending or descending order.
         Must have the same units as ``surface_pressure``.
 
-    surface_pressure : :class:`int`, :class:`float`, :class:`np.ndarray`, :class:`xr.DataArray`
+    surface_pressure : :class:`int`, :class:`float`, :class:`numpy.ndarray`, :class:`xarray.DataArray`
         The scalar or N-dimensional surface pressure array. Must have the same
         units as ``pressure_lev``.
 
@@ -1514,9 +1512,9 @@ def delta_pressure(pressure_lev, surface_pressure):
     return delta_pressure
 
 
+# NCL NAME WRAPPER FUNCTIONS BELOW
 def dpres_plev(pressure_lev, surface_pressure):
     return delta_pressure(pressure_lev, surface_pressure)
 
 
-_dpres_plev_doc_str = f".. attention:: This method is a wrapper for `delta_pressure <https://geocat-comp.readthedocs.io/en/stable/user_api/generated/geocat.comp.meteorology.delta_pressure.html>`_.\n\n    {delta_pressure.__doc__}"
-setattr(dpres_plev, '__doc__', _dpres_plev_doc_str)
+_generate_wrapper_docstring(dpres_plev, delta_pressure)
