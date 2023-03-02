@@ -58,6 +58,7 @@ Meteorology
    :toctree: ./generated/
 
    actual_saturation_vapor_pressure
+   delta_pressure
    dewtemp
    heat_index
    max_daylight
@@ -98,7 +99,6 @@ GeoCAT-comp routines from GeoCAT-f2py
    :nosignatures:
    :toctree: ./generated/
 
-   dpres_plevel
    grid_to_triple
    linint1
    linint2
@@ -108,6 +108,16 @@ GeoCAT-comp routines from GeoCAT-f2py
    rcm2rgrid
    rgrid2rcm
    triple_to_grid
+
+NCL Function Name Wrappers
+--------------------------
+.. currentmodule:: geocat.comp
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
+
+   meteorology.dpres_plev
+
 
 Deprecated Functions
 --------------------
@@ -120,56 +130,3 @@ Climatologies
 
    anomaly
    climatology
-
-Crop
-^^^^
-.. currentmodule:: geocat.comp.crop
-.. autosummary::
-   :nosignatures:
-   :toctree: ./generated/
-
-   actual_saturation_vapor_pressure
-   max_daylight
-   psychrometric_constant
-   saturation_vapor_pressure
-   saturation_vapor_pressure_slope
-
-EOF Functions
-^^^^^^^^^^^^^
-.. currentmodule:: geocat.comp.eofunc
-.. autosummary::
-   :nosignatures:
-   :toctree: ./generated/
-
-   eofunc_eofs
-   eofunc_pcs
-
-Meteorology
-^^^^^^^^^^^
-.. currentmodule:: geocat.comp.meteorology
-.. autosummary::
-   :nosignatures:
-   :toctree: ./generated/
-
-   showalter_index
-
-Polynomial
-^^^^^^^^^^
-.. currentmodule:: geocat.comp.polynomial
-.. autosummary::
-   :nosignatures:
-   :toctree: ./generated/
-
-   detrend
-   ndpolyfit
-   ndpolyval
-
-Skew-T Plot Parameters
-^^^^^^^^^^^^^^^^^^^^^^
-.. currentmodule:: geocat.comp.skewt_params
-.. autosummary::
-   :nosignatures:
-   :toctree: ./generated/
-
-   get_skewt_vars
-   showalter_index
