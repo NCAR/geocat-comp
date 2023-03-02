@@ -16,14 +16,14 @@ if "--cov" in str(sys.argv):
     from src.geocat.comp.meteorology import (
         dewtemp, heat_index, relhum, relhum_ice, relhum_water,
         actual_saturation_vapor_pressure, max_daylight, psychrometric_constant,
-        saturation_vapor_pressure, saturation_vapor_pressure_slope)
+        saturation_vapor_pressure, saturation_vapor_pressure_slope,
+        delta_pressure)
 else:
-    from geocat.comp.meteorology import (dewtemp, heat_index, relhum,
-                                         relhum_ice, relhum_water,
-                                         actual_saturation_vapor_pressure,
-                                         max_daylight, psychrometric_constant,
-                                         saturation_vapor_pressure,
-                                         saturation_vapor_pressure_slope)
+    from geocat.comp.meteorology import (
+        dewtemp, heat_index, relhum, relhum_ice, relhum_water,
+        actual_saturation_vapor_pressure, max_daylight, psychrometric_constant,
+        saturation_vapor_pressure, saturation_vapor_pressure_slope,
+        delta_pressure)
 
 
 class Test_dewtemp(unittest.TestCase):
@@ -645,3 +645,89 @@ class Test_saturation_vapor_pressure_slope(unittest.TestCase):
 
         assert isinstance((saturation_vapor_pressure_slope(tempf)).data,
                           dask.array.Array)
+
+
+class TestDeltaPressure(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.pressure_lev = np.array([1, 5, 100, 1000])
+        cls.pressure_lev_da = xr.DataArray(cls.pressure_lev)
+        cls.pressure_lev_da.attrs = {
+            "long name": "pressure level",
+            "units": "hPa",
+            "direction": "descending"
+        }
+
+        cls.surface_pressure_scalar = 1018
+        cls.surface_pressure_1D = np.array([1018, 1019])
+        cls.surface_pressure_2D = np.array([[1018, 1019], [1017, 1019.5]])
+        cls.surface_pressure_3D = np.array([[[1018, 1019], [1017, 1019.5]],
+                                            [[1019, 1020], [1018, 1020.5]]])
+
+        coords = {'time': [1, 2], 'lat': [3, 4], 'lon': [5, 6]}
+        dims = ["time", "lat", "lon"]
+        attrs = {"long name": "surface pressure", "units": "hPa"}
+        cls.surface_pressure_3D_da = xr.DataArray(cls.surface_pressure_3D,
+                                                  coords=coords,
+                                                  dims=dims,
+                                                  attrs=attrs)
+
+    def test_delta_pressure1D(self):
+        pressure_lev = [float(i) for i in self.pressure_lev]
+        pressure_top = min(pressure_lev)
+        delta_p = delta_pressure(pressure_lev, self.surface_pressure_scalar)
+        self.assertEqual(sum(delta_p),
+                         self.surface_pressure_scalar - pressure_top)
+
+    def test_negative_pressure_warning(self):
+        pressure_lev_negative = self.pressure_lev.copy()
+        pressure_lev_negative[0] = -5
+        with self.assertWarns(Warning):
+            delta_p = delta_pressure(pressure_lev_negative,
+                                     self.surface_pressure_scalar)
+
+    def test_relative_pressure_warning(self):
+        surface_pressure_low = 0.5
+        with self.assertWarns(Warning):
+            delta_p = delta_pressure(self.pressure_lev, surface_pressure_low)
+
+    def test_output_type(self):
+        delta_pressure_da = delta_pressure(self.pressure_lev_da,
+                                           self.surface_pressure_3D_da)
+        self.assertIsInstance(delta_pressure_da, xr.DataArray)
+
+        delta_pressure_np = delta_pressure(self.pressure_lev,
+                                           self.surface_pressure_3D)
+        self.assertIsInstance(delta_pressure_np, np.ndarray)
+
+    def test_output_dimensions(self):
+        delta_pressure_scalar = delta_pressure(self.pressure_lev,
+                                               self.surface_pressure_scalar)
+        self.assertEqual(delta_pressure_scalar.shape, (4,))
+
+        delta_pressure_1D = delta_pressure(self.pressure_lev,
+                                           self.surface_pressure_1D)
+        self.assertEqual(delta_pressure_1D.shape, (2, 4))
+
+        delta_pressure_2D = delta_pressure(self.pressure_lev,
+                                           self.surface_pressure_2D)
+        self.assertEqual(delta_pressure_2D.shape, (2, 2, 4))
+
+        delta_pressure_3D = delta_pressure(self.pressure_lev,
+                                           self.surface_pressure_3D)
+        self.assertEqual(delta_pressure_3D.shape, (2, 2, 2, 4))
+
+    def test_output_attrs(self):
+        delta_pressure_da = delta_pressure(self.pressure_lev_da,
+                                           self.surface_pressure_3D_da)
+        for item in self.pressure_lev_da.attrs:
+            self.assertIn(item, delta_pressure_da.attrs)
+
+    def test_output_coords(self):
+        delta_pressure_da = delta_pressure(self.pressure_lev_da,
+                                           self.surface_pressure_3D_da)
+        for item in self.surface_pressure_3D_da.coords:
+            self.assertIn(item, delta_pressure_da.coords)
+        for item in self.pressure_lev_da.coords:
+            self.assertIn(item, delta_pressure_da.coords)
