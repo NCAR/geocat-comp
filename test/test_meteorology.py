@@ -731,3 +731,8 @@ class TestDeltaPressure(unittest.TestCase):
             self.assertIn(item, delta_pressure_da.coords)
         for item in self.pressure_lev_da.coords:
             self.assertIn(item, delta_pressure_da.coords)
+
+    def test_mismatch_input_types(self):
+        delta_pressure_da = delta_pressure(self.pressure_lev,
+                                           self.surface_pressure_3D_da)
+        self.assertIsInstance(delta_pressure_da, xr.DataArray)
