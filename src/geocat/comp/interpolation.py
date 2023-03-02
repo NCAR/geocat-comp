@@ -285,9 +285,8 @@ def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, ps,
     output: :class:`xarray.DataArray`
         A DataArray containing the data after extrapolation.
     """
-    plev_name = pressure.cf['vertical'].name
-    sfc_index = pressure[plev_name].argmax().data  # index of the model surface
-    p_sfc = pressure.isel(**dict({plev_name: sfc_index
+    sfc_index = pressure[lev_dim].argmax().data  # index of the model surface
+    p_sfc = pressure.isel(**dict({lev_dim: sfc_index
                                  }))  # extract pressure at lowest level
 
     if variable == 'temperature':
@@ -305,7 +304,7 @@ def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, ps,
         for lev in new_levels:
             output.loc[dict(plev=lev)] = xr.where(
                 lev <= p_sfc, output.sel(plev=lev),
-                data.isel(**dict({plev_name: sfc_index})))
+                data.isel(**dict({lev_dim: sfc_index})))
     return output
 
 
