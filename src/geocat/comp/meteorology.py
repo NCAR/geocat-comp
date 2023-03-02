@@ -1440,23 +1440,24 @@ def delta_pressure(pressure_lev, surface_pressure):
     """Calculates the pressure layer thickness (delta pressure) of a constant
     pressure level coordinate system.
 
-    Returns an array of shape matching (`surface_pressure`, `pressure_lev`).
+    Returns an array of shape matching (``surface_pressure``, ``pressure_lev``).
 
     Parameters
     ----------
-    pressure_lev : :class:`numpy.ndarray`, :class:'xarray.DataArray`
+    pressure_lev : :class:`numpy.ndarray`, :class:`xarray.DataArray`
         The pressure level array. May be in ascending or descending order.
-        Must have the same units as `surface_pressure`.
-    surface_pressure : :class:`np.Array`, :class:'xr.DataArray`
+        Must have the same units as ``surface_pressure``.
+
+    surface_pressure : :class:`int`, :class:`float`, :class:`np.ndarray`, :class:`xr.DataArray`
         The scalar or N-dimensional surface pressure array. Must have the same
-        units as `pressure_lev`.
+        units as ``pressure_lev``.
 
     Returns
     -------
-    delta_pressure : :class:`numpy.ndarray`, :class:'xarray.DataArray`
-        The pressure layer thickness array. Shares units with `pressure_lev`.
-        If `surface_pressure` is scalar, shares dimensions with
-        `pressure_level`. If `surface_pressure` is an array than the returned
+    delta_pressure : :class:`numpy.ndarray`, :class:`xarray.DataArray`
+        The pressure layer thickness array. Shares units with ``pressure_lev``.
+        If ``surface_pressure`` is scalar, shares dimensions with
+        ``pressure_level``. If ``surface_pressure`` is an array than the returned
         array will have an additional dimension [e.g. (lat, lon, time) becomes
         (lat, lon, time, lev)].
 
