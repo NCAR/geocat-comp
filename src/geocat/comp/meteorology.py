@@ -1501,7 +1501,7 @@ def delta_pressure(pressure_lev, surface_pressure):
     # If passed in an Xarray array, return an Xarray array
     # Change this to return a dataset that has both surface pressure and delta pressure?
     if type_surface_pressure == xr.DataArray:
-        da_coords['lev'] = pressure_lev.values
+        da_coords['lev'] = pressure_lev.values if (type_pressure_level == xr.DataArray) else pressure_lev
         da_dims = da_dims + ("lev",)
         da_attrs.update({"long name": "pressure layer thickness"})
         delta_pressure = xr.DataArray(delta_pressure,
