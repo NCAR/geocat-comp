@@ -736,3 +736,7 @@ class TestDeltaPressure(unittest.TestCase):
         delta_pressure_da = delta_pressure(self.pressure_lev,
                                            self.surface_pressure_3D_da)
         self.assertIsInstance(delta_pressure_da, xr.DataArray)
+        
+        delta_pressure_np = delta_pressure(self.pressure_lev_da,
+                                           self.surface_pressure_3D)
+        self.assertIsInstance(delta_pressure_np, np.ndarray)
