@@ -1457,7 +1457,7 @@ def delta_pressure(pressure_lev, surface_pressure):
         If ``surface_pressure`` is scalar, shares dimensions with
         ``pressure_level``. If ``surface_pressure`` is an array than the returned
         array will have an additional dimension [e.g. (lat, lon, time) becomes
-        (lat, lon, time, lev)].
+        (lat, lon, time, lev)]. Will alwasy be the same type as ``surface_pressure``.
 
     See Also
     --------
