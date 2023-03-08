@@ -20,5 +20,6 @@ dependencies:
     - nbsphinx
     - xskillscore
     - pip
+    - nc-time-axis
     - pip:
         - -e ..
