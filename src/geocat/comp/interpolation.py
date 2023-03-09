@@ -370,11 +370,13 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
 
     t_bot : :class:`xarray.DataArray`, optional
         Temperature in Kelvin at the lowest layer of the model. Not necessarily
-        the same as surface temperature. Required if ``extrapolate`` is True.
+        the same as surface temperature. Required if ``extrapolate`` is True
+        and ``variable`` is not ``'other'``
 
     phi_sfc: :class:`xarray.DataArray`, optional
         Geopotential in J/kg at the lowest layer of the model. Not necessarily
-        the same as surface geopotential. Required if ``extrapolate`` is True.
+        the same as surface geopotential. Required if ``extrapolate`` is True
+        and ``variable`` is not ``'other'``.
 
     Returns
     -------
@@ -403,7 +405,7 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
             "The value of `variable` is " + variable +
             ", but the accepted values are 'temperature', 'geopotential', 'other', or None."
         )
-    
+
     # Determine the level dimension and then the interpolation axis
     if lev_dim is None:
         try:
