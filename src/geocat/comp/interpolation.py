@@ -389,18 +389,21 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
     """
 
     # Check inputs
-    if extrapolate and ((variable is None) or (t_bot is None) or
-                        (phi_sfc is None)):
+    if (extrapolate and (variable is None)):
         raise ValueError(
-            "If `extrapolate` is True, `variable`, `t_bot`, and `phi_sfc` must be provided."
+            "If `extrapolate` is True, `variable` must be provided."
         )
 
-    if (variable != "temperature") and (variable != "geopotential") and (
-            variable != "other") and (variable is not None):
+    if variable in ['geopotential', 'temperature'] and (t_bot is None or phi_sfc is None):
+        raise ValueError(
+            "If `variable` is 'geopotential' or 'temperature', both `t_bot` and `phi_sfc` must be provided")
+
+    if (variable not in ['geopotential', 'temperature', 'other', None]):
         raise ValueError(
             "The value of `variable` is " + variable +
             ", but the accepted values are 'temperature', 'geopotential', 'other', or None."
         )
+    
     # Determine the level dimension and then the interpolation axis
     if lev_dim is None:
         try:
