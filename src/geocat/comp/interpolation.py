@@ -370,13 +370,11 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
 
     t_bot : :class:`xarray.DataArray`, optional
         Temperature in Kelvin at the lowest layer of the model. Not necessarily
-        the same as surface temperature. Required if ``extrapolate`` is True
-        and ``variable`` is not ``'other'``
+        the same as surface temperature. Required if ``extrapolate`` is True.
 
     phi_sfc: :class:`xarray.DataArray`, optional
         Geopotential in J/kg at the lowest layer of the model. Not necessarily
-        the same as surface geopotential. Required if ``extrapolate`` is True
-        and ``variable`` is not ``'other'``.
+        the same as surface geopotential. Required if ``extrapolate`` is True.
 
     Returns
     -------
@@ -391,22 +389,18 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
     """
 
     # Check inputs
-    if (extrapolate and (variable is None)):
+    if extrapolate and ((variable is None) or (t_bot is None) or
+                        (phi_sfc is None)):
         raise ValueError(
-            "If `extrapolate` is True, `variable` must be provided.")
-
-    if variable in ['geopotential', 'temperature'] and (t_bot is None or
-                                                        phi_sfc is None):
-        raise ValueError(
-            "If `variable` is 'geopotential' or 'temperature', both `t_bot` and `phi_sfc` must be provided"
+            "If `extrapolate` is True, `variable`, `t_bot`, and `phi_sfc` must be provided."
         )
 
-    if (variable not in ['geopotential', 'temperature', 'other', None]):
+    if (variable != "temperature") and (variable != "geopotential") and (
+            variable != "other") and (variable is not None):
         raise ValueError(
             "The value of `variable` is " + variable +
             ", but the accepted values are 'temperature', 'geopotential', 'other', or None."
         )
-
     # Determine the level dimension and then the interpolation axis
     if lev_dim is None:
         try:
