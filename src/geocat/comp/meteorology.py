@@ -33,7 +33,7 @@ def _dewtemp(
     See Also
     --------
     Related GeoCAT Functions:
-    `dewtemp <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.dewtemp.html#geocat.comp.meteorology.dewtemp>`__
+    :any:`dewtemp`
 
     Related NCL Functions:
     `dewtemp_trh <https://www.ncl.ucar.edu/Document/Functions/Built-in/dewtemp_trh.shtml>`__
@@ -78,8 +78,8 @@ def _heat_index(temperature: np.ndarray,
     See Also
     --------
     Related GeoCAT Functions:
-    `heat_index <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.heat_index.html#geocat.comp.meteorology.heat_index>`__,
-    `_xheat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xheat_index.html#geocat.comp.meteorology._xheat_index>`__
+    :any:`heat_index`,
+    :any:`_xheat_index`
 
     Related NCL Functions:
     `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__
@@ -160,8 +160,8 @@ def _nws_eqn(coeffs, temp, rel_hum):
     See Also
     --------
     Related GeoCAT Functions:
-    `heat_index <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.heat_index.html#geocat.comp.meteorology.heat_index>`__,
-    `_heat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._heat_index.html#geocat.comp.meteorology._heat_index>`__
+    :any:`heat_index`,
+    :any:`_heat_index`
 
     Related NCL Functions:
     `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__,
@@ -211,10 +211,10 @@ def _relhum(
     See Also
     --------
     Related GeoCAT Functions:
-    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`__,
-    `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`__,
-    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`__,
-    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`__
+    :any:`relhum`
+    :any:`relhum_ice`
+    :any:`relhum_water`
+    :any:`_xrelhum`
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
@@ -301,10 +301,10 @@ def _relhum_ice(t: typing.Union[np.ndarray, list, float],
     See Also
     --------
     Related GeoCAT Functions:
-    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`__,
-    `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`__,
-    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`__,
-    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`__
+    :any:`relhum`
+    :any:`relhum_ice`
+    :any:`relhum_water`
+    :any:`_xrelhum`
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
@@ -365,10 +365,10 @@ def _relhum_water(t: typing.Union[np.ndarray, list, float],
     See Also
     --------
     Related GeoCAT Functions:
-    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`__,
-    `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`__,
-    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`__,
-    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`__
+    :any:`relhum`
+    :any:`relhum_ice`
+    :any:`relhum_water`
+    :any:`_xrelhum`
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
@@ -425,8 +425,8 @@ def _xheat_index(temperature: xr.DataArray,
     See Also
     --------
     Related GeoCAT Functions:
-    `heat_index <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.heat_index.html#geocat.comp.meteorology.heat_index>`__,
-    `_heat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._heat_index.html#geocat.comp.meteorology._heat_index>`__
+    :any:`heat_index`
+    :any:`_heat_index`
 
     Related NCL Functions:
     `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__,
@@ -509,9 +509,9 @@ def _xrelhum(t: xr.DataArray, w: xr.DataArray, p: xr.DataArray) -> xr.DataArray:
     See Also
     --------
     Related GeoCAT Functions:
-    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`__,
-    `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`__,
-    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`__
+    :any:`relhum`
+    :any:`relhum_ice`
+    :any:`relhum_water`
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
@@ -594,7 +594,7 @@ def dewtemp(
     See Also
     --------
     Related GeoCAT Functions:
-    `_dewtemp <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._dewtemp.html#geocat.comp.meteorology._dewtemp>`__
+    :any:`_dewtemp`
 
     Related NCL Functions:
     `dewtemp_trh <https://www.ncl.ucar.edu/Document/Functions/Built-in/dewtemp_trh.shtml>`__
@@ -691,8 +691,8 @@ def heat_index(
     See Also
     --------
     Related GeoCAT Functions:
-    `_heat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._heat_index.html#geocat.comp.meteorology._heat_index>`__,
-    `_xheat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xheat_index.html#geocat.comp.meteorology._xheat_index>`__
+    :any:`_heat_index`
+    :any:`_xheat_index`
 
     Related NCL Functions:
     `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__
@@ -796,9 +796,9 @@ def relhum(
     See Also
     --------
     Related GeoCAT Functions:
-    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`__,
-    `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`__,
-    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`__
+    :any:`_xrelhum`
+    :any:`relhum_ice`
+    :any:`relhum_water`
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
@@ -874,10 +874,10 @@ def relhum_ice(temperature: typing.Union[np.ndarray, list, float],
     See Also
     --------
     Related GeoCAT Functions:
-    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`__,
-    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`__,
-    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`__,
-    `_relhum_ice <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._relhum_ice.html#geocat.comp.meteorology._relhum_ice>`__
+    :any:`relhum`
+    :any:`_xrelhum`
+    :any:`relhum_water`
+    :any:`_relhum_ice`
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
@@ -951,10 +951,10 @@ def relhum_water(temperature: typing.Union[np.ndarray, list, float],
     See Also
     --------
     Related GeoCAT Functions:
-    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`__,
-    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`__,
-    `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`__,
-    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._relhum_water.html#geocat.comp.meteorology._relhum_water>`__
+    :any:`relhum`
+    :any:`_xrelhum`
+    :any:`relhum_ice`
+    :any:`relhum_water`
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
@@ -1203,8 +1203,8 @@ def saturation_vapor_pressure(
     See Also
     --------
     Related GeoCAT Functions:
-    `actual_saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/stable/user_api/generated/geocat.comp.meteorology.actual_saturation_vapor_pressure.html>`__,
-    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.saturation_vapor_pressure_slope.html>`__
+    :any:`actual_saturation_vapor_pressure`
+    :any:`saturation_vapor_pressure_slope`
 
     Related NCL Functions:
     `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>`__
@@ -1279,8 +1279,8 @@ def actual_saturation_vapor_pressure(
     See Also
     --------
     Related GeoCAT Functions:
-    `saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.saturation_vapor_pressure.html>`__,
-    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.saturation_vapor_pressure_slope.html>`__
+    :any:`saturation_vapor_pressure`
+    :any:`saturation_vapor_pressure_slope`
 
     Related NCL Functions:
     `satvpr_tdew_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_tdew_fao56.shtml>`__
@@ -1337,8 +1337,8 @@ def saturation_vapor_pressure_slope(
     See Also
     --------
     Related GeoCAT Functions:
-    `actual_saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.actual_saturation_vapor_pressure.html>`__,
-    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.saturation_vapor_pressure_slope.html>`__
+    :any:`actual_saturation_vapor_pressure`
+    :any:`saturation_vapor_pressure_slope`
 
     Related NCL Functions:
     `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>`__

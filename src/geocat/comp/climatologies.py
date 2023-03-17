@@ -220,7 +220,7 @@ def climatology(
     See Also
     --------
     Related GeoCAT Functions:
-    `climatology_average <https://geocat-comp.readthedocs.io/en/stable/user_api/generated/geocat.comp.climatologies.climatology_average.html>`__
+    :any:`climatology_average`
 
     Related NCL Functions:
     `clmDayTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayTLL.shtml>`__,
@@ -324,7 +324,7 @@ def anomaly(
     See Also
     --------
     Related GeoCAT Functions:
-    `climate_anomaly <https://geocat-comp.readthedocs.io/en/stable/user_api/generated/geocat.comp.climatologies.climate_anomaly.html>`__
+    :any:`climate_anomaly`
 
     Related NCL Functions:
     `clmDayAnomTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcDayAnomTLL.shtml>`__,
@@ -396,8 +396,8 @@ def climate_anomaly(
     See Also
     --------
     Related GeoCAT Functions:
-    `climatology_average <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.climatologies.climatology_average.html#geocat.comp.climatologies.climatology_average>`__
-    `calendar_average <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.climatologies.calendar_average.html#geocat.comp.climatologies.calendar_average>`__
+    :any:`climatology_average`
+    :any:`calendar_average`
 
     Related NCL Functions:
     `calcDayAnomTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcDayAnomTLL.shtml>`__
@@ -596,7 +596,7 @@ def calendar_average(
     See Also
     --------
     Related GeoCAT Functions:
-    `climatology_average <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.climatologies.climatology_average.html#geocat.comp.climatologies.climatology_average>`__
+    :any:`climatology_average`
     """
     # TODO: add functionality for users to select specific seasons or hours for averages
     freq_dict = {
@@ -713,7 +713,7 @@ def climatology_average(
     See Also
     --------
     Related GeoCAT Functions:
-    `calendar_average <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.climatologies.calendar_average.html#geocat.comp.climatologies.calendar_average>`__
+    :any:`calendar_average`
 
     Related NCL Functions:
     `clmDayHourTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayHourTLL.shtml>`__,
