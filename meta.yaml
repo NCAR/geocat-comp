@@ -1,5 +1,5 @@
 {% set name = "geocat-comp" %}
-{% set version = "2022.11.0" %}
+{% set version = "2023.03.0" %}
 
 package:
   name: {{ name }}
@@ -65,5 +65,5 @@ extra:
     - pilotchute # A. Kootz https://github.com/pilotchute
     - erogluorhan # O. Eroglu https://github.com/erogluorhan
     - anissa111 # A. Zacharias https://github.com/anissa111
-    - michaelavs # M. Sizemore https://github.com/michaelavs
     - hcraker # H. Craker https://github.com/hcraker
+    - jukent # J. Kent https://github.com/jukent

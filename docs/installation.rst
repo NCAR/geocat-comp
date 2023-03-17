@@ -47,7 +47,7 @@ Although packages like Matplotlib are often used with GeoCAT-comp, they are cons
 `optional` dependencies and must be explicitly installed.
 
 If you are interested in learning more about how Conda environments work, please
-visit the `managing environments <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html>`__
+visit the `managing environments <https://docs.conda.io/projects/conda/en/stable/user-guide/tasks/manage-environments.html>`__
 page of the Conda documentation.
 
 Installing GeoCAT-comp in a Pre-existing Conda Environment
