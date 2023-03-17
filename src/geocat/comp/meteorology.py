@@ -1,12 +1,10 @@
 import dask.array as da
-import metpy.calc as mpcalc
 import numpy as np
-import pint
 import typing
 import warnings
 import xarray as xr
-from itertools import chain
-from metpy.units import units
+
+from .gc_util import _generate_wrapper_docstring
 
 
 def _dewtemp(
@@ -995,58 +993,6 @@ def relhum_water(temperature: typing.Union[np.ndarray, list, float],
     return relative_humidity
 
 
-def showalter_index(
-        pressure: typing.Union[pint.Quantity, list, float, int],
-        temperature: typing.Union[pint.Quantity, list, float, int],
-        dewpt: typing.Union[pint.Quantity, list, float, int]) -> pint.Quantity:
-    r"""
-    .. deprecated:: 2022.12.0 ``showalter_index`` is deprecated. Use ``metpy.calc.showalter_index``
-        instead. See the MetPy `documentation <https://unidata.github.io/MetPy/latest/api/generated/metpy.calc.showalter_index.html>`_.
-
-    Calculate Showalter Index from pressure temperature and 850 hPa lcl.
-    Showalter Index derived from `Gallway 1956 <https://journals.ametsoc.org/do
-    wnloadpdf/journals/bams/37/10/1520-0477-37_10_528.xml>`__.
-
-    :math:`shox = T500 - Tp500`
-
-    - `T500` is the measured temperature at 500 hPa
-    - `Tp500` is the temperature of the lifted parcel at 500 hPa
-
-    Parameters
-    ----------
-    pressure : :class:`pint.Quantity`, array-like, int, float
-        Atmospheric pressure level(s) of interest, in order from highest
-        to lowest pressure in hectoPascals
-    temperature : :class:`pint.Quantity`, array-like, int, float
-        Parcel temperature for corresponding pressure in degrees Celcius
-    dewpt : :class:`pint.Quantity`, array-like, int, float
-        Parcel dew point temperatures for corresponding pressure in degrees Celcius
-
-    Returns
-    -------
-    shox : same type as input
-       Showalter index in delta degrees Celsius
-
-    Note
-    ----
-    ``pressure``, ``temperature``, and ``dewpt`` must all be ``pint.Quantity`` objects or all plain, unitless numbers.
-    """
-    warnings.warn(
-        'showalter_index is deprecated in favor of metpy.calc.showalter_index',
-        DeprecationWarning,
-        stacklevel=2)
-
-    if not (isinstance(pressure, pint.Quantity)\
-            and isinstance(temperature, pint.Quantity)\
-            and isinstance(dewpt, pint.Quantity)):
-        pressure = pressure * units.hPa
-        temperature = temperature * units.degC
-        dewpt = dewpt * units.degC
-        return mpcalc.showalter_index(pressure, temperature, dewpt).magnitude
-    else:
-        return mpcalc.showalter_index(pressure, temperature, dewpt)
-
-
 def max_daylight(
     jday: typing.Union[np.ndarray, xr.DataArray, list,
                        float], lat: typing.Union[np.ndarray, xr.DataArray, list,
@@ -1257,8 +1203,8 @@ def saturation_vapor_pressure(
     See Also
     --------
     Related GeoCAT Functions:
-    `actual_saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.actual_saturation_vapor_pressure.html#geocat.comp.crop.actual_saturation_vapor_pressure>`__,
-    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure_slope.html#geocat.comp.crop.saturation_vapor_pressure_slope>`__
+    `actual_saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/stable/user_api/generated/geocat.comp.meteorology.actual_saturation_vapor_pressure.html>`__,
+    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.saturation_vapor_pressure_slope.html>`__
 
     Related NCL Functions:
     `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>`__
@@ -1333,8 +1279,8 @@ def actual_saturation_vapor_pressure(
     See Also
     --------
     Related GeoCAT Functions:
-    `saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure.html#geocat.comp.crop.saturation_vapor_pressure>`__,
-    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure_slope.html#geocat.comp.crop.saturation_vapor_pressure_slope>`__
+    `saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.saturation_vapor_pressure.html>`__,
+    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.saturation_vapor_pressure_slope.html>`__
 
     Related NCL Functions:
     `satvpr_tdew_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_tdew_fao56.shtml>`__
@@ -1391,8 +1337,8 @@ def saturation_vapor_pressure_slope(
     See Also
     --------
     Related GeoCAT Functions:
-    `actual_saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.actual_saturation_vapor_pressure.html#geocat.comp.crop.actual_saturation_vapor_pressure>`__,
-    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure_slope.html#geocat.comp.crop.saturation_vapor_pressure_slope>`__
+    `actual_saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.actual_saturation_vapor_pressure.html>`__,
+    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.saturation_vapor_pressure_slope.html>`__
 
     Related NCL Functions:
     `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>`__
@@ -1431,3 +1377,143 @@ def saturation_vapor_pressure_slope(
             tfill)
 
     return svp_slope
+
+
+def _delta_pressure1D(pressure_lev, surface_pressure):
+    """Helper function for `delta_pressure`. Calculates the pressure layer
+    thickness (delta pressure) of a one-dimensional pressure level array.
+
+    Returns an array of length matching `pressure_lev`.
+
+    Parameters
+    ----------
+    pressure_lev : :class:`numpy.ndarray`
+        The pressure level array. May be in ascending or descending order.
+        Must have the same units as `surface_pressure`.
+
+    surface_pressure : :class:`float`
+        The scalar surface pressure. Must have the same units as
+        `pressure_lev`.
+
+    Returns
+    -------
+    delta_pressure : :class:`numpy.ndarray`
+        The pressure layer thickness array. Shares dimensions and units of
+        `pressure_lev`.
+    """
+    pressure_top = min(pressure_lev)
+
+    # Safety checks
+    if pressure_top <= 0:
+        warnings.warn("'pressure_lev` values must all be positive.")
+    if pressure_top > surface_pressure:
+        warnings.warn(
+            "`surface_pressure` must be greater than minimum `pressure_lev` value."
+        )
+
+    # Sort so pressure increases (array goes from top of atmosphere to bottom)
+    is_pressuredecreasing = pressure_lev[1] < pressure_lev[0]
+    if is_pressuredecreasing:
+        pressure_lev = np.flip(pressure_lev)
+
+    # Calculate delta pressure
+    delta_pressure = np.empty_like(pressure_lev)
+
+    delta_pressure[0] = (pressure_lev[0] +
+                         pressure_lev[1]) / 2 - pressure_top  # top level
+    delta_pressure[1:-1] = [
+        (a - b) / 2 for a, b in zip(pressure_lev[2:], pressure_lev[:-1])
+    ]
+    delta_pressure[-1] = surface_pressure - (
+        pressure_lev[-1] + pressure_lev[-2]) / 2  # bottom level
+
+    # Return delta_pressure to original order
+    if is_pressuredecreasing:
+        delta_pressure = np.flip(delta_pressure)
+
+    return delta_pressure
+
+
+def delta_pressure(pressure_lev, surface_pressure):
+    """Calculates the pressure layer thickness (delta pressure) of a constant
+    pressure level coordinate system.
+
+    Returns an array of shape matching (``surface_pressure``, ``pressure_lev``).
+
+    Parameters
+    ----------
+    pressure_lev : :class:`numpy.ndarray`, :class:`xarray.DataArray`
+        The pressure level array. May be in ascending or descending order.
+        Must have the same units as ``surface_pressure``.
+
+    surface_pressure : :class:`int`, :class:`float`, :class:`numpy.ndarray`, :class:`xarray.DataArray`
+        The scalar or N-dimensional surface pressure array. Must have the same
+        units as ``pressure_lev``.
+
+    Returns
+    -------
+    delta_pressure : :class:`numpy.ndarray`, :class:`xarray.DataArray`
+        The pressure layer thickness array. Shares units with ``pressure_lev``.
+        If ``surface_pressure`` is scalar, shares dimensions with
+        ``pressure_level``. If ``surface_pressure`` is an array than the returned
+        array will have an additional dimension [e.g. (lat, lon, time) becomes
+        (lat, lon, time, lev)].
+
+    See Also
+    --------
+    Related NCL Functions:
+    `dpres_plev <https://www.ncl.ucar.edu/Document/Functions/Built-in/dpres_plevel.shtml>`__
+    """
+    # Get original array types
+    type_surface_pressure = type(
+        surface_pressure
+    )  # save type for delta_pressure to same type as surface_pressure at end
+    type_pressure_level = type(pressure_lev)
+
+    # Preserve attributes for Xarray
+    if type_surface_pressure == xr.DataArray:
+        da_coords = dict(surface_pressure.coords)
+        da_attrs = dict(surface_pressure.attrs)
+        da_dims = surface_pressure.dims
+    if type_pressure_level == xr.DataArray:
+        da_attrs = dict(
+            pressure_lev.attrs)  # Overwrite attributes to match pressure_lev
+
+    # Calculate delta pressure
+    if np.isscalar(surface_pressure):  # scalar case
+        delta_pressure = _delta_pressure1D(pressure_lev, surface_pressure)
+    else:  # multi-dimensional cases
+        shape = surface_pressure.shape
+        delta_pressure_shape = shape + (len(pressure_lev),
+                                       )  # preserve shape for reshaping
+
+        surface_pressure_flattened = np.ravel(
+            surface_pressure)  # flatten to avoid nested for loops
+        delta_pressure = [
+            _delta_pressure1D(pressure_lev, e)
+            for e in surface_pressure_flattened
+        ]
+
+        delta_pressure = np.array(delta_pressure).reshape(delta_pressure_shape)
+
+    # If passed in an Xarray array, return an Xarray array
+    # Change this to return a dataset that has both surface pressure and delta pressure?
+    if type_surface_pressure == xr.DataArray:
+        da_coords['lev'] = pressure_lev.values
+        da_dims = da_dims + ("lev",)
+        da_attrs.update({"long name": "pressure layer thickness"})
+        delta_pressure = xr.DataArray(delta_pressure,
+                                      coords=da_coords,
+                                      dims=da_dims,
+                                      attrs=da_attrs,
+                                      name="delta pressure")
+
+    return delta_pressure
+
+
+# NCL NAME WRAPPER FUNCTIONS BELOW
+def dpres_plev(pressure_lev, surface_pressure):
+    return delta_pressure(pressure_lev, surface_pressure)
+
+
+_generate_wrapper_docstring(dpres_plev, delta_pressure)

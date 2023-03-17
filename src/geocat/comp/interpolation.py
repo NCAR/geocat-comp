@@ -285,9 +285,8 @@ def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, ps,
     output: :class:`xarray.DataArray`
         A DataArray containing the data after extrapolation.
     """
-    plev_name = pressure.cf['vertical'].name
-    sfc_index = pressure[plev_name].argmax().data  # index of the model surface
-    p_sfc = pressure.isel(**dict({plev_name: sfc_index
+    sfc_index = pressure[lev_dim].argmax().data  # index of the model surface
+    p_sfc = pressure.isel(**dict({lev_dim: sfc_index
                                  }))  # extract pressure at lowest level
 
     if variable == 'temperature':
@@ -305,7 +304,7 @@ def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, ps,
         for lev in new_levels:
             output.loc[dict(plev=lev)] = xr.where(
                 lev <= p_sfc, output.sel(plev=lev),
-                data.isel(**dict({plev_name: sfc_index})))
+                data.isel(**dict({lev_dim: sfc_index})))
     return output
 
 
@@ -371,11 +370,13 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
 
     t_bot : :class:`xarray.DataArray`, optional
         Temperature in Kelvin at the lowest layer of the model. Not necessarily
-        the same as surface temperature. Required if ``extrapolate`` is True.
+        the same as surface temperature. Required if ``extrapolate`` is True
+        and ``variable`` is not ``'other'``
 
     phi_sfc: :class:`xarray.DataArray`, optional
         Geopotential in J/kg at the lowest layer of the model. Not necessarily
-        the same as surface geopotential. Required if ``extrapolate`` is True.
+        the same as surface geopotential. Required if ``extrapolate`` is True
+        and ``variable`` is not ``'other'``.
 
     Returns
     -------
@@ -390,18 +391,22 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
     """
 
     # Check inputs
-    if extrapolate and ((variable is None) or (t_bot is None) or
-                        (phi_sfc is None)):
+    if (extrapolate and (variable is None)):
         raise ValueError(
-            "If `extrapolate` is True, `variable`, `t_bot`, and `phi_sfc` must be provided."
+            "If `extrapolate` is True, `variable` must be provided.")
+
+    if variable in ['geopotential', 'temperature'] and (t_bot is None or
+                                                        phi_sfc is None):
+        raise ValueError(
+            "If `variable` is 'geopotential' or 'temperature', both `t_bot` and `phi_sfc` must be provided"
         )
 
-    if (variable != "temperature") and (variable != "geopotential") and (
-            variable != "other") and (variable is not None):
+    if (variable not in ['geopotential', 'temperature', 'other', None]):
         raise ValueError(
             "The value of `variable` is " + variable +
             ", but the accepted values are 'temperature', 'geopotential', 'other', or None."
         )
+
     # Determine the level dimension and then the interpolation axis
     if lev_dim is None:
         try:
