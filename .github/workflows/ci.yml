@@ -84,6 +84,9 @@ jobs:
           python-version: 3.9
           channels: conda-forge
           environment-file: build_envs/docs.yml
+      - name: check conda list
+        run: |
+          conda list
       - name: Make docs with linkcheck
         run: |
           cd docs
