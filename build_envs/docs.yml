@@ -19,7 +19,4 @@ dependencies:
     - sphinx-design
     - nbsphinx
     - xskillscore
-    - pip
     - nc-time-axis
-    - pip:
-        - -e ..
