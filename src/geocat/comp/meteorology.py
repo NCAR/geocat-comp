@@ -33,7 +33,7 @@ def _dewtemp(
     See Also
     --------
     Related GeoCAT Functions:
-    :any:`dewtemp`
+    :func:`dewtemp`
 
     Related NCL Functions:
     `dewtemp_trh <https://www.ncl.ucar.edu/Document/Functions/Built-in/dewtemp_trh.shtml>`__
@@ -78,8 +78,8 @@ def _heat_index(temperature: np.ndarray,
     See Also
     --------
     Related GeoCAT Functions:
-    :any:`heat_index`,
-    :any:`_xheat_index`
+    :func:`heat_index`,
+    :func:`_xheat_index`
 
     Related NCL Functions:
     `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__
@@ -160,8 +160,8 @@ def _nws_eqn(coeffs, temp, rel_hum):
     See Also
     --------
     Related GeoCAT Functions:
-    :any:`heat_index`,
-    :any:`_heat_index`
+    :func:`heat_index`,
+    :func:`_heat_index`
 
     Related NCL Functions:
     `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__,
@@ -211,10 +211,10 @@ def _relhum(
     See Also
     --------
     Related GeoCAT Functions:
-    :any:`relhum`
-    :any:`relhum_ice`
-    :any:`relhum_water`
-    :any:`_xrelhum`
+    :func:`relhum`
+    :func:`relhum_ice`
+    :func:`relhum_water`
+    :func:`_xrelhum`
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
@@ -301,10 +301,10 @@ def _relhum_ice(t: typing.Union[np.ndarray, list, float],
     See Also
     --------
     Related GeoCAT Functions:
-    :any:`relhum`
-    :any:`relhum_ice`
-    :any:`relhum_water`
-    :any:`_xrelhum`
+    :func:`relhum`
+    :func:`relhum_ice`
+    :func:`relhum_water`
+    :func:`_xrelhum`
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
@@ -365,10 +365,10 @@ def _relhum_water(t: typing.Union[np.ndarray, list, float],
     See Also
     --------
     Related GeoCAT Functions:
-    :any:`relhum`
-    :any:`relhum_ice`
-    :any:`relhum_water`
-    :any:`_xrelhum`
+    :func:`relhum`
+    :func:`relhum_ice`
+    :func:`relhum_water`
+    :func:`_xrelhum`
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
@@ -425,8 +425,8 @@ def _xheat_index(temperature: xr.DataArray,
     See Also
     --------
     Related GeoCAT Functions:
-    :any:`heat_index`
-    :any:`_heat_index`
+    :func:`heat_index`
+    :func:`_heat_index`
 
     Related NCL Functions:
     `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__,
@@ -509,9 +509,9 @@ def _xrelhum(t: xr.DataArray, w: xr.DataArray, p: xr.DataArray) -> xr.DataArray:
     See Also
     --------
     Related GeoCAT Functions:
-    :any:`relhum`
-    :any:`relhum_ice`
-    :any:`relhum_water`
+    :func:`relhum`
+    :func:`relhum_ice`
+    :func:`relhum_water`
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
@@ -594,7 +594,7 @@ def dewtemp(
     See Also
     --------
     Related GeoCAT Functions:
-    :any:`_dewtemp`
+    :func:`_dewtemp`
 
     Related NCL Functions:
     `dewtemp_trh <https://www.ncl.ucar.edu/Document/Functions/Built-in/dewtemp_trh.shtml>`__
@@ -691,8 +691,8 @@ def heat_index(
     See Also
     --------
     Related GeoCAT Functions:
-    :any:`_heat_index`
-    :any:`_xheat_index`
+    :func:`_heat_index`
+    :func:`_xheat_index`
 
     Related NCL Functions:
     `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__
@@ -796,9 +796,9 @@ def relhum(
     See Also
     --------
     Related GeoCAT Functions:
-    :any:`_xrelhum`
-    :any:`relhum_ice`
-    :any:`relhum_water`
+    :func:`_xrelhum`
+    :func:`relhum_ice`
+    :func:`relhum_water`
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
@@ -874,10 +874,10 @@ def relhum_ice(temperature: typing.Union[np.ndarray, list, float],
     See Also
     --------
     Related GeoCAT Functions:
-    :any:`relhum`
-    :any:`_xrelhum`
-    :any:`relhum_water`
-    :any:`_relhum_ice`
+    :func:`relhum`
+    :func:`_xrelhum`
+    :func:`relhum_water`
+    :func:`_relhum_ice`
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
@@ -951,10 +951,10 @@ def relhum_water(temperature: typing.Union[np.ndarray, list, float],
     See Also
     --------
     Related GeoCAT Functions:
-    :any:`relhum`
-    :any:`_xrelhum`
-    :any:`relhum_ice`
-    :any:`relhum_water`
+    :func:`relhum`
+    :func:`_xrelhum`
+    :func:`relhum_ice`
+    :func:`relhum_water`
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
@@ -1203,8 +1203,8 @@ def saturation_vapor_pressure(
     See Also
     --------
     Related GeoCAT Functions:
-    :any:`actual_saturation_vapor_pressure`
-    :any:`saturation_vapor_pressure_slope`
+    :func:`actual_saturation_vapor_pressure`
+    :func:`saturation_vapor_pressure_slope`
 
     Related NCL Functions:
     `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>`__
@@ -1279,8 +1279,8 @@ def actual_saturation_vapor_pressure(
     See Also
     --------
     Related GeoCAT Functions:
-    :any:`saturation_vapor_pressure`
-    :any:`saturation_vapor_pressure_slope`
+    :func:`saturation_vapor_pressure`
+    :func:`saturation_vapor_pressure_slope`
 
     Related NCL Functions:
     `satvpr_tdew_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_tdew_fao56.shtml>`__
@@ -1337,8 +1337,8 @@ def saturation_vapor_pressure_slope(
     See Also
     --------
     Related GeoCAT Functions:
-    :any:`actual_saturation_vapor_pressure`
-    :any:`saturation_vapor_pressure_slope`
+    :func:`actual_saturation_vapor_pressure`
+    :func:`saturation_vapor_pressure_slope`
 
     Related NCL Functions:
     `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>`__

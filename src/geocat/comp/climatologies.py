@@ -220,7 +220,7 @@ def climatology(
     See Also
     --------
     Related GeoCAT Functions:
-    :any:`climatology_average`
+    :func:`climatology_average`
 
     Related NCL Functions:
     `clmDayTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayTLL.shtml>`__,
@@ -324,7 +324,7 @@ def anomaly(
     See Also
     --------
     Related GeoCAT Functions:
-    :any:`climate_anomaly`
+    :func:`climate_anomaly`
 
     Related NCL Functions:
     `clmDayAnomTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcDayAnomTLL.shtml>`__,
@@ -396,8 +396,8 @@ def climate_anomaly(
     See Also
     --------
     Related GeoCAT Functions:
-    :any:`climatology_average`
-    :any:`calendar_average`
+    :func:`climatology_average`
+    :func:`calendar_average`
 
     Related NCL Functions:
     `calcDayAnomTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/calcDayAnomTLL.shtml>`__
@@ -596,7 +596,7 @@ def calendar_average(
     See Also
     --------
     Related GeoCAT Functions:
-    :any:`climatology_average`
+    :func:`climatology_average`
     """
     # TODO: add functionality for users to select specific seasons or hours for averages
     freq_dict = {
@@ -713,7 +713,7 @@ def climatology_average(
     See Also
     --------
     Related GeoCAT Functions:
-    :any:`calendar_average`
+    :func:`calendar_average`
 
     Related NCL Functions:
     `clmDayHourTLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmDayHourTLL.shtml>`__,
