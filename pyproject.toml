@@ -7,3 +7,5 @@ requires = [
 
 [tool.setuptools_scm]
 fallback_version = "999"
+version_scheme = "post-release"
+local_scheme = "dirty-tag"
