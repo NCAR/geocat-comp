@@ -595,7 +595,6 @@ def calendar_average(
 
     See Also
     --------
-    Related GeoCAT Functions:
     :func:`climatology_average`
     """
     # TODO: add functionality for users to select specific seasons or hours for averages
