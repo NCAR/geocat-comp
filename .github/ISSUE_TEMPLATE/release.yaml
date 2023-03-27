@@ -1,0 +1,29 @@
+name: Release Request
+description: Request a version bump and release
+title: "[Release]: "
+labels: ["release", "high priority"]
+assignees:
+  - pilotchute
+body:
+  - type: input
+    id: version-number
+    attributes:
+      label: New Version Number
+      description: What is the version number for the release?
+      placeholder: vYYYY.MM.##
+    validations:
+      required: true
+  
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Release Check List
+      options:
+        - label: version number has been changed
+          required: false
+        - label: release-notes.rst has been updated
+          required: false
+        - label: a new tag and release has been made
+          required: false
+        - label: feedstock PR has been merged
+          required: false
