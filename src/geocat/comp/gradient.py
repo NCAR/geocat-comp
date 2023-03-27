@@ -3,8 +3,7 @@ from typing import Union
 import numpy as np
 import xarray as xr
 
-SupportedTypes = Union[np.ndarray, xr.DataArray]
-XTypes = Union[xr.DataArray, xr.Dataset]
+SupportedTypes = Union[np.ndarray, xr.DataArray, xr.Dataset]
 
 d2r = 1.74532925199432957692369e-02  # degrees to radians conversion factor
 
@@ -197,24 +196,20 @@ def gradient(data: SupportedTypes, lon: SupportedTypes=None, lat: SupportedTypes
 
     axis0loc = xr.DataArray(
         arc_lat_wgs84(lat2d),
-        coords=data.coords,
-        dims=data.dims,
+        coords=metadata.coords,
     )
     axis1loc = xr.DataArray(
         arc_lon_wgs84(lon2d, lat2d),
-        coords=data.coords,
-        dims=data.dims,
+        coords=metadata.coords,
     )
 
     axis0dist = xr.DataArray(
         np.gradient(axis0loc, axis=0),
-        coords=data.coords,
-        dims=data.dims,
+        coords=metadata.coords,
     )
     axis1dist = xr.DataArray(
         np.gradient(axis1loc, axis=1),
-        coords=data.coords,
-        dims=data.dims,
+        coords=metadata.coords,
     )
 
     grad = xr.DataArray(np.gradient(metadata), coords=metadata.coords)
