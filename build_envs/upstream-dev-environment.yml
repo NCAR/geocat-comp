@@ -1,22 +1,13 @@
-name: geocat_comp_build
+name: geocat_comp_upstream
 channels:
   - conda-forge
 dependencies:
-  - python
+  - python>=3.8, <3.11
   - cftime
-  - dask
-  - distributed
   - eofs
   - geocat-datafiles  # for tests
   - geocat-f2py
-  - metpy
   - netcdf4  # for tests
-  - numpy
-  - pint<0.20
+  - parameterized  # for tests
   - pytest  # for tests
   - pytest-cov  # for tests
-  - pip
-  - xskillscore
-  - pip:
-    - git+https://github.com/pydata/xarray.git
-    - git+https://github.com/xarray-contrib/cf-xarray.git
