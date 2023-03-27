@@ -1,12 +1,10 @@
 import dask.array as da
-import metpy.calc as mpcalc
 import numpy as np
-import pint.quantity
 import typing
 import warnings
 import xarray as xr
-from itertools import chain
-from metpy.units import units
+
+from .gc_util import _generate_wrapper_docstring
 
 
 def _dewtemp(
@@ -24,7 +22,7 @@ def _dewtemp(
         Temperature in Kelvin
 
     rh : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
-        Relative humidity. Must be the same dimensions as temperature
+        Relative humidity. Must be the same dimensions as ``temperature``
 
     Returns
     -------
@@ -35,7 +33,7 @@ def _dewtemp(
     See Also
     --------
     Related GeoCAT Functions:
-    `dewtemp <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.dewtemp.html#geocat.comp.meteorology.dewtemp>`__
+    :func:`dewtemp`
 
     Related NCL Functions:
     `dewtemp_trh <https://www.ncl.ucar.edu/Document/Functions/Built-in/dewtemp_trh.shtml>`__
@@ -65,7 +63,7 @@ def _heat_index(temperature: np.ndarray,
 
     relative_humidity : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         relative humidity as a percentage. Must be the same shape as
-        temperature
+        ``temperature``
 
     alternate_coeffs : bool, optional
         flag to use alternate set of coefficients appropriate for
@@ -74,14 +72,14 @@ def _heat_index(temperature: np.ndarray,
     Returns
     -------
     heatindex : ndarray
-        Calculated heat index. Same shape as temperature
+        Calculated heat index. Same shape as ``temperature``
 
 
     See Also
     --------
     Related GeoCAT Functions:
-    `heat_index <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.heat_index.html#geocat.comp.meteorology.heat_index>`__,
-    `_xheat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xheat_index.html#geocat.comp.meteorology._xheat_index>`__
+    :func:`heat_index`,
+    :func:`_xheat_index`
 
     Related NCL Functions:
     `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__
@@ -151,19 +149,19 @@ def _nws_eqn(coeffs, temp, rel_hum):
 
     rel_hum : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         relative humidity as a percentage. Must be the same shape as
-        temperature
+        ``temperature``
 
     Returns
     -------
     heatindex : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
-        Intermediate calculated heat index. Same shape as temperature
+        Intermediate calculated heat index. Same shape as ``temperature``
 
 
     See Also
     --------
     Related GeoCAT Functions:
-    `heat_index <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.heat_index.html#geocat.comp.meteorology.heat_index>`__,
-    `_heat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._heat_index.html#geocat.comp.meteorology._heat_index>`__
+    :func:`heat_index`,
+    :func:`_heat_index`
 
     Related NCL Functions:
     `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__,
@@ -191,8 +189,7 @@ def _relhum(
 
      "Improved Magnus' Form Approx. of Saturation Vapor pressure"
      Oleg A. Alduchov and Robert E. Eskridge
-     http://www.osti.gov/scitech/servlets/purl/548871/
-     https://doi.org/10.2172/548871
+     https://journals.ametsoc.org/view/journals/apme/35/4/1520-0450_1996_035_0601_imfaos_2_0_co_2.xml
 
     Parameters
     ----------
@@ -200,24 +197,24 @@ def _relhum(
         Temperature in Kelvin
 
     w : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
-        Mixing ratio in kg/kg. Must have the same dimensions as temperature
+        Mixing ratio in kg/kg. Must have the same dimensions as ``temperature``
 
     p : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
-        Pressure in Pa. Must have the same dimensions as temperature
+        Pressure in Pa. Must have the same dimensions as ``temperature``
 
     Returns
     -------
     rh : ndarray
-        Relative humidity. Will have the same dimensions as temperature
+        Relative humidity. Will have the same dimensions as ``temperature``
 
 
     See Also
     --------
     Related GeoCAT Functions:
-    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`__,
-    `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`__,
-    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`__,
-    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`__
+    :func:`relhum`
+    :func:`relhum_ice`
+    :func:`relhum_water`
+    :func:`_xrelhum`
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
@@ -280,10 +277,9 @@ def _relhum_ice(t: typing.Union[np.ndarray, list, float],
     """Calculates relative humidity with respect to ice, given temperature,
     mixing ratio, and pressure.
 
-     "Improved Magnus' Form Approx. of Saturation Vapor pressure"
-     Oleg A. Alduchov and Robert E. Eskridge
-     http://www.osti.gov/scitech/servlets/purl/548871/
-     https://doi.org/10.2172/548871
+    "Improved Magnus' Form Approx. of Saturation Vapor pressure"
+    Oleg A. Alduchov and Robert E. Eskridge
+    https://journals.ametsoc.org/view/journals/apme/35/4/1520-0450_1996_035_0601_imfaos_2_0_co_2.xml
 
     Parameters
     ----------
@@ -291,24 +287,24 @@ def _relhum_ice(t: typing.Union[np.ndarray, list, float],
         Temperature in Kelvin
 
     w : ndarray, :obj:`list`, :obj:`float`
-        Mixing ratio in kg/kg. Must have the same dimensions as temperature
+        Mixing ratio in kg/kg. Must have the same dimensions as ``temperature``
 
     p : ndarray, :obj:`list`, :obj:`float`
-        Pressure in Pa. Must have the same dimensions as temperature
+        Pressure in Pa. Must have the same dimensions as ``temperature``
 
     Returns
     -------
     rh : ndarray
-        Relative humidity. Will have the same dimensions as temperature
+        Relative humidity. Will have the same dimensions as ``temperature``
 
 
     See Also
     --------
     Related GeoCAT Functions:
-    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`__,
-    `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`__,
-    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`__,
-    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`__
+    :func:`relhum`
+    :func:`relhum_ice`
+    :func:`relhum_water`
+    :func:`_xrelhum`
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
@@ -340,14 +336,15 @@ def _relhum_water(t: typing.Union[np.ndarray, list, float],
     """Calculates relative humidity with respect to water, given temperature,
     mixing ratio, and pressure.
 
-    Definition of mixing ratio if,
+    Definition of mixing ratio if:
 
-    - es  - is the saturation mixing ratio
-    - ep  - is the ratio of the molecular weights of water vapor to dry air
-    - p   - is the atmospheric pressure
-    - rh  - is the relative humidity (given as a percent)
+    - ``es``  - is the saturation mixing ratio
+    - ``ep``  - is the ratio of the molecular weights of water vapor to dry air
+    - ``p``   - is the atmospheric pressure
+    - ``rh``  - is the relative humidity (given as a percent)
 
-    rh =  100*  q / ( (ep*es)/(p-es) )
+    .. math::
+        rh =  100*  q / ( (ep*es)/(p-es) )
 
     Parameters
     ----------
@@ -355,23 +352,23 @@ def _relhum_water(t: typing.Union[np.ndarray, list, float],
         Temperature in Kelvin
 
     w : ndarray, :obj:`list`, :obj:`float`
-        Mixing ratio in kg/kg. Must have the same dimensions as temperature
+        Mixing ratio in kg/kg. Must have the same dimensions as ``temperature``
 
     p : ndarray, :obj:`list`, :obj:`float`
-        Pressure in Pa. Must have the same dimensions as temperature
+        Pressure in Pa. Must have the same dimensions as ``temperature``
 
     Returns
     -------
     rh : ndarray
-        Relative humidity. Will have the same dimensions as temperature
+        Relative humidity. Will have the same dimensions as ``temperature``
 
     See Also
     --------
     Related GeoCAT Functions:
-    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`__,
-    `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`__,
-    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`__,
-    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`__
+    :func:`relhum`
+    :func:`relhum_ice`
+    :func:`relhum_water`
+    :func:`_xrelhum`
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
@@ -411,7 +408,7 @@ def _xheat_index(temperature: xr.DataArray,
 
     relative_humidity : :class:`xarray.DataArray`
         relative humidity as a percentage. Must be the same shape as
-        temperature
+        ``temperature``
 
     alternate_coeffs : bool, optional
         flag to use alternate set of coefficients appropriate for
@@ -420,7 +417,7 @@ def _xheat_index(temperature: xr.DataArray,
     Returns
     -------
     heatindex : :class:`xarray.DataArray`
-        Calculated heat index. Same shape as temperature
+        Calculated heat index. Same shape as ``temperature``
 
     eqtype : :class:`int`
         version of equations used, for xarray attrs output
@@ -428,8 +425,8 @@ def _xheat_index(temperature: xr.DataArray,
     See Also
     --------
     Related GeoCAT Functions:
-    `heat_index <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.heat_index.html#geocat.comp.meteorology.heat_index>`__,
-    `_heat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._heat_index.html#geocat.comp.meteorology._heat_index>`__
+    :func:`heat_index`
+    :func:`_heat_index`
 
     Related NCL Functions:
     `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__,
@@ -490,8 +487,7 @@ def _xrelhum(t: xr.DataArray, w: xr.DataArray, p: xr.DataArray) -> xr.DataArray:
 
      "Improved Magnus' Form Approx. of Saturation Vapor pressure"
      Oleg A. Alduchov and Robert E. Eskridge
-     http://www.osti.gov/scitech/servlets/purl/548871/
-     https://doi.org/10.2172/548871
+     https://journals.ametsoc.org/view/journals/apme/35/4/1520-0450_1996_035_0601_imfaos_2_0_co_2.xml
 
     Parameters
     ----------
@@ -499,23 +495,23 @@ def _xrelhum(t: xr.DataArray, w: xr.DataArray, p: xr.DataArray) -> xr.DataArray:
         Temperature in Kelvin
 
     w : :class:`xarray.DataArray`
-        Mixing ratio in kg/kg. Must have the same dimensions as temperature
+        Mixing ratio in kg/kg. Must have the same dimensions as ``temperature``
 
     p : :class:`xarray.DataArray`
-        Pressure in Pa. Must have the same dimensions as temperature
+        Pressure in Pa. Must have the same dimensions as ``temperature``
 
     Returns
     -------
     rh : :class:`xarray.DataArray`
-        Relative humidity. Will have the same dimensions as temperature
+        Relative humidity. Will have the same dimensions as ``temperature``
 
 
     See Also
     --------
     Related GeoCAT Functions:
-    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`__,
-    `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`__,
-    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`__
+    :func:`relhum`
+    :func:`relhum_ice`
+    :func:`relhum_water`
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
@@ -588,7 +584,7 @@ def dewtemp(
         Temperature in Kelvin
 
     relative_humidity : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
-        Relative humidity. Must be the same dimensions as temperature
+        Relative humidity. Must be the same dimensions as ``temperature``
 
     Returns
     -------
@@ -598,7 +594,7 @@ def dewtemp(
     See Also
     --------
     Related GeoCAT Functions:
-    `_dewtemp <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._dewtemp.html#geocat.comp.meteorology._dewtemp>`__
+    :func:`_dewtemp`
 
     Related NCL Functions:
     `dewtemp_trh <https://www.ncl.ucar.edu/Document/Functions/Built-in/dewtemp_trh.shtml>`__
@@ -649,9 +645,9 @@ def heat_index(
     The heat index calculation in this funtion is described at:
     https://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml
 
-    The 'Heat Index' is a measure of how hot weather "feels" to the body. The combination of temperature an humidity
+    The 'Heat Index' is a measure of how hot weather "feels" to the body. The combination of temperature and humidity
     produce an "apparent temperature" or the temperature the body "feels". The returned values are for shady
-    locations only. Exposure to full sunshine can increase heat index values by up to 15Â°F. Also, strong winds,
+    locations only. Exposure to full sunshine can increase heat index values by up to 15°F. Also, strong winds,
     particularly with very hot, dry air, can be extremely hazardous as the wind adds heat to the body
 
     The computation of the heat index is a refinement of a result obtained by multiple regression analysis carried
@@ -660,7 +656,7 @@ def heat_index(
 
     In practice, the Steadman formula is computed first and the result averaged with the temperature. If this heat
     index value is 80 degrees F or higher, the full regression equation along with any adjustment as described above
-    is applied. If the ambient temperature is less the 40F (4.4C/277.65K), the heat index is set to to the ambient
+    is applied. If the ambient temperature is less the 40F (4.4C/277.65K), the heat index is set to the ambient
     temperature.
 
     Parameters
@@ -670,7 +666,7 @@ def heat_index(
 
     relative_humidity : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
         relative humidity as a percentage. Must be the same shape as
-        temperature
+        ``temperature``
 
     alternate_coeffs : bool, optional
         flag to use alternate set of coefficients appropriate for
@@ -679,7 +675,7 @@ def heat_index(
     Returns
     -------
     heatindex : ndarray, :class:`xarray.DataArray`
-        Calculated heat index. Same shape as temperature
+        Calculated heat index. Same shape as ``temperature``
 
     Examples
     --------
@@ -695,8 +691,8 @@ def heat_index(
     See Also
     --------
     Related GeoCAT Functions:
-    `_heat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._heat_index.html#geocat.comp.meteorology._heat_index>`__,
-    `_xheat_index <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xheat_index.html#geocat.comp.meteorology._xheat_index>`__
+    :func:`_heat_index`
+    :func:`_xheat_index`
 
     Related NCL Functions:
     `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__
@@ -778,8 +774,7 @@ def relhum(
 
     "Improved Magnus' Form Approx. of Saturation Vapor pressure"
     Oleg A. Alduchov and Robert E. Eskridge
-    https://www.osti.gov/scitech/servlets/purl/548871/
-    https://doi.org/10.2172/548871
+    https://journals.ametsoc.org/view/journals/apme/35/4/1520-0450_1996_035_0601_imfaos_2_0_co_2.xml
 
     Parameters
     ----------
@@ -787,23 +782,23 @@ def relhum(
         Temperature in Kelvin
 
     mixing_ratio : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
-        Mixing ratio in kg/kg. Must have the same dimensions as temperature
+        Mixing ratio in kg/kg. Must have the same dimensions as ``temperature``
 
     pressure : ndarray, :class:`xarray.DataArray`, :obj:`list`, or :obj:`float`
-        Pressure in Pa. Must have the same dimensions as temperature
+        Pressure in Pa. Must have the same dimensions as ``temperature``
 
     Returns
     -------
     relative_humidity : ndarray or :class:`xarray.DataArray`
-        Relative humidity. Will have the same dimensions as temperature
+        Relative humidity. Will have the same dimensions as ``temperature``
 
 
     See Also
     --------
     Related GeoCAT Functions:
-    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`__,
-    `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`__,
-    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`__
+    :func:`_xrelhum`
+    :func:`relhum_ice`
+    :func:`relhum_water`
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
@@ -835,7 +830,8 @@ def relhum(
         # set xarray attributes
         relative_humidity.attrs['long_name'] = "relative humidity"
         relative_humidity.attrs['units'] = 'percentage'
-        relative_humidity.attrs['info'] = 'https://doi.org/10.2172/548871'
+        relative_humidity.attrs[
+            'info'] = 'https://journals.ametsoc.org/view/journals/apme/35/4/1520-0450_1996_035_0601_imfaos_2_0_co_2.xml'
 
     else:
         # ensure in numpy array for function call
@@ -855,10 +851,9 @@ def relhum_ice(temperature: typing.Union[np.ndarray, list, float],
     """Calculates relative humidity with respect to ice, given temperature,
     mixing ratio, and pressure.
 
-     "Improved Magnus' Form Approx. of Saturation Vapor pressure"
-     Oleg A. Alduchov and Robert E. Eskridge
-     http://www.osti.gov/scitech/servlets/purl/548871/
-     https://doi.org/10.2172/548871
+    "Improved Magnus' Form Approx. of Saturation Vapor pressure"
+    Oleg A. Alduchov and Robert E. Eskridge
+    https://journals.ametsoc.org/view/journals/apme/35/4/1520-0450_1996_035_0601_imfaos_2_0_co_2.xml
 
     Parameters
     ----------
@@ -866,23 +861,23 @@ def relhum_ice(temperature: typing.Union[np.ndarray, list, float],
         Temperature in Kelvin
 
     mixing_ratio : ndarray, :obj:`list`, or :obj:`float`
-        Mixing ratio in kg/kg. Must have the same dimensions as temperature
+        Mixing ratio in kg/kg. Must have the same dimensions as ``temperature``
 
     pressure : ndarray, :obj:`list`, or :obj:`float`
-        Pressure in Pa. Must have the same dimensions as temperature
+        Pressure in Pa. Must have the same dimensions as ``temperature``
 
     Returns
     -------
     relative_humidity : ndarray
-        Relative humidity. Will have the same dimensions as temperature
+        Relative humidity. Will have the same dimensions as ``temperature``
 
     See Also
     --------
     Related GeoCAT Functions:
-    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`__,
-    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`__,
-    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_water.html#geocat.comp.meteorology.relhum_water>`__,
-    `_relhum_ice <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._relhum_ice.html#geocat.comp.meteorology._relhum_ice>`__
+    :func:`relhum`
+    :func:`_xrelhum`
+    :func:`relhum_water`
+    :func:`_relhum_ice`
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
@@ -927,13 +922,15 @@ def relhum_water(temperature: typing.Union[np.ndarray, list, float],
     """Calculates relative humidity with respect to water, given temperature,
     mixing ratio, and pressure.
 
-    Definition of mixing ratio if,
-    es  - is the saturation mixing ratio
-    ep  - is the ratio of the molecular weights of water vapor to dry air
-    p   - is the atmospheric pressure
-    rh  - is the relative humidity (given as a percent)
+    Definition of mixing ratio if:
 
-    rh =  100*  q / ( (ep*es)/(p-es) )
+    - `es`  - is the saturation mixing ratio
+    - `ep`  - is the ratio of the molecular weights of water vapor to dry air
+    - `p`   - is the atmospheric pressure
+    - `rh`  - is the relative humidity (given as a percent)
+
+    .. math::
+        rh =  100  q / ( (ep*es)/(p-es) )
 
     Parameters
     ----------
@@ -941,23 +938,23 @@ def relhum_water(temperature: typing.Union[np.ndarray, list, float],
         Temperature in Kelvin
 
     mixing_ratio : ndarray, :obj:`list`, or :obj:`float`
-        Mixing ratio in kg/kg. Must have the same dimensions as temperature
+        Mixing ratio in kg/kg. Must have the same dimensions as ``temperature``
 
     pressure : ndarray, :obj:`list`, or :obj:`float`
-        Pressure in Pa. Must have the same dimensions as temperature
+        Pressure in Pa. Must have the same dimensions as ``temperature``
 
     Returns
     -------
     relative_humidity : ndarray
-        Relative humidity. Will have the same dimensions as temperature
+        Relative humidity. Will have the same dimensions as ``temperature``
 
     See Also
     --------
     Related GeoCAT Functions:
-    `relhum <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum.html#geocat.comp.meteorology.relhum>`__,
-    `_xrelhum <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._xrelhum.html#geocat.comp.meteorology._xrelhum>`__,
-    `relhum_ice <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.meteorology.relhum_ice.html#geocat.comp.meteorology.relhum_ice>`__,
-    `relhum_water <https://geocat-comp.readthedocs.io/en/latest/internal_api/generated/geocat.comp.meteorology._relhum_water.html#geocat.comp.meteorology._relhum_water>`__
+    :func:`relhum`
+    :func:`_xrelhum`
+    :func:`relhum_ice`
+    :func:`relhum_water`
 
     Related NCL Functions:
     `relhum <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum.shtml>`__,
@@ -994,35 +991,6 @@ def relhum_water(temperature: typing.Union[np.ndarray, list, float],
                                          attrs=save_attrs)
 
     return relative_humidity
-
-
-def showalter_index(pressure: pint.Quantity, temperature: pint.Quantity,
-                    dewpt: pint.Quantity) -> pint.Quantity:
-    """Calculate Showalter Index from pressure temperature and 850 hPa lcl.
-    Showalter Index derived from `Gallway 1956 <https://journals.ametsoc.org/do
-    wnloadpdf/journals/bams/37/10/1520-0477-37_10_528.xml>`__.
-
-    :math:`shox = T500 - Tp500` where:
-    - T500 is the measured temperature at 500 hPa
-    - Tp500 is the temperature of the lifted parcel at 500 hPa
-
-    Parameters
-    ----------
-    pressure : :class:`pint.Quantity`
-        Atmospheric pressure level(s) of interest, in order from highest
-        to lowest pressure
-    temperature : :class:`pint.Quantity`
-        Parcel temperature for corresponding pressure
-    dewpt : :class:`pint.Quantity`
-        Parcel dew point temperatures for corresponding pressure
-
-    Returns
-    -------
-    shox : :class:`pint.Quantity`
-       Showalter index in delta degrees celsius
-    """
-    shox = mpcalc.showalter_index(pressure, temperature, dewpt)
-    return shox
 
 
 def max_daylight(
@@ -1235,8 +1203,8 @@ def saturation_vapor_pressure(
     See Also
     --------
     Related GeoCAT Functions:
-    `actual_saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.actual_saturation_vapor_pressure.html#geocat.comp.crop.actual_saturation_vapor_pressure>`__,
-    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure_slope.html#geocat.comp.crop.saturation_vapor_pressure_slope>`__
+    :func:`actual_saturation_vapor_pressure`
+    :func:`saturation_vapor_pressure_slope`
 
     Related NCL Functions:
     `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>`__
@@ -1311,8 +1279,8 @@ def actual_saturation_vapor_pressure(
     See Also
     --------
     Related GeoCAT Functions:
-    `saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure.html#geocat.comp.crop.saturation_vapor_pressure>`__,
-    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure_slope.html#geocat.comp.crop.saturation_vapor_pressure_slope>`__
+    :func:`saturation_vapor_pressure`
+    :func:`saturation_vapor_pressure_slope`
 
     Related NCL Functions:
     `satvpr_tdew_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_tdew_fao56.shtml>`__
@@ -1369,8 +1337,8 @@ def saturation_vapor_pressure_slope(
     See Also
     --------
     Related GeoCAT Functions:
-    `actual_saturation_vapor_pressure <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.actual_saturation_vapor_pressure.html#geocat.comp.crop.actual_saturation_vapor_pressure>`__,
-    `saturation_vapor_pressure_slope <https://geocat-comp.readthedocs.io/en/latest/user_api/generated/geocat.comp.crop.saturation_vapor_pressure_slope.html#geocat.comp.crop.saturation_vapor_pressure_slope>`__
+    :func:`actual_saturation_vapor_pressure`
+    :func:`saturation_vapor_pressure_slope`
 
     Related NCL Functions:
     `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>`__
@@ -1409,3 +1377,143 @@ def saturation_vapor_pressure_slope(
             tfill)
 
     return svp_slope
+
+
+def _delta_pressure1D(pressure_lev, surface_pressure):
+    """Helper function for `delta_pressure`. Calculates the pressure layer
+    thickness (delta pressure) of a one-dimensional pressure level array.
+
+    Returns an array of length matching `pressure_lev`.
+
+    Parameters
+    ----------
+    pressure_lev : :class:`numpy.ndarray`
+        The pressure level array. May be in ascending or descending order.
+        Must have the same units as `surface_pressure`.
+
+    surface_pressure : :class:`float`
+        The scalar surface pressure. Must have the same units as
+        `pressure_lev`.
+
+    Returns
+    -------
+    delta_pressure : :class:`numpy.ndarray`
+        The pressure layer thickness array. Shares dimensions and units of
+        `pressure_lev`.
+    """
+    pressure_top = min(pressure_lev)
+
+    # Safety checks
+    if pressure_top <= 0:
+        warnings.warn("'pressure_lev` values must all be positive.")
+    if pressure_top > surface_pressure:
+        warnings.warn(
+            "`surface_pressure` must be greater than minimum `pressure_lev` value."
+        )
+
+    # Sort so pressure increases (array goes from top of atmosphere to bottom)
+    is_pressuredecreasing = pressure_lev[1] < pressure_lev[0]
+    if is_pressuredecreasing:
+        pressure_lev = np.flip(pressure_lev)
+
+    # Calculate delta pressure
+    delta_pressure = np.empty_like(pressure_lev)
+
+    delta_pressure[0] = (pressure_lev[0] +
+                         pressure_lev[1]) / 2 - pressure_top  # top level
+    delta_pressure[1:-1] = [
+        (a - b) / 2 for a, b in zip(pressure_lev[2:], pressure_lev[:-1])
+    ]
+    delta_pressure[-1] = surface_pressure - (
+        pressure_lev[-1] + pressure_lev[-2]) / 2  # bottom level
+
+    # Return delta_pressure to original order
+    if is_pressuredecreasing:
+        delta_pressure = np.flip(delta_pressure)
+
+    return delta_pressure
+
+
+def delta_pressure(pressure_lev, surface_pressure):
+    """Calculates the pressure layer thickness (delta pressure) of a constant
+    pressure level coordinate system.
+
+    Returns an array of shape matching (``surface_pressure``, ``pressure_lev``).
+
+    Parameters
+    ----------
+    pressure_lev : :class:`numpy.ndarray`, :class:`xarray.DataArray`
+        The pressure level array. May be in ascending or descending order.
+        Must have the same units as ``surface_pressure``.
+
+    surface_pressure : :class:`int`, :class:`float`, :class:`numpy.ndarray`, :class:`xarray.DataArray`
+        The scalar or N-dimensional surface pressure array. Must have the same
+        units as ``pressure_lev``.
+
+    Returns
+    -------
+    delta_pressure : :class:`numpy.ndarray`, :class:`xarray.DataArray`
+        The pressure layer thickness array. Shares units with ``pressure_lev``.
+        If ``surface_pressure`` is scalar, shares dimensions with
+        ``pressure_level``. If ``surface_pressure`` is an array than the returned
+        array will have an additional dimension [e.g. (lat, lon, time) becomes
+        (lat, lon, time, lev)].
+
+    See Also
+    --------
+    Related NCL Functions:
+    `dpres_plev <https://www.ncl.ucar.edu/Document/Functions/Built-in/dpres_plevel.shtml>`__
+    """
+    # Get original array types
+    type_surface_pressure = type(
+        surface_pressure
+    )  # save type for delta_pressure to same type as surface_pressure at end
+    type_pressure_level = type(pressure_lev)
+
+    # Preserve attributes for Xarray
+    if type_surface_pressure == xr.DataArray:
+        da_coords = dict(surface_pressure.coords)
+        da_attrs = dict(surface_pressure.attrs)
+        da_dims = surface_pressure.dims
+    if type_pressure_level == xr.DataArray:
+        da_attrs = dict(
+            pressure_lev.attrs)  # Overwrite attributes to match pressure_lev
+
+    # Calculate delta pressure
+    if np.isscalar(surface_pressure):  # scalar case
+        delta_pressure = _delta_pressure1D(pressure_lev, surface_pressure)
+    else:  # multi-dimensional cases
+        shape = surface_pressure.shape
+        delta_pressure_shape = shape + (len(pressure_lev),
+                                       )  # preserve shape for reshaping
+
+        surface_pressure_flattened = np.ravel(
+            surface_pressure)  # flatten to avoid nested for loops
+        delta_pressure = [
+            _delta_pressure1D(pressure_lev, e)
+            for e in surface_pressure_flattened
+        ]
+
+        delta_pressure = np.array(delta_pressure).reshape(delta_pressure_shape)
+
+    # If passed in an Xarray array, return an Xarray array
+    # Change this to return a dataset that has both surface pressure and delta pressure?
+    if type_surface_pressure == xr.DataArray:
+        da_coords['lev'] = pressure_lev.values
+        da_dims = da_dims + ("lev",)
+        da_attrs.update({"long name": "pressure layer thickness"})
+        delta_pressure = xr.DataArray(delta_pressure,
+                                      coords=da_coords,
+                                      dims=da_dims,
+                                      attrs=da_attrs,
+                                      name="delta pressure")
+
+    return delta_pressure
+
+
+# NCL NAME WRAPPER FUNCTIONS BELOW
+def dpres_plev(pressure_lev, surface_pressure):
+    return delta_pressure(pressure_lev, surface_pressure)
+
+
+_generate_wrapper_docstring(dpres_plev, delta_pressure)

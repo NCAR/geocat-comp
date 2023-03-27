@@ -8,7 +8,7 @@ SupportedTypes = Union[np.ndarray, xr.DataArray, xr.Dataset]
 d2r = 1.74532925199432957692369e-02  # degrees to radians conversion factor
 
 
-def rad_lat_wgs84(lat: SupportedTypes,):
+def _rad_lat_wgs84(lat: SupportedTypes,):
     r"""The radius calculation for the wgs84 ellipsoid at a latitude uses a
     taylor series from.
 
@@ -18,10 +18,11 @@ def rad_lat_wgs84(lat: SupportedTypes,):
     This returns the radius of the ellipsoid for a given latitude
     This is accurate to within floating point error.
 
-    note: This doesn't need to be a taylor series, though the taylor series
-    is faster
-    and a needed step for the arc_lat_wgs84 function to avoid the elliptic
-    integral
+    Note
+    ----
+    This doesn't need to be a taylor series, though the taylor series
+    is faster and a needed step for the _arc_lat_wgs84 function to avoid the
+    elliptic integral
 
     Parameters
     ----------
@@ -30,10 +31,17 @@ def rad_lat_wgs84(lat: SupportedTypes,):
 
     Returns
     -------
-    gradients : list of :class:`numpy.ndarray`, list of
-    :class:`xarray.DataArray`
+    gradients : list of :class:`numpy.ndarray`, list of :class:`xarray.DataArray`
         latitudinal radii calculated using th WGS84 geoid.
+
+    See Also
+    --------
+    Related NCL Functions:
+    `grad_latlon_cfd <https://www.ncl.ucar.edu/Document/Functions/Contributed/grad_latlon_cfd.shtml>`__,
+    `gradsf <https://www.ncl.ucar.edu/Document/Functions/Built-in/gradsf.shtml>`__,
+    `gradsg <https://www.ncl.ucar.edu/Document/Functions/Built-in/gradsg.shtml>`__
     """
+
     return \
         8.05993093251779959604912e-107 * lat ** 48 - \
         1.26581811418535723456176e-102 * lat ** 46 - \
@@ -62,7 +70,7 @@ def rad_lat_wgs84(lat: SupportedTypes,):
         6378137.0
 
 
-def arc_lat_wgs84(lat: SupportedTypes,):
+def _arc_lat_wgs84(lat: SupportedTypes,):
     r"""The arc length calculation for the wgs84 ellipsoid at a latitude uses a
     taylor series to obtain the value of the elliptic integral.
 
@@ -73,7 +81,9 @@ def arc_lat_wgs84(lat: SupportedTypes,):
     This returns the distance from the equator to a given latitude
     This is accurate to within floating point error.
 
-    note: This needs to be a taylor series to avoid the elliptic integral
+    Note
+    ----
+    This needs to be a taylor series to avoid the elliptic integral
 
     Parameters
     ----------
@@ -82,10 +92,17 @@ def arc_lat_wgs84(lat: SupportedTypes,):
 
     Returns
     -------
-    gradients : list of :class:`numpy.ndarray`, list of
-    :class:`xarray.DataArray`
+    gradients : list of :class:`numpy.ndarray`, list of :class:`xarray.DataArray`
         latitudinal arc from equator calculated using th WGS84 geoid.
+
+    See Also
+    --------
+    Related NCL Functions:
+    `grad_latlon_cfd <https://www.ncl.ucar.edu/Document/Functions/Contributed/grad_latlon_cfd.shtml>`__,
+    `gradsf <https://www.ncl.ucar.edu/Document/Functions/Built-in/gradsf.shtml>`__,
+    `gradsg <https://www.ncl.ucar.edu/Document/Functions/Built-in/gradsg.shtml>`__
     """
+
     return \
         2.87086392358719396475614e-110 * lat ** 49 - \
         4.70057315402553703681995e-106 * lat ** 47 - \
@@ -114,7 +131,7 @@ def arc_lat_wgs84(lat: SupportedTypes,):
         111319.490793273572647713 * lat
 
 
-def arc_lon_wgs84(
+def _arc_lon_wgs84(
     lon: SupportedTypes,
     lat: SupportedTypes,
 ):
@@ -128,8 +145,10 @@ def arc_lon_wgs84(
     This returns the distance from the Greenwich Meridian to a given latitude
     This is accurate to within floating point error.
 
-    note: This doesn't need to be a taylor series, though the taylor series
-    is faster and a needed step for the arc_lat_wgs84 function to avoid the
+    Note
+    ----
+    This doesn't need to be a taylor series, though the taylor series
+    is faster and a needed step for the _arc_lat_wgs84 function to avoid the
     elliptic integral
 
     Parameters
@@ -142,11 +161,18 @@ def arc_lon_wgs84(
 
     Returns
     -------
-    gradients : list of :class:`numpy.ndarray`, list of
-    :class:`xarray.DataArray`
-        longitudinal arc from Prime Meridian calculated using th WGS84 geoid.
+    gradients : list of :class:`numpy.ndarray`, list of :class:`xarray.DataArray`
+        Longitudinal arc from Prime Meridian calculated using th WGS84 geoid.
+
+    See Also
+    --------
+    Related NCL Functions:
+    `grad_latlon_cfd <https://www.ncl.ucar.edu/Document/Functions/Contributed/grad_latlon_cfd.shtml>`__,
+    `gradsf <https://www.ncl.ucar.edu/Document/Functions/Built-in/gradsf.shtml>`__,
+    `gradsg <https://www.ncl.ucar.edu/Document/Functions/Built-in/gradsg.shtml>`__
     """
-    return rad_lat_wgs84(lat) * np.cos(lat * d2r) * lon * d2r
+
+    return _rad_lat_wgs84(lat) * np.cos(lat * d2r) * lon * d2r
 
 
 def gradient(data: SupportedTypes, lon: SupportedTypes=None, lat: SupportedTypes=None) -> [xr.DataArray]:
@@ -169,6 +195,13 @@ def gradient(data: SupportedTypes, lon: SupportedTypes=None, lat: SupportedTypes
     -------
     gradients : list of :class:`numpy.ndarray`, list of :class:`xarray.DataArray`
         longitudinal and latitudinal gradients calculated using th WGS84 geoid.
+
+    See Also
+    --------
+    Related NCL Functions:
+    `grad_latlon_cfd <https://www.ncl.ucar.edu/Document/Functions/Contributed/grad_latlon_cfd.shtml>`__,
+    `gradsf <https://www.ncl.ucar.edu/Document/Functions/Built-in/gradsf.shtml>`__,
+    `gradsg <https://www.ncl.ucar.edu/Document/Functions/Built-in/gradsg.shtml>`__
     """
 
     if lat or lon is None:

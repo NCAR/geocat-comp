@@ -6,5 +6,5 @@ geocat-f2py
 metpy
 numpy
 scipy
-xarray
+xarray<=2023.02.0 #pin per issue #381
 xskillscore
