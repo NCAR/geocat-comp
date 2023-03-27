@@ -13,3 +13,5 @@ vYYYY.MM.##
 - [ ] release-notes.rst has been updated with latest release notes
 - [ ] a new tag and release has been made on GitHub
 - [ ] feedstock PR has been merged
+- [ ] new version can be installed via pip
+- [ ] new version can be installed via conda
