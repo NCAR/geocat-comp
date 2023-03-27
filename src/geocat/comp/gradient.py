@@ -149,7 +149,9 @@ def arc_lon_wgs84(
     return rad_lat_wgs84(lat) * np.cos(lat * d2r) * lon * d2r
 
 
-def gradient(data: SupportedTypes, lon: SupportedTypes=None, lat: SupportedTypes=None) -> [xr.DataArray]:
+def gradient(data: SupportedTypes,
+             lon: SupportedTypes = None,
+             lat: SupportedTypes = None) -> [xr.DataArray]:
     r"""Extract and return the gradient values of a dataset at each point in the
     dataset. Assuming that the data points are on the surface of the WGS84
     ellipsoid.
@@ -185,7 +187,7 @@ def gradient(data: SupportedTypes, lon: SupportedTypes=None, lat: SupportedTypes
             raise Exception('Input data are not in supported data type. \
             Supported types are [np.ndarray, xr.DataArray, xr.Dataset]')
     # at this point we know that we have *something* in lat and lon
-    if lon.shape == 1 and lat.shape == 1: #in theroy can be split
+    if lon.shape == 1 and lat.shape == 1:  #in theroy can be split
         lon2d, lat2d = np.meshgrid(lon, lat)
     elif lon.shape == 2 and lat.shape == 2:
         lon2d, lat2d = lon, lat
@@ -215,7 +217,6 @@ def gradient(data: SupportedTypes, lon: SupportedTypes=None, lat: SupportedTypes
     grad = xr.DataArray(np.gradient(metadata), coords=metadata.coords)
     axis0grad = grad[0] / axis0dist
     axis1grad = grad[1] / axis1dist
-
 
     if type(data) is np.ndarray:
         axis0grad, axis1grad = axis0grad.values, axis1grad.values
