@@ -7,7 +7,7 @@ assignees: 'pilotchute'
 ---
   
 # What is the new version number for this release?
-vYYYY.MM.##
+### vYYYY.MM.##
   
 - [ ] version number has been updated in meta.yaml
 - [ ] release-notes.rst has been updated with latest release notes
