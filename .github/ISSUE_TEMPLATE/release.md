@@ -2,7 +2,7 @@
 name: Release Request
 about: Request a version bump and release for this package
 title: '[Release]: <version-number>'
-labels: ['release', 'high-priority']
+labels: release, high-priority
 assignees: 'pilotchute'
 ---
   
