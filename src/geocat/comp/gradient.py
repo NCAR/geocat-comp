@@ -150,7 +150,7 @@ def arc_lon_wgs84(
     return rad_lat_wgs84(lat) * np.cos(lat * d2r) * lon * d2r
 
 
-def gradient(data: xr.DataArray) -> [xr.DataArray]:
+def gradient(data: SupportedTypes, lon: SupportedTypes=None, lat: SupportedTypes=None) -> [xr.DataArray]:
     r"""Extract and return the gradient values of a dataset at each point in the
     dataset. Assuming that the data points are on the surface of the WGS84
     ellipsoid.
@@ -160,13 +160,40 @@ def gradient(data: xr.DataArray) -> [xr.DataArray]:
     data : :class:`numpy.ndarray`, :class:`xarray.DataArray`
         n-dimensional dataset, with orthographic latitude longitude coordinates
 
+    lon: :class:`numpy.ndarray`, :class:`xarray.DataArray`
+         1 or 2-dimensional dataset of longitudinal coordinates
+
+    lat: :class:`numpy.ndarray`, :class:`xarray.DataArray`
+        1 or 2-dimensional dataset of latitudinal coordinates
+
     Returns
     -------
     gradients : list of :class:`numpy.ndarray`, list of :class:`xarray.DataArray`
         longitudinal and latitudinal gradients calculated using th WGS84 geoid.
     """
 
-    lon2d, lat2d = np.meshgrid(data.coords['lon'], data.coords['lat'])
+    if lat or lon is None:
+        if type(data) in [xr.DataArray, xr.Dataset]:
+            if data.coords is not None:
+                if 'lat' in data.coords.keys() and 'lon' in data.coords.keys():
+                    lon = data.coords['lon']
+                    lat = data.coords['lat']
+        if type(data) is np.ndarray:
+            raise Exception('lat or lon is None. \
+            If the input data are in a numpy.ndarray, \
+            lat and lon as either 1d or 2d ndarrays must be provided.')
+        else:
+            raise Exception('Input data are not in supported data type. \
+            Supported types are [np.ndarray, xr.DataArray, xr.Dataset]')
+    # at this point we know that we have *something* in lat and lon
+    if lon.shape == 1 and lat.shape == 1: #in theroy can be split
+        lon2d, lat2d = np.meshgrid(lon, lat)
+    elif lon.shape == 2 and lat.shape == 2:
+        lon2d, lat2d = lon, lat
+    else:
+        raise ValueError("lat or lon must be either both 1d or 2d.")
+
+    metadata = xr.DataArray(data, coords={'lon': lon2d, 'lat': lat2d})
 
     axis0loc = xr.DataArray(
         arc_lat_wgs84(lat2d),
@@ -190,11 +217,15 @@ def gradient(data: xr.DataArray) -> [xr.DataArray]:
         dims=data.dims,
     )
 
-    grad = xr.DataArray(
-        np.gradient(data),
-        dims=('dir',) + data.dims,
-    )
+    grad = xr.DataArray(np.gradient(metadata), coords=metadata.coords)
     axis0grad = grad[0] / axis0dist
     axis1grad = grad[1] / axis1dist
+
+
+    if type(data) is np.ndarray:
+        axis0grad, axis1grad = axis0grad.values, axis1grad.values
+    if type(data) is xr.Dataset:
+        axis0grad = xr.Dataset(axis0grad, coords=metadata.coords)
+        axis1grad = xr.Dataset(axis1grad, coords=metadata.coords)
 
     return [axis0grad, axis1grad]
