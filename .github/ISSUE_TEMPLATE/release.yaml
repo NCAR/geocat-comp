@@ -1,10 +1,17 @@
 name: Release Request
 description: Request a version bump and release
-title: "[Release]: "
+title: "[Release]: <version-number>"
 labels: ["release", "high priority"]
 assignees:
   - pilotchute
 body:
+  - type: markdown
+    attributes:
+      value: |
+          - [ ] version number has been updated in meta.yaml
+          - [ ] release-notes.rst has been updated with latest release notes
+          - [ ] a new tag and release has been made on GitHub
+          - [ ] feedstock PR has been merged
   - type: input
     id: version-number
     attributes:
@@ -13,17 +20,3 @@ body:
       placeholder: vYYYY.MM.##
     validations:
       required: true
-  
-  - type: checkboxes
-    id: checklist
-    attributes:
-      label: Release Check List
-      options:
-        - label: version number has been changed
-          required: false
-        - label: release-notes.rst has been updated
-          required: false
-        - label: a new tag and release has been made
-          required: false
-        - label: feedstock PR has been merged
-          required: false
