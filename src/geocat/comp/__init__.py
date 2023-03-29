@@ -17,3 +17,12 @@ try:
     from geocat.f2py import *
 except ImportError:
     pass
+
+# get version from pyproject.toml
+from importlib.metadata import version as _version
+try:
+    __version__ = _version("geocat.comp")
+except Exception:
+    # Local copy or not installed with setuptools.
+    # Disable minimum version checks on downstream libraries.
+    __version__ = "999"
