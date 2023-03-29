@@ -230,11 +230,11 @@ def gradient(data: SupportedTypes,
     metadata = xr.DataArray(data, coords={'lon': lon2d, 'lat': lat2d})
 
     axis0loc = xr.DataArray(
-        arc_lat_wgs84(lat2d),
+        _arc_lat_wgs84(lat2d),
         coords=metadata.coords,
     )
     axis1loc = xr.DataArray(
-        arc_lon_wgs84(lon2d, lat2d),
+        _arc_lon_wgs84(lon2d, lat2d),
         coords=metadata.coords,
     )
 
