@@ -1,3 +1,7 @@
+# This file is redundant with setup.cfg;
+# it exists to let GitHub build the repository dependency graph
+# https://help.github.com/en/github/visualizing-repository-data-with-graphs/listing-the-packages-that-a-repository-depends-on
+
 cf_xarray>=0.3.1
 cftime
 dask[array]
@@ -8,3 +12,4 @@ numpy
 scipy
 xarray<=2023.02.0 #pin per issue #381
 xskillscore
+packaging
