@@ -1457,7 +1457,7 @@ def delta_pressure(pressure_lev, surface_pressure):
         If ``surface_pressure`` is scalar, shares dimensions with
         ``pressure_level``. If ``surface_pressure`` is an array than the returned
         array will have an additional dimension [e.g. (lat, lon, time) becomes
-        (lat, lon, time, lev)].
+        (lat, lon, time, lev)]. Will always be the same type as ``surface_pressure``.
 
     See Also
     --------
@@ -1499,7 +1499,8 @@ def delta_pressure(pressure_lev, surface_pressure):
     # If passed in an Xarray array, return an Xarray array
     # Change this to return a dataset that has both surface pressure and delta pressure?
     if type_surface_pressure == xr.DataArray:
-        da_coords['lev'] = pressure_lev.values
+        da_coords['lev'] = pressure_lev.values if (
+            type_pressure_level == xr.DataArray) else pressure_lev
         da_dims = da_dims + ("lev",)
         da_attrs.update({"long name": "pressure layer thickness"})
         delta_pressure = xr.DataArray(delta_pressure,
