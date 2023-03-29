@@ -4,6 +4,28 @@
 Release Notes
 =============
 
+v2023.03.1 (Mar 23, 2023)
+-------------------------
+
+Bug Fixes
+^^^^^^^^^
+* Add dpres_plev init file by `Heather Craker`_ in (:pr:`368`)
+* Fix argument checks for interp_hybrid_to_pressure by `Heather Craker`_ in (:pr:`372`)
+* Extrap args fix by `Heather Craker`_ in (:pr:`369`)
+* Revert "Extrap args fix" by `Heather Craker`_ in (:pr:`371`)
+
+Documentation
+^^^^^^^^^^^^^
+* Create a utility function to generate docstrings on wrapper functions by `Anissa Zacharias`_ in (:pr:`362`)
+* adjust calendar example to follow similar template by `Julia Kent`_ in (:pr:`339`)
+* Update release notes for v2023.03.0 by `Heather Craker`_ in (:pr:`365`)
+
+Misc
+^^^^
+* version bump 2023 03 1 by `Alea Kootz`_ in (:pr:`379`)
+
+**Full Changelog**: https://github.com/NCAR/geocat-comp/compare/v2023.03.0...v2023.03.1
+
 v2023.03.0 (Mar 2, 2023)
 ------------------------
 

@@ -7,7 +7,7 @@ dependencies:
     - geocat-f2py
     - geocat-datafiles
     - geocat-viz
-    - xarray
+    - xarray<=2023.02.0 #pin per issue #381
     - netcdf4
     - pint
     - ipykernel
