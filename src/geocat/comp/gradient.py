@@ -207,18 +207,18 @@ def gradient(data: SupportedTypes,
     """
 
     if lat or lon is None:
-        if type(data) in [xr.DataArray, xr.Dataset]:
+        if type(data) in [type(xr.DataArray), type(xr.Dataset)]:
             if data.coords is not None:
                 if 'lat' in data.coords.keys() and 'lon' in data.coords.keys():
                     lon = data.coords['lon']
                     lat = data.coords['lat']
-        if type(data) is np.ndarray:
+        if type(data) is type(np.ndarray):
             raise Exception('lat or lon is None. \
             If the input data are in a numpy.ndarray, \
             lat and lon as either 1d or 2d ndarrays must be provided.')
         else:
             raise Exception('Input data are not in supported data type. \
-            Supported types are [np.ndarray, xr.DataArray, xr.Dataset]')
+            Supported types are [numpy.ndarray, xarray.DataArray, xarray.Dataset]')
     # at this point we know that we have *something* in lat and lon
     if lon.shape == 1 and lat.shape == 1:  #in theroy can be split
         lon2d, lat2d = np.meshgrid(lon, lat)
