@@ -241,19 +241,21 @@ def gradient(data: SupportedTypes,
     axis1grad = grad[1] / axis1dist
 
     if type(data) in [xr.core.dataarray.DataArray, xr.core.dataset.Dataset]:
-        axis0grad = xr.DataArray(axis0grad,
-            dims=['x','y'],
+        axis0grad = xr.DataArray(
+            axis0grad,
+            dims=['x', 'y'],
             coords=dict(
-                lon=(['x','y'], lon2d),
-                lat=(['x','y'], lat2d),
+                lon=(['x', 'y'], lon2d.data),
+                lat=(['x', 'y'], lat2d.data),
             ),
         )
-        axis1grad = xr.DataArray(axis1grad,
-            dims=['x','y'],
+        axis1grad = xr.DataArray(
+            axis1grad,
+            dims=['x', 'y'],
             coords=dict(
-                lon=(['x','y'], lon2d),
-                lat=(['x','y'], lat2d),
+                lon=(['x', 'y'], lon2d.data),
+                lat=(['x', 'y'], lat2d.data),
             ),
         )
-    
+
     return [axis0grad, axis1grad]
