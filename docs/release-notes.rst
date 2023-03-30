@@ -4,6 +4,22 @@
 Release Notes
 =============
 
+v2023.03.2 (Mar 29, 2023)
+-------------------------
+
+Bug Fixes
+^^^^^^^^^
+* type check patch in delta_pressure by `Julia Kent`_ in (:pr:`363`)
+
+Maintenance
+^^^^^^^^^^^
+* Update internal links to use sphinx internal referencing by `Heather Craker`_ in (:pr:`376`)
+* Switch pypi release action to be triggered manually by `Anissa Zacharias`_ in (:pr:`390`)
+* Package setup refactor (namespace and versioning fixes) (x2) by `Anissa Zacharias`_ (:pr:`389`)
+
+
+**Full Changelog**: https://github.com/NCAR/geocat-comp/compare/v2023.03.1...v2023.03.2
+
 v2023.03.1 (Mar 23, 2023)
 -------------------------
 
