@@ -5,13 +5,11 @@ title: '[Release]: <version-number>'
 labels: release, high-priority
 assignees: 'pilotchute'
 ---
-# For Package Leader
-## What is the new version number for this release?
-### vYYYY.MM.##
+## For Package Leader
+Version: vYYYY.MM.##
+Plain text summary of significant changes:
 
-## Write a plain text, non-technical summary of the major release points
-
-# Check list for dev ops
+## Release progress checklist
 - [ ] version number has been updated in meta.yaml
 - [ ] release-notes.rst has been updated with latest release notes
 - [ ] a new tag and release has been made on GitHub
