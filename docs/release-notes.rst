@@ -4,6 +4,14 @@
 Release Notes
 =============
 
+v2023.MM.00 (MM DD, YYYY)
+-------------------------
+
+Documentation
+^^^^^^^^^^^^^
+* Update PR template to include manual addition to release notes by `Anissa Zacharias`_ in (:pr:`397`)
+
+
 v2023.03.2 (Mar 29, 2023)
 -------------------------
 

@@ -8,6 +8,7 @@ apply to this PR, comment it out or delete it. -->
 **General**
 - [ ] Make an issue if one doesn't already exist
 - [ ] Link the issue this PR resolves by adding `closes #XXX` to the PR description where XXX is the number of the issue.
+- [ ] Add a brief summary of changes to `docs/release-notes.rst`
 - [ ] Add appropriate labels to this PR
 - [ ] Make your changes in a forked repository rather than directly in this repo
 - [ ] Open this PR as a draft if it is not ready for review
