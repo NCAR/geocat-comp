@@ -3,8 +3,7 @@ from typing import Union
 import numpy as np
 import xarray as xr
 
-SupportedTypes = Union[np.ndarray, xr.DataArray]
-XTypes = Union[xr.DataArray, xr.Dataset]
+SupportedTypes = Union[np.ndarray, xr.DataArray, xr.Dataset]
 
 d2r = 1.74532925199432957692369e-02  # degrees to radians conversion factor
 
@@ -176,7 +175,9 @@ def _arc_lon_wgs84(
     return _rad_lat_wgs84(lat) * np.cos(lat * d2r) * lon * d2r
 
 
-def gradient(data: xr.DataArray) -> [xr.DataArray]:
+def gradient(data: SupportedTypes,
+             lon: SupportedTypes = None,
+             lat: SupportedTypes = None) -> xr.DataArray:
     r"""Extract and return the gradient values of a dataset at each point in the
     dataset. Assuming that the data points are on the surface of the WGS84
     ellipsoid.
@@ -185,6 +186,12 @@ def gradient(data: xr.DataArray) -> [xr.DataArray]:
     ----------
     data : :class:`numpy.ndarray`, :class:`xarray.DataArray`
         n-dimensional dataset, with orthographic latitude longitude coordinates
+
+    lon: :class:`numpy.ndarray`, :class:`xarray.DataArray`
+         1 or 2-dimensional dataset of longitudinal coordinates
+
+    lat: :class:`numpy.ndarray`, :class:`xarray.DataArray`
+        1 or 2-dimensional dataset of latitudinal coordinates
 
     Returns
     -------
@@ -199,35 +206,56 @@ def gradient(data: xr.DataArray) -> [xr.DataArray]:
     `gradsg <https://www.ncl.ucar.edu/Document/Functions/Built-in/gradsg.shtml>`__
     """
 
-    lon2d, lat2d = np.meshgrid(data.coords['lon'], data.coords['lat'])
+    if (lat is None or lon is None):
+        if type(data) in [xr.core.dataarray.DataArray, xr.core.dataset.Dataset]:
+            if data.coords is not None:
+                if 'lat' in data.coords.keys() and 'lon' in data.coords.keys():
+                    lon = data.coords['lon']
+                    lat = data.coords['lat']
+        elif type(data) is type(np.ndarray):
+            raise Exception('lat or lon is None. \
+            If the input data are in a numpy.ndarray, \
+            lat and lon as either 1d or 2d ndarrays must be provided.')
+        else:
+            raise Exception('Input data of type ' + str(type(data)) +
+                            ' are not in supported data type. \
+            Supported types are [numpy.ndarray, xarray.DataArray, xarray.Dataset]'
+                           )
+    # at this point we know that we have *something* in lat and lon
+    if len(lon.shape) == 1 and len(lat.shape) == 1:  #in theroy can be split
+        lon2d, lat2d = np.meshgrid(lon, lat)
+    elif len(lon.shape) == 2 and len(lat.shape) == 2:
+        lon2d, lat2d = lon, lat
+    else:
+        raise ValueError("lat or lon must be either both 1d or 2d.")
 
-    axis0loc = xr.DataArray(
-        _arc_lat_wgs84(lat2d),
-        coords=data.coords,
-        dims=data.dims,
-    )
-    axis1loc = xr.DataArray(
-        _arc_lon_wgs84(lon2d, lat2d),
-        coords=data.coords,
-        dims=data.dims,
-    )
+    axis0loc = _arc_lat_wgs84(lat2d)
+    axis1loc = _arc_lon_wgs84(lon2d, lat2d)
 
-    axis0dist = xr.DataArray(
-        np.gradient(axis0loc, axis=0),
-        coords=data.coords,
-        dims=data.dims,
-    )
-    axis1dist = xr.DataArray(
-        np.gradient(axis1loc, axis=1),
-        coords=data.coords,
-        dims=data.dims,
-    )
+    axis0dist = np.gradient(axis0loc, axis=0)
+    axis1dist = np.gradient(axis1loc, axis=1)
 
-    grad = xr.DataArray(
-        np.gradient(data),
-        dims=('dir',) + data.dims,
-    )
+    grad = np.gradient(data)
+
     axis0grad = grad[0] / axis0dist
     axis1grad = grad[1] / axis1dist
+
+    if type(data) in [xr.core.dataarray.DataArray, xr.core.dataset.Dataset]:
+        axis0grad = xr.DataArray(
+            axis0grad,
+            dims=['x', 'y'],
+            coords=dict(
+                lon=(['x', 'y'], lon2d.data),
+                lat=(['x', 'y'], lat2d.data),
+            ),
+        )
+        axis1grad = xr.DataArray(
+            axis1grad,
+            dims=['x', 'y'],
+            coords=dict(
+                lon=(['x', 'y'], lon2d.data),
+                lat=(['x', 'y'], lat2d.data),
+            ),
+        )
 
     return [axis0grad, axis1grad]
