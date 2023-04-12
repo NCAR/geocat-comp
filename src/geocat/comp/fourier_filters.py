@@ -125,6 +125,10 @@ def fourier_filter(
     >>> axs[1].plot(np.imag(no_tide)[start:end])
     >>> fig.show()
     """
+    if time_axis != 0:
+        DeprecationWarning(
+            "time_axis is deprecated, but not planned to be removed.")
+
     resolution = frequency / len(signal)
     signal = np.swapaxes(signal, time_axis, 0)
     res_fft = np.fft.fft(signal, axis=0)
@@ -313,3 +317,61 @@ def fourier_band_block(
                           cutoff_frequency_high=cutoff_frequency_high,
                           time_axis=time_axis,
                           band_block=True)
+
+
+def fourier_low_pass_2d(
+    signal: typing.Union[np.ndarray, xr.DataArray],
+    frequency_1,
+    frequency_2,
+    cutoff_frequency_1_low,
+    cutoff_frequency_2_low,
+) -> typing.Union[np.ndarray, xr.DataArray]:
+    return None
+
+
+def fourier_high_pass_2d(
+    signal: typing.Union[np.ndarray, xr.DataArray],
+    frequency_1,
+    frequency_2,
+    cutoff_frequency_1_high,
+    cutoff_frequency_2_high,
+) -> typing.Union[np.ndarray, xr.DataArray]:
+    return None
+
+
+def fourier_band_pass_2d(
+    signal: typing.Union[np.ndarray, xr.DataArray],
+    frequency_1,
+    frequency_2,
+    cutoff_frequency_1_low,
+    cutoff_frequency_2_low,
+    cutoff_frequency_1_high,
+    cutoff_frequency_2_high,
+) -> typing.Union[np.ndarray, xr.DataArray]:
+    return None
+
+
+def fourier_band_block_2d(
+    signal: typing.Union[np.ndarray, xr.DataArray],
+    frequency_1,
+    frequency_2,
+    cutoff_frequency_1_low,
+    cutoff_frequency_2_low,
+    cutoff_frequency_1_high,
+    cutoff_frequency_2_high,
+) -> typing.Union[np.ndarray, xr.DataArray]:
+    return None
+
+
+def fourier_filter_2d(
+        signal: typing.Union[np.ndarray, xr.DataArray],
+        frequency: float,
+        cutoff_frequency_1_low: float = 0,
+        cutoff_frequency_2_low: float = 0,
+        cutoff_frequency_1_high: float = 0,
+        cutoff_frequency_2_high: float = 0,
+        low_pass: bool = False,
+        high_pass: bool = False,
+        band_pass: bool = False,
+        band_block: bool = False) -> typing.Union[np.ndarray, xr.DataArray]:
+    return None
