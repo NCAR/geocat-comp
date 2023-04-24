@@ -1512,6 +1512,63 @@ def delta_pressure(pressure_lev, surface_pressure):
     return delta_pressure
 
 
+def wbgt(method, **kwargs):
+    r"""Calculates the wet bulb globe temperature (WBGT) from air temperature,
+    relative humidity, and surface temperature.
+
+    Parameters
+    ----------
+    method : :class:`str`
+        The method to use to calculate the wet bulb temperature. Must be one of:
+
+            * "Liljergen" : Liljergen (2008) approximation
+            * "ABM" : ustralian Bureau of Meteorology approximation
+            * "Li" : Li (2020) approximation
+
+    **kwargs : :class:`dict`
+        The keyword arguments to pass to the selected method. The expected
+        corresponding kwargs for each method are:
+
+            * "Liljergen" : `...
+            * "ABM" : `...
+            * "Li" : ...
+
+    Returns
+    -------
+    wbgt : :class:`numpy.ndarray`, :class:`xarray.DataArray
+
+    TODO add raises
+    """
+
+    #TODO do number and kwarg name checking for each method
+    if method == "Liljergen":
+        # check for required kwargs
+
+        return wbgt_Liljergen(**kwargs)
+    elif method == "ABM":
+        return wbgt_ABM(**kwargs)
+    elif method == "Li":
+        return wbgt_Li(**kwargs)
+    else:
+        raise ValueError(f"Invalid method '{method}'")
+
+
+def wbgt_Liljergen():
+    r"""
+    Returns
+    -------
+
+    """
+
+
+def wbgt_ABM():
+    r"""
+    Returns
+    -------
+
+    """
+
+
 # NCL NAME WRAPPER FUNCTIONS BELOW
 def dpres_plev(pressure_lev, surface_pressure):
     return delta_pressure(pressure_lev, surface_pressure)
