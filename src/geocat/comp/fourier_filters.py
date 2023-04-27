@@ -1,6 +1,7 @@
 import math as m
-import numpy as np
 import typing
+
+import numpy as np
 import xarray as xr
 
 
@@ -27,10 +28,12 @@ def fourier_filter(
         sample frequency of dataset
 
     cutoff_frequency_low : float, optional
-        low frequency for cutting fourier transform, used by low_pass, band_pass, band_block. Defaults to 0.
+        low frequency for cutting fourier transform, used by low_pass,
+        band_pass, band_block. Defaults to 0.
 
     cutoff_frequency_high : float, optional
-        high frequency for cutting fourier transform, used by low_pass, band_pass, band_block. Defaults to 0.
+        high frequency for cutting fourier transform, used by low_pass,
+        band_pass, band_block. Defaults to 0.
 
     time_axis : int, optional
         the time axis of the data set. Defaults to 0.
@@ -54,7 +57,10 @@ def fourier_filter(
 
     Examples
     --------
-    Example 1: The tidal cycle needs to be removed from a 10/hr `oceanic dataset <https://tidesandcurrents.noaa.gov/waterlevels.html?id=9415020&units=standard&bdate=20210101&edate=20210131&timezone=GMT&datum=MLLW&interval=6&action=data>`__
+    Example 1: The tidal cycle needs to be removed from a 10/hr `oceanic
+    dataset <https://tidesandcurrents.noaa.gov/waterlevels.html?id=9415020
+    &units=standard&bdate=20210101&edate=20210131&timezone=GMT&datum=MLLW
+    &interval=6&action=data>`__
 
 
     >>> from geocat.comp import fourier_filter
@@ -326,7 +332,24 @@ def fourier_low_pass_2d(
     cutoff_frequency_1_low,
     cutoff_frequency_2_low,
 ) -> typing.Union[np.ndarray, xr.DataArray]:
-    return None
+    signalfft = np.fft.fft2(signal)
+    signalfft = np.fft.fftshift(signalfft)
+    shape = signalfft.shape
+    center = [shape[0] / 2, shape[1] / 2]
+    for x in range(0, shape[0]):
+        for y in range(0, shape[1]):
+            if (
+                ((x - center[
+                    0]) ** 2) / cutoff_frequency_1_low ** 2 * frequency_1 **
+                2 + \
+                ((y - center[
+                    1]) ** 2) / cutoff_frequency_2_low ** 2 * frequency_2 **
+                2) \
+                >= 1:
+                signalfft[x, y] = 0
+    signalfft = np.fft.ifftshift(signalfft)
+    signal = np.fft.ifft2(signalfft).real
+    return signal
 
 
 def fourier_high_pass_2d(
@@ -336,7 +359,24 @@ def fourier_high_pass_2d(
     cutoff_frequency_1_high,
     cutoff_frequency_2_high,
 ) -> typing.Union[np.ndarray, xr.DataArray]:
-    return None
+    signalfft = np.fft.fft2(signal)
+    signalfft = np.fft.fftshift(signalfft)
+    shape = signalfft.shape
+    center = [shape[0] / 2, shape[1] / 2]
+    for x in range(0, shape[0]):
+        for y in range(0, shape[1]):
+            if (
+                ((x - center[
+                    0]) ** 2) / cutoff_frequency_1_high ** 2 * frequency_1 **
+                2 + \
+                ((y - center[
+                    1]) ** 2) / cutoff_frequency_2_high ** 2 * frequency_2 **
+                2) \
+                < 1:
+                signalfft[x, y] = 0
+    signalfft = np.fft.ifftshift(signalfft)
+    signal = np.fft.ifft2(signalfft).real
+    return signal
 
 
 def fourier_band_pass_2d(
@@ -348,7 +388,24 @@ def fourier_band_pass_2d(
     cutoff_frequency_1_high,
     cutoff_frequency_2_high,
 ) -> typing.Union[np.ndarray, xr.DataArray]:
-    return None
+    signalfft = np.fft.fft2(signal)
+    signalfft = np.fft.fftshift(signalfft)
+    shape = signalfft.shape
+    center = [shape[0] / 2, shape[1] / 2]
+    for x in range(0, shape[0]):
+        for y in range(0, shape[1]):
+            if (
+                ((x-center[0])**2)/cutoff_frequency_1_low**2*frequency_1**2 + \
+                ((y-center[1])**2)/cutoff_frequency_2_low**2*frequency_2**2) \
+            < 1 \
+            or (
+                ((x-center[0])**2)/cutoff_frequency_1_high**2*frequency_1**2 + \
+                ((y-center[1])**2)/cutoff_frequency_2_high**2*frequency_2**2) \
+            >= 1:
+                signalfft[x, y] = 0
+    signalfft = np.fft.ifftshift(signalfft)
+    signal = np.fft.ifft2(signalfft).real
+    return signal
 
 
 def fourier_band_block_2d(
@@ -360,7 +417,24 @@ def fourier_band_block_2d(
     cutoff_frequency_1_high,
     cutoff_frequency_2_high,
 ) -> typing.Union[np.ndarray, xr.DataArray]:
-    return None
+    signalfft = np.fft.fft2(signal)
+    signalfft = np.fft.fftshift(signalfft)
+    shape = signalfft.shape
+    center = [shape[0] / 2, shape[1] / 2]
+    for x in range(0, shape[0]):
+        for y in range(0, shape[1]):
+            if (
+                ((x-center[0])**2)/cutoff_frequency_1_low**2*frequency_1**2 + \
+                ((y-center[1])**2)/cutoff_frequency_2_low**2*frequency_2**2) \
+            >= 1 \
+            and (
+                ((x-center[0])**2)/cutoff_frequency_1_high**2*frequency_1**2 + \
+                ((y-center[1])**2)/cutoff_frequency_2_high**2*frequency_2**2) \
+            < 1:
+                signalfft[x, y] = 0
+    signalfft = np.fft.ifftshift(signalfft)
+    signal = np.fft.ifft2(signalfft).real
+    return signal
 
 
 def fourier_filter_2d(
