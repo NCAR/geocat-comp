@@ -4,9 +4,8 @@
 Release Notes
 =============
 
-v2023.MM.00 (MM DD, YYYY)
--------------------------
-
+v2023.05.0 (4 May 2023)
+-----------------------
 Bug Fixes
 ^^^^^^^^^
 * Support for numpy input types and lat/lon kwargs in gradient by `Julia Kent`_ and `Alea Kootz`_ in (:pr:`385`)
@@ -14,6 +13,8 @@ Bug Fixes
 Documentation
 ^^^^^^^^^^^^^
 * Update PR template to include manual addition to release notes by `Anissa Zacharias`_ in (:pr:`397`)
+
+**Full Changelog**: https://github.com/NCAR/geocat-comp/compare/v2023.03.2...v2023.05.0
 
 
 v2023.03.2 (Mar 29, 2023)
