@@ -6,9 +6,6 @@ Release Notes
 
 v2023.05.0 (4 May 2023)
 -----------------------
-
-Plain text summary of significant changes
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 In this release, we've added support for numpy input and other improvements to the gradient function
 
 Bug Fixes
