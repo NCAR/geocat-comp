@@ -5,3 +5,7 @@
 - title: Climatology Average
   path: examples/climatology_average.ipynb
   thumbnail: _static/thumbnails/climatology.png
+
+- title: Fourier Filter Example
+  path: examples/fourier_filter_example.ipynb
+  thumbnail: _static/thumbnails/sphx_glr_calendar_average_example.png
