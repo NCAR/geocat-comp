@@ -918,7 +918,7 @@ class test_climatology_average(unittest.TestCase):
                            ('monthly, "season", False', monthly, 'season',
                             False)])
     def test_climatology_average_keep_attrs(self, name, dset, freq, keep_attrs):
-        result = climatology_average(dset, freq, keep_attrs=keep_attrs)
+        result = climatology_average(dset, freq=freq, keep_attrs=keep_attrs)
         if keep_attrs or keep_attrs == None:
             assert result.attrs == dset.attrs
         elif not keep_attrs:
@@ -971,7 +971,7 @@ class test_climatology_average(unittest.TestCase):
         dset_encoded = xr.tutorial.open_dataset("air_temperature",
                                                 decode_cf=False)
         with self.assertRaises(ValueError):
-            climatology_average(dset_encoded, 'month')
+            climatology_average(dset_encoded, freq='month')
 
     def test_non_uniformly_spaced_data_climatology_average(self):
         time = pd.to_datetime(['2020-01-01', '2020-01-02', '2020-01-04'])
