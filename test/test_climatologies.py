@@ -910,15 +910,26 @@ class test_climatology_average(unittest.TestCase):
             'lon': [-180.0]
         })
 
-    @parameterized.expand([('daily, "month", None', daily, 'month', None),
-                           ('daily, "month", True', daily, 'month', True),
-                           ('daily, "month", False', daily, 'month', False),
-                           ('monthly, "season", None', monthly, 'season', None),
-                           ('monthly, "season", True', monthly, 'season', True),
-                           ('monthly, "season", False', monthly, 'season',
-                            False)])
-    def test_climatology_average_keep_attrs(self, name, dset, freq, keep_attrs):
-        result = climatology_average(dset, freq=freq, keep_attrs=keep_attrs)
+    @parameterized.expand([
+        ('daily, "month", None', daily, 'month', [], None),
+        ('daily, "month", True', daily, 'month', [], True),
+        ('daily, "month", False', daily, 'month', [], False),
+        ('monthly, "season", None', monthly, 'season', [], None),
+        ('monthly, "season", True', monthly, 'season', [], True),
+        ('monthly, "season", False', monthly, 'season', [], False),
+        ('monthly, "season", None', monthly, 'season',
+         ['DJF', 'JJA', 'MAM', 'SON'], None),
+        ('monthly, "season", True', monthly, 'season',
+         ['DJF', 'JJA', 'MAM', 'SON'], True),
+        ('monthly, "season", False', monthly, 'season',
+         ['DJF', 'JJA', 'MAM', 'SON'], False)
+    ])
+    def test_climatology_average_keep_attrs(self, name, dset, freq,
+                                            custom_season, keep_attrs):
+        result = climatology_average(dset,
+                                     freq=freq,
+                                     custom_season=custom_season,
+                                     keep_attrs=keep_attrs)
         if keep_attrs or keep_attrs == None:
             assert result.attrs == dset.attrs
         elif not keep_attrs:
@@ -935,6 +946,13 @@ class test_climatology_average(unittest.TestCase):
     def test_daily_to_monthly_climatology_average(self):
         result = climatology_average(self.daily, freq='month')
         xr.testing.assert_allclose(result, self.day_2_month_clim)
+
+    def test_custom_season_climatology_average(self):
+        result = climatology_average(self.monthly,
+                                     freq='season',
+                                     custom_season=['DJF', 'JJA', 'MAM', 'SON'])
+        non_custom = climatology_average(self.monthly, freq='season')
+        assert result == non_custom
 
     @parameterized.expand([('daily to seasonal', daily, day_2_season_clim),
                            ('monthly to seasonal', monthly, month_2_season_clim)

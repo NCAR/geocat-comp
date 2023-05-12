@@ -821,16 +821,13 @@ def climatology_average(
                 # Compute the weights for the months in each season so that the
                 # seasonal averages account for months being of different lengths
                 month_length = dset_filter[time_dim].dt.days_in_month
-                weights = month_length / month_length.sum(keep_attrs=keep_attrs)
-                climatology = (dset_filter * weights).sum(dim=time_dim,
-                                                          keep_attrs=keep_attrs)
+                weights = month_length / month_length.sum()
+                climatology = (dset_filter * weights).sum(dim=time_dim).values
 
-                # Create a DataArray object so that each season name is attached to its value
-                da_climatology = xr.DataArray(climatology.values,
-                                              coords={"season": season})
-
-                seasonal_climates.append(da_climatology)
-            dset = xr.concat(seasonal_climates, dim=season)
+                seasonal_climates.append(climatology)
+            dset = xr.DataArray(data=seasonal_climates,
+                                dims=["season"],
+                                coords=dict(season=custom_season))
             return dset.assign_attrs(attrs)
 
         else:  # If default seasons
