@@ -925,10 +925,10 @@ class test_climatology_average(unittest.TestCase):
          ['DJF', 'JJA', 'MAM', 'SON'], False)
     ])
     def test_climatology_average_keep_attrs(self, name, dset, freq,
-                                            custom_season, keep_attrs):
+                                            custom_seasons, keep_attrs):
         result = climatology_average(dset,
                                      freq=freq,
-                                     custom_season=custom_season,
+                                     custom_seasons=custom_seasons,
                                      keep_attrs=keep_attrs)
         if keep_attrs or keep_attrs == None:
             assert result.attrs == dset.attrs
@@ -948,9 +948,10 @@ class test_climatology_average(unittest.TestCase):
         xr.testing.assert_allclose(result, self.day_2_month_clim)
 
     def test_custom_season_climatology_average(self):
-        result = climatology_average(self.monthly,
-                                     freq='season',
-                                     custom_season=['DJF', 'JJA', 'MAM', 'SON'])
+        result = climatology_average(
+            self.monthly,
+            freq='season',
+            custom_seasons=['DJF', 'JJA', 'MAM', 'SON'])
         non_custom = climatology_average(self.monthly, freq='season')
         assert result == non_custom
 

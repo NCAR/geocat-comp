@@ -4,7 +4,16 @@
 Release Notes
 =============
 
-v2023.05.0 (4 May 2023)
+v2023.06.0 (Jun X, 2023)
+-----------------------
+[Plain text summary here]
+
+New Features
+^^^^^^^^^^^^
+* User-defined seasonal boundaries, `custom_seasons`, enabled for `climatology_average` by `Julia Kent`_ in (:pr:441)
+
+
+v2023.05.0 (May 4, 2023)
 -----------------------
 In this release, we've added support for numpy input and other improvements to the gradient function
 

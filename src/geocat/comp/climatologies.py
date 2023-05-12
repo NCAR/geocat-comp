@@ -670,7 +670,7 @@ def calendar_average(
 def climatology_average(
         dset: typing.Union[xr.DataArray, xr.Dataset],
         freq: str,
-        custom_season: list = [],
+        custom_seasons: list = [],
         time_dim: str = None,
         keep_attrs: bool = None) -> typing.Union[xr.DataArray, xr.Dataset]:
     """This function calculates long term hourly, daily, monthly, or seasonal
@@ -690,7 +690,7 @@ def climatology_average(
         - `month`: for monthly averages
         - `season`: for meteorological seasonal averages (default: DJF, MAM, JJA, and SON)
 
-    custom_season : list[str]
+    custom_seasons : list[str]
         List of 3-months season aliases. Analysis is done on the provided seasons.
         Accepted alias:
 
@@ -796,9 +796,9 @@ def climatology_average(
         if keep_attrs or keep_attrs is None:
             attrs = dset.attrs
 
-        if len(custom_season) > 0:  # user specified custom season
+        if len(custom_seasons) > 0:  # user specified custom season
             seasonal_climates = []
-            for season in custom_season:
+            for season in custom_seasons:
                 try:
                     months = seasons_pd[season]
                 except KeyError:
@@ -827,7 +827,7 @@ def climatology_average(
                 seasonal_climates.append(climatology)
             dset = xr.DataArray(data=seasonal_climates,
                                 dims=["season"],
-                                coords=dict(season=custom_season))
+                                coords=dict(season=custom_seasons))
             return dset.assign_attrs(attrs)
 
         else:  # If default seasons
