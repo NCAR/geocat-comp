@@ -427,7 +427,10 @@ def climate_anomaly(
     if freq == 'year':
         clim = calendar_average(dset, freq, time_dim, keep_attrs)
     else:
-        clim = climatology_average(dset, freq, time_dim, keep_attrs)
+        clim = climatology_average(dset,
+                                   freq=freq,
+                                   time_dim=time_dim,
+                                   keep_attrs=keep_attrs)
     if freq == 'season':
         anom = dset.groupby(f"{time_dim}.season") - clim
         return anom.assign_attrs(attrs)
@@ -752,18 +755,18 @@ def climatology_average(
     }
 
     seasons_pd = {
-        "DJF": ([12, 1, 2], 'QS-DEC'),
-        "JFM": ([1, 2, 3], 'QS-JAN'),
-        "FMA": ([2, 3, 4], 'QS-FEB'),
-        "MAM": ([3, 4, 5], 'QS-MAR'),
-        "AMJ": ([4, 5, 6], 'QS-APR'),
-        "MJJ": ([5, 6, 7], 'QS-MAY'),
-        "JJA": ([6, 7, 8], 'QS-JUN'),
-        "JAS": ([7, 8, 9], 'QS-JUL'),
-        "ASO": ([8, 9, 10], 'QS-AUG'),
-        "SON": ([9, 10, 11], 'QS-SEP'),
-        "OND": ([10, 11, 12], 'QS-OCT'),
-        "NDJ": ([11, 12, 1], 'QS-NOV'),
+        "DJF": [12, 1, 2],
+        "JFM": [1, 2, 3],
+        "FMA": [2, 3, 4],
+        "MAM": [3, 4, 5],
+        "AMJ": [4, 5, 6],
+        "MJJ": [5, 6, 7],
+        "JJA": [6, 7, 8],
+        "JAS": [7, 8, 9],
+        "ASO": [8, 9, 10],
+        "SON": [9, 10, 11],
+        "OND": [10, 11, 12],
+        "NDJ": [11, 12, 1],
     }
 
     if freq not in freq_dict:
@@ -797,27 +800,18 @@ def climatology_average(
                 seasonal_climates = []
                 for season in custom_season:
                     try:
-                        (months, quarter) = seasons_pd[season]
+                        months = seasons_pd[season]
                     except KeyError:
                         raise KeyError(
                             f"contributed: month_to_season: bad season: SEASON = {season}. Valid seasons include: {list(seasons_pd.keys())}"
                         )
 
-                    # Grab the months and quarters for each season
-                    (months, quarter) = seasons_pd[season]
+                    # Grab the months for each season
+                    months = seasons_pd[season]
 
                     # Filter data to only contain the months of interest
                     data_filter = dset.sel(
                         {time_dim: dset[time_dim].dt.month.isin(months)})
-
-                    # For this season, the last "mean" will be the value for Dec so we drop the last month
-                    if season == 'DJF':
-                        data_filter = data_filter.isel(
-                            {time_dim: slice(None, -1)})
-                    # For this season, the first "mean" will be the value for Jan so we drop the first month
-                    elif season == 'NDJ':
-                        data_filter = data_filter.isel(
-                            {time_dim: slice(1, None)})
 
                     # Calculate monthly average before calculating seasonal climatologies
                     dset_filter = data_filter.resample({
