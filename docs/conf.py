@@ -98,7 +98,7 @@ mathjax_config = {
     }
 }
 
-#mathjax_path = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
+mathjax_path = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
 
 intersphinx_mapping = {
     'dask': ('https://docs.dask.org/en/latest/', None),
