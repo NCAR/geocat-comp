@@ -95,9 +95,6 @@ mathjax_config = {
             'automatic': True,
             'width': 'container'
         }
-    },
-    'chtml': {
-        'displayAlign': 'left'
     }
 }
 
