@@ -1,4 +1,4 @@
-import sys
+import os
 import unittest
 import cftime
 import numpy as np
@@ -7,12 +7,11 @@ import xarray.testing
 from parameterized import parameterized
 import xarray as xr
 
-# Import from directory structure if coverage test, or from installed
-# packages otherwise
-if "--cov" in str(sys.argv):
-    from src.geocat.comp import climate_anomaly, anomaly, climatology, month_to_season, calendar_average, climatology_average
-else:
+# Import from directory structure unless running tests on gh actions
+if os.environ.get('GITHUB_ACTIONS') == 'true':
     from geocat.comp import climate_anomaly, anomaly, climatology, month_to_season, calendar_average, climatology_average
+else:
+    from src.geocat.comp import climate_anomaly, anomaly, climatology, month_to_season, calendar_average, climatology_average
 
 
 ##### Helper Functions #####

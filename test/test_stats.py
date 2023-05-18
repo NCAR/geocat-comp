@@ -1,15 +1,14 @@
 from unittest import TestCase
-import sys
+import os
 from abc import ABCMeta
 import numpy as np
 import xarray as xr
 
-# Import from directory structure if coverage test, or from installed
-# packages otherwise
-if "--cov" in str(sys.argv):
-    from src.geocat.comp.stats import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts, pearson_r
-else:
+# Import from directory structure unless running tests on gh actions
+if os.environ.get('GITHUB_ACTIONS') == 'true':
     from geocat.comp.stats import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts, pearson_r
+else:
+    from src.geocat.comp.stats import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts, pearson_r
 
 
 class BaseEOFTestClass(metaclass=ABCMeta):

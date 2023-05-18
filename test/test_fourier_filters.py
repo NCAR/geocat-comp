@@ -1,17 +1,16 @@
 import math as m
-import sys
+import os
 
 import numpy as np
 import xarray as xr
 
-# Import from directory structure if coverage test, or from installed
-# packages otherwise
-if "--cov" in str(sys.argv):
-    from src.geocat.comp import (fourier_band_block, fourier_band_pass,
-                                 fourier_high_pass, fourier_low_pass)
-else:
+# Import from directory structure unless running tests on gh actions
+if os.environ.get('GITHUB_ACTIONS') == 'true':
     from geocat.comp import (fourier_band_block, fourier_band_pass,
                              fourier_high_pass, fourier_low_pass)
+else:
+    from src.geocat.comp import (fourier_band_block, fourier_band_pass,
+                                 fourier_high_pass, fourier_low_pass)
 
 freq = 1000
 t = np.arange(1000) / freq

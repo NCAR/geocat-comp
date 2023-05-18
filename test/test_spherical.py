@@ -1,19 +1,16 @@
 import math as ma
-import sys
+import os
 import unittest
 
 import numpy as np
 import scipy.special as ss
 import xarray as xr
 
-# Import from directory structure if coverage test, or from installed
-# packages otherwise
-if "--cov" in str(sys.argv):
-    from src.geocat.comp import decomposition, recomposition, scale_voronoi
-elif "-v" in str(sys.argv):
-    from src.geocat.comp import decomposition, recomposition, scale_voronoi
-else:
+# Import from directory structure unless running tests on gh actions
+if os.environ.get('GITHUB_ACTIONS') == 'true':
     from geocat.comp import decomposition, recomposition, scale_voronoi
+else:
+    from src.geocat.comp import decomposition, recomposition, scale_voronoi
 
 
 class Test_Spherical(unittest.TestCase):
