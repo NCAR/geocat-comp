@@ -67,7 +67,38 @@ extensions = [
     'sphinx.ext.extlinks',
 ]
 
-#mathjax_path = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
+mathjax_config = {
+    'tex2jax': {
+        'inlineMath': [['$', '$'], ['\\(', '\\)']],
+        'displayMath': [['$$', '$$'], ['\\[', '\\]']],
+        'processEscapes': True,
+    },
+    'HTML-CSS': {
+        'linebreaks': {
+            'automatic': True,
+            'width': 'container'
+        },
+        'fonts': {
+            'availableFonts': ['TeX'],
+            'preferredFont': 'TeX',
+            'webFont': 'TeX'
+        }
+    },
+    'CommonHTML': {
+        'linebreaks': {
+            'automatic': True,
+            'width': 'container'
+        }
+    },
+    'SVG': {
+        'linebreaks': {
+            'automatic': True,
+            'width': 'container'
+        }
+    }
+}
+
+mathjax_path = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
 
 intersphinx_mapping = {
     'dask': ('https://docs.dask.org/en/latest/', None),
