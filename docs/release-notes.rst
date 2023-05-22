@@ -4,7 +4,15 @@
 Release Notes
 =============
 
-v2023.05.0 (4 May 2023)
+v2023.06.0 (June X, 2023)
+-------------------------
+plain text summary here
+
+Testing
+^^^^^^^
+* Change tests to import from directory structure instead of from an installed version by `Anissa Zacharias`_ in (:pr:`414`)
+
+v2023.05.0 (May 4, 2023)
 -----------------------
 In this release, we've added support for numpy input and other improvements to the gradient function
 
