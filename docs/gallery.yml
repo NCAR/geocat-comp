@@ -5,3 +5,7 @@
 - title: Climatology Average
   path: examples/climatology_average.ipynb
   thumbnail: _static/thumbnails/climatology.png
+
+- title: Vertically Integrated Moisture Flux Convergence
+  path: examples/vimfc.ipynb
+  thumbnail: _static/thumbnails/vimfc.png
