@@ -222,7 +222,7 @@ class Test_interp_hybrid_to_pressure_extrapolate(unittest.TestCase):
                           phi_sfc=self.phis)
 
 
-class Test_interp_sigma_to_hybrid(TestCase):
+class Test_interp_sigma_to_hybrid(unittest.TestCase):
     hyam = xr.DataArray([0.0108093, 0.0130731, 0.03255911, 0.0639471])
     hybm = xr.DataArray([0.0108093, 0.0173664, 0.06069280, 0.1158237])
 
