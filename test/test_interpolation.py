@@ -1,19 +1,11 @@
-import os
 import unittest
-from unittest import TestCase
 
 import geocat.datafiles as gdf
 import numpy as np
 import numpy.testing as nt
 import xarray as xr
 
-# Import from directory structure unless running tests on gh actions
-if os.environ.get('GITHUB_ACTIONS') == 'true':
-    from geocat.comp import interp_multidim, interp_hybrid_to_pressure, \
-        interp_sigma_to_hybrid
-else:
-    from src.geocat.comp import interp_multidim, interp_hybrid_to_pressure, \
-        interp_sigma_to_hybrid
+from src.geocat.comp import interp_multidim, interp_hybrid_to_pressure, interp_sigma_to_hybrid
 
 # Global input data
 
@@ -29,7 +21,7 @@ _hybm = ds_atmos.hybm
 _p0 = 1000. * 100  # Pa
 
 
-class Test_interp_hybrid_to_pressure(TestCase):
+class Test_interp_hybrid_to_pressure(unittest.TestCase):
     # Sample input data
     data = ds_atmos.U[0, :, :, :]
     ps = ds_atmos.PS
@@ -106,7 +98,7 @@ class Test_interp_hybrid_to_pressure(TestCase):
         nt.assert_array_almost_equal(self.uzon_expected, uzon, 5)
 
 
-class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
+class Test_interp_hybrid_to_pressure_extrapolate(unittest.TestCase):
     # Open the netCDF data file with the input data
     try:
         ds_ccsm = xr.open_dataset(

@@ -1,14 +1,9 @@
-import os
 import unittest
 
 import numpy as np
 import xarray as xr
 
-# Import from directory structure unless running tests on gh actions
-if os.environ.get('GITHUB_ACTIONS') == 'true':
-    from geocat.comp import gradient
-else:
-    from src.geocat.comp import gradient
+from src.geocat.comp import gradient
 
 
 class Test_Gradient(unittest.TestCase):
