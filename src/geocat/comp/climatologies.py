@@ -691,7 +691,7 @@ def climatology_average(
         - `month`: for monthly averages
         - `season`: for meteorological seasonal averages (default: DJF, MAM, JJA, and SON)
 
-    custom_seasons : list[str], optional
+    custom_seasons : list[str], str, optional
         The list of 3-months season aliases. Analysis is done on the provided seasons.
         This parameter will be ignored if the `freq` is not set to `season`.
         Accepted alias:
@@ -804,6 +804,8 @@ def climatology_average(
     if freq == 'season':
 
         if custom_seasons:
+            if type(custom_seasons) == str:
+                custom_seasons = [custom_seasons]
             if not all([s in seasons_dict for s in custom_seasons]):
                 raise KeyError(
                     f"contributed: month_to_season: bad cusom_seasons list: {custom_seasons}. Valid seasons include: {list(seasons_dict.keys())}"
