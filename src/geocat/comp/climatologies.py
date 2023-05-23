@@ -692,7 +692,8 @@ def climatology_average(
         - `season`: for meteorological seasonal averages (default: DJF, MAM, JJA, and SON)
 
     custom_seasons : list[str], str, optional
-        The list of 3-months season aliases. Analysis is done on the provided seasons.
+        The list of 3-months season aliases or a single seaonal alias string.
+        Analysis is done on the provided seasons.
         This parameter will be ignored if the `freq` is not set to `season`.
         Accepted alias:
 
