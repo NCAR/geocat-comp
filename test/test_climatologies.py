@@ -789,7 +789,7 @@ class test_climatology_average(unittest.TestCase):
         })
 
     season_clim = np.array([320.9392265, 380, 288, 471.5]).reshape(4, 1, 1)
-    season_clim_time = ['DJF', 'JJA', 'MAM', 'SON']
+    season_clim_time = ['DJF', 'MAM', 'JJA', 'SON']
     day_2_season_clim = xr.Dataset(
         data_vars={'data': (('season', 'lat', 'lon'), season_clim)},
         coords={
@@ -918,11 +918,11 @@ class test_climatology_average(unittest.TestCase):
         ('monthly, "season", True', monthly, 'season', [], True),
         ('monthly, "season", False', monthly, 'season', [], False),
         ('monthly, "season", None', monthly, 'season',
-         ['DJF', 'JJA', 'MAM', 'SON'], None),
+         ['DJF', 'MAM', 'JJA', 'SON'], None),
         ('monthly, "season", True', monthly, 'season',
-         ['DJF', 'JJA', 'MAM', 'SON'], True),
+         ['DJF', 'MAM', 'JJA', 'SON'], True),
         ('monthly, "season", False', monthly, 'season',
-         ['DJF', 'JJA', 'MAM', 'SON'], False)
+         ['DJF', 'MAM', 'JJA', 'SON'], False)
     ])
     def test_climatology_average_keep_attrs(self, name, dset, freq,
                                             custom_seasons, keep_attrs):
@@ -951,9 +951,9 @@ class test_climatology_average(unittest.TestCase):
         result = climatology_average(
             self.monthly,
             freq='season',
-            custom_seasons=['DJF', 'JJA', 'MAM', 'SON'])
-        non_custom = climatology_average(self.monthly, freq='season')
-        assert result == non_custom
+            custom_seasons=['DJF', 'MAM', 'JJA', 'SON'])
+        expected = climatology_average(self.monthly, freq='season')
+        xr.testing.assert_allclose(result, expected)
 
     @parameterized.expand([('daily to seasonal', daily, day_2_season_clim),
                            ('monthly to seasonal', monthly, month_2_season_clim)
