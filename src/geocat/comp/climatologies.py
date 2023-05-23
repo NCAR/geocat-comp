@@ -3,6 +3,7 @@ import cftime
 import numpy as np
 import typing
 import xarray as xr
+import warnings
 
 _FREQUENCIES = {"day", "month", "year", "season"}
 
@@ -670,7 +671,7 @@ def calendar_average(
 def climatology_average(
         dset: typing.Union[xr.DataArray, xr.Dataset],
         freq: str,
-        custom_seasons: list = [],
+        custom_seasons: list = None,
         time_dim: str = None,
         keep_attrs: bool = None) -> typing.Union[xr.DataArray, xr.Dataset]:
     """This function calculates long term hourly, daily, monthly, or seasonal
@@ -690,8 +691,9 @@ def climatology_average(
         - `month`: for monthly averages
         - `season`: for meteorological seasonal averages (default: DJF, MAM, JJA, and SON)
 
-    custom_seasons : list[str]
-        List of 3-months season aliases. Analysis is done on the provided seasons.
+    custom_seasons : list[str], optional
+        The list of 3-months season aliases. Analysis is done on the provided seasons.
+        This parameter will be ignored if the `freq` is not set to `season`.
         Accepted alias:
 
         - `DJF` : for a season of December, January, and February
@@ -746,7 +748,6 @@ def climatology_average(
     `clmMonTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonTLLL.shtml>`__,
     `month_to_season <https://www.ncl.ucar.edu/Document/Functions/Contributed/month_to_season.shtml>`__
     """
-    # TODO: add functionality for users to select specific seasons or hours for climatologies
     freq_dict = {
         'hour': ('%m-%d %H', 'H'),
         'day': ('%m-%d', 'D'),
@@ -754,7 +755,7 @@ def climatology_average(
         'season': (None, 'QS-DEC')
     }
 
-    seasons_pd = {
+    seasons_dict = {
         "DJF": [12, 1, 2],
         "JFM": [1, 2, 3],
         "FMA": [2, 3, 4],
@@ -774,6 +775,11 @@ def climatology_average(
             f"Received bad period {freq!r}. Expected one of {list(freq_dict.keys())!r}"
         )
 
+    if custom_seasons and freq != 'season':
+        warnings.warn(
+            "You have specified `custom_seasons` without specifying seasonal climatology. Your `custom_seasons` will be ignored."
+        )
+
     # If freq is 'season', key is set to monthly in order to calculate monthly
     # averages which are then used to calculate seasonal averages
     key = 'month' if freq == 'season' else freq
@@ -791,60 +797,46 @@ def climatology_average(
     # Retrieve calendar name
     calendar = _infer_calendar_name(dset[time_dim])
 
+    attrs = {}
+    if keep_attrs or keep_attrs is None:
+        attrs = dset.attrs
+
     if freq == 'season':
-        attrs = {}
-        if keep_attrs or keep_attrs is None:
-            attrs = dset.attrs
 
-        if len(custom_seasons) > 0:  # user specified custom season
-            seasonal_climates = []
-            for season in custom_seasons:
-                try:
-                    months = seasons_pd[season]
-                except KeyError:
-                    raise KeyError(
-                        f"contributed: month_to_season: bad season: SEASON = {season}. Valid seasons include: {list(seasons_pd.keys())}"
-                    )
+        if custom_seasons:
+            if not all([s in seasons_dict for s in custom_seasons]):
+                raise KeyError(
+                    f"contributed: month_to_season: bad cusom_seasons list: {custom_seasons}. Valid seasons include: {list(seasons_dict.keys())}"
+                )
+        else:
+            custom_seasons = ['DJF', 'MAM', 'JJA', 'SON']
 
-                # Grab the months for each season
-                months = seasons_pd[season]
+        seasonal_climates = []
+        for season in custom_seasons:
 
-                # Filter data to only contain the months of interest
-                data_filter = dset.sel(
-                    {time_dim: dset[time_dim].dt.month.isin(months)})
+            # Grab the months for each season
+            months = seasons_dict[season]
 
-                # Calculate monthly average before calculating seasonal climatologies
-                dset_filter = data_filter.resample({
-                    time_dim: frequency
-                }).mean(keep_attrs=keep_attrs).dropna(time_dim)
+            # Filter data to only contain the months of interest
+            data_filter = dset.sel(
+                {time_dim: dset[time_dim].dt.month.isin(months)})
 
-                # Compute the weights for the months in each season so that the
-                # seasonal averages account for months being of different lengths
-                month_length = dset_filter[time_dim].dt.days_in_month
-                weights = month_length / month_length.sum()
-                climatology = (dset_filter * weights).sum(dim=time_dim).values
-
-                seasonal_climates.append(climatology)
-            dset = xr.DataArray(data=seasonal_climates,
-                                dims=["season"],
-                                coords=dict(season=custom_seasons))
-            return dset.assign_attrs(attrs)
-
-        else:  # If default seasons
-            if xr.infer_freq(dset[time_dim]) != 'MS':
-                # Calculate monthly average before calculating seasonal climatologies
-                dset = dset.resample({
-                    time_dim: frequency
-                }).mean(keep_attrs=keep_attrs).dropna(time_dim)
+            # Calculate monthly average before calculating seasonal climatologies
+            dset_filter = data_filter.resample({
+                time_dim: frequency
+            }).mean(keep_attrs=keep_attrs).dropna(time_dim)
 
             # Compute the weights for the months in each season so that the
             # seasonal averages account for months being of different lengths
-            month_length = dset[time_dim].dt.days_in_month.groupby(
-                f"{time_dim}.season")
-            weights = month_length / month_length.sum(keep_attrs=keep_attrs)
-            dset = (dset * weights).groupby(f"{time_dim}.season")
-            dset = dset.sum(dim=time_dim, keep_attrs=keep_attrs)
-            return dset.assign_attrs(attrs)
+            month_length = dset_filter[time_dim].dt.days_in_month
+            weights = month_length / month_length.sum()
+            climatology = (dset_filter * weights).sum(dim=time_dim).values
+
+            seasonal_climates.append(climatology)
+        dset = xr.DataArray(data=seasonal_climates,
+                            dims=["season"],
+                            coords=dict(season=custom_seasons))
+        return dset.assign_attrs(attrs)
 
     else:
         # Retrieve floor of median year
