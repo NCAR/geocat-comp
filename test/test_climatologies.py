@@ -953,7 +953,7 @@ class test_climatology_average(unittest.TestCase):
             freq='season',
             custom_seasons=['DJF', 'MAM', 'JJA', 'SON'])
         expected = climatology_average(self.monthly, freq='season')
-        xr.testing.assert_allclose(result, expected)
+        xr.testing.assert_equal(result, expected)
 
     @parameterized.expand([('daily to seasonal', daily, day_2_season_clim),
                            ('monthly to seasonal', monthly, month_2_season_clim)

@@ -807,9 +807,15 @@ def climatology_average(
         if custom_seasons:
             if type(custom_seasons) == str:
                 custom_seasons = [custom_seasons]
-            if not all([s in seasons_dict for s in custom_seasons]):
+            valid_season_check = [s in seasons_dict for s in custom_seasons]
+            if not all(valid_season_check):
+                bad_seasons = [
+                    custom_seasons[i]
+                    for i, x in enumerate(valid_season_check)
+                    if not x
+                ]
                 raise ValueError(
-                    f"contributed: month_to_season: bad cusom_seasons list: {custom_seasons}. Valid seasons include: {list(seasons_dict.keys())}"
+                    f"contributed: month_to_season: bad season(s): {bad_seasons}. Valid seasons include: {list(seasons_dict.keys())}"
                 )
         else:
             custom_seasons = ['DJF', 'MAM', 'JJA', 'SON']
