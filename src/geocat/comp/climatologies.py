@@ -815,7 +815,7 @@ def climatology_average(
                     if not x
                 ]
                 raise ValueError(
-                    f"contributed: month_to_season: bad season(s): {bad_seasons}. Valid seasons include: {list(seasons_dict.keys())}"
+                    f"contributed: climatology_average: bad season(s): {bad_seasons}. Valid seasons include: {list(seasons_dict.keys())}"
                 )
         else:
             custom_seasons = ['DJF', 'MAM', 'JJA', 'SON']
