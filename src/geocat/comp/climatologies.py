@@ -506,7 +506,7 @@ def month_to_season(
         raise ValueError(
             f"The {time_coord_name} axis length must be a multiple of {mod}.")
 
-    seasons_pd = {
+    seasons_dict = {
         "DJF": ([12, 1, 2], 'QS-DEC'),
         "JFM": ([1, 2, 3], 'QS-JAN'),
         "FMA": ([2, 3, 4], 'QS-FEB'),
@@ -521,9 +521,9 @@ def month_to_season(
         "NDJ": ([11, 12, 1], 'QS-NOV'),
     }
     try:
-        (months, quarter) = seasons_pd[season]
-    except KeyError:
-        raise KeyError(
+        (months, quarter) = seasons_dict[season]
+    except ValueError:
+        raise ValueError(
             f"contributed: month_to_season: bad season: SEASON = {season}. Valid seasons include: {list(seasons_pd.keys())}"
         )
 
@@ -808,7 +808,7 @@ def climatology_average(
             if type(custom_seasons) == str:
                 custom_seasons = [custom_seasons]
             if not all([s in seasons_dict for s in custom_seasons]):
-                raise KeyError(
+                raise ValueError(
                     f"contributed: month_to_season: bad cusom_seasons list: {custom_seasons}. Valid seasons include: {list(seasons_dict.keys())}"
                 )
         else:
