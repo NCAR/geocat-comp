@@ -117,16 +117,3 @@ NCL Function Name Wrappers
    :toctree: ./generated/
 
    meteorology.dpres_plev
-
-
-Deprecated Functions
---------------------
-Climatologies
-^^^^^^^^^^^^^
-.. currentmodule:: geocat.comp.climatologies
-.. autosummary::
-   :nosignatures:
-   :toctree: ./generated/
-
-   anomaly
-   climatology

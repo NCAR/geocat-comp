@@ -4,6 +4,18 @@
 Release Notes
 =============
 
+v2023.05.0 (June 8, 2023)
+-------------------------
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Updates deprecated pre-commit YAPF repository from https://github.com/pre-commit/mirrors-yapf to https://github.com/google/yapf by `Anissa Zacharias`_ in (:pr:`417`)
+
+Breaking Changes
+^^^^^^^^^^^^^^^^
+* Removed deprecated functions `climatology` and `anomaly` by `Anissa Zacharias`_ in (:pr:`416`)
+* Removed internal functions `_find_time_invariant_vars` and `_setup_clim_anom_input` by `Anissa Zacharias`_ in (:pr:`416`)
+
 v2023.05.0 (4 May 2023)
 -----------------------
 In this release, we've added support for numpy input and other improvements to the gradient function
