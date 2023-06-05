@@ -10,9 +10,9 @@ import xarray as xr
 # Import from directory structure if coverage test, or from installed
 # packages otherwise
 if "--cov" in str(sys.argv):
-    from src.geocat.comp import climate_anomaly, anomaly, climatology, month_to_season, calendar_average, climatology_average
+    from src.geocat.comp import climate_anomaly, month_to_season, calendar_average, climatology_average
 else:
-    from geocat.comp import climate_anomaly, anomaly, climatology, month_to_season, calendar_average, climatology_average
+    from geocat.comp import climate_anomaly, month_to_season, calendar_average, climatology_average
 
 
 ##### Helper Functions #####
