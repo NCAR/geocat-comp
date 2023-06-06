@@ -4,14 +4,7 @@ import unittest
 import numpy as np
 import xarray as xr
 
-# Import from directory structure if coverage test, or from installed
-# packages otherwise
-if "--cov" in str(sys.argv):
-    from src.geocat.comp import gradient
-elif "-v" in str(sys.argv):
-    from src.geocat.comp import gradient
-else:
-    from geocat.comp import gradient
+from geocat.comp import gradient
 
 
 class Test_Gradient(unittest.TestCase):

@@ -55,7 +55,7 @@ jobs:
 
       - name: Run Coverage Tests
         run: |
-          python -m pytest test -v --cov=./src/geocat/comp --cov-report=xml
+          python -m pytest test -v --cov=./geocat/comp --cov-report=xml
 
       - name: Upload code coverage to Codecov
         uses: codecov/codecov-action@v3.1.4
