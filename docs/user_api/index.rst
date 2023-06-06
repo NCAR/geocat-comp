@@ -91,24 +91,6 @@ Statistics
    eofunc_pcs
    pearson_r
 
-
-GeoCAT-comp routines from GeoCAT-f2py
--------------------------------------
-.. currentmodule:: geocat.comp
-.. autosummary::
-   :nosignatures:
-   :toctree: ./generated/
-
-   grid_to_triple
-   linint1
-   linint2
-   linint2pts
-   moc_globe_atl
-   rcm2points
-   rcm2rgrid
-   rgrid2rcm
-   triple_to_grid
-
 NCL Function Name Wrappers
 --------------------------
 .. currentmodule:: geocat.comp

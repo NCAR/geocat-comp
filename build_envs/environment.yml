@@ -8,7 +8,6 @@ dependencies:
   - dask
   - distributed
   - eofs
-  - geocat-f2py
   - metpy
   - numba
   - numpy<1.24  # 1.24 not yet fully compatible with numba

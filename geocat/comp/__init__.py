@@ -12,11 +12,6 @@ from .meteorology import (dewtemp, heat_index, relhum, relhum_ice, relhum_water,
                           dpres_plev)
 from .spherical import decomposition, recomposition, scale_voronoi
 from .stats import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts, pearson_r
-# bring all functions from geocat.f2py into the geocat.comp namespace
-try:
-    from geocat.f2py import *
-except ImportError:
-    pass
 
 # get version from pyproject.toml
 from importlib.metadata import version as _version

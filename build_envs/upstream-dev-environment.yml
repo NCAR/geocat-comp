@@ -6,7 +6,6 @@ dependencies:
   - cftime
   - eofs
   - geocat-datafiles  # for tests
-  - geocat-f2py
   - netcdf4  # for tests
   - parameterized  # for tests
   - pytest  # for tests
