@@ -41,5 +41,5 @@ GeoCAT-f2py
 -----------
 While our goal is to recreate NCL functions in pure Python, translating some NCL routines is challenging and time
 consuming. To ensure GeoCAT users have access to those functions while we work on full Python versions, the Fortran code
-they are based upon is wrapped in Python in the GeoCAT-f2py (Fortran 2 Python) package. Information about
+they are based upon is wrapped in Python in the GeoCAT-f2py package. Information about
 GeoCAT-f2py can be found on the `package's homepage <https://geocat-f2py.readthedocs.io/>`__.
