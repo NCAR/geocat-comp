@@ -16,6 +16,7 @@ Breaking Changes
 ^^^^^^^^^^^^^^^^
 * Removed deprecated functions ``climatology`` and ``anomaly`` by `Anissa Zacharias`_ in (:pr:`416`)
 * Removed internal functions ``_find_time_invariant_vars`` and ``_setup_clim_anom_input`` by `Anissa Zacharias`_ in (:pr:`416`)
+* Dropped support for python 3.8 (and added support for python 3.11) by `Anissa Zacharias`_ in (:pr:`426`)
 
 Bug Fixes
 ^^^^^^^^^
