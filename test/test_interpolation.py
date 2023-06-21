@@ -120,12 +120,12 @@ class Test_interp_hybrid_to_pressure_extrapolate(TestCase):
     # Pull out inputs
     _hyam = ds_ccsm.hyam
     _hybm = ds_ccsm.hybm
-    temp_in = ds_ccsm.T[:, :, :3, :2]
-    t_bot = ds_ccsm.TS[:, :3, :2]
-    geopotential_in = ds_ccsm.Z3[:, :, :3, :2]
-    humidity_in = ds_ccsm.Q[:, :, :3, :2] * 1000  # g/kg
-    press_in = ds_ccsm.PS[:, :3, :2]
-    phis = ds_ccsm.PHIS[:, :3, :2]
+    temp_in = ds_ccsm.T[:, :, 10:15, 20:25]
+    t_bot = ds_ccsm.TS[:, 10:15, 20:25]
+    geopotential_in = ds_ccsm.Z3[:, :, 10:15, 20:25]
+    humidity_in = ds_ccsm.Q[:, :, 10:15, 20:25] * 1000  # g/kg
+    press_in = ds_ccsm.PS[:, 10:15, 20:25]
+    phis = ds_ccsm.PHIS[:, 10:15, 20:25]
 
     temp_interp_expected = ds_out.Tp.rename(lev_p='plev')
     temp_extrap_expected = ds_out.Tpx.rename(lev_p='plev')
