@@ -179,7 +179,7 @@ def _temp_extrapolate(data, lev_dim, lev, p_sfc, ps, phi_sfc):
     tprime0 = xr.where((2000 <= hgt) & (hgt <= 2500),
                        0.002 * ((2500 - hgt) * t0 + ((hgt - 2000) * tplat)),
                        np.nan)
-    tprime0 = xr.where(2500 < hgt, tplat, np.nan)
+    tprime0 = xr.where(2500 < hgt, tplat, tprime0)
 
     alnp = xr.where(hgt < 2000, alpha * np.log(lev / ps),
                     R_d * (tprime0 - tstar) / phi_sfc * np.log(lev / ps))
