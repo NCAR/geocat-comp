@@ -7,6 +7,10 @@ Release Notes
 v2023.06.0 (June X, 2023)
 -------------------------
 
+Documentation
+^^^^^^^^^^^^^
+* New *Vertically Integrated Moisture Flux Convergence* (VIMFC) example by `Julia Kent`_ in (:pr:`388`)
+
 Internal Changes
 ^^^^^^^^^^^^^^^^
 * Updates deprecated pre-commit YAPF repository from https://github.com/pre-commit/mirrors-yapf to https://github.com/google/yapf by `Anissa Zacharias`_ in (:pr:`417`)
@@ -17,10 +21,12 @@ Breaking Changes
 * Removed deprecated functions ``climatology`` and ``anomaly`` by `Anissa Zacharias`_ in (:pr:`416`)
 * Removed internal functions ``_find_time_invariant_vars`` and ``_setup_clim_anom_input`` by `Anissa Zacharias`_ in (:pr:`416`)
 * Dropped support for python 3.8 (and added support for python 3.11) by `Anissa Zacharias`_ in (:pr:`426`)
+* Removed ``geocat-f2py``dependency by `Anissa Zacharias`_ in (:pr:`421`)
 
 Bug Fixes
 ^^^^^^^^^
 * Fix bug in `_temp_extrapolate` used by `interp_hybrid_to_pressure` by `Katelyn FitzGerald`_ in (:pr:`422`)
+
 
 v2023.05.0 (4 May 2023)
 -----------------------
