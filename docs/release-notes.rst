@@ -4,7 +4,7 @@
 Release Notes
 =============
 
-v2023.05.0 (June 8, 2023)
+v2023.06.0 (June X, 2023)
 -------------------------
 
 Internal Changes
@@ -16,6 +16,10 @@ Breaking Changes
 ^^^^^^^^^^^^^^^^
 * Removed deprecated functions ``climatology`` and ``anomaly`` by `Anissa Zacharias`_ in (:pr:`416`)
 * Removed internal functions ``_find_time_invariant_vars`` and ``_setup_clim_anom_input`` by `Anissa Zacharias`_ in (:pr:`416`)
+
+Bug Fixes
+^^^^^^^^^
+* Fix bug in `_temp_extrapolate` used by `interp_hybrid_to_pressure` by `Katelyn FitzGerald`_ in (:pr:`422`)
 
 v2023.05.0 (4 May 2023)
 -----------------------
