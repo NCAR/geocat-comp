@@ -4,7 +4,6 @@ channels:
 dependencies:
     - python>=3.9, <=3.11
     - pre_commit
-    - geocat-f2py
     - geocat-datafiles
     - geocat-viz
     - xarray<=2023.02.0 #pin per issue #381

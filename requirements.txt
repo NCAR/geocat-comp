@@ -6,7 +6,6 @@ cf_xarray>=0.3.1
 cftime
 dask[array]
 eofs
-geocat-f2py
 metpy
 numpy
 scipy
