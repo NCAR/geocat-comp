@@ -99,3 +99,20 @@ NCL Function Name Wrappers
    :toctree: ./generated/
 
    meteorology.dpres_plev
+
+Deprecated Functions
+---------------------
+.. currentmodule:: geocat.comp.deprecated
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
+
+   grid_to_triple
+   linint1
+   linint2
+   linint2pts
+   moc_globe_atl
+   rcm2points
+   rcm2rgrid
+   rgrid2rcm
+   triple_to_grid

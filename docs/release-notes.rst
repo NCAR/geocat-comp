@@ -1,6 +1,7 @@
 .. currentmodule:: geocat.comp
 
 .. _release:
+
 Release Notes
 =============
 
@@ -21,7 +22,7 @@ Breaking Changes
 * Removed deprecated functions ``climatology`` and ``anomaly`` by `Anissa Zacharias`_ in (:pr:`416`)
 * Removed internal functions ``_find_time_invariant_vars`` and ``_setup_clim_anom_input`` by `Anissa Zacharias`_ in (:pr:`416`)
 * Dropped support for python 3.8 (and added support for python 3.11) by `Anissa Zacharias`_ in (:pr:`426`)
-* Removed ``geocat-f2py``dependency by `Anissa Zacharias`_ in (:pr:`421`)
+* Removed ``geocat-f2py`` dependency by `Anissa Zacharias`_ in (:pr:`421`)
 
 Bug Fixes
 ^^^^^^^^^
@@ -90,6 +91,7 @@ Deprecations
 ^^^^^^^^^^^^
 * Remove deprecated functions from v2022.10.0 by `Heather Craker`_ in (:pr:`357`)
 * Remove links to deleted function docs by `Heather Craker`_ in (:pr:`359`)
+
 Bug Fixes
 ^^^^^^^^^
 * Partial fix for _vertical_remap_extrap bug by `Heather Craker`_ in (:pr:`360`)
@@ -208,3 +210,4 @@ Maintenance
 .. _`Alea Kootz`: https://github.com/pilotchute
 .. _`Mario Rodriguez`: https://github.com/marodrig
 .. _`Julia Kent`: https://github.com/jukent
+.. _`Katelyn FitzGerald`: https://github.com/kafitzgerald

@@ -41,7 +41,7 @@ from .deprecated import (
     linint2pts,
     moc_globe_atl,
     rcm2points,
-    rcm2grid,
+    rcm2rgrid,
     rgrid2rcm,
     triple_to_grid,
 )
