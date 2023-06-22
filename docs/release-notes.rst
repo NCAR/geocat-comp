@@ -5,8 +5,11 @@
 Release Notes
 =============
 
-v2023.06.0 (June X, 2023)
--------------------------
+v2023.06.0 (June 23, 2023)
+--------------------------
+This release removes the geocat-f2py dependency. To use these functions, users
+will need to install the geocat-f2py package directly. Additionally, this
+release also drops support for python 3.8 and adds support for 3.11.
 
 Documentation
 ^^^^^^^^^^^^^
