@@ -5,6 +5,15 @@
 Release Notes
 =============
 
+v2023.06.1 (June 23, 2023)
+--------------------------
+This releases fixes the unintentional limitation of the 2023.06.0 release to python 3.11.0
+
+Bug Fixes
+^^^^^^^^^
+* Fix python version limit of 3.11.0 by `Anissa Zacharias`_ in (:pr:`431`)
+
+
 v2023.06.0 (June 23, 2023)
 --------------------------
 This release removes the geocat-f2py dependency. To use these functions, users
