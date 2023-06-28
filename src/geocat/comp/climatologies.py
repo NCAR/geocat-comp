@@ -524,7 +524,7 @@ def month_to_season(
         (months, quarter) = seasons_dict[season]
     except ValueError:
         raise ValueError(
-            f"contributed: month_to_season: bad season: SEASON = {season}. Valid seasons include: {list(seasons_pd.keys())}"
+            f"contributed: month_to_season: bad season: SEASON = {season}. Valid seasons include: {list(seasons_dict.keys())}"
         )
 
     # Filter data to only contain the months of interest
@@ -818,7 +818,7 @@ def climatology_average(
                     f"contributed: climatology_average: bad season(s): {bad_seasons}. Valid seasons include: {list(seasons_dict.keys())}"
                 )
         else:
-            custom_seasons = ['DJF', 'MAM', 'JJA', 'SON']
+            custom_seasons = ['DJF', 'JJA', 'MAM', 'SON']
 
         seasonal_climates = []
         for season in custom_seasons:
@@ -844,7 +844,7 @@ def climatology_average(
             seasonal_climates.append(climatology)
         dset = xr.DataArray(data=seasonal_climates,
                             dims=["season"],
-                            coords=dict(season=custom_seasons))
+                            coords=dict(season=np.array(custom_seasons).astype(object)))
         return dset.assign_attrs(attrs)
 
     else:
