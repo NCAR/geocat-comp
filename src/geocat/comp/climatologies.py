@@ -689,7 +689,7 @@ def climatology_average(
         - `hour`: for hourly averages
         - `day`: for daily averages
         - `month`: for monthly averages
-        - `season`: for meteorological seasonal averages (default: DJF, MAM, JJA, and SON)
+        - `season`: for meteorological seasonal averages (default: DJF, JJA, MAM, and SON)
 
     custom_seasons : list[str], str, optional
         The list of 3-months season aliases or a single seaonal alias string.
