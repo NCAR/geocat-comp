@@ -41,7 +41,5 @@ GeoCAT-f2py
 -----------
 While our goal is to recreate NCL functions in pure Python, translating some NCL routines is challenging and time
 consuming. To ensure GeoCAT users have access to those functions while we work on full Python versions, the Fortran code
-they are based upon is wrapped in Python in the GeoCAT-f2py (Fortran 2 Python) package. GeoCAT-f2py is imported by
-GeoCAT-comp and included in the GeoCAT-comp namespace. Simply, this means that GeoCAT-f2py functions can be called
-through GeoCAT-comp, so there is no need for users to import GeoCAT-f2py directly in their scripts. Information about
+they are based upon is wrapped in Python in the GeoCAT-f2py package. Information about
 GeoCAT-f2py can be found on the `package's homepage <https://geocat-f2py.readthedocs.io/>`__.

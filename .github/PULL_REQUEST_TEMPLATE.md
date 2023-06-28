@@ -18,7 +18,7 @@ apply to this PR, comment it out or delete it. -->
 
 **Functionality**
 - [ ] Function is in appropriate module file
-- [ ] New function(s) intended for public API added to `src/geocat/comp/__init__.py` file
+- [ ] New function(s) intended for public API added to `geocat/comp/__init__.py` file
 
 **Testing**
 - [ ] Tests for function exists in associated module test file

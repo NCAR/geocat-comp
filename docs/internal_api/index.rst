@@ -19,13 +19,9 @@ Internal Functionality Helpers
 
    geocat.comp.climatologies._calculate_center_of_time_bounds
 
-   geocat.comp.climatologies._find_time_invariant_vars
-
    geocat.comp.climatologies._get_time_coordinate_info
 
    geocat.comp.climatologies._infer_calendar_name
-
-   geocat.comp.climatologies._setup_clim_anom_input
 
    geocat.comp.climatologies._validate_freq
 

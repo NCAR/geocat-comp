@@ -91,10 +91,18 @@ Statistics
    eofunc_pcs
    pearson_r
 
-
-GeoCAT-comp routines from GeoCAT-f2py
--------------------------------------
+NCL Function Name Wrappers
+--------------------------
 .. currentmodule:: geocat.comp
+.. autosummary::
+   :nosignatures:
+   :toctree: ./generated/
+
+   meteorology.dpres_plev
+
+Deprecated Functions
+---------------------
+.. currentmodule:: geocat.comp.deprecated
 .. autosummary::
    :nosignatures:
    :toctree: ./generated/
@@ -108,25 +116,3 @@ GeoCAT-comp routines from GeoCAT-f2py
    rcm2rgrid
    rgrid2rcm
    triple_to_grid
-
-NCL Function Name Wrappers
---------------------------
-.. currentmodule:: geocat.comp
-.. autosummary::
-   :nosignatures:
-   :toctree: ./generated/
-
-   meteorology.dpres_plev
-
-
-Deprecated Functions
---------------------
-Climatologies
-^^^^^^^^^^^^^
-.. currentmodule:: geocat.comp.climatologies
-.. autosummary::
-   :nosignatures:
-   :toctree: ./generated/
-
-   anomaly
-   climatology
