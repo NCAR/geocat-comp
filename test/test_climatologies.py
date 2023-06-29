@@ -707,11 +707,11 @@ class test_climatology_average(unittest.TestCase):
         })
 
     season_clim = np.array([320.9392265, 380, 288, 471.5]).reshape(4, 1, 1)
-    season_clim_time = ['DJF', 'MAM', 'JJA', 'SON']
+    season_clim_time = ['DJF', 'JJA', 'MAM', 'SON']
     day_2_season_clim = xr.Dataset(
         data_vars={'data': (('season', 'lat', 'lon'), season_clim)},
         coords={
-            'season': season_clim_time,
+            'season': np.array(season_clim_time).astype(object),
             'lat': [-90.0],
             'lon': [-180.0]
         })
@@ -720,7 +720,7 @@ class test_climatology_average(unittest.TestCase):
     month_2_season_clim = xr.Dataset(
         data_vars={'data': (('season', 'lat', 'lon'), season_clim)},
         coords={
-            'season': season_clim_time,
+            'season': np.array(season_clim_time).astype(object),
             'lat': [-90.0],
             'lon': [-180.0]
         })
@@ -869,7 +869,7 @@ class test_climatology_average(unittest.TestCase):
         result = climatology_average(
             self.monthly,
             freq='season',
-            custom_seasons=['DJF', 'MAM', 'JJA', 'SON'])
+            custom_seasons=['DJF', 'JJA', 'MAM', 'SON'])
         expected = climatology_average(self.monthly, freq='season')
         xr.testing.assert_equal(result, expected)
 
