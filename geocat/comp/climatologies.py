@@ -590,11 +590,11 @@ def climatology_average(
             months = seasons_dict[season]
 
             # Filter data to only contain the months of interest
-            data_filter = dset.sel(
+            dset_filter = dset.sel(
                 {time_dim: dset[time_dim].dt.month.isin(months)})
 
             # Calculate monthly average before calculating seasonal climatologies
-            dset_filter = data_filter.resample({
+            dset_filter = dset_filter.resample({
                 time_dim: frequency
             }).mean(keep_attrs=keep_attrs).dropna(time_dim)
 
