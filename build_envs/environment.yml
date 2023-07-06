@@ -2,13 +2,12 @@ name: geocat_comp_build
 channels:
   - conda-forge
 dependencies:
-  - python>=3.9, <=3.11  # minimum support 3.9
+  - python>=3.9, <3.12  # minimum support 3.9
   - cf_xarray>=0.3.1    # min version 0.3.1 for dependencies
   - cftime
   - dask
   - distributed
   - eofs
-  - geocat-f2py
   - metpy
   - numba
   - numpy<1.24  # 1.24 not yet fully compatible with numba

@@ -108,9 +108,6 @@ the dependencies for building and testing GeoCAT-comp.
 .. include:: ../build_envs/environment.yml
     :literal:
 
-Note: `GeoCAT-f2py <https://github.com/NCAR/geocat-f2py>`__ dependency will automatically
-install further dependencies for compiled language implementation.
-
 
 How to create a Conda environment for building GeoCAT-comp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

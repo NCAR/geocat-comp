@@ -1,11 +1,28 @@
 .. currentmodule:: geocat.comp
 
 .. _release:
+
 Release Notes
 =============
 
-v2023.06.0 (June X, 2023)
--------------------------
+v2023.06.1 (June 23, 2023)
+--------------------------
+This releases fixes the unintentional limitation of the 2023.06.0 release to python 3.11.0
+
+Bug Fixes
+^^^^^^^^^
+* Fix python version limit of 3.11.0 by `Anissa Zacharias`_ in (:pr:`431`)
+
+
+v2023.06.0 (June 23, 2023)
+--------------------------
+This release removes the geocat-f2py dependency. To use these functions, users
+will need to install the geocat-f2py package directly. Additionally, this
+release also drops support for python 3.8 and adds support for 3.11.
+
+Documentation
+^^^^^^^^^^^^^
+* New *Vertically Integrated Moisture Flux Convergence* (VIMFC) example by `Julia Kent`_ in (:pr:`388`)
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
@@ -17,10 +34,12 @@ Breaking Changes
 * Removed deprecated functions ``climatology`` and ``anomaly`` by `Anissa Zacharias`_ in (:pr:`416`)
 * Removed internal functions ``_find_time_invariant_vars`` and ``_setup_clim_anom_input`` by `Anissa Zacharias`_ in (:pr:`416`)
 * Dropped support for python 3.8 (and added support for python 3.11) by `Anissa Zacharias`_ in (:pr:`426`)
+* Removed ``geocat-f2py`` dependency by `Anissa Zacharias`_ in (:pr:`421`)
 
 Bug Fixes
 ^^^^^^^^^
 * Fix bug in `_temp_extrapolate` used by `interp_hybrid_to_pressure` by `Katelyn FitzGerald`_ in (:pr:`422`)
+
 
 v2023.05.0 (4 May 2023)
 -----------------------
@@ -84,6 +103,7 @@ Deprecations
 ^^^^^^^^^^^^
 * Remove deprecated functions from v2022.10.0 by `Heather Craker`_ in (:pr:`357`)
 * Remove links to deleted function docs by `Heather Craker`_ in (:pr:`359`)
+
 Bug Fixes
 ^^^^^^^^^
 * Partial fix for _vertical_remap_extrap bug by `Heather Craker`_ in (:pr:`360`)
@@ -202,3 +222,4 @@ Maintenance
 .. _`Alea Kootz`: https://github.com/pilotchute
 .. _`Mario Rodriguez`: https://github.com/marodrig
 .. _`Julia Kent`: https://github.com/jukent
+.. _`Katelyn FitzGerald`: https://github.com/kafitzgerald
