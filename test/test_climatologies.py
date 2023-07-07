@@ -612,7 +612,7 @@ class test_calendar_average(unittest.TestCase):
 
     @parameterized.expand([('freq=TEST', 'TEST'), ('freq=None', None)])
     def test_invalid_freq_calendar_average(self, name, freq):
-        with self.assertRaises(KeyError):
+        with self.assertRaises(ValueError):
             calendar_average(self.monthly, freq=freq)
 
     def test_custom_time_coord_calendar_average(self):
