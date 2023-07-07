@@ -183,7 +183,7 @@ def climate_anomaly(
     }
 
     if freq not in freq_dict:
-        raise KeyError(
+        raise ValueError(
             f"Received bad period {freq!r}. Expected one of {list(freq_dict.keys())!r}"
         )
     format, frequency = freq_dict[freq]
@@ -374,7 +374,7 @@ def calendar_average(
     }
 
     if freq not in freq_dict:
-        raise KeyError(
+        raise ValueError(
             f"Received bad period {freq!r}. Expected one of {list(freq_dict.keys())!r}"
         )
 
@@ -535,7 +535,7 @@ def climatology_average(
     }
 
     if freq not in freq_dict:
-        raise KeyError(
+        raise ValueError(
             f"Received bad period {freq!r}. Expected one of {list(freq_dict.keys())!r}"
         )
 
@@ -562,29 +562,24 @@ def climatology_average(
     calendar = _infer_calendar_name(dset[time_dim])
 
     attrs = {}
-    if keep_attrs or keep_attrs is None:
+    if keep_attrs in {True, None}:
         attrs = dset.attrs
 
     if freq == 'season':
-
+        seasons = ['DJF', 'JJA', 'MAM', 'SON']
         if custom_seasons:
-            if type(custom_seasons) == str:
-                custom_seasons = [custom_seasons]
-            valid_season_check = [s in seasons_dict for s in custom_seasons]
-            if not all(valid_season_check):
-                bad_seasons = [
-                    custom_seasons[i]
-                    for i, x in enumerate(valid_season_check)
-                    if not x
-                ]
+            seasons = custom_seasons
+            if isinstance(seasons, str):
+                seasons = [seasons]
+
+            invalid_seasons = [s for s in seasons if s not in seasons_dict]
+            if invalid_seasons:
                 raise ValueError(
-                    f"contributed: climatology_average: bad season(s): {bad_seasons}. Valid seasons include: {list(seasons_dict.keys())}"
+                    f"contributed: climatology_average: bad season(s): {invalid_seasons}. Valid seasons include: {list(seasons_dict.keys())}"
                 )
-        else:
-            custom_seasons = ['DJF', 'JJA', 'MAM', 'SON']
 
         seasonal_climates = []
-        for season in custom_seasons:
+        for season in seasons:
 
             # Grab the months for each season
             months = seasons_dict[season]
@@ -606,7 +601,7 @@ def climatology_average(
 
             seasonal_climates.append(climatology)
         dset = xr.concat(seasonal_climates, dim='season')
-        dset.coords['season'] = np.array(custom_seasons).astype(object)
+        dset.coords['season'] = np.array(seasons).astype(object)
         return dset.assign_attrs(attrs)
 
     else:

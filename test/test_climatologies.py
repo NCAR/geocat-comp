@@ -883,7 +883,7 @@ class test_climatology_average(unittest.TestCase):
 
     @parameterized.expand([('freq=TEST', 'TEST'), ('freq=None', None)])
     def test_invalid_freq_climatology_average(self, name, freq):
-        with self.assertRaises(KeyError):
+        with self.assertRaises(ValueError):
             climatology_average(self.monthly, freq=freq)
 
     def test_custom_time_coord_climatology_average(self):
