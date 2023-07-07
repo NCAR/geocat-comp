@@ -434,7 +434,7 @@ def calendar_average(
 def climatology_average(
         dset: typing.Union[xr.DataArray, xr.Dataset],
         freq: str,
-        custom_seasons: list = None,
+        custom_seasons: typing.Union[list, str] = None,
         time_dim: str = None,
         keep_attrs: bool = None) -> typing.Union[xr.DataArray, xr.Dataset]:
     """This function calculates long term hourly, daily, monthly, or seasonal
