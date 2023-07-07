@@ -3,6 +3,7 @@ import cftime
 import numpy as np
 import typing
 import xarray as xr
+import warnings
 
 _FREQUENCIES = {"day", "month", "year", "season"}
 
@@ -182,7 +183,7 @@ def climate_anomaly(
     }
 
     if freq not in freq_dict:
-        raise KeyError(
+        raise ValueError(
             f"Received bad period {freq!r}. Expected one of {list(freq_dict.keys())!r}"
         )
     format, frequency = freq_dict[freq]
@@ -190,7 +191,10 @@ def climate_anomaly(
     if freq == 'year':
         clim = calendar_average(dset, freq, time_dim, keep_attrs)
     else:
-        clim = climatology_average(dset, freq, time_dim, keep_attrs)
+        clim = climatology_average(dset,
+                                   freq=freq,
+                                   time_dim=time_dim,
+                                   keep_attrs=keep_attrs)
     if freq == 'season':
         anom = dset.groupby(f"{time_dim}.season") - clim
         return anom.assign_attrs(attrs)
@@ -265,7 +269,7 @@ def month_to_season(
         raise ValueError(
             f"The {time_coord_name} axis length must be a multiple of {mod}.")
 
-    seasons_pd = {
+    seasons_dict = {
         "DJF": ([12, 1, 2], 'QS-DEC'),
         "JFM": ([1, 2, 3], 'QS-JAN'),
         "FMA": ([2, 3, 4], 'QS-FEB'),
@@ -280,10 +284,10 @@ def month_to_season(
         "NDJ": ([11, 12, 1], 'QS-NOV'),
     }
     try:
-        (months, quarter) = seasons_pd[season]
-    except KeyError:
-        raise KeyError(
-            f"contributed: month_to_season: bad season: SEASON = {season}. Valid seasons include: {list(seasons_pd.keys())}"
+        (months, quarter) = seasons_dict[season]
+    except ValueError:
+        raise ValueError(
+            f"contributed: month_to_season: bad season: SEASON = {season}. Valid seasons include: {list(seasons_dict.keys())}"
         )
 
     # Filter data to only contain the months of interest
@@ -370,7 +374,7 @@ def calendar_average(
     }
 
     if freq not in freq_dict:
-        raise KeyError(
+        raise ValueError(
             f"Received bad period {freq!r}. Expected one of {list(freq_dict.keys())!r}"
         )
 
@@ -430,6 +434,7 @@ def calendar_average(
 def climatology_average(
         dset: typing.Union[xr.DataArray, xr.Dataset],
         freq: str,
+        custom_seasons: typing.Union[list, str] = None,
         time_dim: str = None,
         keep_attrs: bool = None) -> typing.Union[xr.DataArray, xr.Dataset]:
     """This function calculates long term hourly, daily, monthly, or seasonal
@@ -447,7 +452,26 @@ def climatology_average(
         - `hour`: for hourly averages
         - `day`: for daily averages
         - `month`: for monthly averages
-        - `season`: for meteorological seasonal averages (DJF, MAM, JJA, and SON)
+        - `season`: for meteorological seasonal averages (default: DJF, JJA, MAM, and SON)
+
+    custom_seasons : list[str], str, optional
+        The list of 3-months season aliases or a single seaonal alias string.
+        Analysis is done on the provided seasons.
+        This parameter will be ignored if the `freq` is not set to `season`.
+        Accepted alias:
+
+        - `DJF` : for a season of December, January, and February
+        - `JFM` : for a season of January, February, and March
+        - `FMA` : for a season of February, March, and April
+        - `MAM` : for a season of March, April, and May
+        - `AMJ` : for a season of April, May, ad June
+        - `MJJ` : for a season of May, June, and July
+        - `JJA` : for a season of June, July, and August
+        - `JAS` : for a season of July, August, and September
+        - `ASO` : for a season of August, September, and October
+        - `SON` : for a season of September, October, and November
+        - `OND` : for a season of October, November, and December
+        - `NDJ` : for a season of November, December, and January
 
     time_dim : str, optional
         Name of the time coordinate for `xarray` objects. Defaults to ``None`` and
@@ -488,7 +512,6 @@ def climatology_average(
     `clmMonTLLL <https://www.ncl.ucar.edu/Document/Functions/Contributed/clmMonTLLL.shtml>`__,
     `month_to_season <https://www.ncl.ucar.edu/Document/Functions/Contributed/month_to_season.shtml>`__
     """
-    # TODO: add functionality for users to select specific seasons or hours for climatologies
     freq_dict = {
         'hour': ('%m-%d %H', 'H'),
         'day': ('%m-%d', 'D'),
@@ -496,9 +519,29 @@ def climatology_average(
         'season': (None, 'QS-DEC')
     }
 
+    seasons_dict = {
+        "DJF": [12, 1, 2],
+        "JFM": [1, 2, 3],
+        "FMA": [2, 3, 4],
+        "MAM": [3, 4, 5],
+        "AMJ": [4, 5, 6],
+        "MJJ": [5, 6, 7],
+        "JJA": [6, 7, 8],
+        "JAS": [7, 8, 9],
+        "ASO": [8, 9, 10],
+        "SON": [9, 10, 11],
+        "OND": [10, 11, 12],
+        "NDJ": [11, 12, 1],
+    }
+
     if freq not in freq_dict:
-        raise KeyError(
+        raise ValueError(
             f"Received bad period {freq!r}. Expected one of {list(freq_dict.keys())!r}"
+        )
+
+    if custom_seasons and freq != 'season':
+        warnings.warn(
+            "You have specified `custom_seasons` without specifying seasonal climatology. Your `custom_seasons` will be ignored."
         )
 
     # If freq is 'season', key is set to monthly in order to calculate monthly
@@ -518,24 +561,49 @@ def climatology_average(
     # Retrieve calendar name
     calendar = _infer_calendar_name(dset[time_dim])
 
+    attrs = {}
+    if keep_attrs in {True, None}:
+        attrs = dset.attrs
+
     if freq == 'season':
-        attrs = {}
-        if keep_attrs or keep_attrs is None:
-            attrs = dset.attrs
-        if xr.infer_freq(dset[time_dim]) != 'MS':
+        seasons = ['DJF', 'JJA', 'MAM', 'SON']
+        if custom_seasons:
+            seasons = custom_seasons
+            if isinstance(seasons, str):
+                seasons = [seasons]
+
+            invalid_seasons = [s for s in seasons if s not in seasons_dict]
+            if invalid_seasons:
+                raise ValueError(
+                    f"contributed: climatology_average: bad season(s): {invalid_seasons}. Valid seasons include: {list(seasons_dict.keys())}"
+                )
+
+        seasonal_climates = []
+        for season in seasons:
+
+            # Grab the months for each season
+            months = seasons_dict[season]
+
+            # Filter data to only contain the months of interest
+            dset_filter = dset.sel(
+                {time_dim: dset[time_dim].dt.month.isin(months)})
+
             # Calculate monthly average before calculating seasonal climatologies
-            dset = dset.resample({
+            dset_filter = dset_filter.resample({
                 time_dim: frequency
             }).mean(keep_attrs=keep_attrs).dropna(time_dim)
 
-        # Compute the weights for the months in each season so that the
-        # seasonal averages account for months being of different lengths
-        month_length = dset[time_dim].dt.days_in_month.groupby(
-            f"{time_dim}.season")
-        weights = month_length / month_length.sum(keep_attrs=keep_attrs)
-        dset = (dset * weights).groupby(f"{time_dim}.season")
-        dset = dset.sum(dim=time_dim, keep_attrs=keep_attrs)
+            # Compute the weights for the months in each season so that the
+            # seasonal averages account for months being of different lengths
+            month_length = dset_filter[time_dim].dt.days_in_month
+            weights = month_length / month_length.sum()
+            climatology = (dset_filter * weights).sum(dim=time_dim)
+
+            seasonal_climates.append(climatology)
+        dset = xr.concat(seasonal_climates, dim='season')
+        dset.coords['season'] = np.array(seasons).astype(object)
         return dset.assign_attrs(attrs)
+
     else:
         # Retrieve floor of median year
         median_yr = np.median(dset[time_dim].dt.year.values)
