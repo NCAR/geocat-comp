@@ -612,7 +612,7 @@ class test_calendar_average(unittest.TestCase):
 
     @parameterized.expand([('freq=TEST', 'TEST'), ('freq=None', None)])
     def test_invalid_freq_calendar_average(self, name, freq):
-        with self.assertRaises(KeyError):
+        with self.assertRaises(ValueError):
             calendar_average(self.monthly, freq=freq)
 
     def test_custom_time_coord_calendar_average(self):
@@ -711,7 +711,7 @@ class test_climatology_average(unittest.TestCase):
     day_2_season_clim = xr.Dataset(
         data_vars={'data': (('season', 'lat', 'lon'), season_clim)},
         coords={
-            'season': season_clim_time,
+            'season': np.array(season_clim_time).astype(object),
             'lat': [-90.0],
             'lon': [-180.0]
         })
@@ -720,7 +720,7 @@ class test_climatology_average(unittest.TestCase):
     month_2_season_clim = xr.Dataset(
         data_vars={'data': (('season', 'lat', 'lon'), season_clim)},
         coords={
-            'season': season_clim_time,
+            'season': np.array(season_clim_time).astype(object),
             'lat': [-90.0],
             'lon': [-180.0]
         })
@@ -828,15 +828,26 @@ class test_climatology_average(unittest.TestCase):
             'lon': [-180.0]
         })
 
-    @parameterized.expand([('daily, "month", None', daily, 'month', None),
-                           ('daily, "month", True', daily, 'month', True),
-                           ('daily, "month", False', daily, 'month', False),
-                           ('monthly, "season", None', monthly, 'season', None),
-                           ('monthly, "season", True', monthly, 'season', True),
-                           ('monthly, "season", False', monthly, 'season',
-                            False)])
-    def test_climatology_average_keep_attrs(self, name, dset, freq, keep_attrs):
-        result = climatology_average(dset, freq, keep_attrs=keep_attrs)
+    @parameterized.expand([
+        ('daily, "month", None', daily, 'month', [], None),
+        ('daily, "month", True', daily, 'month', [], True),
+        ('daily, "month", False', daily, 'month', [], False),
+        ('monthly, "season", None', monthly, 'season', [], None),
+        ('monthly, "season", True', monthly, 'season', [], True),
+        ('monthly, "season", False', monthly, 'season', [], False),
+        ('monthly, "season", None', monthly, 'season',
+         ['DJF', 'MAM', 'JJA', 'SON'], None),
+        ('monthly, "season", True', monthly, 'season',
+         ['DJF', 'MAM', 'JJA', 'SON'], True),
+        ('monthly, "season", False', monthly, 'season',
+         ['DJF', 'MAM', 'JJA', 'SON'], False)
+    ])
+    def test_climatology_average_keep_attrs(self, name, dset, freq,
+                                            custom_seasons, keep_attrs):
+        result = climatology_average(dset,
+                                     freq=freq,
+                                     custom_seasons=custom_seasons,
+                                     keep_attrs=keep_attrs)
         if keep_attrs or keep_attrs == None:
             assert result.attrs == dset.attrs
         elif not keep_attrs:
@@ -854,6 +865,14 @@ class test_climatology_average(unittest.TestCase):
         result = climatology_average(self.daily, freq='month')
         xr.testing.assert_allclose(result, self.day_2_month_clim)
 
+    def test_custom_season_climatology_average(self):
+        result = climatology_average(
+            self.monthly,
+            freq='season',
+            custom_seasons=['DJF', 'JJA', 'MAM', 'SON'])
+        expected = climatology_average(self.monthly, freq='season')
+        xr.testing.assert_equal(result, expected)
+
     @parameterized.expand([('daily to seasonal', daily, day_2_season_clim),
                            ('monthly to seasonal', monthly, month_2_season_clim)
                           ])
@@ -864,7 +883,7 @@ class test_climatology_average(unittest.TestCase):
 
     @parameterized.expand([('freq=TEST', 'TEST'), ('freq=None', None)])
     def test_invalid_freq_climatology_average(self, name, freq):
-        with self.assertRaises(KeyError):
+        with self.assertRaises(ValueError):
             climatology_average(self.monthly, freq=freq)
 
     def test_custom_time_coord_climatology_average(self):
@@ -889,7 +908,7 @@ class test_climatology_average(unittest.TestCase):
         dset_encoded = xr.tutorial.open_dataset("air_temperature",
                                                 decode_cf=False)
         with self.assertRaises(ValueError):
-            climatology_average(dset_encoded, 'month')
+            climatology_average(dset_encoded, freq='month')
 
     def test_non_uniformly_spaced_data_climatology_average(self):
         time = pd.to_datetime(['2020-01-01', '2020-01-02', '2020-01-04'])

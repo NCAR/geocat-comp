@@ -5,6 +5,15 @@
 Release Notes
 =============
 
+v2023.07.0 (Jul X, 2023)
+-----------------------
+[Plain text summary here]
+
+New Features
+^^^^^^^^^^^^
+* User-defined seasonal boundaries, `custom_seasons`, enabled for `climatology_average` by `Julia Kent`_ in (:pr:441)
+
+
 v2023.06.1 (June 23, 2023)
 --------------------------
 This releases fixes the unintentional limitation of the 2023.06.0 release to python 3.11.0
