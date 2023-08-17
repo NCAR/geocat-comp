@@ -5,7 +5,8 @@
 Installation
 ============
 
-This installation guide includes only the GeoCAT-comp installation and build instructions. 
+This installation guide includes only the GeoCAT-comp installation and build instructions.
+
 Please refer to the relevant project documentation for how to install other GeoCAT packages.
 
 Installing GeoCAT-comp via Conda in a New Environment
