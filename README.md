@@ -18,7 +18,7 @@ however, developers are welcome to come up with novel computational functions fo
 
 [GeoCAT Homepage](https://geocat.ucar.edu/)
 
-[GeoCAT Contributor's Guide](https://geocat.ucar.edu/pages/contributing.html)
+[GeoCAT Contributor's Guide](https://github.com/NCAR/geocat-comp/blob/main/CONTRIBUTING.md)
 
 [GeoCAT-comp documentation on Read the Docs](https://geocat-comp.readthedocs.io)
 
