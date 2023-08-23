@@ -49,13 +49,16 @@ jobs:
         run: |
           conda list
 
-      - name: Run Namespace Tests
-        run: |
-          python -m pytest test
+      - name: Run Tests
+        run: python -m pytest test -v
+          --cov=./geocat/comp
+          --cov-report=xml
 
-      - name: Run Coverage Tests
-        run: |
-          python -m pytest test -v --cov=./geocat/comp --cov-report=xml
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: Test results for ${{ runner.os }}-${{ matrix.python-version }}
+          path: pytest.xml
 
       - name: Upload code coverage to Codecov
         uses: codecov/codecov-action@v3.1.4
