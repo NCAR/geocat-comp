@@ -5,13 +5,17 @@
 Release Notes
 =============
 
-v2023.07.0 (Jul X, 2023)
+v2023.09.0 (Sept X, 2023)
 -----------------------
 [Plain text summary here]
 
 New Features
 ^^^^^^^^^^^^
 * User-defined seasonal boundaries, `custom_seasons`, enabled for `climatology_average` by `Julia Kent`_ in (:pr:441)
+
+Bug Fixes
+^^^^^^^^^
+* Fix codecov coverage reporting issue by `Anissa Zacharias`_ in (:pr:445)
 
 
 v2023.06.1 (June 23, 2023)
