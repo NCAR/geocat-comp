@@ -53,6 +53,7 @@ jobs:
         run: python -m pytest test -v
           --cov=./geocat/comp
           --cov-report=xml
+          --junitxml=pytest.xml
 
       - name: Upload test results
         uses: actions/upload-artifact@v3
