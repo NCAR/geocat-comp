@@ -90,7 +90,7 @@ novel computational functions for geosciences data.
    :caption: For Developers
 
    Release Notes <release-notes.rst>
-   Contributor's Guide <contributing>
+   Contributor's Guide <contrib.rst>
    Roadmap <https://geocat.ucar.edu/pages/roadmap.html>
 
 .. toctree::
