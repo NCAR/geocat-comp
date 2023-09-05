@@ -73,6 +73,7 @@ A more detailed description of each step is provided in following sections.
 #. Clone your fork to your local machine.
 #. Make your development environment.
 #. Create a new branch for your changes.
+#. Install pre-commit hooks.
 
 **Make your changes.**
 
@@ -155,6 +156,61 @@ unique to the latest commit on your fork.
 
 See the `conda documentation
 <https://docs.conda.io/projects/conda/en/latest/>`__ for more information.
+
+Creating a branch for your changes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+We highly recommend creating a new branch on your fork for each new feature or
+bug that you work on.
+
+To create and check out a new branch, use the following command:
+
+.. code-block:: bash
+
+    git checkout -b <branch-name>
+
+You can see a list of all branches in your local repository by running:
+
+.. code-block:: bash
+
+    git branch
+
+For more information on branching, check out this `learn git branching
+<https://learngitbranching.js.org/>`__ interactive tool.
+
+Pre-commit hooks
+^^^^^^^^^^^^^^^^
+
+``geocat-comp`` uses pre-commit hooks to ensure a standardized base-level code
+formatting and style.
+
+The ``pre-commit`` package is installed by default when using the
+``build_envs/environment.yml`` file. To set up the pre-commit hooks, run the
+following command from the root of the repository:
+
+.. code-block:: bash
+
+    pre-commit install
+
+Now, whenever you commit changes, the pre-commit hooks will run and may make
+small modifications to your code. If the pre-commit hooks make any changes, you
+will need to re-add the files and commit them again in order to sucessfully make
+the commit.
+
+To manually run the pre-commit hooks, use the following command:
+
+.. code-block:: bash
+
+    pre-commit run --all-files
+
+You can skip the pre-commit hooks by adding the ``--no-verify`` flag to your
+commit command like this:
+
+.. code-block:: bash
+
+    git commit -m "your commit message" --no-verify
+
+For more information on pre-commit hooks, see the `pre-commit documentation <https://pre-commit.com/>`__.
 
 Contibuting to documentation
 ----------------------------
