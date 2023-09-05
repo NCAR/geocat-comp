@@ -75,9 +75,9 @@ A more detailed description of each step is provided in following sections.
 #. Create a new branch for your changes.
 #. Install pre-commit hooks.
 
-**Make your changes.**
+**How to make your changes.**
 
-#. Commit your changes.
+#. Understanding the codebase.
 #. Write and run tests.
 #. Adding to, generating, and checking documentation.
 
@@ -211,6 +211,148 @@ commit command like this:
     git commit -m "your commit message" --no-verify
 
 For more information on pre-commit hooks, see the `pre-commit documentation <https://pre-commit.com/>`__.
+
+
+Make your changes
+-----------------
+
+After you're all set up to develop ``geocat-comp``, you can start making your
+changes. This section describes where, how, and what to change to add your
+contributions to the ``geocat-comp`` codebase.
+
+
+Understanding the codebase
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``geocat-comp`` top-level direcory is organized as follows:
+
+.. code-block:: bash
+
+    geocat-comp
+    ├── build_envs
+    ├── docs
+    ├── geocat
+    │   └── comp
+    └── test
+
+
+* The ``build_envs`` directory contains the ``environment.yml`` file used to
+  create your development environment. It also contains additional environment
+  files used for testing and building the documentation.
+
+* The ``docs`` directory contains the ``sphinx`` documentation for
+  ``geocat-comp``.
+
+* The ``geocat/comp`` directory, contains the code for the ``geocat.comp``
+  package. This is the place to add new functionality. The ``geocat.comp`` code
+  is organized into modules, each of which is contained in its own file. It is
+  recommended that you add new functionality to an existing file, though it may
+  be appropriate to make a new file.
+
+* The ``test`` directory contains the unit tests for ``geocat-comp``. Each
+  module in ``geocat.comp`` has a corresponding test module in the ``test``
+  directory.
+
+
+When adding new functionality, there are multiple auxiliary files that you may
+need to modify to encorporate your code into the package. These include:
+
+* ``geocat/comp/__init__.py``: This file imports all of the functions intended
+  for the public API.
+
+* ``docs/internal_api/index.rst`` and ``docs/user_api/index.rst``: These files
+  are used to generate the API documentation from docstrings.
+
+* ``docs/release-notes.rst``: This file documents changes to the codebase that
+  we add to in the same PR as the code changes.
+
+* ``tests/test_<module>.py``: This file contains the unit tests for the module
+  you are adding to. It is highly encouraged to add unit tests for any new
+  functionality you add to ``geocat-comp``.
+
+
+Write and run tests
+^^^^^^^^^^^^^^^^^^^
+
+``geocat-comp`` uses `pytest <https://pytest.org/>`__ for unit tests. Currently,
+we have unit tests written in both ``pytest`` and ``unittest``. We are in the
+process of converting all of our tests to ``pytest`` and we encourage you to
+write new tests using ``pytest``.
+
+To run the tests locally, use the following command from the root of the
+repository:
+
+.. code-block:: bash
+
+    pytest
+
+To run a specific test, use the following command:
+
+.. code-block:: bash
+
+    pytest tests/test_mod.py::test_func
+
+These tests will also run automatically when you open a pull request using
+GitHub Actions and the ``.github/workflows/ci.yml`` file.
+
+See the `pytest documentation <https://pytest.org/>`__ for more information.
+
+
+Documentation
+-------------
+
+``geocat-comp`` uses `sphinx <https://www.sphinx-doc.org/en/master/>`__  and
+`ReadTheDocs <https://docs.readthedocs.io/en/stable/>`__` to build and host the
+documentation.
+
+
+Docstrings
+^^^^^^^^^^
+
+The most common situation in which you will need to add to the documentation is
+through docstrings.
+
+``geocat-comp`` uses `numpydoc
+<https://numpydoc.readthedocs.io/en/latest/format.html>`__ style docstrings. See
+`sphinx's example numpydoc docstring
+<https://www.sphinx-doc.org/en/master/usage/extensions/example_numpy.html#example-numpy>`__.
+
+To include your docstring documentation in the API reference, you will need to
+add it to either the ``docs/internal_api/index.rst`` or
+``docs/user_api/index.rst`` file, depending on whether the function is intended
+for internal or external use.
+
+
+Generate the documentation locally
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To generate the documentation locally, follow the steps below.
+
+#. Create and activate the ``gc-docs`` conda environment using the ``build_envs/docs.yml`` file.
+#. Enter the ``docs`` directory.
+#. Run ``make html`` or to build the documentation.
+#. Open ``docs/_build/html/index.html`` in your browser to view the documentation.
+
+
+Check the documentation
+^^^^^^^^^^^^^^^^^^^^^^^
+
+As well as checking local documentation generation, you should also check the
+preview documentation generated as part of a PR. To do this, scroll down to the
+"checks" section of the PR and click on the "Details" link next to the
+"docs/readthedocs.org:geocat-comp" check. This will take you to the
+correspinding build on ReadTheDocs, where you can view the documentation built
+from your PR and see any warnings or errors on your build.
+
+
+Contribute your code
+--------------------
+
+Once you have prepared your changes and are ready for them to be reviewed by the GeoCAT team, you can open a pull request. This section describes how to open a pull request and what to expect after you open it.
+
+
+
+
 
 Contibuting to documentation
 ----------------------------
