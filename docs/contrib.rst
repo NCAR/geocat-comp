@@ -95,7 +95,6 @@ Get set up to develop ``geocat-comp`` on your local machine
 Get the code
 ^^^^^^^^^^^^
 
-
 Get started by forking the NCAR/geocat-comp repository on GitHub. To do this,
 find the "Fork" button near the top of the page and click it. This will create a
 copy of the project under your personal github account.
@@ -118,7 +117,44 @@ repository.
 For more information, see the `GitHub quickstart section on forking a repository
 <https://docs.github.com/en/get-started/quickstart/fork-a-repo>`__.
 
+Create a development environment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+To run and test any changes you make in ``geocat-comp``, you will need to create
+a development environment. We recommend installing and using `conda
+<https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html>`__
+and/or `mamba
+<https://mamba.readthedocs.io/en/latest/mamba-installation.html#mamba-install>`__.
+
+Use the following commands to create a new conda environment to develop
+``geocat-comp`` in.
+
+.. code-block:: bash
+
+    # Create a new conda environment
+    conda create -c conda-forge -n geocat_comp_build python=3.10
+
+    # Use the environment file to populate the environment with the required
+    dependencies conda env update -f build_envs/environment.yml
+
+    # Activate your new environment
+    conda activate geocat_comp_build
+
+    # Install your local copy of geocat-comp in interactive mode
+    pip install -e .
+
+To test your new install, open a python session and try importing
+``geocat.comp``. You can also try printing the version number, which should be
+unique to the latest commit on your fork.
+
+.. code-block:: python
+
+    >>> import geocat.comp as gc
+    >>> gc.__version__
+    '2023.5.1.dev8+g3f0ee48.d20230605'
+
+See the `conda documentation
+<https://docs.conda.io/projects/conda/en/latest/>`__ for more information.
 
 Contibuting to documentation
 ----------------------------
