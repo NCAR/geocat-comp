@@ -8,11 +8,11 @@
 
 
 GeoCAT-comp is the computational component of the
-[GeoCAT](https://geocat.ucar.edu/) project. GeoCAT-comp provides implementations
-of computational functions for operating on geosciences data. Many of these
-functions originated in NCL and were translated into Python with the help of
-GeoCAT-comp; however, developers are welcome to come up with novel computational
-functions for geosciences data.
+[GeoCAT](https://geocat.ucar.edu/) project. eoCAT-comp provides computational
+functions for operating on geosciences data. Many of these functions originated
+in NCL and were translated into Python in GeoCAT-comp; however,
+developers are welcome to suggest novel computational functions for
+geosciences data.
 
 
 # Documentation
