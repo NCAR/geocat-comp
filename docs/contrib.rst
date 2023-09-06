@@ -14,7 +14,7 @@ additional or new functionality, improving our documentation, or contributing
 your own code and we appreciate all of them.
 
 If you have any questions, please feel free to reach out to us on `GitHub
-Discussions <https://github.com/NCAR/geocat-comp/discussions>`__ You can also
+Discussions <https://github.com/NCAR/geocat-comp/discussions>`__. You can also
 reach us by email at geocat@ucar.edu.
 
 **************
@@ -22,7 +22,7 @@ Where to start
 **************
 
 Look through our open issues and see if there is anything you would like to take
-on! We recomment working with core developers to implement new functionality. We
+on! We recommend working with core developers to implement new functionality. We
 can help you get started and make sure your code is consistent with the rest of
 the project.
 
@@ -424,7 +424,7 @@ Addressing feedback
 ^^^^^^^^^^^^^^^^^^^
 
 After you open your pull request, the GeoCAT team will review it and
-may provide feedbac like asking for changes or suggesting improvements. You can
+may provide feedback like asking for changes or suggesting improvements. You can
 address this feedback by making changes to your branch and pushing them to your
 fork. The pull request will automatically update with your changes.
 
