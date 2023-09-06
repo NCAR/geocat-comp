@@ -2,20 +2,22 @@
 
 .. _release:
 
-Release Notes
-=============
-
-v2023.09.0 (Sept X, 2023)
+v2023.09.0 (Sept 7, 2023)
 -----------------------
-[Plain text summary here]
+This release adds `custom_seasons` to ``climatology_average`` and adds a new
+Contributor's Guide to the documentation.
 
 New Features
 ^^^^^^^^^^^^
-* User-defined seasonal boundaries, `custom_seasons`, enabled for `climatology_average` by `Julia Kent`_ in (:pr:441)
+* User-defined seasonal boundaries, `custom_seasons`, enabled for ``climatology_average`` by `Julia Kent`_ in (:pr:`441``)
 
 Bug Fixes
 ^^^^^^^^^
-* Fix codecov coverage reporting issue by `Anissa Zacharias`_ in (:pr:446)
+* Fix codecov coverage reporting issue by `Anissa Zacharias`_ in (:pr:`446``)
+
+Documentation
+^^^^^^^^^^^^^
+* New Contributor's Guide by `Anissa Zacharias`_ in (:pr:`450``)
 
 
 v2023.06.1 (June 23, 2023)
