@@ -322,7 +322,7 @@ Documentation
 *************
 
 ``geocat-comp`` uses `sphinx <https://www.sphinx-doc.org/en/master/>`__  and
-`ReadTheDocs <https://docs.readthedocs.io/en/stable/>`__` to build and host the
+`ReadTheDocs <https://docs.readthedocs.io/en/stable/>`__ to build and host the
 documentation.
 
 
