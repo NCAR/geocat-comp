@@ -39,26 +39,36 @@ The `GitHub Quickstart Guide
 <https://docs.github.com/en/get-started/quickstart>`__ is a great place to get
 started with git and GitHub.
 
-********************************
-Bug reports and feature requests
-********************************
+**************
+Reporting bugs
+**************
 
-We have issue templates for both `bug reports
+Something not working as expected? We would love to hear about it! Please report
+any bugs you find by opening an issue on GitHub. See our `bug report template
 <https://github.com/NCAR/geocat-comp/issues/new?assignees=&labels=bug%2C+support&projects=&template=bug_report.md&title=>`__
-and `feature requests
-<https://github.com/NCAR/geocat-comp/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=>`__.
+to get started.
 
 When reporting a bug, please include as much information as possible. This will
 help us reproduce the bug and fix it efficiently. For more information on how to
 write a good bug report, see this stackoverflow post on `how to make a good bug
 report <https://stackoverflow.com/help/minimal-reproducible-example>`__.
 
-********************
-Development workflow
-********************
+***********************
+Requesting new features
+***********************
 
-Overview
---------
+Have an idea for a new feature? Want to know how to do something in Python that
+you used to do in NCL? See our `feature request template
+<https://github.com/NCAR/geocat-comp/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=>`__
+to get started.
+
+You can also use our `Feature Request Form
+<https://forms.gle/6DTo3ELLri4DAGfG8>`__ to submit a feature request.
+
+
+*****************************
+Development workflow overview
+*****************************
 
 This is a brief overview of the development workflow we use for ``geocat-comp``.
 A more detailed description of each step is provided in following sections.
