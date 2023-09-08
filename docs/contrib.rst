@@ -93,7 +93,7 @@ A more detailed description of each step is provided in following sections.
 
 #. `Understanding the codebase`_.
 #. `Write and run tests`_.
-#. `Generate <Generate the documentation locally>`__ and `check <Check the documentation>`__ the documentation.
+#. :ref:`Generate <generate-docs>` and :ref:`check <check-docs>` the documentation.
 
 **Contribute your code**
 
@@ -372,6 +372,7 @@ Important documentation files to know about include:
 See the `sphinx documentation <https://www.sphinx-doc.org/en/master/>`__ for
 more information about writing sphinx documentation.
 
+.. _generate-docs:
 
 Generate the documentation locally
 ----------------------------------
@@ -383,6 +384,7 @@ To generate the documentation locally, follow the steps below.
 #. Run ``make html`` or to build the documentation.
 #. Open ``docs/_build/html/index.html`` in your browser to view the documentation.
 
+.. _check-docs:
 
 Check the documentation
 -----------------------
