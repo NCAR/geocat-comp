@@ -66,6 +66,15 @@ You can also use our `Feature Request Form
 <https://forms.gle/6DTo3ELLri4DAGfG8>`__ to submit a feature request.
 
 
+***********************
+Improving Documentation
+***********************
+
+We are always looking for ways to improve our documentation. If you find
+something that is unclear or confusing, please let us know by opening an issue.
+To contribute to our documentation yourself, see the `Documentation`_ section of
+this guide.
+
 *****************************
 Development workflow overview
 *****************************
@@ -73,34 +82,33 @@ Development workflow overview
 This is a brief overview of the development workflow we use for ``geocat-comp``.
 A more detailed description of each step is provided in following sections.
 
-**Get set up to develop** ``geocat-comp`` **on your local machine.**
+** `Get set up to develop on your local machine`_ **
 
-#. Fork the ``geocat-comp`` repository on GitHub.
-#. Clone your fork to your local machine.
-#. Make your development environment.
-#. Create a new branch for your changes.
-#. Install pre-commit hooks.
+#. `Fork and clone the repository`_.
+#. `Create a development environment`_.
+#. `Create a branch for your changes`_.
+#. `Install pre-commit hooks`_.
 
-**How to make your changes.**
+** `Make your changes`_ **
 
-#. Understanding the codebase.
-#. Write and run tests.
-#. Adding to, generating, and checking documentation.
+#. `Understanding the codebase`_.
+#. `Write and run tests`_.
+#. `Generate <Generate the documentation locally>`__ and `check <Check the documentation>`__ the documentation.
 
-**Contribute your code.**
+** `Contribute your code`_ **
 
-#. Push your changes to your fork.
-#. Open a pull request.
-#. Address any feedback.
+#. `Push your changes to your fork`_.
+#. `Open a pull request`_.
+#. `Address feedback`_.
 #. Wait for your pull request to be merged.
-#. Delete your branch.
+#. `Delete your branch`_.
 
-***********************************************************
-Get set up to develop ``geocat-comp`` on your local machine
-***********************************************************
+*******************************************
+Get set up to develop on your local machine
+*******************************************
 
-Get the code
-------------
+Fork and clone the repository
+-----------------------------
 
 Get started by forking the NCAR/geocat-comp repository on GitHub. To do this,
 find the "Fork" button near the top of the page and click it. This will create a
@@ -167,8 +175,8 @@ See the `conda documentation
 <https://docs.conda.io/projects/conda/en/latest/>`__ for more information.
 
 
-Creating a branch for your changes
-----------------------------------
+Create a branch for your changes
+--------------------------------
 
 We highly recommend creating a new branch on your fork for each new feature or
 bug that you work on.
@@ -188,8 +196,8 @@ You can see a list of all branches in your local repository by running:
 For more information on branching, check out this `learn git branching
 <https://learngitbranching.js.org/>`__ interactive tool.
 
-Pre-commit hooks
-----------------
+Install pre-commit hooks
+------------------------
 
 ``geocat-comp`` uses pre-commit hooks to ensure a standardized base-level code
 formatting and style.
@@ -204,7 +212,7 @@ following command from the root of the repository:
 
 Now, whenever you commit changes, the pre-commit hooks will run and may make
 small modifications to your code. If the pre-commit hooks make any changes, you
-will need to re-add the files and commit them again in order to sucessfully make
+will need to re-add the files and commit them again in order to successfully make
 the commit.
 
 To manually run the pre-commit hooks, use the following command:
@@ -235,7 +243,7 @@ contributions to the ``geocat-comp`` codebase.
 Understanding the codebase
 --------------------------
 
-The ``geocat-comp`` top-level direcory is organized as follows:
+The ``geocat-comp`` top-level directory is organized as follows:
 
 .. code-block:: bash
 
@@ -406,8 +414,8 @@ branch on your fork on GitHub. To do this, use the following command:
 
 From here, you can request that your changes be merged into the main repository in the form of a pull request.
 
-Making a pull request
----------------------
+Open a pull request
+-------------------
 
 GitHub has extensive `pull request guides and documentation
 <https://docs.github.com/en/pull-requests>`__ that we recommend. This section
@@ -415,7 +423,7 @@ describes the basics for our workflow.
 
 From your branch on your fork, open the "Pull requests" tab and click the "New
 pull request" button. Make sure the "base repository" is "NCAR/geocat-comp" and
-the "base" branch is set to "main", wiht the "head repository" and "compare"
+the "base" branch is set to "main", with the "head repository" and "compare"
 branch set to your fork and prepared branch, respectively.
 
 From this page, you can see a view of the changes you have made in your branch.
@@ -432,8 +440,8 @@ If you want to open a pull request but are not ready for it to be reviewed, you
 can open the pull request as a draft. This is also a good way to get feedback on
 your work that might not be ready to contribute yet.
 
-Addressing feedback
--------------------
+Address feedback
+----------------
 
 After you open your pull request, the GeoCAT team will review it and
 may provide feedback like asking for changes or suggesting improvements. You can
