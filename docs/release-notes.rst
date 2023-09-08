@@ -10,7 +10,7 @@ Contributor's Guide to the documentation.
 New Features
 ^^^^^^^^^^^^
 * User-defined seasonal boundaries, `custom_seasons`, enabled for
-  ``climatology_average`` by `Julia Kent`_ in (:pr:`441``)
+  ``climatology_average`` by `Julia Kent`_ in (:pr:`441`)
 
 Bug Fixes
 ^^^^^^^^^
@@ -19,7 +19,7 @@ Bug Fixes
 
 Documentation
 ^^^^^^^^^^^^^
-* New Contributor's Guide by `Anissa Zacharias`_ in (:pr:`450``)
+* New Contributor's Guide by `Anissa Zacharias`_ in (:pr:`450`)
 
 
 v2023.06.1 (June 23, 2023)
