@@ -33,6 +33,12 @@ We do not officially "assign" issues to contributors, but if you are interested
 in working on an issue, please comment on the issue to let us know you are
 working on it. This will help us avoid duplicate work.
 
+The code for ``geocat-comp`` is hosted on GitHub. If you do not have one, you
+will need to create a `free GitHub account <https://github.com/signup/free>`__.
+The `GitHub Quickstart Guide
+<https://docs.github.com/en/get-started/quickstart>`__ is a great place to get
+started with git and GitHub.
+
 ********************************
 Bug reports and feature requests
 ********************************
@@ -46,16 +52,6 @@ When reporting a bug, please include as much information as possible. This will
 help us reproduce the bug and fix it efficiently. For more information on how to
 write a good bug report, see this stackoverflow post on `how to make a good bug
 report <https://stackoverflow.com/help/minimal-reproducible-example>`__.
-
-**************
-Git and GitHub
-**************
-
-The code for ``geocat-comp`` is hosted on GitHub. If you do not have one, you
-will need to create a `free GitHub account <https://github.com/signup/free>`__.
-The `GitHub Quickstart Guide
-<https://docs.github.com/en/get-started/quickstart>`__ is a great place to get
-started with git and GitHub.
 
 ********************
 Development workflow
