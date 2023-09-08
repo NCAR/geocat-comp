@@ -95,12 +95,12 @@ A more detailed description of each step is provided in following sections.
 #. Wait for your pull request to be merged.
 #. Delete your branch.
 
-
+***********************************************************
 Get set up to develop ``geocat-comp`` on your local machine
------------------------------------------------------------
+***********************************************************
 
 Get the code
-^^^^^^^^^^^^
+------------
 
 Get started by forking the NCAR/geocat-comp repository on GitHub. To do this,
 find the "Fork" button near the top of the page and click it. This will create a
@@ -125,7 +125,7 @@ For more information, see the `GitHub quickstart section on forking a repository
 <https://docs.github.com/en/get-started/quickstart/fork-a-repo>`__.
 
 Create a development environment
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------
 
 To run and test any changes you make in ``geocat-comp``, you will need to create
 a development environment. We recommend installing and using `conda
@@ -160,11 +160,15 @@ unique to the latest commit on your fork.
     >>> gc.__version__
     '2023.5.1.dev8+g3f0ee48.d20230605'
 
+You can follow a similar process to create our documentation environment,
+``gc-docs`` from the ``build_envs/docs.yml`` file.
+
 See the `conda documentation
 <https://docs.conda.io/projects/conda/en/latest/>`__ for more information.
 
+
 Creating a branch for your changes
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------
 
 We highly recommend creating a new branch on your fork for each new feature or
 bug that you work on.
@@ -185,7 +189,7 @@ For more information on branching, check out this `learn git branching
 <https://learngitbranching.js.org/>`__ interactive tool.
 
 Pre-commit hooks
-^^^^^^^^^^^^^^^^
+----------------
 
 ``geocat-comp`` uses pre-commit hooks to ensure a standardized base-level code
 formatting and style.
@@ -219,8 +223,9 @@ commit command like this:
 For more information on pre-commit hooks, see the `pre-commit documentation <https://pre-commit.com/>`__.
 
 
+*****************
 Make your changes
------------------
+*****************
 
 After you're all set up to develop ``geocat-comp``, you can start making your
 changes. This section describes where, how, and what to change to add your
@@ -228,7 +233,7 @@ contributions to the ``geocat-comp`` codebase.
 
 
 Understanding the codebase
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------
 
 The ``geocat-comp`` top-level direcory is organized as follows:
 
@@ -261,7 +266,7 @@ The ``geocat-comp`` top-level direcory is organized as follows:
 
 
 When adding new functionality, there are multiple auxiliary files that you may
-need to modify to encorporate your code into the package. These include:
+need to modify to incorporate your code into the package. These include:
 
 * ``geocat/comp/__init__.py``: This file imports all of the functions intended
   for the public API.
@@ -278,7 +283,7 @@ need to modify to encorporate your code into the package. These include:
 
 
 Write and run tests
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
 ``geocat-comp`` uses `pytest <https://pytest.org/>`__ for unit tests. Currently,
 we have unit tests written in both ``pytest`` and ``unittest``. We are in the
@@ -304,8 +309,9 @@ GitHub Actions and the ``.github/workflows/ci.yml`` file.
 See the `pytest documentation <https://pytest.org/>`__ for more information.
 
 
+*************
 Documentation
--------------
+*************
 
 ``geocat-comp`` uses `sphinx <https://www.sphinx-doc.org/en/master/>`__  and
 `ReadTheDocs <https://docs.readthedocs.io/en/stable/>`__` to build and host the
@@ -313,7 +319,7 @@ documentation.
 
 
 Docstrings
-^^^^^^^^^^
+----------
 
 The most common situation in which you will need to add to the documentation is
 through docstrings.
@@ -329,7 +335,7 @@ add it to either the ``docs/internal_api/index.rst`` or
 for internal or external use.
 
 Editing other documentation files
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---------------------------------
 
 We welcome changes and improvements to all parts of our documentation (including
 this guide)! You can find these files in the ``docs`` directory.
@@ -352,15 +358,15 @@ Important documentation files to know about include:
   These files are used to generate the jupyter notebook examples in the
   documentation. Notebooks in the ``docs/examples/`` directory are added to the
   documentation by adding them to the ``toctree`` in ``docs/examples.rst`` and
-  linked to their cover picture by addidng them to the ``docs/gallery.yml``
+  linked to their cover picture by adding them to the ``docs/gallery.yml``
   file.
 
 See the `sphinx documentation <https://www.sphinx-doc.org/en/master/>`__ for
-more informatiion about writing sphinx documentation.
+more information about writing sphinx documentation.
 
 
 Generate the documentation locally
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------
 
 To generate the documentation locally, follow the steps below.
 
@@ -371,25 +377,25 @@ To generate the documentation locally, follow the steps below.
 
 
 Check the documentation
-^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------
 
 As well as checking local documentation generation, you should also check the
 preview documentation generated as part of a PR. To do this, scroll down to the
 "checks" section of the PR and click on the "Details" link next to the
 "docs/readthedocs.org:geocat-comp" check. This will take you to the
-correspinding build on ReadTheDocs, where you can view the documentation built
+corresponding build on ReadTheDocs, where you can view the documentation built
 from your PR and see any warnings or errors on your build.
 
-
+********************
 Contribute your code
---------------------
+********************
 
 Once you have prepared your changes and are ready for them to be reviewed by the
 GeoCAT team, you can open a pull request. This section describes how to open a
 pull request and what to expect after you open it.
 
 Push your changes to your fork
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------
 
 Once you have made your changes locally, you will need to push them to your
 branch on your fork on GitHub. To do this, use the following command:
@@ -401,7 +407,7 @@ branch on your fork on GitHub. To do this, use the following command:
 From here, you can request that your changes be merged into the main repository in the form of a pull request.
 
 Making a pull request
-^^^^^^^^^^^^^^^^^^^^^
+---------------------
 
 GitHub has extensive `pull request guides and documentation
 <https://docs.github.com/en/pull-requests>`__ that we recommend. This section
@@ -427,7 +433,7 @@ can open the pull request as a draft. This is also a good way to get feedback on
 your work that might not be ready to contribute yet.
 
 Addressing feedback
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
 After you open your pull request, the GeoCAT team will review it and
 may provide feedback like asking for changes or suggesting improvements. You can
@@ -445,7 +451,7 @@ checks, it will be merged into the main repository!
 
 
 Delete your branch
-^^^^^^^^^^^^^^^^^^
+------------------
 
 We recommend deleting your branch after your pull request is merged. This will
 help keep your fork clean and organized, but is not required.
