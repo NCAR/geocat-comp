@@ -16,7 +16,7 @@ New Features
 Bug Fixes
 ^^^^^^^^^
 * Fix codecov coverage reporting issue by `Anissa Zacharias`_ in (:pr:446)
-* Fix xarray inconsistent pinning issue by `Anissa Zacharias`_ in (:pr:`458``)
+* Fix xarray inconsistent pinning issue by `Anissa Zacharias`_ in (:pr:`458`)
 
 Documentation
 ^^^^^^^^^^^^^
