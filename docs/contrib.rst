@@ -82,20 +82,20 @@ Development workflow overview
 This is a brief overview of the development workflow we use for ``geocat-comp``.
 A more detailed description of each step is provided in following sections.
 
-** `Get set up to develop on your local machine`_ **
+**Get set up to develop on your local machine**
 
 #. `Fork and clone the repository`_.
 #. `Create a development environment`_.
 #. `Create a branch for your changes`_.
 #. `Install pre-commit hooks`_.
 
-** `Make your changes`_ **
+**Make your changes**
 
 #. `Understanding the codebase`_.
 #. `Write and run tests`_.
 #. `Generate <Generate the documentation locally>`__ and `check <Check the documentation>`__ the documentation.
 
-** `Contribute your code`_ **
+**Contribute your code**
 
 #. `Push your changes to your fork`_.
 #. `Open a pull request`_.
