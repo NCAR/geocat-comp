@@ -17,6 +17,10 @@ Bug Fixes
 ^^^^^^^^^
 * Fix codecov coverage reporting issue by `Anissa Zacharias`_ in (:pr:446)
 
+Documentation
+^^^^^^^^^^^^^
+* New Contributor's Guide by `Anissa Zacharias`_ in (:pr:450)
+
 
 v2023.06.1 (June 23, 2023)
 --------------------------
