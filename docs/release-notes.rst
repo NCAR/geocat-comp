@@ -1,6 +1,12 @@
 .. currentmodule:: geocat.comp
 
 .. _release:
+v2023.09.0 (unreleased)
+-------------------------
+
+Documentation
+^^^^^^^^^^^^^
+* Neew Code of Conduct by `Cora Schneck`_ in (:pr:`461`)
 
 v2023.09.0 (Sept 8, 2023)
 -------------------------
@@ -240,3 +246,4 @@ Maintenance
 .. _`Mario Rodriguez`: https://github.com/marodrig
 .. _`Julia Kent`: https://github.com/jukent
 .. _`Katelyn FitzGerald`: https://github.com/kafitzgerald
+.. _`Cora Schneck`: https://github.com/cyschneck
