@@ -2,6 +2,9 @@
 
 .. _release:
 
+Release Notes
+=============
+
 v2023.09.0 (Sept 8, 2023)
 -------------------------
 This release adds `custom_seasons` to ``climatology_average`` and adds a new
