@@ -6,7 +6,7 @@ v2023.09.0 (unreleased)
 
 Documentation
 ^^^^^^^^^^^^^
-* Neew Code of Conduct by `Cora Schneck`_ in (:pr:`461`)
+* New Code of Conduct by `Cora Schneck`_ in (:pr:`461`)
 
 v2023.09.0 (Sept 8, 2023)
 -------------------------
