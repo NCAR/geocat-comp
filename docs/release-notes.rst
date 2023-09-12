@@ -1,6 +1,12 @@
 .. currentmodule:: geocat.comp
 
 .. _release:
+v2023.09.0 (unreleased)
+-------------------------
+
+Documentation
+^^^^^^^^^^^^^
+* New Code of Conduct by `Cora Schneck`_ in (:pr:`461`)
 
 Release Notes
 =============
@@ -243,3 +249,4 @@ Maintenance
 .. _`Mario Rodriguez`: https://github.com/marodrig
 .. _`Julia Kent`: https://github.com/jukent
 .. _`Katelyn FitzGerald`: https://github.com/kafitzgerald
+.. _`Cora Schneck`: https://github.com/cyschneck
