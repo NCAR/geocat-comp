@@ -8,13 +8,13 @@ apply to this PR, comment it out or delete it. -->
 **General**
 - [ ] Make an issue if one doesn't already exist
 - [ ] Link the issue this PR resolves by adding `closes #XXX` to the PR description where XXX is the number of the issue.
-- [ ] If needed, squash and merge PR commits into a single commit to clean up commit history
 - [ ] Add a brief summary of changes to `docs/release-notes.rst` in a relevant section for the next unreleased release. Possible sections include: Documentation, New Features, Bug Fixes, Internal Changes, Breaking Changes/Deprecated
 - [ ] Add appropriate labels to this PR
 - [ ] Make your changes in a forked repository rather than directly in this repo
 - [ ] Open this PR as a draft if it is not ready for review
 - [ ] Convert this PR from a draft to a full PR before requesting reviewers
 - [ ] Passes `precommit`. To set up on your local, run `pre-commit install` from the top level of the repository. To manually run pre-commits, use `pre-commit run --all-files` and re-add any changed files before committing again and pushing.
+- [ ] If needed, squash and merge PR commits into a single commit to clean up commit history
 
 **Functionality**
 - [ ] Function is in appropriate module file
