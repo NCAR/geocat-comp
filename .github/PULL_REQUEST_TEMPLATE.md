@@ -8,12 +8,12 @@ apply to this PR, comment it out or delete it. -->
 **General**
 - [ ] Make an issue if one doesn't already exist
 - [ ] Link the issue this PR resolves by adding `closes #XXX` to the PR description where XXX is the number of the issue.
-- [ ] Add a brief summary of changes to `docs/release-notes.rst`
+- [ ] If needed, squash and merge PR commits into a single commit to clean up commit history
+- [ ] Add a brief summary of changes to `docs/release-notes.rst` in a relevant section for the next unreleased release. Possible sections include: Documentation, New Features, Bug Fixes, Internal Changes, Breaking Changes/Deprecated
 - [ ] Add appropriate labels to this PR
 - [ ] Make your changes in a forked repository rather than directly in this repo
 - [ ] Open this PR as a draft if it is not ready for review
 - [ ] Convert this PR from a draft to a full PR before requesting reviewers
-- [ ] Request `@NCAR/geocat` for reviews
 - [ ] Passes `precommit`. To set up on your local, run `pre-commit install` from the top level of the repository. To manually run pre-commits, use `pre-commit run --all-files` and re-add any changed files before committing again and pushing.
 
 **Functionality**
@@ -25,7 +25,7 @@ apply to this PR, comment it out or delete it. -->
 - [ ] Tests cover all possible logical paths in your function
 
 **Documentation**
-- [ ] Docstrings have been added to all new functions ([Documentation Standards](https://geocat.ucar.edu/pages/contributing.html#422-documentation))
+- [ ] Docstrings have been added to all new functions ([Documentation Standards](https://geocat-comp.readthedocs.io/en/stable/contrib.html#docstrings))
 - [ ] Docstrings have updated with any function changes
 - [ ] Internal functions have a preceding underscore (`_`) and have been added to `docs/internal_api/index.rst`
 - [ ] User facing functions have been added to `docs/user_api/index.rst` under their module
@@ -41,7 +41,7 @@ apply to this PR, comment it out or delete it. -->
 Thank you so much for your PR!  To help us review your contribution, please
 consider the following points:
 
-- A development guide is available at https://geocat.ucar.edu/pages/contributing.html.
+- A development guide is available at https://geocat-comp.readthedocs.io/en/stable/contrib.html
 
 - Fork this repository and open the PR from your fork. Do not directly work on
   the NCAR/geocat-comp repository.
@@ -53,6 +53,11 @@ consider the following points:
 - The summary should provide at least 1-2 sentences describing the pull request
   in detail (Why is this change required?  What problem does it solve?) and
   link to any relevant issues.
+
+- The summary in `docs/release-notes.rst` should be written as " 'Summary of changes'
+  by `FirstName LastName`_ in (:pr:`PR#`) ". For first time contributors, add your new
+  name and GitHub link to bottom of `docs/release-notes.rst` as _`FirstName LastName`
+  :https://github.com/githubUsername
 
 **PR Etiquette Reminders**
 - This PR should be listed as a draft PR until you are ready to request reviewers
