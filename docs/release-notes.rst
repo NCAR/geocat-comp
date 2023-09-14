@@ -1,21 +1,34 @@
 .. currentmodule:: geocat.comp
 
 .. _release:
+v2023.09.0 (unreleased)
+-------------------------
+
+Documentation
+^^^^^^^^^^^^^
+* New Code of Conduct by `Cora Schneck`_ in (:pr:`461`)
 
 Release Notes
 =============
 
-v2023.09.0 (Sept X, 2023)
------------------------
-[Plain text summary here]
+v2023.09.0 (Sept 8, 2023)
+-------------------------
+This release adds `custom_seasons` to ``climatology_average`` and adds a new
+Contributor's Guide to the documentation.
 
 New Features
 ^^^^^^^^^^^^
-* User-defined seasonal boundaries, `custom_seasons`, enabled for `climatology_average` by `Julia Kent`_ in (:pr:441)
+* User-defined seasonal boundaries, `custom_seasons`, enabled for
+  ``climatology_average`` by `Julia Kent`_ in (:pr:`441`)
 
 Bug Fixes
 ^^^^^^^^^
-* Fix codecov coverage reporting issue by `Anissa Zacharias`_ in (:pr:446)
+* Fix codecov coverage reporting issue by `Anissa Zacharias`_ in (:pr:`446`)
+* Fix xarray inconsistent pinning issue by `Anissa Zacharias`_ in (:pr:`458`)
+
+Documentation
+^^^^^^^^^^^^^
+* New Contributor's Guide by `Anissa Zacharias`_ in (:pr:`450`)
 
 
 v2023.06.1 (June 23, 2023)
@@ -236,3 +249,4 @@ Maintenance
 .. _`Mario Rodriguez`: https://github.com/marodrig
 .. _`Julia Kent`: https://github.com/jukent
 .. _`Katelyn FitzGerald`: https://github.com/kafitzgerald
+.. _`Cora Schneck`: https://github.com/cyschneck
