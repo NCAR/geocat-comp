@@ -149,8 +149,8 @@ Use the following commands to create a new conda environment to develop
     # Create a new conda environment
     conda create -c conda-forge -n geocat_comp_build python=3.10
 
-    # Use the environment file to populate the environment with the required
-    dependencies conda env update -f build_envs/environment.yml
+    # Use the environment file to populate the environment with the required dependencies
+    conda env update -f build_envs/environment.yml
 
     # Activate your new environment
     conda activate geocat_comp_build
