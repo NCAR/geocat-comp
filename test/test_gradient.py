@@ -1,5 +1,5 @@
 import sys
-import unittest
+import pytest
 
 import numpy as np
 import xarray as xr
@@ -7,7 +7,7 @@ import xarray as xr
 from geocat.comp import gradient
 
 
-class Test_Gradient(unittest.TestCase):
+class Test_Gradient:
     test_data_xr = None
     test_data_np = None
     test_data_dask = None
@@ -25,7 +25,7 @@ class Test_Gradient(unittest.TestCase):
     results_lat = None
 
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
         cls.test_data_xr = xr.load_dataset(
             'test/gradient_test_data.nc').to_array().squeeze()
         cls.test_data_xr_nocoords = xr.DataArray(cls.test_data_xr, coords={})
@@ -50,7 +50,7 @@ class Test_Gradient(unittest.TestCase):
         cls.test_coords_1d_lon_np = cls.test_coords_1d_lon.values
         cls.test_coords_1d_lat_np = cls.test_coords_1d_lat.values
 
-    def test_gradient_axis0_xr(self):
+    def test_gradient_axis0_xr(self) -> None:
         self.results = gradient(self.test_data_xr)
         self.results_axis0 = self.results[0]
         np.testing.assert_almost_equal(
@@ -59,7 +59,7 @@ class Test_Gradient(unittest.TestCase):
             decimal=3,
         )
 
-    def test_gradient_axis1_xr(self):
+    def test_gradient_axis1_xr(self) -> None:
         self.results = gradient(self.test_data_xr)
         self.results_axis1 = self.results[1]
         np.testing.assert_almost_equal(
@@ -68,7 +68,7 @@ class Test_Gradient(unittest.TestCase):
             decimal=3,
         )
 
-    def test_gradient_axis0_dask(self):
+    def test_gradient_axis0_dask(self) -> None:
         self.results = gradient(self.test_data_dask)
         self.results_axis0 = self.results[0]
         np.testing.assert_almost_equal(
@@ -77,7 +77,7 @@ class Test_Gradient(unittest.TestCase):
             decimal=3,
         )
 
-    def test_gradient_axis1_dask(self):
+    def test_gradient_axis1_dask(self) -> None:
         self.results = gradient(self.test_data_dask)
         self.results_axis1 = self.results[1]
         np.testing.assert_almost_equal(
@@ -86,7 +86,7 @@ class Test_Gradient(unittest.TestCase):
             decimal=3,
         )
 
-    def test_gradient_axis0_xr_1d_nocoords(self):
+    def test_gradient_axis0_xr_1d_nocoords(self) -> None:
         self.results = gradient(self.test_data_xr_nocoords,
                                 lon=self.test_coords_1d_lon,
                                 lat=self.test_coords_1d_lat)
@@ -97,7 +97,7 @@ class Test_Gradient(unittest.TestCase):
             decimal=3,
         )
 
-    def test_gradient_axis1_xr_1d_nocoords(self):
+    def test_gradient_axis1_xr_1d_nocoords(self) -> None:
         self.results = gradient(self.test_data_xr_nocoords,
                                 lon=self.test_coords_1d_lon,
                                 lat=self.test_coords_1d_lat)
@@ -108,7 +108,7 @@ class Test_Gradient(unittest.TestCase):
             decimal=3,
         )
 
-    def test_gradient_axis0_xr_2d_nocoords(self):
+    def test_gradient_axis0_xr_2d_nocoords(self) -> None:
         self.results = gradient(self.test_data_xr_nocoords,
                                 self.test_coords_2d_lon_np,
                                 self.test_coords_2d_lat_np)
@@ -119,7 +119,7 @@ class Test_Gradient(unittest.TestCase):
             decimal=3,
         )
 
-    def test_gradient_axis1_xr_2d_nocoords(self):
+    def test_gradient_axis1_xr_2d_nocoords(self) -> None:
         self.results = gradient(self.test_data_xr_nocoords,
                                 self.test_coords_2d_lon_np,
                                 self.test_coords_2d_lat_np)
@@ -130,7 +130,7 @@ class Test_Gradient(unittest.TestCase):
             decimal=3,
         )
 
-    def test_gradient_axis0_xr_2d_coords(self):
+    def test_gradient_axis0_xr_2d_coords(self) -> None:
         self.results = gradient(self.test_data_xr_2d_coords)
         self.results_axis0 = self.results[0]
         np.testing.assert_almost_equal(
@@ -139,7 +139,7 @@ class Test_Gradient(unittest.TestCase):
             decimal=3,
         )
 
-    def test_gradient_axis1_xr_2d_coords(self):
+    def test_gradient_axis1_xr_2d_coords(self) -> None:
         self.results = gradient(self.test_data_xr_2d_coords)
         self.results_axis1 = self.results[1]
         np.testing.assert_almost_equal(
@@ -148,7 +148,7 @@ class Test_Gradient(unittest.TestCase):
             decimal=3,
         )
 
-    def test_gradient_axis0_np_1d_nocoords(self):
+    def test_gradient_axis0_np_1d_nocoords(self) -> None:
         self.results = gradient(self.test_data_np,
                                 lon=self.test_coords_1d_lon_np,
                                 lat=self.test_coords_1d_lat_np)
@@ -159,7 +159,7 @@ class Test_Gradient(unittest.TestCase):
             decimal=3,
         )
 
-    def test_gradient_axis1_np_1d_nocoords(self):
+    def test_gradient_axis1_np_1d_nocoords(self) -> None:
         self.results = gradient(self.test_data_np,
                                 lon=self.test_coords_1d_lon_np,
                                 lat=self.test_coords_1d_lat_np)
