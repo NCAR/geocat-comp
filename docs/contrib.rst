@@ -127,7 +127,7 @@ repository.
 
 .. code-block:: bash
 
-    cd geocat-comp git remote add upstream https://github.com/NCAR/xarray.git
+    cd geocat-comp git remote add upstream https://github.com/NCAR/geocat-comp.git
 
 For more information, see the `GitHub quickstart section on forking a repository
 <https://docs.github.com/en/get-started/quickstart/fork-a-repo>`__.
