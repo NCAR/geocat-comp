@@ -8,6 +8,7 @@ Documentation
 ^^^^^^^^^^^^^
 * New Code of Conduct by `Cora Schneck`_ in (:pr:`461`)
 * Updated Pull Request Template by `Cora Schneck`_ in (:pr:`455`)
+* Upstream Git URL fix in documentation by `Cora Schneck`_ in (:pr:`476`)
 
 Release Notes
 =============
