@@ -5,7 +5,7 @@ dependencies:
   - python=3.10
   - cf_xarray
   - cftime
-  - cythonasv pub
+  - cython
   - eofs
   - metpy
   - scipy
