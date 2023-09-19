@@ -46,7 +46,7 @@
     // determined from "repo" by looking at the protocol in the URL
     // (if remote), or by looking for special directories, such as
     // ".git" (if local).
-    // "dvcs": "git",
+    "dvcs": "git",
 
     // The tool to use to create environments.  May be "conda",
     // "virtualenv", "mamba" (above 3.8)
@@ -95,14 +95,7 @@
     // will not be set for the current combination.
     //
     "matrix": {
-        "cf_xarray": ["0.3.1"],
-        "cftime": [""],
-        "eofs": [""],
-        "metpy": [""],
-        "scipy": [""],
-        "setuptools_scm": [""],
-        "numpy": [""],
-        "xarray": [""],
+        "python": [""],
     },
 
     // Combinations of libraries/python versions can be excluded/included
