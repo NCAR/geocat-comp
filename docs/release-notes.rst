@@ -7,6 +7,7 @@ v2023.09.0 (unreleased)
 Documentation
 ^^^^^^^^^^^^^
 * New Code of Conduct by `Cora Schneck`_ in (:pr:`461`)
+* Updated Pull Request Template by `Cora Schneck`_ in (:pr:`455`)
 
 Release Notes
 =============
