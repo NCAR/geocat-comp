@@ -2,7 +2,11 @@
 
 .. _release:
 v2023.09.0 (unreleased)
--------------------------
+-----------------------
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Sets up ASV for benchmarking by `Anissa Zacharias`_ in (:pr:`474`)
 
 Documentation
 ^^^^^^^^^^^^^
