@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import pytest
 import xarray.testing
-from parameterized import parameterized
+#from parameterized import parameterized
 import xarray as xr
 
 from geocat.comp import climate_anomaly, month_to_season, calendar_average, climatology_average
@@ -75,7 +75,7 @@ def _get_dummy_data(start_date,
 ##### End Helper Functions #####
 
 
-class test_climate_anomaly:
+class Test_Climate_Anomaly:
     daily = _get_dummy_data('2020-01-01', '2021-12-31', 'D', 1, 1)
 
     def test_daily_anomaly(self) -> None:
@@ -201,18 +201,17 @@ class test_climate_anomaly:
         anom = climate_anomaly(self.daily, 'year')
         xarray.testing.assert_allclose(anom, expected_anom)
 
-    @pytest.mark.parametrize("name, dset, freq, keep_attrs",
-                             [('daily, "month", None', daily, 'month', None),
-                              ('daily, "month", True', daily, 'month', True),
-                              ('daily, "month", False', daily, 'month', False),
-                              ('daily, "season", None', daily, 'season', None),
-                              ('daily, "season", True', daily, 'season', True),
-                              ('daily, "season", False', daily, 'season', False),
-                              ('daily, "year", None', daily, 'year', None),
-                              ('daily, "year", True', daily, 'year', True),
-                              ('daily, "year", False', daily, 'year', False)
-    ])
-
+    @pytest.mark.parametrize(
+        "name, dset, freq, keep_attrs",
+        [('daily, "month", None', daily, 'month', None),
+         ('daily, "month", True', daily, 'month', True),
+         ('daily, "month", False', daily, 'month', False),
+         ('daily, "season", None', daily, 'season', None),
+         ('daily, "season", True', daily, 'season', True),
+         ('daily, "season", False', daily, 'season', False),
+         ('daily, "year", None', daily, 'year', None),
+         ('daily, "year", True', daily, 'year', True),
+         ('daily, "year", False', daily, 'year', False)])
     def test_keep_attrs(self, name, dset, freq, keep_attrs) -> None:
         result = climate_anomaly(dset, freq, keep_attrs=keep_attrs)
         if keep_attrs or keep_attrs == None:
@@ -269,7 +268,7 @@ class test_climate_anomaly:
         xr.testing.assert_allclose(anom, expected_anom)
 
 
-class test_month_to_season:
+class Test_Month_to_Season:
     ds1 = get_fake_dataset(start_month="2000-01", nmonths=12, nlats=1, nlons=1)
 
     # Create another dataset for the year 2001.
@@ -301,10 +300,9 @@ class test_month_to_season:
                                        nlats=10,
                                        nlons=10)
 
-    @pytest.mark.parametrize("name, keep_attrs", 
-                             [('None', None),
-                              ('True', True),
-                              ('False', False)])
+    @pytest.mark.parametrize("name, keep_attrs", [('None', None),
+                                                  ('True', True),
+                                                  ('False', False)])
     def test_month_to_season_keep_attrs(self, name, keep_attrs) -> None:
         season_ds = month_to_season(self.ds1, 'JFM', keep_attrs=keep_attrs)
         if keep_attrs or keep_attrs == None:
@@ -314,8 +312,9 @@ class test_month_to_season:
 
     @pytest.mark.parametrize("name, dset, season, expected",
                              [('ds1, JFM', ds1, 'JFM', 2.0),
-                           ('ds2, JAA', ds1, 'JJA', 7.0)])
-    def test_month_to_season_returns_middle_month_value(self, name, dset, season,
+                              ('ds2, JAA', ds1, 'JJA', 7.0)])
+    def test_month_to_season_returns_middle_month_value(self, name, dset,
+                                                        season,
                                                         expected) -> None:
         season_ds = month_to_season(dset, season)
         np.testing.assert_equal(season_ds["my_var"].data, expected)
@@ -332,23 +331,27 @@ class test_month_to_season:
         season_ds = month_to_season(self.ds1, 'NDJ')
         np.testing.assert_equal(season_ds["my_var"].data, 11.5)
 
-    @pytest.mark.parametrize("name, season",
-                            [('DJF', 'DJF'), ('JFM', 'JFM'), ('FMA', 'FMA'),
-                           ('MAM', 'MAM'), ('AMJ', 'AMJ'), ('MJJ', 'MJJ'),
-                           ('JJA', 'JJA'), ('JAS', 'JAS'), ('ASO', 'ASO'),
-                           ('SON', 'SON'), ('OND', 'OND'), ('NDJ', 'NDJ')])
-    def test_month_to_season_returns_one_point_per_year(self, name, season) -> None:
+    @pytest.mark.parametrize("name, season", [('DJF', 'DJF'), ('JFM', 'JFM'),
+                                              ('FMA', 'FMA'), ('MAM', 'MAM'),
+                                              ('AMJ', 'AMJ'), ('MJJ', 'MJJ'),
+                                              ('JJA', 'JJA'), ('JAS', 'JAS'),
+                                              ('ASO', 'ASO'), ('SON', 'SON'),
+                                              ('OND', 'OND'), ('NDJ', 'NDJ')])
+    def test_month_to_season_returns_one_point_per_year(self, name,
+                                                        season) -> None:
         nyears_of_data = self.ds3.sizes["time"] / 12
         season_ds = month_to_season(self.ds3, season)
         assert season_ds["my_var"].size == nyears_of_data
 
-    @pytest.mark.parametrize("name, dataset, time_coordinate, var_name, expected"
+    @pytest.mark.parametrize(
+        "name, dataset, time_coordinate, var_name, expected",
         [('custom_time_dataset', custom_time_dataset, "my_time", "my_var", 2.0),
-        ('ds4', ds4.isel(x=110, y=200), None, "Tair", [-10.56, -8.129, -7.125]),
-    ])
+         ('ds4', ds4.isel(x=110, y=200), None, "Tair", [-10.56, -8.129, -7.125])
+        ])
     def test_month_to_season_custom_time_coordinate(self, name, dataset,
                                                     time_coordinate, var_name,
-                                                    expected) -> None:
+                                                    expected):
+
         season_ds = month_to_season(dataset,
                                     "JFM",
                                     time_coord_name=time_coordinate)
@@ -357,7 +360,7 @@ class test_month_to_season:
                                        decimal=1)
 
 
-class test_calendar_average():
+class Test_Calendar_Average():
     minute = _get_dummy_data('2020-01-01', '2021-12-31 23:30:00', '30min', 1, 1)
     hourly = _get_dummy_data('2020-01-01', '2021-12-31 23:00:00', 'H', 1, 1)
     daily = _get_dummy_data('2020-01-01', '2021-12-31', 'D', 1, 1)
@@ -534,17 +537,19 @@ class test_calendar_average():
             'lon': [-180.0]
         })
 
-    @pytest.mark.parametrize("name, dset, freq, keep_attrs",
-                             [('daily, "month", None', daily, 'month', None),
-                              ('daily, "month", True', daily, 'month', True),
-                              ('daily, "month", False', daily, 'month', False),
-                              ('monthly, "season", None', monthly, 'season', None),
-                              ('monthly, "season", True', monthly, 'season', True),
-                              ('monthly, "season", False', monthly, 'season', False),
-                              ('monthly, "year", None', monthly, 'year', None),
-                              ('monthly, "year", True', monthly, 'year', True),
-                              ('monthly, "year", False', monthly, 'year', False)])
-    def test_calendar_average_keep_attrs(self, name, dset, freq, keep_attrs) -> None:
+    @pytest.mark.parametrize(
+        "name, dset, freq, keep_attrs",
+        [('daily, "month", None', daily, 'month', None),
+         ('daily, "month", True', daily, 'month', True),
+         ('daily, "month", False', daily, 'month', False),
+         ('monthly, "season", None', monthly, 'season', None),
+         ('monthly, "season", True', monthly, 'season', True),
+         ('monthly, "season", False', monthly, 'season', False),
+         ('monthly, "year", None', monthly, 'year', None),
+         ('monthly, "year", True', monthly, 'year', True),
+         ('monthly, "year", False', monthly, 'year', False)])
+    def test_calendar_average_keep_attrs(self, name, dset, freq,
+                                         keep_attrs) -> None:
         result = calendar_average(dset, freq, keep_attrs=keep_attrs)
         if keep_attrs or keep_attrs == None:
             assert result.attrs == dset.attrs
@@ -603,9 +608,10 @@ class test_calendar_average():
         result = calendar_average(self.daily, freq='month')
         xr.testing.assert_equal(result, day_2_month_avg)
 
-    @pytest.mark.parametrize("name, dset, expected",
-                             [('daily to seasonal', daily, day_2_season_avg),
-                              ('monthly to seasonal', monthly, month_2_season_avg)])
+    @pytest.mark.parametrize(
+        "name, dset, expected",
+        [('daily to seasonal', daily, day_2_season_avg),
+         ('monthly to seasonal', monthly, month_2_season_avg)])
     def test_daily_monthly_to_seasonal_calendar_average(self, name, dset,
                                                         expected) -> None:
         result = calendar_average(dset, freq='season')
@@ -619,7 +625,8 @@ class test_calendar_average():
         result = calendar_average(dset, freq='year')
         xr.testing.assert_allclose(result, expected)
 
-    @pytest.mark.parametrize("name, freq", [('freq=TEST', 'TEST'), ('freq=None', None)])
+    @pytest.mark.parametrize("name, freq", [('freq=TEST', 'TEST'),
+                                            ('freq=None', None)])
     def test_invalid_freq_calendar_average(self, name, freq) -> None:
         with pytest.raises(ValueError):
             calendar_average(self.monthly, freq=freq)
@@ -649,18 +656,19 @@ class test_calendar_average():
         with pytest.raises(ValueError):
             calendar_average(non_uniform, freq='day')
 
-    @pytest.mark.parametrize("name, dset, expected",
-                             [('julian_calendar', julian_daily, julian_day_2_month_avg),
-                              ('no_leap_calendar', noleap_daily, noleap_day_2_month_avg),
-                              ('all_leap_calendar', all_leap_daily, all_leap_day_2_month_avg),
-                              ('day_360_calendar', day_360_daily, day_360_leap_day_2_month_avg)])
+    @pytest.mark.parametrize(
+        "name, dset, expected",
+        [('julian_calendar', julian_daily, julian_day_2_month_avg),
+         ('no_leap_calendar', noleap_daily, noleap_day_2_month_avg),
+         ('all_leap_calendar', all_leap_daily, all_leap_day_2_month_avg),
+         ('day_360_calendar', day_360_daily, day_360_leap_day_2_month_avg)])
     def test_non_standard_calendars_calendar_average(self, name, dset,
                                                      expected) -> None:
         result = calendar_average(dset, freq='month')
         xr.testing.assert_equal(result, expected)
 
 
-class test_climatology_average():
+class Test_Climatology_Average():
     minute = _get_dummy_data('2020-01-01', '2021-12-31 23:30:00', '30min', 1, 1)
 
     hourly = _get_dummy_data('2020-01-01', '2021-12-31 23:00:00', 'H', 1, 1)
@@ -836,19 +844,20 @@ class test_climatology_average():
             'lon': [-180.0]
         })
 
-    @pytest.mark.parametrize("name, dset, freq, custom_seasons, keep_attrs",
-                             [('daily, "month", None', daily, 'month', [], None),
-                              ('daily, "month", True', daily, 'month', [], True),
-                              ('daily, "month", False', daily, 'month', [], False),
-                              ('monthly, "season", None', monthly, 'season', [], None),
-                              ('monthly, "season", True', monthly, 'season', [], True),
-                              ('monthly, "season", False', monthly, 'season', [], False),
-                              ('monthly, "season", None', monthly, 'season',
-                                    ['DJF', 'MAM', 'JJA', 'SON'], None),
-                              ('monthly, "season", True', monthly, 'season',
-                                    ['DJF', 'MAM', 'JJA', 'SON'], True),
-                              ('monthly, "season", False', monthly, 'season',
-                                    ['DJF', 'MAM', 'JJA', 'SON'], False)])
+    @pytest.mark.parametrize(
+        "name, dset, freq, custom_seasons, keep_attrs",
+        [('daily, "month", None', daily, 'month', [], None),
+         ('daily, "month", True', daily, 'month', [], True),
+         ('daily, "month", False', daily, 'month', [], False),
+         ('monthly, "season", None', monthly, 'season', [], None),
+         ('monthly, "season", True', monthly, 'season', [], True),
+         ('monthly, "season", False', monthly, 'season', [], False),
+         ('monthly, "season", None', monthly, 'season',
+          ['DJF', 'MAM', 'JJA', 'SON'], None),
+         ('monthly, "season", True', monthly, 'season',
+          ['DJF', 'MAM', 'JJA', 'SON'], True),
+         ('monthly, "season", False', monthly, 'season',
+          ['DJF', 'MAM', 'JJA', 'SON'], False)])
     def test_climatology_average_keep_attrs(self, name, dset, freq,
                                             custom_seasons, keep_attrs) -> None:
         result = climatology_average(dset,
@@ -880,16 +889,17 @@ class test_climatology_average():
         expected = climatology_average(self.monthly, freq='season')
         xr.testing.assert_equal(result, expected)
 
-    @pytest.mark.parametrize("name, dset, expected",
-                             [('daily to seasonal', daily, day_2_season_clim),
-                              ('monthly to seasonal', monthly, month_2_season_clim)])
+    @pytest.mark.parametrize(
+        "name, dset, expected",
+        [('daily to seasonal', daily, day_2_season_clim),
+         ('monthly to seasonal', monthly, month_2_season_clim)])
     def test_daily_monthly_to_seasonal_climatology_average(
             self, name, dset, expected) -> None:
         result = climatology_average(dset, freq='season')
         xr.testing.assert_allclose(result, expected)
 
-    @pytest.mark.parametrize("name, freq",
-                             [('freq=TEST', 'TEST'), ('freq=None', None)])
+    @pytest.mark.parametrize("name, freq", [('freq=TEST', 'TEST'),
+                                            ('freq=None', None)])
     def test_invalid_freq_climatology_average(self, name, freq) -> None:
         with pytest.raises(ValueError):
             climatology_average(self.monthly, freq=freq)
@@ -925,12 +935,12 @@ class test_climatology_average():
         with pytest.raises(ValueError):
             climatology_average(non_uniform, freq='day')
 
-    @pytest.mark.parametrize("name, dset, expected",
-                            [('julian_calendar', julian_daily, julian_day_2_month_clim),
-                            ('no_leap_calendar', noleap_daily, noleap_day_2_month_clim),
-                            ('all_leap_calendar', all_leap_daily, all_leap_day_2_month_clim),
-                            ('day_360_calendar', day_360_daily, day_360_leap_day_2_month_clim)
-    ])
+    @pytest.mark.parametrize(
+        "name, dset, expected",
+        [('julian_calendar', julian_daily, julian_day_2_month_clim),
+         ('no_leap_calendar', noleap_daily, noleap_day_2_month_clim),
+         ('all_leap_calendar', all_leap_daily, all_leap_day_2_month_clim),
+         ('day_360_calendar', day_360_daily, day_360_leap_day_2_month_clim)])
     def test_non_standard_calendars_climatology_average(self, name, dset,
                                                         expected) -> None:
         result = climatology_average(dset, freq='month')

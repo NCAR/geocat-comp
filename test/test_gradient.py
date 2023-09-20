@@ -1,5 +1,5 @@
 import sys
-import pytest
+#import unittest
 
 import numpy as np
 import xarray as xr
@@ -25,7 +25,7 @@ class Test_Gradient:
     results_lat = None
 
     @classmethod
-    def setUpClass(cls) -> None:
+    def test_setUpClass(cls):
         cls.test_data_xr = xr.load_dataset(
             'test/gradient_test_data.nc').to_array().squeeze()
         cls.test_data_xr_nocoords = xr.DataArray(cls.test_data_xr, coords={})
@@ -170,7 +170,7 @@ class Test_Gradient:
             decimal=3,
         )
 
-    def test_gradient_axis0_np_2d_nocoords(self):
+    def test_gradient_axis0_np_2d_nocoords(self) -> None:
         self.results = gradient(self.test_data_np, self.test_coords_2d_lon_np,
                                 self.test_coords_2d_lat_np)
         self.results_axis0 = self.results[0]
@@ -180,7 +180,7 @@ class Test_Gradient:
             decimal=3,
         )
 
-    def test_gradient_axis1_np_2d_nocoords(self):
+    def test_gradient_axis1_np_2d_nocoords(self) -> None:
         self.results = gradient(self.test_data_np, self.test_coords_2d_lon_np,
                                 self.test_coords_2d_lat_np)
         self.results_axis1 = self.results[1]
