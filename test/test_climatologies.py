@@ -4,7 +4,6 @@ import numpy as np
 import pandas as pd
 import pytest
 import xarray.testing
-#from parameterized import parameterized
 import xarray as xr
 
 from geocat.comp import climate_anomaly, month_to_season, calendar_average, climatology_average
@@ -350,7 +349,7 @@ class Test_Month_to_Season:
         ])
     def test_month_to_season_custom_time_coordinate(self, name, dataset,
                                                     time_coordinate, var_name,
-                                                    expected):
+                                                    expected) -> None:
 
         season_ds = month_to_season(dataset,
                                     "JFM",

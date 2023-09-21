@@ -1,5 +1,4 @@
 import sys
-#import unittest
 
 import numpy as np
 import xarray as xr
@@ -25,7 +24,7 @@ class Test_Gradient:
     results_lat = None
 
     @classmethod
-    def test_setUpClass(cls):
+    def test_setUpClass(cls) -> None:
         cls.test_data_xr = xr.load_dataset(
             'test/gradient_test_data.nc').to_array().squeeze()
         cls.test_data_xr_nocoords = xr.DataArray(cls.test_data_xr, coords={})

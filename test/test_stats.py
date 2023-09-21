@@ -1,8 +1,9 @@
-from unittest import TestCase
+#from unittest import TestCase
 import sys
 from abc import ABCMeta
 import numpy as np
 import xarray as xr
+import pytest
 
 from geocat.comp.stats import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts, pearson_r
 
@@ -60,9 +61,9 @@ class BaseEOFTestClass(metaclass=ABCMeta):
     expected_eigen_val_time_dim_0 = 6826.66667
 
 
-class Test_eof(TestCase, BaseEOFTestClass):
+class Test_eof(BaseEOFTestClass):
 
-    def test_eof_00(self):
+    def test_eof_00(self) -> None:
         data = self._sample_data_eof[0]
 
         results = eofunc_eofs(data, neofs=1, time_dim=2)
@@ -78,7 +79,7 @@ class Test_eof(TestCase, BaseEOFTestClass):
         np.testing.assert_almost_equal(self.expected_eigen_val_time_dim_2,
                                        attrs['eigenvalues'].values[0], 5)
 
-    def test_eof_deprecated(self):
+    def test_eof_deprecated(self) -> None:
         data = self._sample_data_eof[0]
 
         results = eofunc(data, neval=1)
@@ -94,7 +95,7 @@ class Test_eof(TestCase, BaseEOFTestClass):
         np.testing.assert_almost_equal(self.expected_eigen_val_time_dim_2,
                                        attrs['eigenvalues'].values[0], 5)
 
-    def test_eof_01(self):
+    def test_eof_01(self) -> None:
         data = self._sample_data_eof[1]
 
         results = eofunc_eofs(data, neofs=1, time_dim=2)
@@ -110,7 +111,7 @@ class Test_eof(TestCase, BaseEOFTestClass):
         np.testing.assert_almost_equal(self.expected_eigen_val_time_dim_2,
                                        attrs['eigenvalues'].values[0], 5)
 
-    def test_eof_02(self):
+    def test_eof_02(self) -> None:
         data = self._sample_data_eof[1]
 
         results = eofunc_eofs(data, neofs=1, time_dim=2)
@@ -126,7 +127,7 @@ class Test_eof(TestCase, BaseEOFTestClass):
         np.testing.assert_almost_equal(self.expected_eigen_val_time_dim_2,
                                        attrs['eigenvalues'].values[0], 5)
 
-    def test_eof_14(self):
+    def test_eof_14(self) -> None:
         data = self._sample_data_eof[4]
 
         results = eofunc_eofs(data, neofs=1, time_dim=2)
@@ -142,7 +143,7 @@ class Test_eof(TestCase, BaseEOFTestClass):
         np.testing.assert_almost_equal(self.expected_eigen_val_time_dim_2,
                                        attrs['eigenvalues'].values[0], 5)
 
-    def test_eof_15(self):
+    def test_eof_15(self) -> None:
 
         data = np.asarray(self._sample_data_eof[0])
         data = np.transpose(data, axes=(2, 1, 0))
@@ -174,7 +175,7 @@ class Test_eof(TestCase, BaseEOFTestClass):
         np.testing.assert_equal(False, ("prop2" in attrs))
 
     # TODO: Maybe revisited to add time_dim support for Xarray in addition to numpy inputs
-    # def test_eof_15_time_dim(self):
+    # def test_eof_15_time_dim(self) -> None:
     #
     #     data = np.asarray(self._sample_data_eof[0])
     #
@@ -207,7 +208,7 @@ class Test_eof(TestCase, BaseEOFTestClass):
     #     self.assertFalse("prop1" in attrs)
     #     self.assertFalse("prop2" in attrs)
 
-    def test_eof_16(self):
+    def test_eof_16(self) -> None:
         data = np.asarray(self._sample_data_eof[0])
         data = np.transpose(data, axes=(2, 1, 0))
 
@@ -239,7 +240,7 @@ class Test_eof(TestCase, BaseEOFTestClass):
         np.testing.assert_equal("prop1", attrs["prop1"])
         np.testing.assert_equal(2, attrs["prop2"])
 
-    def test_eof_n_01(self):
+    def test_eof_n_01(self) -> None:
         data = self._sample_data_eof[1]
 
         results = eofunc_eofs(data, neofs=1, time_dim=1)
@@ -255,7 +256,7 @@ class Test_eof(TestCase, BaseEOFTestClass):
         np.testing.assert_almost_equal(self.expected_eigen_val_time_dim_1,
                                        attrs['eigenvalues'].values[0], 5)
 
-    def test_eof_n_03(self):
+    def test_eof_n_03(self) -> None:
         data = self._sample_data_eof[1]
 
         results = eofunc_eofs(data, 1, time_dim=0)
@@ -271,7 +272,7 @@ class Test_eof(TestCase, BaseEOFTestClass):
         np.testing.assert_almost_equal(self.expected_eigen_val_time_dim_0,
                                        attrs['eigenvalues'].values[0], 5)
 
-    def test_eof_n_03_1(self):
+    def test_eof_n_03_1(self) -> None:
         data = self._sample_data_eof[1]
 
         results = eofunc_eofs(data, 1, time_dim=0)
@@ -288,9 +289,9 @@ class Test_eof(TestCase, BaseEOFTestClass):
                                        attrs['eigenvalues'].values[0], 5)
 
 
-class Test_eof_ts(TestCase, BaseEOFTestClass):
+class Test_eof_ts(BaseEOFTestClass):
 
-    def test_01(self):
+    def test_01(self) -> None:
         sst = self._nc_ds.sst
         evec = self._nc_ds.evec
         expected_tsout = self._nc_ds.tsout
@@ -302,7 +303,7 @@ class Test_eof_ts(TestCase, BaseEOFTestClass):
         np.testing.assert_array_almost_equal(actual_tsout, expected_tsout.data,
                                              3)
 
-    def test_01_deprecated(self):
+    def test_01_deprecated(self) -> None:
         sst = self._nc_ds.sst
         evec = self._nc_ds.evec
         expected_tsout = self._nc_ds.tsout
@@ -314,7 +315,7 @@ class Test_eof_ts(TestCase, BaseEOFTestClass):
         np.testing.assert_array_almost_equal(actual_tsout, expected_tsout.data,
                                              3)
 
-    def test_02(self):
+    def test_02(self) -> None:
         sst = self._nc_ds.sst
         evec = self._nc_ds.evec
         expected_tsout = self._nc_ds.tsout
@@ -330,10 +331,10 @@ class Test_eof_ts(TestCase, BaseEOFTestClass):
                                 sst.coords["time"].data)
 
 
-class Test_pearson_r(TestCase):
+class Test_pearson_r:
 
     @classmethod
-    def setUpClass(cls):
+    def test_setUpClass(cls) -> None:
         # Coordinates
         times = xr.cftime_range(start='2022-08-01', end='2022-08-05', freq='D')
         lats = np.linspace(start=-45, stop=45, num=3, dtype='float32')
@@ -368,32 +369,33 @@ class Test_pearson_r(TestCase):
         ]
 
     # Testing numpy inputs
-    def test_np_inputs(self):
+    def test_np_inputs(self) -> None:
         a = self.a
         b = self.b
         result = pearson_r(a, b)
         assert np.allclose(self.unweighted_r, result)
 
-    def test_np_inputs_weighted(self):
+    def test_np_inputs_weighted(self) -> None:
         a = self.a
         b = self.b
         w = self.weights
         result = pearson_r(a, b, weights=w)
         assert np.allclose(self.weighted_r, result)
 
-    def test_np_inputs_warn(self):
+    def test_np_inputs_warn(self) -> None:
         a = self.a
         b = self.b
-        self.assertWarns(Warning, pearson_r, a, b, dim='lat', axis=0)
+        with pytest.warns(UserWarning):
+            pearson_r(a, b, dim='lat', axis=0)
 
-    def test_np_inputs_across_lats(self):
+    def test_np_inputs_across_lats(self) -> None:
         a = self.a
         b = self.b
         w = self.weights
         result = pearson_r(a, b, weights=w, axis=0)
         assert np.allclose(self.weighted_r_lat, result)
 
-    def test_np_inputs_skipna(self):
+    def test_np_inputs_skipna(self) -> None:
         # deep copy to prevent adding nans to the test data for other tests
         a = self.a.copy()
         a[0] = np.nan
@@ -402,32 +404,33 @@ class Test_pearson_r(TestCase):
         assert np.allclose(self.unweighted_r_skipnan, result)
 
     # Testing xarray inputs
-    def test_xr_inputs(self):
+    def test_xr_inputs(self) -> None:
         a = self.ds.a
         b = self.ds.b
         result = pearson_r(a, b)
         assert np.allclose(self.unweighted_r, result)
 
-    def test_xr_inputs_weighted(self):
+    def test_xr_inputs_weighted(self) -> None:
         a = self.ds.a
         b = self.ds.b
         w = self.ds.weights
         result = pearson_r(a, b, weights=w)
         assert np.allclose(self.weighted_r, result)
 
-    def test_xr_inputs_warn(self):
+    def test_xr_inputs_warn(self) -> None:
         a = self.ds.a
         b = self.ds.b
-        self.assertWarns(Warning, pearson_r, a, b, dim='lat', axis=0)
+        with pytest.warns(UserWarning):
+            pearson_r(a, b, dim='lat', axis=0)
 
-    def test_xr_inputs_across_lats(self):
+    def test_xr_inputs_across_lats(self) -> None:
         a = self.ds.a
         b = self.ds.b
         w = self.ds.weights[:, 0, 0]
         result = pearson_r(a, b, weights=w, dim='lat')
         assert np.allclose(self.weighted_r_lat, result)
 
-    def test_xr_inputs_skipna(self):
+    def test_xr_inputs_skipna(self) -> None:
         # deep copy to prevent adding nans to the test data for other tests
         a = self.ds.a.copy(deep=True)
         a[0] = np.nan
@@ -435,7 +438,7 @@ class Test_pearson_r(TestCase):
         result = pearson_r(a, b, skipna=True)
         assert np.allclose(self.unweighted_r_skipnan, result)
 
-    def test_keep_attrs(self):
+    def test_keep_attrs(self) -> None:
         a = self.ds.a
         b = self.ds.b
         a.attrs.update({'Description': 'Test Data'})

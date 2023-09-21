@@ -92,7 +92,7 @@ class Test_Fourier_Two_Bands_Pass:
         np.testing.assert_almost_equal(t_result, t_expected_result)
 
 
-class Test_Fourier_Two_Bands_Pass:
+class Test_Fourier_Three_Bands_Pass:
 
     freq = 200
     t = np.arange(200) / freq

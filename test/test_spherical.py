@@ -9,10 +9,10 @@ import xarray as xr
 from geocat.comp import decomposition, recomposition, scale_voronoi
 
 
-class Test_Spherical(unittest.TestCase):
+class Test_Spherical:
 
     @classmethod
-    def setUpClass(cls):
+    def test_setUpClass(cls) -> None:
         max_harm = 23
         num_phi = 90
         num_theta = 180
@@ -74,7 +74,7 @@ class Test_Spherical(unittest.TestCase):
             dims=['har'],
         ).compute()
 
-    def test_decomposition_np(self):
+    def test_decomposition_np(self) -> None:
         results_np = decomposition(
             self.test_data_np,
             self.test_scale_np,
@@ -87,7 +87,7 @@ class Test_Spherical(unittest.TestCase):
             decimal=2,
         )
 
-    def test_decomposition_xr(self):
+    def test_decomposition_xr(self) -> None:
         results_xr = decomposition(
             self.test_data_xr,
             self.test_scale_xr,
@@ -100,7 +100,7 @@ class Test_Spherical(unittest.TestCase):
             decimal=2,
         )
 
-    def test_recomposition_np(self):
+    def test_recomposition_np(self) -> None:
         data_np = recomposition(
             self.test_results_np,
             self.theta_np,
@@ -111,7 +111,7 @@ class Test_Spherical(unittest.TestCase):
             self.test_data_np,
         )
 
-    def test_recomposition_xr(self):
+    def test_recomposition_xr(self) -> None:
         data_xr = recomposition(
             self.test_results_xr,
             self.theta_xr,
@@ -122,7 +122,7 @@ class Test_Spherical(unittest.TestCase):
             self.test_data_xr.to_numpy(),
         )
 
-    def test_scale_voronoi_np(self):
+    def test_scale_voronoi_np(self) -> None:
         scale_np = scale_voronoi(
             self.theta_np,
             self.phi_np,
@@ -132,7 +132,7 @@ class Test_Spherical(unittest.TestCase):
             self.test_scale_np / np.sum(self.test_scale_np, axis=(0, 1)),
         )
 
-    def test_scale_voronoi_xr(self):
+    def test_scale_voronoi_xr(self) -> None:
         scale_xr = scale_voronoi(
             self.theta_xr,
             self.phi_xr,
