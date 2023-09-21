@@ -4,6 +4,10 @@
 v2023.09.0 (unreleased)
 -------------------------
 
+Maintenance
+^^^^^^^^^^^
+* Convert Unittest to Pytest by `Cora Schneck`_ in (:pr:`462`)
+
 Documentation
 ^^^^^^^^^^^^^
 * New Code of Conduct by `Cora Schneck`_ in (:pr:`461`)
