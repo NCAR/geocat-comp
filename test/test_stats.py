@@ -1,4 +1,3 @@
-#from unittest import TestCase
 import sys
 from abc import ABCMeta
 import numpy as np
