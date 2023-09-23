@@ -1,0 +1,52 @@
+name: ASV Benchmarking
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  release:
+    types:
+      - published
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    env:
+      CONDA_ENV_FILE: ./build_envs/asv-bench.yml
+      ASV_DIR: ./benchmarks
+
+    steps:
+      - name: Checkout geocat-comp
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Checkout geocat-comp-asv
+        uses: actions/checkout@v2
+        with:
+          repository: NCAR/geocat-comp-asv
+          ref: main
+          path: asv_results
+
+      - name: Set up conda environment
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          environment-file: ./build_envs/asv-bench.yml
+          environment-name: asv-bench
+          cache-environment: true
+          cache-environment-key: "${{runner.os}}-${{runner.arch}}-py${{env.PYTHON_VERSION}}-${{env.TODAY}}-${{hashFiles(env.CONDA_ENV_FILE)}}-benchmark"
+
+      - name: Run benchmarks
+        shell: bash -l {0}
+        id: benchmark
+        run: |
+          asv machine --machine GH-Actions --os ubuntu-latest --arch x64 --cpu "2-core unknown" --ram 7GB
+          asv run --skip-existing-commits "--merges main"
+
+      - name: Push results to another repository
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.TOKEN }}
+          branch: results
+          repository: username/repo-name
+          directory: results/
