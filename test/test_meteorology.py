@@ -18,8 +18,8 @@ from geocat.comp.meteorology import (
 
 class Test_dewtemp:
 
-    @classmethod
-    def test_setUpClass(cls) -> None:
+    @pytest.fixture(scope="function", autouse=True)
+    def setUpClass(cls) -> None:
         # set up ground truths
         cls.t_def = [
             29.3, 28.1, 23.5, 20.9, 18.4, 15.9, 13.1, 10.1, 6.7, 3.1, -0.5,
@@ -41,6 +41,8 @@ class Test_dewtemp:
 
         # make dask client to reference in subsequent tests
         cls.client = dd.Client()
+        yield cls.client
+        cls.client.close()
 
     def test_float_input(self) -> None:
         tk = 18. + 273.15
@@ -85,15 +87,11 @@ class Test_dewtemp:
 
         assert isinstance((dewtemp(tk, rh) - 273.15).data, dask.array.Array)
 
-    @classmethod
-    def test_closeClient(cls) -> None:
-        cls.client.close()
-
 
 class Test_heat_index:
 
-    @classmethod
-    def test_setUpClass(cls) -> None:
+    @pytest.fixture(scope="function", autouse=True)
+    def setUpClass(cls) -> None:
         # set up ground truths
         cls.ncl_gt_1 = [
             137.36142, 135.86795, 104.684456, 131.25621, 105.39449, 79.78999,
@@ -112,6 +110,8 @@ class Test_heat_index:
 
         # make client to reference in subsequent tests
         cls.client = dd.Client()
+        yield cls.client
+        cls.client.close()
 
     def test_numpy_input(self) -> None:
         assert np.allclose(heat_index(self.t1, self.rh1, False),
@@ -192,15 +192,11 @@ class Test_heat_index:
 
         assert isinstance((heat_index(t, rh)).data, dask.array.Array)
 
-    @classmethod
-    def test_closeClient(cls) -> None:
-        cls.client.close()
-
 
 class Test_relhum:
 
-    @classmethod
-    def test_setUpClass(cls) -> None:
+    @pytest.fixture(scope="function", autouse=True)
+    def setUpClass(cls) -> None:
         # set up ground truths
         cls.p_def = [
             100800, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000,
@@ -232,6 +228,8 @@ class Test_relhum:
 
         # make dask client to reference in subsequent tests
         cls.client = dd.Client()
+        yield cls.client
+        cls.client.close()
 
     def test_float_input(self) -> None:
         p = 1000. * 100
@@ -275,10 +273,6 @@ class Test_relhum:
 
         assert isinstance(relhum(t, q, p).data, dask.array.Array)
 
-    @classmethod
-    def test_closeClient(cls) -> None:
-        cls.client.close()
-
 
 class Test_relhum_water:
 
@@ -307,8 +301,8 @@ class Test_relhum_ice:
 
 class Test_actual_saturation_vapor_pressure:
 
-    @classmethod
-    def test_setUpClass(cls) -> None:
+    @pytest.fixture(scope="function", autouse=True)
+    def setUpClass(cls) -> None:
 
         # get ground truth from ncl run netcdf file
         try:
@@ -325,6 +319,8 @@ class Test_actual_saturation_vapor_pressure:
 
         # make client to reference in subsequent tests
         cls.client = dd.Client()
+        yield cls.client
+        cls.client.close()
 
     def test_numpy_input(self) -> None:
         assert np.allclose(actual_saturation_vapor_pressure(
@@ -375,15 +371,11 @@ class Test_actual_saturation_vapor_pressure:
             (actual_saturation_vapor_pressure(tempf, tfill=1.0000000e+20)).data,
             dask.array.Array)
 
-    @classmethod
-    def test_closeClient(cls) -> None:
-        cls.client.close()
-
 
 class Test_max_daylight:
 
-    @classmethod
-    def test_setUpClass(cls) -> None:
+    @pytest.fixture(scope="function", autouse=True)
+    def setUpClass(cls) -> None:
 
         # get ground truth from ncl run netcdf file
         try:
@@ -401,6 +393,8 @@ class Test_max_daylight:
 
         # make client to reference in subsequent tests
         cls.client = dd.Client()
+        yield cls.client
+        cls.client.close()
 
     def test_numpy_input(self) -> None:
         assert np.allclose(max_daylight(self.jday_gt, self.lat_gt),
@@ -450,15 +444,11 @@ class Test_max_daylight:
         with pytest.warns(UserWarning):
             max_daylight(10, 67)
 
-    @classmethod
-    def test_closeClient(cls) -> None:
-        cls.client.close()
-
 
 class Test_psychrometric_constant:
 
-    @classmethod
-    def test_setUpClass(cls) -> None:
+    @pytest.fixture(scope="function", autouse=True)
+    def setUpClass(cls) -> None:
 
         # get ground truth from ncl run netcdf file
         try:
@@ -475,6 +465,8 @@ class Test_psychrometric_constant:
 
         # make client to reference in subsequent tests
         cls.client = dd.Client()
+        yield cls.client
+        cls.client.close()
 
     def test_numpy_input(self) -> None:
         assert np.allclose(psychrometric_constant(self.pressure_gt),
@@ -520,15 +512,11 @@ class Test_psychrometric_constant:
         assert isinstance((psychrometric_constant(pressure)).data,
                           dask.array.Array)
 
-    @classmethod
-    def test_closeClient(cls) -> None:
-        cls.client.close()
-
 
 class Test_saturation_vapor_pressure:
 
-    @classmethod
-    def test_setUpClass(cls) -> None:
+    @pytest.fixture(scope="function", autouse=True)
+    def setUpClass(cls) -> None:
 
         # get ground truth from ncl run netcdf file
         try:
@@ -545,6 +533,8 @@ class Test_saturation_vapor_pressure:
 
         # make client to reference in subsequent tests
         cls.client = dd.Client()
+        yield cls.client
+        cls.client.close()
 
     def test_numpy_input(self) -> None:
         assert np.allclose(saturation_vapor_pressure(self.temp_gt,
@@ -596,15 +586,11 @@ class Test_saturation_vapor_pressure:
                                                      tfill=1.0000000e+20)).data,
                           dask.array.Array)
 
-    @classmethod
-    def test_closeClient(cls) -> None:
-        cls.client.close()
-
 
 class Test_saturation_vapor_pressure_slope:
 
-    @classmethod
-    def test_setUpClass(cls) -> None:
+    @pytest.fixture(scope="function", autouse=True)
+    def setUpClass(cls) -> None:
 
         # get ground truth from ncl run netcdf file
         try:
@@ -621,6 +607,8 @@ class Test_saturation_vapor_pressure_slope:
 
         # make client to reference in subsequent tests
         cls.client = dd.Client()
+        yield cls.client
+        cls.client.close()
 
     def test_numpy_input(self) -> None:
         assert np.allclose(saturation_vapor_pressure_slope(self.temp_gt),
@@ -670,15 +658,11 @@ class Test_saturation_vapor_pressure_slope:
         assert isinstance((saturation_vapor_pressure_slope(tempf)).data,
                           dask.array.Array)
 
-    @classmethod
-    def test_closeClient(cls) -> None:
-        cls.client.close()
-
 
 class Test_Delta_Pressure:
 
-    @classmethod
-    def test_setUpClass(cls) -> None:
+    @pytest.fixture(scope="function", autouse=True)
+    def setUpClass(cls) -> None:
         cls.pressure_lev = np.array([1, 5, 100, 1000])
         cls.pressure_lev_da = xr.DataArray(cls.pressure_lev)
         cls.pressure_lev_da.attrs = {

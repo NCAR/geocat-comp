@@ -1,6 +1,5 @@
 import math as m
 import sys
-import pytest
 import numpy as np
 import xarray as xr
 

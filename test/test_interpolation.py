@@ -316,8 +316,8 @@ class Test_interp_sigma_to_hybrid:
 
 class Test_interp_manually_calc:
 
-    @classmethod
-    def test_setUpClass(cls) -> None:
+    @pytest.fixture(autouse=True)
+    def setUpClass(cls) -> None:
         cls.test_input = xr.load_dataset(
             gdf.get("netcdf_files/interpolation_test_input_data.nc"))
 
@@ -454,8 +454,8 @@ class Test_interp_larger_dataset:
     test_lon_output = None
     test_data_chunked = None
 
-    @classmethod
-    def test_setUpClass(cls) -> None:
+    @pytest.fixture(autouse=True)
+    def setUpClass(cls) -> None:
         cls.test_input = xr.load_dataset(
             gdf.get("netcdf_files/spherical_noise_input.nc"))['spherical_noise']
 

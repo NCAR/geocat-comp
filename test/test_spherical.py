@@ -1,5 +1,6 @@
 import math as ma
 import sys
+import pytest
 
 import numpy as np
 import scipy.special as ss
@@ -10,8 +11,8 @@ from geocat.comp import decomposition, recomposition, scale_voronoi
 
 class Test_Spherical:
 
-    @classmethod
-    def test_setUpClass(cls) -> None:
+    @pytest.fixture(autouse=True)
+    def setUpClass(cls) -> None:
         max_harm = 23
         num_phi = 90
         num_theta = 180

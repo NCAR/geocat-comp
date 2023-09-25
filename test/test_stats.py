@@ -332,8 +332,8 @@ class Test_eof_ts(BaseEOFTestClass):
 
 class Test_pearson_r:
 
-    @classmethod
-    def test_setUpClass(cls) -> None:
+    @pytest.fixture(autouse=True)
+    def setUpClass(cls) -> None:
         # Coordinates
         times = xr.cftime_range(start='2022-08-01', end='2022-08-05', freq='D')
         lats = np.linspace(start=-45, stop=45, num=3, dtype='float32')
