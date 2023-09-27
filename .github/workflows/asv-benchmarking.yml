@@ -18,15 +18,17 @@ jobs:
 
     steps:
       - name: Checkout geocat-comp
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Checkout geocat-comp-asv
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           repository: NCAR/geocat-comp-asv
+          persist-credentials: false
+          fetch-depth: 0
           ref: main
-          path: asv_results
+          path: geocat-comp-asv
 
       - name: Set up conda environment
         uses: mamba-org/setup-micromamba@v1
@@ -40,13 +42,23 @@ jobs:
         shell: bash -l {0}
         id: benchmark
         run: |
+          cd benchmarks
           asv machine --machine GH-Actions --os ubuntu-latest --arch x64 --cpu "2-core unknown" --ram 7GB
-          asv run --skip-existing-commits "--merges main"
+          asv run v2023.09.0^!
 
-      - name: Push results to another repository
+      - name: Commit and push benchmark results
+        run: |
+          cp -r benchmarks/results geocat-comp-asv/results
+          cd geocat-comp-asv
+          git config --local user.email "anissaz@ucar.edu"
+          git config --local user.name "anissa111"
+          git add results
+          git commit -m "Update benchmark results"
+
+      - name: Push to geocat-comp-asv
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.TOKEN }}
-          branch: results
-          repository: username/repo-name
-          directory: results/
+          github_token: ${{ secrets.COMP_ASV_PAT }}
+          branch: main
+          force: true
+          directory: geocat-comp-asv
