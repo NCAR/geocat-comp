@@ -2,7 +2,11 @@
 
 .. _release:
 v2023.09.0 (unreleased)
--------------------------
+-----------------------
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Sets up ASV for benchmarking by `Anissa Zacharias`_ in (:pr:`474`)
 
 Maintenance
 ^^^^^^^^^^^
@@ -12,6 +16,7 @@ Documentation
 ^^^^^^^^^^^^^
 * New Code of Conduct by `Cora Schneck`_ in (:pr:`461`)
 * Updated Pull Request Template by `Cora Schneck`_ in (:pr:`455`)
+* Fixes for Contributing Geocat-Comp Contributing by `Cora Schneck`_ in (:pr:`476`)
 
 Release Notes
 =============
