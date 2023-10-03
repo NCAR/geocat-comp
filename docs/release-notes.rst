@@ -14,10 +14,6 @@ Internal Changes
 ^^^^^^^^^^^^^^^^
 * Sets up ASV for benchmarking by `Anissa Zacharias`_ in (:pr:`474`)
 
-Maintenance
-^^^^^^^^^^^
-* Convert Unittest to Pytest by `Cora Schneck`_ in (:pr:`462`)
-
 Documentation
 ^^^^^^^^^^^^^
 * New Code of Conduct by `Cora Schneck`_ in (:pr:`461`)
