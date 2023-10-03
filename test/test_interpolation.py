@@ -316,33 +316,33 @@ class Test_interp_sigma_to_hybrid:
 
 class Test_interp_manually_calc:
 
-    @pytest.fixture(autouse=True)
-    def setUpClass(cls) -> None:
-        cls.test_input = xr.load_dataset(
+    @pytest.fixture(autouse=True, scope="class")
+    def setUpClass(self) -> None:
+        self.__class__.test_input = xr.load_dataset(
             gdf.get("netcdf_files/interpolation_test_input_data.nc"))
 
-        cls.test_output = xr.load_dataset(
+        self.__class__.test_output = xr.load_dataset(
             gdf.get("netcdf_files/interpolation_test_output_data.nc"))
 
-        cls.data_in = cls.test_input['normal']
-        cls.data_out = cls.test_output['normal']
+        self.__class__.data_in = self.__class__.test_input['normal']
+        self.__class__.data_out = self.__class__.test_output['normal']
 
-        cls.lat_in = cls.data_in['lat'].values
-        cls.lat_out = cls.data_out['lat'].values
-        cls.lon_in = cls.data_in['lon'].values
-        cls.lon_out = cls.data_out['lon'].values
+        self.__class__.lat_in = self.__class__.data_in['lat'].values
+        self.__class__.lat_out = self.__class__.data_out['lat'].values
+        self.__class__.lon_in = self.__class__.data_in['lon'].values
+        self.__class__.lon_out = self.__class__.data_out['lon'].values
 
-        cls.data_in_nan = cls.test_input['nan']
-        cls.data_out_nan = cls.test_output['nan']
+        self.__class__.data_in_nan = self.__class__.test_input['nan']
+        self.__class__.data_out_nan = self.__class__.test_output['nan']
 
-        cls.data_in_nan_2 = cls.test_input['nan_2']
-        cls.data_out_nan_2 = cls.test_output['nan_2']
+        self.__class__.data_in_nan_2 = self.__class__.test_input['nan_2']
+        self.__class__.data_out_nan_2 = self.__class__.test_output['nan_2']
 
-        cls.data_in_missing = cls.test_input['missing']
-        cls.data_out_missing = cls.test_output['missing']
+        self.__class__.data_in_missing = self.__class__.test_input['missing']
+        self.__class__.data_out_missing = self.__class__.test_output['missing']
 
-        cls.data_in_mask = cls.test_input['mask']
-        cls.data_out_mask = cls.test_output['mask']
+        self.__class__.data_in_mask = self.__class__.test_input['mask']
+        self.__class__.data_out_mask = self.__class__.test_output['mask']
 
     def test_float32(self) -> None:
         np.testing.assert_almost_equal(
@@ -454,16 +454,16 @@ class Test_interp_larger_dataset:
     test_lon_output = None
     test_data_chunked = None
 
-    @pytest.fixture(autouse=True)
-    def setUpClass(cls) -> None:
-        cls.test_input = xr.load_dataset(
+    @pytest.fixture(autouse=True, scope="class")
+    def setUpClass(self) -> None:
+        self.__class__.test_input = xr.load_dataset(
             gdf.get("netcdf_files/spherical_noise_input.nc"))['spherical_noise']
 
-        cls.test_output = xr.load_dataset(
+        self.__class__.test_output = xr.load_dataset(
             gdf.get(
                 "netcdf_files/spherical_noise_output.nc"))['spherical_noise']
 
-        cls.test_data_chunked = cls.test_input.chunk(2)
+        self.__class__.test_data_chunked = self.__class__.test_input.chunk(2)
 
     def test_10x(self) -> None:
         data_xr = interp_multidim(self.test_input,

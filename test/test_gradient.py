@@ -24,31 +24,35 @@ class Test_Gradient:
     results_lon = None
     results_lat = None
 
-    @pytest.fixture(autouse=True)
-    def setUpClass(cls) -> None:
-        cls.test_data_xr = xr.load_dataset(
+    @pytest.fixture(autouse=True, scope="class")
+    def setUpClass(self) -> None:
+        self.__class__.test_data_xr = xr.load_dataset(
             'test/gradient_test_data.nc').to_array().squeeze()
-        cls.test_data_xr_nocoords = xr.DataArray(cls.test_data_xr, coords={})
-        cls.test_data_np = cls.test_data_xr.values
-        cls.test_data_dask = cls.test_data_xr.chunk(10)
-        cls.test_results_lon = xr.load_dataset(
+        self.__class__.test_data_xr_nocoords = xr.DataArray(
+            self.__class__.test_data_xr, coords={})
+        self.__class__.test_data_np = self.__class__.test_data_xr.values
+        self.__class__.test_data_dask = self.__class__.test_data_xr.chunk(10)
+        self.__class__.test_results_lon = xr.load_dataset(
             'test/gradient_test_results_longitude.nc').to_array().squeeze()
-        cls.test_results_lat = xr.load_dataset(
+        self.__class__.test_results_lat = xr.load_dataset(
             'test/gradient_test_results_latitude.nc').to_array().squeeze()
-        cls.test_coords_1d_lon = cls.test_data_xr.coords['lon']
-        cls.test_coords_1d_lat = cls.test_data_xr.coords['lat']
-        cls.test_coords_2d_lon_np, cls.test_coords_2d_lat_np = np.meshgrid(
-            cls.test_coords_1d_lon, cls.test_coords_1d_lat)
-        cls.test_data_xr_2d_coords = xr.DataArray(
-            cls.test_data_xr,
+        self.__class__.test_coords_1d_lon = self.__class__.test_data_xr.coords[
+            'lon']
+        self.__class__.test_coords_1d_lat = self.__class__.test_data_xr.coords[
+            'lat']
+        self.__class__.test_coords_2d_lon_np, self.__class__.test_coords_2d_lat_np = np.meshgrid(
+            self.__class__.test_coords_1d_lon,
+            self.__class__.test_coords_1d_lat)
+        self.__class__.test_data_xr_2d_coords = xr.DataArray(
+            self.__class__.test_data_xr,
             dims=['x', 'y'],
             coords=dict(
-                lon=(['x', 'y'], cls.test_coords_2d_lon_np),
-                lat=(['x', 'y'], cls.test_coords_2d_lat_np),
+                lon=(['x', 'y'], self.__class__.test_coords_2d_lon_np),
+                lat=(['x', 'y'], self.__class__.test_coords_2d_lat_np),
             ),
         )
-        cls.test_coords_1d_lon_np = cls.test_coords_1d_lon.values
-        cls.test_coords_1d_lat_np = cls.test_coords_1d_lat.values
+        self.__class__.test_coords_1d_lon_np = self.__class__.test_coords_1d_lon.values
+        self.__class__.test_coords_1d_lat_np = self.__class__.test_coords_1d_lat.values
 
     def test_gradient_axis0_xr(self) -> None:
         self.results = gradient(self.test_data_xr)

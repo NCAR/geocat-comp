@@ -332,40 +332,38 @@ class Test_eof_ts(BaseEOFTestClass):
 
 class Test_pearson_r:
 
-    @pytest.fixture(autouse=True)
-    def setUpClass(cls) -> None:
-        # Coordinates
-        times = xr.cftime_range(start='2022-08-01', end='2022-08-05', freq='D')
-        lats = np.linspace(start=-45, stop=45, num=3, dtype='float32')
-        lons = np.linspace(start=-180, stop=180, num=4, dtype='float32')
+    # Coordinates
+    times = xr.cftime_range(start='2022-08-01', end='2022-08-05', freq='D')
+    lats = np.linspace(start=-45, stop=45, num=3, dtype='float32')
+    lons = np.linspace(start=-180, stop=180, num=4, dtype='float32')
 
-        # Create data variables
-        x, y, z = np.meshgrid(lons, lats, times)
-        np.random.seed(0)
-        cls.a = np.random.random_sample((len(lats), len(lons), len(times)))
-        cls.b = np.power(cls.a, 2)
-        cls.weights = np.cos(np.deg2rad(y))
-        cls.ds = xr.Dataset(data_vars={
-            'a': (('lat', 'lon', 'time'), cls.a),
-            'b': (('lat', 'lon', 'time'), cls.b),
-            'weights': (('lat', 'lon', 'time'), cls.weights)
-        },
-                            coords={
-                                'lat': lats,
-                                'lon': lons,
-                                'time': times
-                            },
-                            attrs={'description': 'Test data'})
+    # Create data variables
+    x, y, z = np.meshgrid(lons, lats, times)
+    np.random.seed(0)
+    a = np.random.random_sample((len(lats), len(lons), len(times)))
+    b = np.power(a, 2)
+    weights = np.cos(np.deg2rad(y))
+    ds = xr.Dataset(data_vars={
+        'a': (('lat', 'lon', 'time'), a),
+        'b': (('lat', 'lon', 'time'), b),
+        'weights': (('lat', 'lon', 'time'), weights)
+    },
+                    coords={
+                        'lat': lats,
+                        'lon': lons,
+                        'time': times
+                    },
+                    attrs={'description': 'Test data'})
 
-        cls.unweighted_r = 0.963472086
-        cls.unweighted_r_skipnan = 0.96383798
-        cls.weighted_r = 0.963209755
-        cls.weighted_r_lat = [
-            [0.995454445, 0.998450821, 0.99863877, 0.978765291, 0.982350092],
-            [0.99999275, 0.995778831, 0.998994355, 0.991634937, 0.999868279],
-            [0.991344899, 0.998632079, 0.99801552, 0.968517489, 0.985215828],
-            [0.997034735, 0.99834464, 0.987382522, 0.99646236, 0.989222738]
-        ]
+    unweighted_r = 0.963472086
+    unweighted_r_skipnan = 0.96383798
+    weighted_r = 0.963209755
+    weighted_r_lat = [
+        [0.995454445, 0.998450821, 0.99863877, 0.978765291, 0.982350092],
+        [0.99999275, 0.995778831, 0.998994355, 0.991634937, 0.999868279],
+        [0.991344899, 0.998632079, 0.99801552, 0.968517489, 0.985215828],
+        [0.997034735, 0.99834464, 0.987382522, 0.99646236, 0.989222738]
+    ]
 
     # Testing numpy inputs
     def test_np_inputs(self) -> None:
