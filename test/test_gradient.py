@@ -42,6 +42,7 @@ class Test_Gradient:
     @pytest.fixture(autouse=True, scope="class")
     @classmethod
     def setUpClass(cls, test_data_xr) -> None:
+        cls.__name__ = "setUpClass"  # Python 3.9
         cls.test_data_xr_nocoords = xr.DataArray(test_data_xr, coords={})
         cls.test_data_np = test_data_xr.values
         cls.test_data_dask = test_data_xr.chunk(10)

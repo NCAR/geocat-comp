@@ -21,6 +21,7 @@ class Test_dewtemp:
     @pytest.fixture(autouse=True, scope="class")
     @classmethod
     def setUpClass(cls) -> None:
+        cls.__name__ = "setUpClass"  # Python 3.9
         # set up ground truths
         cls.t_def = [
             29.3, 28.1, 23.5, 20.9, 18.4, 15.9, 13.1, 10.1, 6.7, 3.1, -0.5,

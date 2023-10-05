@@ -39,6 +39,7 @@ class Test_interp_hybrid_to_pressure:
     @classmethod
     def setUpClass(cls, ds_out) -> None:
         # Sample input data
+        cls.__name__ = "setUpClass"  # Python 3.9
         cls.data = ds_atmos.U[0, :, :, :]
         cls.ps = ds_atmos.PS
         cls.pres3d = np.asarray([1000, 950, 800, 700, 600, 500, 400, 300,
