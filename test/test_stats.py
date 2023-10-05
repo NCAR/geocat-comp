@@ -47,11 +47,6 @@ class BaseEOFTestClass(metaclass=ABCMeta):
     # _sample_data[ 4 ]
     _sample_data_eof.append(np.arange(64, dtype='int64').reshape((4, 4, 4)))
 
-    try:
-        _nc_ds = xr.open_dataset("eofunc_dataset.nc")
-    except:
-        _nc_ds = xr.open_dataset("test/eofunc_dataset.nc")
-
     _num_attrs = 4
 
     expected_output = np.full((1, 4, 4), 0.25)
@@ -290,10 +285,17 @@ class Test_eof(BaseEOFTestClass):
 
 class Test_eof_ts(BaseEOFTestClass):
 
-    def test_01(self) -> None:
-        sst = self._nc_ds.sst
-        evec = self._nc_ds.evec
-        expected_tsout = self._nc_ds.tsout
+    @pytest.fixture(scope="class")
+    def _nc_ds(self):
+        try:
+            return xr.open_dataset("eofunc_dataset.nc")
+        except:
+            return xr.open_dataset("test/eofunc_dataset.nc")
+
+    def test_01(self, _nc_ds) -> None:
+        sst = _nc_ds.sst
+        evec = _nc_ds.evec
+        expected_tsout = _nc_ds.tsout
 
         actual_tsout = eofunc_pcs(sst, npcs=5)
 
@@ -302,10 +304,10 @@ class Test_eof_ts(BaseEOFTestClass):
         np.testing.assert_array_almost_equal(actual_tsout, expected_tsout.data,
                                              3)
 
-    def test_01_deprecated(self) -> None:
-        sst = self._nc_ds.sst
-        evec = self._nc_ds.evec
-        expected_tsout = self._nc_ds.tsout
+    def test_01_deprecated(self, _nc_ds) -> None:
+        sst = _nc_ds.sst
+        evec = _nc_ds.evec
+        expected_tsout = _nc_ds.tsout
 
         actual_tsout = eofunc_ts(sst, evec, time_dim=0)
 
@@ -314,10 +316,10 @@ class Test_eof_ts(BaseEOFTestClass):
         np.testing.assert_array_almost_equal(actual_tsout, expected_tsout.data,
                                              3)
 
-    def test_02(self) -> None:
-        sst = self._nc_ds.sst
-        evec = self._nc_ds.evec
-        expected_tsout = self._nc_ds.tsout
+    def test_02(self, _nc_ds) -> None:
+        sst = _nc_ds.sst
+        evec = _nc_ds.evec
+        expected_tsout = _nc_ds.tsout
 
         actual_tsout = eofunc_pcs(sst, npcs=5, meta=True)
 
