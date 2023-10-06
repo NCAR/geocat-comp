@@ -20,21 +20,21 @@ class Test_dewtemp:
 
     @pytest.fixture(autouse=True, scope="class")
     def setUpClass(self) -> None:
-        # @classmethod will fail python3.9 CI due to pytest bug (pytest-dev Issue 3778), fix: cls -> self.__class__
+        # @classmethod will fail python3.9 CI due to pytest bug (pytest-dev Issue 3778), fix: cls -> type(self)
         # set up ground truths
-        self.__class__.t_def = [
+        type(self).t_def = [
             29.3, 28.1, 23.5, 20.9, 18.4, 15.9, 13.1, 10.1, 6.7, 3.1, -0.5,
             -4.5, -9.0, -14.8, -21.5, -29.7, -40.0, -52.4
         ]
 
-        self.__class__.rh_def = [
+        type(self).rh_def = [
             75.0, 60.0, 61.1, 76.7, 90.5, 89.8, 78.3, 76.5, 46.0, 55.0, 63.8,
             53.2, 42.9, 41.7, 51.0, 70.6, 50.0, 50.0
         ]
 
-        self.__class__.dt_1 = 6.3
+        type(self).dt_1 = 6.3
 
-        self.__class__.dt_2 = [
+        type(self).dt_2 = [
             24.38342, 19.55563, 15.53281, 16.64218, 16.81433, 14.22482,
             9.401337, 6.149719, -4.1604, -5.096619, -6.528168, -12.61957,
             -19.38332, -25.00714, -28.9841, -33.34853, -46.51273, -58.18289

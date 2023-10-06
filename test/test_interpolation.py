@@ -37,15 +37,15 @@ class Test_interp_hybrid_to_pressure:
 
     @pytest.fixture(autouse=True, scope="class")
     def setUpClass(self, ds_out) -> None:
-        # @classmethod will fail python3.9 CI due to pytest bug (pytest-dev Issue 3778), fix: cls -> self.__class__
+        # @classmethod will fail python3.9 CI due to pytest bug (pytest-dev Issue 3778), fix: cls -> type(self)
         # Sample input data
-        self.__class__.data = ds_atmos.U[0, :, :, :]
-        self.__class__.ps = ds_atmos.PS
-        self.__class__.pres3d = np.asarray(
+        type(self).data = ds_atmos.U[0, :, :, :]
+        type(self).ps = ds_atmos.PS
+        type(self).pres3d = np.asarray(
             [1000, 950, 800, 700, 600, 500, 400, 300, 200])  # mb
-        self.__class__.pres3d = self.__class__.pres3d * 100  # mb to Pa
-        self.__class__.uzon_expected = ds_out.uzon  # Expected output
-        self.__class__.u_int_expected = ds_out.u_int  # Expected output
+        type(self).pres3d = type(self).pres3d * 100  # mb to Pa
+        type(self).uzon_expected = ds_out.uzon  # Expected output
+        type(self).u_int_expected = ds_out.u_int  # Expected output
 
     def test_interp_hybrid_to_pressure_atmos(self) -> None:
         u_int = interp_hybrid_to_pressure(self.data,
