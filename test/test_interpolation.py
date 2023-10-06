@@ -128,26 +128,27 @@ class Test_interp_hybrid_to_pressure_extrapolate:
                                    decode_times=False)
 
     @pytest.fixture(autouse=True, scope="class")
-    @classmethod
-    def setUpClass(cls, ds_ccsm, ds_out) -> None:
+    def setUpClass(self, ds_ccsm, ds_out) -> None:
+        # @classmethod will fail python3.9 CI due to pytest bug (pytest-dev Issue 3778), fix: cls -> type(self)
         # Pull out inputs
-        cls._hyam = ds_ccsm.hyam
-        cls._hybm = ds_ccsm.hybm
-        cls.temp_in = ds_ccsm.T[:, :, :3, :2]
-        cls.t_bot = ds_ccsm.TS[:, :3, :2]
-        cls.geopotential_in = ds_ccsm.Z3[:, :, :3, :2]
-        cls.humidity_in = ds_ccsm.Q[:, :, :3, :2] * 1000  # g/kg
-        cls.press_in = ds_ccsm.PS[:, :3, :2]
-        cls.phis = ds_ccsm.PHIS[:, :3, :2]
+        type(self)._hyam = ds_ccsm.hyam
+        type(self)._hybm = ds_ccsm.hybm
+        type(self).temp_in = ds_ccsm.T[:, :, :3, :2]
+        type(self).t_bot = ds_ccsm.TS[:, :3, :2]
+        type(self).geopotential_in = ds_ccsm.Z3[:, :, :3, :2]
+        type(self).humidity_in = ds_ccsm.Q[:, :, :3, :2] * 1000  # g/kg
+        type(self).press_in = ds_ccsm.PS[:, :3, :2]
+        type(self).phis = ds_ccsm.PHIS[:, :3, :2]
 
-        cls.temp_interp_expected = ds_out.Tp.rename(lev_p='plev')
-        cls.temp_extrap_expected = ds_out.Tpx.rename(lev_p='plev')
-        cls.geopotential_extrap_expected = ds_out.Zpx.rename(lev_p='plev')
-        cls.humidity_extrap_expected = ds_out.Qpx.rename(lev_p='plev')
+        type(self).temp_interp_expected = ds_out.Tp.rename(lev_p='plev')
+        type(self).temp_extrap_expected = ds_out.Tpx.rename(lev_p='plev')
+        type(self).geopotential_extrap_expected = ds_out.Zpx.rename(
+            lev_p='plev')
+        type(self).humidity_extrap_expected = ds_out.Qpx.rename(lev_p='plev')
 
-        cls.new_levels = np.asarray([500, 925, 950, 1000])
-        cls.new_levels *= 100  # new levels in Pa
-        cls._p0 = 1000 * 100  # reference pressure in Pa
+        type(self).new_levels = np.asarray([500, 925, 950, 1000])
+        type(self).new_levels *= 100  # new levels in Pa
+        type(self)._p0 = 1000 * 100  # reference pressure in Pa
 
     def test_interp_hybrid_to_pressure_interp_temp(self) -> None:
         result = interp_hybrid_to_pressure(self.temp_in,
@@ -269,15 +270,17 @@ class Test_interp_sigma_to_hybrid:
             return xr.open_dataset("test/sigma2hybrid_output.nc")
 
     @pytest.fixture(autouse=True, scope="class")
-    @classmethod
-    def setUpClass(cls, ds_u, ds_ps, ds_out) -> None:
-        cls.hyam = xr.DataArray([0.0108093, 0.0130731, 0.03255911, 0.0639471])
-        cls.hybm = xr.DataArray([0.0108093, 0.0173664, 0.06069280, 0.1158237])
-        cls.u = ds_u.u[:, 0:3, 0:2]
-        cls.ps = ds_ps.ps[361, 0:3, 0:2] * 100  # Pa
-        cls.sigma = ds_ps.sigma
-        cls.xh_expected = ds_out.xh.transpose("ncl3", "ncl1",
-                                              "ncl2")  # Expected output
+    def setUpClass(self, ds_u, ds_ps, ds_out) -> None:
+        # @classmethod will fail python3.9 CI due to pytest bug (pytest-dev Issue 3778), fix: cls -> type(self)
+        type(self).hyam = xr.DataArray(
+            [0.0108093, 0.0130731, 0.03255911, 0.0639471])
+        type(self).hybm = xr.DataArray(
+            [0.0108093, 0.0173664, 0.06069280, 0.1158237])
+        type(self).u = ds_u.u[:, 0:3, 0:2]
+        type(self).ps = ds_ps.ps[361, 0:3, 0:2] * 100  # Pa
+        type(self).sigma = ds_ps.sigma
+        type(self).xh_expected = ds_out.xh.transpose("ncl3", "ncl1",
+                                                     "ncl2")  # Expected output
 
     def test_interp_sigma_to_hybrid_1d(self) -> None:
         xh = interp_sigma_to_hybrid(self.u[:, 0, 0],
@@ -349,27 +352,27 @@ class Test_interp_manually_calc:
             gdf.get("netcdf_files/interpolation_test_output_data.nc"))
 
     @pytest.fixture(autouse=True, scope="class")
-    @classmethod
-    def setUpClass(cls, test_input, test_output) -> None:
-        cls.data_in = test_input['normal']
-        cls.data_out = test_output['normal']
+    def setUpClass(self, test_input, test_output) -> None:
+        # @classmethod will fail python3.9 CI due to pytest bug (pytest-dev Issue 3778), fix: cls -> type(self)
+        type(self).data_in = test_input['normal']
+        type(self).data_out = test_output['normal']
 
-        cls.lat_in = cls.data_in['lat'].values
-        cls.lat_out = cls.data_out['lat'].values
-        cls.lon_in = cls.data_in['lon'].values
-        cls.lon_out = cls.data_out['lon'].values
+        type(self).lat_in = type(self).data_in['lat'].values
+        type(self).lat_out = type(self).data_out['lat'].values
+        type(self).lon_in = type(self).data_in['lon'].values
+        type(self).lon_out = type(self).data_out['lon'].values
 
-        cls.data_in_nan = test_input['nan']
-        cls.data_out_nan = test_output['nan']
+        type(self).data_in_nan = test_input['nan']
+        type(self).data_out_nan = test_output['nan']
 
-        cls.data_in_nan_2 = test_input['nan_2']
-        cls.data_out_nan_2 = test_output['nan_2']
+        type(self).data_in_nan_2 = test_input['nan_2']
+        type(self).data_out_nan_2 = test_output['nan_2']
 
-        cls.data_in_missing = test_input['missing']
-        cls.data_out_missing = test_output['missing']
+        type(self).data_in_missing = test_input['missing']
+        type(self).data_out_missing = test_output['missing']
 
-        cls.data_in_mask = test_input['mask']
-        cls.data_out_mask = test_output['mask']
+        type(self).data_in_mask = test_input['mask']
+        type(self).data_out_mask = test_output['mask']
 
     def test_float32(self) -> None:
         np.testing.assert_almost_equal(
@@ -487,13 +490,13 @@ class Test_interp_larger_dataset:
             "netcdf_files/spherical_noise_output.nc"))['spherical_noise']
 
     @pytest.fixture(autouse=True, scope="class")
-    @classmethod
-    def setUpClass(cls, test_input) -> None:
-        cls.test_output = None
-        cls.test_lat_output = None
-        cls.test_lon_output = None
-        cls.test_data_chunked = None
-        cls.test_data_chunked = test_input.chunk(2)
+    def setUpClass(self, test_input) -> None:
+        # @classmethod will fail python3.9 CI due to pytest bug (pytest-dev Issue 3778), fix: cls -> type(self)
+        type(self).test_output = None
+        type(self).test_lat_output = None
+        type(self).test_lon_output = None
+        type(self).test_data_chunked = None
+        type(self).test_data_chunked = test_input.chunk(2)
 
     def test_10x(self, test_input, test_output) -> None:
         data_xr = interp_multidim(test_input, test_output.coords['lat'],

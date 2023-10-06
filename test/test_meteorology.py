@@ -87,23 +87,23 @@ class Test_dewtemp:
 class Test_heat_index:
 
     @pytest.fixture(autouse=True, scope="class")
-    @classmethod
-    def setUpClass(cls) -> None:
+    def setUpClass(self) -> None:
+        # @classmethod will fail python3.9 CI due to pytest bug (pytest-dev Issue 3778), fix: cls -> type(self)
         # set up ground truths
-        cls.ncl_gt_1 = [
+        type(self).ncl_gt_1 = [
             137.36142, 135.86795, 104.684456, 131.25621, 105.39449, 79.78999,
             83.57511, 59.965, 30.
         ]
-        cls.ncl_gt_2 = [
+        type(self).ncl_gt_2 = [
             68.585, 76.13114, 75.12854, 99.43573, 104.93261, 93.73293,
             104.328705, 123.23398, 150.34001, 106.87023
         ]
 
-        cls.t1 = np.array([104, 100, 92, 92, 86, 80, 80, 60, 30])
-        cls.rh1 = np.array([55, 65, 60, 90, 90, 40, 75, 90, 50])
+        type(self).t1 = np.array([104, 100, 92, 92, 86, 80, 80, 60, 30])
+        type(self).rh1 = np.array([55, 65, 60, 90, 90, 40, 75, 90, 50])
 
-        cls.t2 = np.array([70, 75, 80, 85, 90, 95, 100, 105, 110, 115])
-        cls.rh2 = np.array([10, 75, 15, 80, 65, 25, 30, 40, 50, 5])
+        type(self).t2 = np.array([70, 75, 80, 85, 90, 95, 100, 105, 110, 115])
+        type(self).rh2 = np.array([10, 75, 15, 80, 65, 25, 30, 40, 50, 5])
 
     def test_numpy_input(self) -> None:
         assert np.allclose(heat_index(self.t1, self.rh1, False),
@@ -195,32 +195,32 @@ class Test_relhum:
         self.__class__.client.close()
 
     @pytest.fixture(autouse=True, scope="class")
-    @classmethod
-    def setUpClass(cls) -> None:
+    def setUpClass(self) -> None:
+        # @classmethod will fail python3.9 CI due to pytest bug (pytest-dev Issue 3778), fix: cls -> type(self)
         # set up ground truths
-        cls.p_def = [
+        type(self).p_def = [
             100800, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000,
             60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000,
             17500, 15000, 12500, 10000, 8000, 7000, 6000, 5000, 4000, 3000,
             2500, 2000
         ]
 
-        cls.t_def = [
+        type(self).t_def = [
             302.45, 301.25, 296.65, 294.05, 291.55, 289.05, 286.25, 283.25,
             279.85, 276.25, 272.65, 268.65, 264.15, 258.35, 251.65, 243.45,
             233.15, 220.75, 213.95, 206.65, 199.05, 194.65, 197.15, 201.55,
             206.45, 211.85, 216.85, 221.45, 222.45, 225.65
         ]
 
-        cls.q_def = [
+        type(self).q_def = [
             0.02038, 0.01903, 0.01614, 0.01371, 0.01156, 0.0098, 0.00833,
             0.00675, 0.00606, 0.00507, 0.00388, 0.00329, 0.00239, 0.0017, 0.001,
             0.0006, 0.0002, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         ]
 
-        cls.rh_gt_1 = 46.4
+        type(self).rh_gt_1 = 46.4
 
-        cls.rh_gt_2 = [
+        type(self).rh_gt_2 = [
             79.8228, 79.3578, 84.1962, 79.4898, 73.989, 69.2401, 66.1896,
             61.1084, 64.21, 63.8305, 58.0412, 60.8194, 57.927, 62.3734, 62.9706,
             73.8184, 62.71, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -307,13 +307,12 @@ class Test_actual_saturation_vapor_pressure:
             return xr.open_dataarray("test/satvpr_tdew_fao56_output.nc")
 
     @pytest.fixture(autouse=True, scope="class")
-    @classmethod
-    def setUpClass(cls, ncl_xr_gt) -> None:
-
+    def setUpClass(self, ncl_xr_gt) -> None:
+        # @classmethod will fail python3.9 CI due to pytest bug (pytest-dev Issue 3778), fix: cls -> type(self)
         # set up ground truths
-        cls.ncl_gt = np.asarray(ncl_xr_gt)
+        type(self).ncl_gt = np.asarray(ncl_xr_gt)
 
-        cls.temp_gt = np.arange(1, 101, 1)
+        type(self).temp_gt = np.arange(1, 101, 1)
 
     def test_numpy_input(self) -> None:
         assert np.allclose(actual_saturation_vapor_pressure(
@@ -385,14 +384,13 @@ class Test_max_daylight:
             return xr.open_dataarray("test/max_daylight_test.nc")
 
     @pytest.fixture(autouse=True, scope="class")
-    @classmethod
-    def setUpClass(cls, ncl_xr_gt) -> None:
-
+    def setUpClass(self, ncl_xr_gt) -> None:
+        # @classmethod will fail python3.9 CI due to pytest bug (pytest-dev Issue 3778), fix: cls -> type(self)
         # set up ground truths
-        cls.ncl_gt = np.asarray(ncl_xr_gt)
+        type(self).ncl_gt = np.asarray(ncl_xr_gt)
 
-        cls.jday_gt = np.linspace(1, 365, num=365)
-        cls.lat_gt = np.linspace(-66, 66, num=133)
+        type(self).jday_gt = np.linspace(1, 365, num=365)
+        type(self).lat_gt = np.linspace(-66, 66, num=133)
 
     def test_numpy_input(self) -> None:
         assert np.allclose(max_daylight(self.jday_gt, self.lat_gt),
@@ -463,13 +461,12 @@ class Test_psychrometric_constant:
             return xr.open_dataarray("test/psychro_fao56_output.nc")
 
     @pytest.fixture(autouse=True, scope="class")
-    @classmethod
-    def setUpClass(cls, ncl_xr_gt) -> None:
-
+    def setUpClass(self, ncl_xr_gt) -> None:
+        # @classmethod will fail python3.9 CI due to pytest bug (pytest-dev Issue 3778), fix: cls -> type(self)
         # set up ground truths
-        cls.ncl_gt = np.asarray(ncl_xr_gt)
+        type(self).ncl_gt = np.asarray(ncl_xr_gt)
 
-        cls.pressure_gt = np.arange(1, 101, 1)
+        type(self).pressure_gt = np.arange(1, 101, 1)
 
     def test_numpy_input(self) -> None:
         assert np.allclose(psychrometric_constant(self.pressure_gt),
@@ -536,13 +533,12 @@ class Test_saturation_vapor_pressure:
             return xr.open_dataarray("test/satvpr_temp_fao56_output.nc")
 
     @pytest.fixture(autouse=True, scope="class")
-    @classmethod
-    def setUpClass(cls, ncl_xr_gt) -> None:
-
+    def setUpClass(self, ncl_xr_gt) -> None:
+        # @classmethod will fail python3.9 CI due to pytest bug (pytest-dev Issue 3778), fix: cls -> type(self)
         # set up ground truths
-        cls.ncl_gt = np.asarray(ncl_xr_gt)
+        type(self).ncl_gt = np.asarray(ncl_xr_gt)
 
-        cls.temp_gt = np.arange(1, 101, 1)
+        type(self).temp_gt = np.arange(1, 101, 1)
 
     def test_numpy_input(self) -> None:
         assert np.allclose(saturation_vapor_pressure(self.temp_gt,
@@ -615,13 +611,12 @@ class Test_saturation_vapor_pressure_slope:
             return xr.open_dataarray("test/satvpr_slope_fao56_output.nc")
 
     @pytest.fixture(autouse=True, scope="class")
-    @classmethod
-    def setUpClass(cls, ncl_xr_gt) -> None:
-
+    def setUpClass(self, ncl_xr_gt) -> None:
+        # @classmethod will fail python3.9 CI due to pytest bug (pytest-dev Issue 3778), fix: cls -> type(self)
         # set up ground truths
-        cls.ncl_gt = np.asarray(ncl_xr_gt)
+        type(self).ncl_gt = np.asarray(ncl_xr_gt)
 
-        cls.temp_gt = np.arange(1, 101, 1)
+        type(self).temp_gt = np.arange(1, 101, 1)
 
     def test_numpy_input(self) -> None:
         assert np.allclose(saturation_vapor_pressure_slope(self.temp_gt),
@@ -675,29 +670,33 @@ class Test_saturation_vapor_pressure_slope:
 class Test_Delta_Pressure:
 
     @pytest.fixture(autouse=True, scope="class")
-    @classmethod
-    def setUpClass(cls) -> None:
-        cls.pressure_lev = np.array([1, 5, 100, 1000])
-        cls.pressure_lev_da = xr.DataArray(cls.pressure_lev)
-        cls.pressure_lev_da.attrs = {
+    def setUpClass(self) -> None:
+        # @classmethod will fail python3.9 CI due to pytest bug (pytest-dev Issue 3778), fix: cls -> type(self)
+        type(self).pressure_lev = np.array([1, 5, 100, 1000])
+        type(self).pressure_lev_da = xr.DataArray(type(self).pressure_lev)
+        type(self).pressure_lev_da.attrs = {
             "long name": "pressure level",
             "units": "hPa",
             "direction": "descending"
         }
 
-        cls.surface_pressure_scalar = 1018
-        cls.surface_pressure_1D = np.array([1018, 1019])
-        cls.surface_pressure_2D = np.array([[1018, 1019], [1017, 1019.5]])
-        cls.surface_pressure_3D = np.array([[[1018, 1019], [1017, 1019.5]],
-                                            [[1019, 1020], [1018, 1020.5]]])
+        type(self).surface_pressure_scalar = 1018
+        type(self).surface_pressure_1D = np.array([1018, 1019])
+        type(self).surface_pressure_2D = np.array([[1018, 1019], [1017,
+                                                                  1019.5]])
+        type(self).surface_pressure_3D = np.array([[[1018, 1019],
+                                                    [1017, 1019.5]],
+                                                   [[1019, 1020],
+                                                    [1018, 1020.5]]])
 
         coords = {'time': [1, 2], 'lat': [3, 4], 'lon': [5, 6]}
         dims = ["time", "lat", "lon"]
         attrs = {"long name": "surface pressure", "units": "hPa"}
-        cls.surface_pressure_3D_da = xr.DataArray(cls.surface_pressure_3D,
-                                                  coords=coords,
-                                                  dims=dims,
-                                                  attrs=attrs)
+        type(self).surface_pressure_3D_da = xr.DataArray(
+            type(self).surface_pressure_3D,
+            coords=coords,
+            dims=dims,
+            attrs=attrs)
 
     def test_delta_pressure1D(self) -> None:
         pressure_lev = [float(i) for i in self.pressure_lev]
