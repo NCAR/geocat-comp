@@ -36,17 +36,16 @@ class Test_interp_hybrid_to_pressure:
             return xr.open_dataset("test/vinth2p_output.nc")
 
     @pytest.fixture(autouse=True, scope="class")
-    @classmethod
-    def setUpClass(cls, ds_out) -> None:
+    def setUpClass(self, ds_out) -> None:
+        # @classmethod will fail python3.9 CI due to pytest bug (pytest-dev Issue 3778), fix: cls -> self.__class__
         # Sample input data
-        cls.__name__ = "setUpClass"  # Python 3.9
-        cls.data = ds_atmos.U[0, :, :, :]
-        cls.ps = ds_atmos.PS
-        cls.pres3d = np.asarray([1000, 950, 800, 700, 600, 500, 400, 300,
-                                 200])  # mb
-        cls.pres3d = cls.pres3d * 100  # mb to Pa
-        cls.uzon_expected = ds_out.uzon  # Expected output
-        cls.u_int_expected = ds_out.u_int  # Expected output
+        self.__class__.data = ds_atmos.U[0, :, :, :]
+        self.__class__.ps = ds_atmos.PS
+        self.__class__.pres3d = np.asarray(
+            [1000, 950, 800, 700, 600, 500, 400, 300, 200])  # mb
+        self.__class__.pres3d = self.__class__.pres3d * 100  # mb to Pa
+        self.__class__.uzon_expected = ds_out.uzon  # Expected output
+        self.__class__.u_int_expected = ds_out.u_int  # Expected output
 
     def test_interp_hybrid_to_pressure_atmos(self) -> None:
         u_int = interp_hybrid_to_pressure(self.data,
