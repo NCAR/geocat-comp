@@ -1,8 +1,14 @@
 .. currentmodule:: geocat.comp
 
 .. _release:
-v2023.09.0 (unreleased)
+
+Release Notes
+=============
+
+v2023.10.0 (Oct 3, 2023)
 -----------------------
+This release adds a code of conduct, minor edits to our contributor's guide, and
+sets up some structure for future ASV benchmarking
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
@@ -17,9 +23,6 @@ Documentation
 * New Code of Conduct by `Cora Schneck`_ in (:pr:`461`)
 * Updated Pull Request Template by `Cora Schneck`_ in (:pr:`455`)
 * Fixes for Contributing Geocat-Comp Contributing by `Cora Schneck`_ in (:pr:`476`)
-
-Release Notes
-=============
 
 v2023.09.0 (Sept 8, 2023)
 -------------------------
