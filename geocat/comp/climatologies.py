@@ -12,8 +12,8 @@ def _contains_datetime_like_objects(d_arr):
     """Check if a variable contains datetime like objects (either
     np.datetime64, or cftime.datetime)"""
     return np.issubdtype(
-        d_arr.dtype,
-        np.datetime64) or xr.core.common.contains_cftime_datetimes(d_arr.variable)
+        d_arr.dtype, np.datetime64) or xr.core.common.contains_cftime_datetimes(
+            d_arr.variable)
 
 
 def _validate_freq(freq):
