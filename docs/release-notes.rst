@@ -17,6 +17,7 @@ Internal Changes
 Maintenance
 ^^^^^^^^^^^
 * Convert Unittest to Pytest by `Cora Schneck`_ in (:pr:`462`)
+* Private API fix for xarray `DataArray.Variable` by `Cora Schneck`_ in (:pr:`381`)
 
 Documentation
 ^^^^^^^^^^^^^
