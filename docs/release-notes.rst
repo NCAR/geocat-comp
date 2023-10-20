@@ -7,6 +7,13 @@ Release Notes
 
 v2023.10.0 (Oct 3, 2023)
 -----------------------
+
+Bug Fixes
+^^^^^^^^^
+Private API fix for xarray `DataArray.Variable` by `Cora Schneck`_ in (:pr:`381`)
+
+v2023.10.0 (Oct 3, 2023)
+-----------------------
 This release adds a code of conduct, minor edits to our contributor's guide, and
 sets up some structure for future ASV benchmarking
 
