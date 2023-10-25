@@ -380,143 +380,105 @@ class Test_interp_manually_calc:
         return xr.load_dataset(
             gdf.get("netcdf_files/interpolation_test_output_data.nc"))
 
-    @pytest.fixture(scope="class")
-    def data_in(self, test_input):
-        return test_input['normal']
-
-    @pytest.fixture(scope="class")
-    def data_out(self, test_output):
-        return test_output['normal']
-
-    @pytest.fixture(scope="class")
-    def data_in_nan(self, test_input):
-        return test_input['nan']
-
-    @pytest.fixture(scope="class")
-    def data_out_nan(self, test_output):
-        return test_output['nan']
-
-    @pytest.fixture(scope="class")
-    def data_in_nan_2(self, test_input):
-        return test_input['nan_2']
-
-    @pytest.fixture(scope="class")
-    def data_out_nan_2(self, test_output):
-        return test_output['nan_2']
-
-    @pytest.fixture(scope="class")
-    def data_in_missing(self, test_input):
-        return test_input['missing']
-
-    @pytest.fixture(scope="class")
-    def data_out_missing(self, test_output):
-        return test_output['missing']
-
-    @pytest.fixture(scope="class")
-    def data_in_mask(self, test_input):
-        return test_input['mask']
-
-    @pytest.fixture(scope="class")
-    def data_out_mask(self, test_output):
-        return test_output['mask']
-
-    def test_float32(self, data_in, data_out) -> None:
-        np.testing.assert_almost_equal(data_out.values.astype(np.float32),
-                                       interp_multidim(xr.DataArray(
-                                           data_in.values.astype(np.float32),
-                                           dims=['lat', 'lon'],
-                                           coords={
-                                               'lat': data_in['lat'].values,
-                                               'lon': data_in['lon'].values,
-                                           }),
-                                                       data_out['lat'].values,
-                                                       data_out['lon'].values,
-                                                       cyclic=True).values,
-                                       decimal=7)
-
-    def test_float64(self, data_in, data_out) -> None:
+    def test_float32(self, test_input, test_output) -> None:
         np.testing.assert_almost_equal(
-            data_out.values.astype(np.float64),
+            test_output['normal'].values.astype(np.float32),
+            interp_multidim(xr.DataArray(
+                test_input['normal'].values.astype(np.float32),
+                dims=['lat', 'lon'],
+                coords={
+                    'lat': test_input['normal']['lat'].values,
+                    'lon': test_input['normal']['lon'].values,
+                }),
+                            test_output['normal']['lat'].values,
+                            test_output['normal']['lon'].values,
+                            cyclic=True).values,
+            decimal=7)
+
+    def test_float64(self, test_input, test_output) -> None:
+        np.testing.assert_almost_equal(
+            test_output['normal'].values.astype(np.float64),
             interp_multidim(
-                xr.DataArray(data_in.values.astype(np.float64),
+                xr.DataArray(test_input['normal'].values.astype(np.float64),
                              dims=['lat', 'lon'],
                              coords={
-                                 'lat': data_in['lat'].values,
-                                 'lon': data_in['lon'].values,
+                                 'lat': test_input['normal']['lat'].values,
+                                 'lon': test_input['normal']['lon'].values,
                              }),
-                data_out['lat'].values,
-                data_out['lon'].values,
+                test_output['normal']['lat'].values,
+                test_output['normal']['lon'].values,
                 cyclic=True,
             ).values,
             decimal=8,
         )
 
-    def test_missing(self, data_out, data_out_missing, data_in_missing) -> None:
+    def test_missing(self, test_input, test_output) -> None:
         np.testing.assert_almost_equal(
-            data_out_missing,
+            test_output['missing'],
             interp_multidim(
-                data_in_missing,
-                data_out['lat'].values,
-                data_out['lon'].values,
+                test_input['missing'],
+                test_output['normal']['lat'].values,
+                test_output['normal']['lon'].values,
                 cyclic=True,
             ).values,
             decimal=8,
         )
 
-    def test_nan(self, data_out_nan, data_in_nan, data_out) -> None:
+    def test_nan(self, test_input, test_output) -> None:
         np.testing.assert_almost_equal(
-            data_out_nan,
+            test_output['nan'],
             interp_multidim(
-                data_in_nan,
-                data_out['lat'].values,
-                data_out['lon'].values,
+                test_input['nan'],
+                test_output['normal']['lat'].values,
+                test_output['normal']['lon'].values,
                 cyclic=True,
             ).values,
             decimal=8,
         )
 
-    def test_mask(self, data_out_mask, data_in_mask, data_out) -> None:
+    def test_mask(self, test_input, test_output) -> None:
         np.testing.assert_almost_equal(
-            data_out_mask,
+            test_output['mask'],
             interp_multidim(
-                data_in_mask,
-                data_out['lat'].values,
-                data_out['lon'].values,
+                test_input['mask'],
+                test_output['normal']['lat'].values,
+                test_output['normal']['lon'].values,
                 cyclic=True,
             ).values,
             decimal=8,
         )
 
-    def test_2_nans(self, data_out_nan_2, data_in_nan_2, data_out) -> None:
+    def test_2_nans(self, test_input, test_output) -> None:
         np.testing.assert_almost_equal(
-            data_out_nan_2,
+            test_output['nan_2'],
             interp_multidim(
-                data_in_nan_2,
-                data_out['lat'].values,
-                data_out['lon'].values,
+                test_input['nan_2'],
+                test_output['normal']['lat'].values,
+                test_output['normal']['lon'].values,
                 cyclic=True,
             ).values,
             decimal=8,
         )
 
-    def test_numpy(self, data_out, data_in) -> None:
-        np.testing.assert_almost_equal(data_out.values,
+    def test_numpy(self, test_input, test_output) -> None:
+        np.testing.assert_almost_equal(
+            test_output['normal'].values,
+            interp_multidim(
+                test_input['normal'].values,
+                test_output['normal']['lat'].values,
+                test_output['normal']['lon'].values,
+                lat_in=test_input['normal']['lat'].values,
+                lon_in=test_input['normal']['lon'].values,
+                cyclic=True,
+            ),
+            decimal=8)
+
+    def test_extrapolate(self, test_input, test_output) -> None:
+        np.testing.assert_almost_equal(test_output['normal'].values,
                                        interp_multidim(
-                                           data_in.values,
-                                           data_out['lat'].values,
-                                           data_out['lon'].values,
-                                           lat_in=data_in['lat'].values,
-                                           lon_in=data_in['lon'].values,
-                                           cyclic=True,
-                                       ),
-                                       decimal=8)
-
-    def test_extrapolate(self, data_out, data_in) -> None:
-        np.testing.assert_almost_equal(data_out.values,
-                                       interp_multidim(
-                                           data_in,
-                                           data_out['lat'].values,
-                                           data_out['lon'].values,
+                                           test_input['normal'],
+                                           test_output['normal']['lat'].values,
+                                           test_output['normal']['lon'].values,
                                            cyclic=True,
                                            fill_value='extrapolate',
                                        ),
