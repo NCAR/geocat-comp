@@ -5,6 +5,13 @@
 Release Notes
 =============
 
+v2023.10.1 (Unreleased)
+-----------------------
+
+Documentation
+^^^^^^^^^^^^^
+* Updated office hours link by `Anissa Zacharias`_ in (:pr:`495`)
+
 v2023.10.0 (Oct 3, 2023)
 -----------------------
 This release adds a code of conduct, minor edits to our contributor's guide, and
