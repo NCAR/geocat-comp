@@ -8,6 +8,10 @@ Release Notes
 v2023.10.1 (Unreleased)
 -----------------------
 
+Maintenance
+^^^^^^^^^^^
+* Convert Unittest to Pytest by `Cora Schneck`_ in (:pr:`462`)
+
 Documentation
 ^^^^^^^^^^^^^
 * Updated office hours link by `Anissa Zacharias`_ in (:pr:`495`)
