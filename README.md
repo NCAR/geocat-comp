@@ -1,4 +1,4 @@
-| CI           | [![GitHub Workflow Status][github-ci-badge]][github-ci-link] [![GitHub Workflow Status][github-upstream-ci-badge]][github-upstream-ci-link] [![Code Coverage Status][codecov-badge]][codecov-link] |
+| CI           | [![GitHub Workflow Status][github-ci-badge]][github-ci-link] [![GitHub Workflow Status][github-upstream-ci-badge]][github-upstream-ci-link] [![Code Coverage Status][codecov-badge]][codecov-link] [![asv-badge]][asv-link] |
 | :----------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 | **Docs**     |                                                                    [![Documentation Status][rtd-badge]][rtd-link]                                                                    |
 | **Package**  |                                                         [![Conda][conda-badge]][conda-link] [![PyPI][pypi-badge]][pypi-link]                                                         |
@@ -41,6 +41,8 @@ https://geocat-comp.readthedocs.io/en/latest/citation.html) page.
 [github-upstream-ci-link]: https://github.com/NCAR/geocat-comp/actions/workflows/upstream-dev-ci.yml
 [codecov-badge]: https://img.shields.io/codecov/c/github/NCAR/geocat-comp.svg?logo=codecov&style=for-the-badge&color=brightgreen
 [codecov-link]: https://codecov.io/gh/NCAR/geocat-comp/coverage.yml
+[asv-badge]: https://img.shields.io/badge/benchmarked%20by-asv-green.svg?style=for-the-badge
+[asv-link]: https://ncar.github.io/geocat-comp-asv/
 [rtd-badge]: https://img.shields.io/readthedocs/geocat-comp/latest.svg?style=for-the-badge
 [rtd-link]: https://geocat-comp.readthedocs.io/en/latest/?badge=latest
 [pypi-badge]: https://img.shields.io/pypi/v/geocat-comp?logo=pypi&style=for-the-badge

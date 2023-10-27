@@ -15,6 +15,7 @@ Maintenance
 Documentation
 ^^^^^^^^^^^^^
 * Updated office hours link by `Anissa Zacharias`_ in (:pr:`495`)
+* Added benchmark badge to README by `Anissa Zacharias`_ in (:pr:`497`)
 
 Bug Fixes
 ^^^^^^^^^
