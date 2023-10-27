@@ -20,6 +20,10 @@ Bug Fixes
 ^^^^^^^^^
 * Fix Python version in upstream CI by `Philip Chmielowiec`_ in (:pr:`436`)
 
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Add benchmarking to commits to main and tagged releases by `Anissa Zacharias`_ in (:pr:`496`)
+
 v2023.10.0 (Oct 3, 2023)
 -----------------------
 This release adds a code of conduct, minor edits to our contributor's guide, and
