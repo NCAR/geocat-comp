@@ -5,6 +5,22 @@
 Release Notes
 =============
 
+v2023.10.1 (Unreleased)
+-----------------------
+
+Maintenance
+^^^^^^^^^^^
+* Convert Unittest to Pytest by `Cora Schneck`_ in (:pr:`462`)
+
+Documentation
+^^^^^^^^^^^^^
+* Updated office hours link by `Anissa Zacharias`_ in (:pr:`495`)
+* Added benchmark badge to README by `Anissa Zacharias`_ in (:pr:`497`)
+
+Bug Fixes
+^^^^^^^^^
+* Fix Python version in upstream CI by `Philip Chmielowiec`_ in (:pr:`436`)
+
 v2023.10.0 (Oct 3, 2023)
 -----------------------
 
