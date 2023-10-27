@@ -69,6 +69,7 @@ jobs:
           git commit -m "[🤖] Update benchmark results"
 
       - name: Push to geocat-comp-asv
+        if: github.ref == 'refs/heads/main' && github.repository == 'NCAR/geocat-comp'
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.COMP_ASV_PAT }}
