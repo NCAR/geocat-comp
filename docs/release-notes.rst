@@ -5,8 +5,11 @@
 Release Notes
 =============
 
-v2023.10.1 (Unreleased)
------------------------
+v2023.10.1
+----------
+This release includes minor changes to documentation, a full conversion to
+pytest from unittest, and is the first release to include automated
+benchmarking.
 
 Maintenance
 ^^^^^^^^^^^
