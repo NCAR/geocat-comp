@@ -24,6 +24,7 @@ Bug Fixes
 Internal Changes
 ^^^^^^^^^^^^^^^^
 * Add benchmarking to commits to main and tagged releases by `Anissa Zacharias`_ in (:pr:`496`)
+* Fix benchmarking workflow failures by `Anissa Zacharias`_ in (:pr:`499`)
 
 v2023.10.0 (Oct 3, 2023)
 -----------------------
