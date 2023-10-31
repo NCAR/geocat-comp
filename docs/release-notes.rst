@@ -5,8 +5,11 @@
 Release Notes
 =============
 
-v2023.10.1 (Unreleased)
------------------------
+v2023.10.1
+----------
+This release includes minor changes to documentation, a full conversion to
+pytest from unittest, and is the first release to include automated
+benchmarking.
 
 Maintenance
 ^^^^^^^^^^^
@@ -280,3 +283,4 @@ Maintenance
 .. _`Julia Kent`: https://github.com/jukent
 .. _`Katelyn FitzGerald`: https://github.com/kafitzgerald
 .. _`Cora Schneck`: https://github.com/cyschneck
+.. _`Philip Chmielowiec`: https://github.com/philipc2
