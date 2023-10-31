@@ -283,3 +283,4 @@ Maintenance
 .. _`Julia Kent`: https://github.com/jukent
 .. _`Katelyn FitzGerald`: https://github.com/kafitzgerald
 .. _`Cora Schneck`: https://github.com/cyschneck
+.. _`Philip Chmielowiec`: https://github.com/philipc2
