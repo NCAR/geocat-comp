@@ -302,7 +302,10 @@ def month_to_season(
     # Group the months into three and take the mean
     means = data_filter.resample({
         time_coord_name: quarter
-    }, loffset='MS').mean(keep_attrs=keep_attrs)
+    }).mean(keep_attrs=keep_attrs)
+    from pandas.tseries.frequencies import to_offset
+    means[time_coord_name] = means.indexes[time_coord_name] + to_offset(
+        freq="MS")
 
     # The line above tries to take the mean for all quarters even if there is not data for some of them
     # Therefore, we must filter out the NaNs
