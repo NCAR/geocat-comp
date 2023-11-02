@@ -5,6 +5,14 @@
 Release Notes
 =============
 
+v2023.11.0 (unreleased)
+----------
+[text summary]
+
+Documentation
+^^^^^^^^^^^^^
+* Augment documentation for ``interp_multidim`` by `Katelyn FitzGerald`_ in (:pr:`504`)
+
 v2023.10.1
 ----------
 This release includes minor changes to documentation, a full conversion to
