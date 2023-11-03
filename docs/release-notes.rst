@@ -23,18 +23,13 @@ Documentation
 Bug Fixes
 ^^^^^^^^^
 * Fix Python version in upstream CI by `Philip Chmielowiec`_ in (:pr:`436`)
+* Unpin xarray in enviroment builds with changes to interpolation.py (specify dims in xr.DataArray) and climatologies.py (replace loffset with to_offset) by `Cora Schneck`_ in (:pr:`381`)
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
 * Add benchmarking to commits to main and tagged releases by `Anissa Zacharias`_ in (:pr:`496`)
 * Fix benchmarking workflow failures by `Anissa Zacharias`_ in (:pr:`499`)
 
-v2023.10.0 (Oct 3, 2023)
------------------------
-
-Bug Fixes
-^^^^^^^^^
-Private API fix for xarray `DataArray.Variable` by `Cora Schneck`_ in (:pr:`381`)
 
 v2023.10.0 (Oct 3, 2023)
 -----------------------
