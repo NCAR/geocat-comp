@@ -5,8 +5,11 @@
 Release Notes
 =============
 
-v2023.10.1 (Unreleased)
------------------------
+v2023.10.1
+----------
+This release includes minor changes to documentation, a full conversion to
+pytest from unittest, and is the first release to include automated
+benchmarking.
 
 Maintenance
 ^^^^^^^^^^^
@@ -20,6 +23,11 @@ Documentation
 Bug Fixes
 ^^^^^^^^^
 * Fix Python version in upstream CI by `Philip Chmielowiec`_ in (:pr:`436`)
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Add benchmarking to commits to main and tagged releases by `Anissa Zacharias`_ in (:pr:`496`)
+* Fix benchmarking workflow failures by `Anissa Zacharias`_ in (:pr:`499`)
 
 v2023.10.0 (Oct 3, 2023)
 -----------------------
@@ -282,3 +290,4 @@ Maintenance
 .. _`Julia Kent`: https://github.com/jukent
 .. _`Katelyn FitzGerald`: https://github.com/kafitzgerald
 .. _`Cora Schneck`: https://github.com/cyschneck
+.. _`Philip Chmielowiec`: https://github.com/philipc2
