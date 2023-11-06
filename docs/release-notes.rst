@@ -5,6 +5,14 @@
 Release Notes
 =============
 
+v2023.11.0 (Unreleased)
+-----------------------
+[text summary]
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Remove unnecessary tag publish trigger for ASV benchmarking CI  by `Anissa Zacharias`_ in (:pr:`509`)
+
 v2023.10.1
 ----------
 This release includes minor changes to documentation, a full conversion to
