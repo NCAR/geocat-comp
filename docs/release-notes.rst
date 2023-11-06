@@ -5,6 +5,13 @@
 Release Notes
 =============
 
+v2023.11.0 (unreleased)
+-----------------------
+
+Bug Fixes
+^^^^^^^^^
+* Unpin xarray in enviroment builds with changes to interpolation.py (specify dims in xr.DataArray) and climatologies.py (replace loffset with to_offset) by `Cora Schneck`_ in (:pr:`381`)
+
 v2023.10.1
 ----------
 This release includes minor changes to documentation, a full conversion to
@@ -23,7 +30,6 @@ Documentation
 Bug Fixes
 ^^^^^^^^^
 * Fix Python version in upstream CI by `Philip Chmielowiec`_ in (:pr:`436`)
-* Unpin xarray in enviroment builds with changes to interpolation.py (specify dims in xr.DataArray) and climatologies.py (replace loffset with to_offset) by `Cora Schneck`_ in (:pr:`381`)
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
