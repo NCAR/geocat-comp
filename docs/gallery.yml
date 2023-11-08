@@ -9,3 +9,7 @@
 - title: Vertically Integrated Moisture Flux Convergence
   path: examples/vimfc.ipynb
   thumbnail: _static/thumbnails/vimfc.png
+
+- title: Fourier Filter
+  path: examples/fourier-filter.ipynb
+  thumbnail: _static/thumbnails/fft.png
