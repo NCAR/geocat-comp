@@ -11,7 +11,7 @@ This release ...
 
 Documentation
 ^^^^^^^^^^^
-* Transfered fourier filter example from Geocat-examples by `Julia Kent`_ in (:pr:`463`)
+* Transfered fourier filter example from Geocat-examples by `Julia Kent`_ in (:pr:`511`)
 
 v2023.10.1
 ----------
