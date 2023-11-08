@@ -5,6 +5,14 @@
 Release Notes
 =============
 
+v2023.11.1
+----------
+This release ...
+
+Documentation
+^^^^^^^^^^^
+* Transfered fourier filter example from Geocat-examples by `Julia Kent`_ in (:pr:`511`)
+
 v2023.10.1
 ----------
 This release includes minor changes to documentation, a full conversion to
