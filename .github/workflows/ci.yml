@@ -10,6 +10,7 @@ on:
       - "*.md"
     branches:
       - main
+      - "subset_tests_512"
   schedule:
     - cron: '0 0 * * *' # Daily “At 00:00”
   workflow_dispatch:
