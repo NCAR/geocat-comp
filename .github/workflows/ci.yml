@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - subset_tests_512
   schedule:
     - cron: '0 0 * * *' # Daily “At 00:00”
   workflow_dispatch:
@@ -33,15 +32,15 @@ jobs:
       - name: Check for all changed files
         uses: tj-actions/changed-files@v40
         id: changed-files
+
       - name: Check for all documentation changed files
         uses: tj-actions/changed-files@v40
         id: doc-changed-files
         with:
-          docs: |
-            doc:
-              - '**.md'
-              - docs/**
-              - README.md
+          files: |
+            - '**.md'
+            - docs/**
+            - README.md
 
       - name: Run Additional Tests
         # only run additional tests if more files than just documentation have changed
@@ -54,6 +53,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ github.token }}
+
       - name: conda_setup
         uses: conda-incubator/setup-miniconda@v2
         with:
