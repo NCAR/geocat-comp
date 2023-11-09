@@ -1,15 +1,10 @@
 name: CI
 on:
-  #pull_request:
-  #  paths-ignore:
-  #    - "docs/**"
-  #    - "*.md"
+  pull_request:
   push:
-    paths-ignore:
-      - "docs/**"
-      - "*.md"
     branches:
       - main
+      - subset_tests_512
   schedule:
     - cron: '0 0 * * *' # Daily “At 00:00”
   workflow_dispatch:
@@ -34,6 +29,26 @@ jobs:
         uses: styfle/cancel-workflow-action@0.12.0
         with:
           access_token: ${{ github.token }}
+
+      - name: Check for all changed files
+        uses: tj-actions/changed-files@v40
+        id: changed-files
+      - name: Check for all documentation changed files
+        uses: tj-actions/changed-files@v40
+        id: doc-changed-files
+        with:
+          docs: |
+            doc:
+              - '**.md'
+              - docs/**
+              - README.md
+
+        # only run additional tests if more files than just documentation have changed
+        run: |
+          echo "run all files: ${{ steps.changed-files.outputs.all_changed_and_modified_files_count != steps.doc-changed-files.outputs.all_changed_and_modified_files_count }}"
+        if:
+          ${{ steps.changed-files.outputs.all_changed_and_modified_files_count != steps.doc-changed-files.outputs.all_changed_and_modified_files_count }}
+
       - name: checkout
         uses: actions/checkout@v4
         with:
