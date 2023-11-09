@@ -4,9 +4,10 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - 'docs/**'
-      - '**.cff'
+    paths:
+      - '**'
+      - '!docs/**'
+      - '!**.cff'
   workflow_dispatch:
   release:
     types:
