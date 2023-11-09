@@ -43,6 +43,7 @@ jobs:
               - docs/**
               - README.md
 
+      - name: Run Additional Tests
         # only run additional tests if more files than just documentation have changed
         run: |
           echo "run all files: ${{ steps.changed-files.outputs.all_changed_and_modified_files_count != steps.doc-changed-files.outputs.all_changed_and_modified_files_count }}"
