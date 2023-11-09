@@ -2,12 +2,11 @@ name: ASV Benchmarking
 
 on:
   push:
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
     branches:
       - main
-    paths:
-      - '**'
-      - '!docs/**'
-      - '!**.cff'
   workflow_dispatch:
   release:
     types:

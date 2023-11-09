@@ -2,12 +2,11 @@ name: CI
 on:
   pull_request:
   push:
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
     branches:
       - main
-    paths:
-      - '**'
-      - '!docs/**'
-      - '!**.cff'
   schedule:
     - cron: '0 0 * * *' # Daily “At 00:00”
   workflow_dispatch:
