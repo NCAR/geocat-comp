@@ -10,7 +10,7 @@ v2023.11.0 (unreleased)
 
 Maintenance
 ^^^^^^^^^^^
-* Run a subset of test suite when only updating documentation by `Cora Schneck`_ in (:pr:`513`)
+* Run a subset of the test suite when only updating documentation by `Cora Schneck`_ in (:pr:`513`)
 
 Documentation
 ^^^^^^^^^^^
