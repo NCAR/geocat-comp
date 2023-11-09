@@ -12,6 +12,10 @@ Bug Fixes
 ^^^^^^^^^
 * Unpin xarray in enviroment builds with changes to interpolation.py (specify dims in xr.DataArray) and climatologies.py (replace loffset with to_offset) by `Cora Schneck`_ in (:pr:`381`)
 
+Documentation
+^^^^^^^^^^^
+* Transfered fourier filter example from Geocat-examples by `Julia Kent`_ in (:pr:`511`)
+
 v2023.10.1
 ----------
 This release includes minor changes to documentation, a full conversion to
