@@ -5,9 +5,13 @@
 Release Notes
 =============
 
-v2023.11.1
+v2023.11.0 (unreleased)
 ----------
 This release ...
+
+Maintenance
+^^^^^^^^^^^
+* Remove no longer needed numpy version pin by `Katelyn FitzGerald`_ in (:pr:`515`)
 
 Documentation
 ^^^^^^^^^^^
