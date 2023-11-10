@@ -34,10 +34,7 @@ jobs:
         id: changed-files
         with:
           since_last_remote_commit: true
-          files: |
-            - "!docs/**"
-            - "!**.md"
-            - "!README.md"
+          files_ignore: docs/**
 
       - name: List all non-documentation changed files
         run: |
