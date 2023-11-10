@@ -35,13 +35,14 @@ jobs:
         with:
           since_last_remote_commit: true
           files: |
-            - "docs/**"
-            - "README.md"
+            - "!docs/**"
+            - "!**.md"
+            - "!README.md"
 
-      - name: List all changed files
+      - name: List all non-documentation changed files
         run: |
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-            echo "$file was changed"
+            echo "non-documentation file $file was changed"
           done
 
       - name: Run Additional Tests
