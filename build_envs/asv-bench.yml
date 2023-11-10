@@ -14,7 +14,7 @@ dependencies:
   - pint
   - setuptools
   - setuptools_scm
-  - xarray<=2023.02.0
+  - xarray
   - xskillscore
   - pip
   - pip:
