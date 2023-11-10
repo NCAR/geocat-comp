@@ -33,21 +33,33 @@ jobs:
         uses: tj-actions/changed-files@v40
         id: changed-files
 
+      - name: List all changed files
+        run: |
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            echo "$file was changed"
+          done
+
       - name: Check for all documentation changed files
         uses: tj-actions/changed-files@v40
-        id: doc-changed-files
+        id: changed-markdown-files
         with:
           files: |
             - '**.md'
             - docs/**
             - README.md
 
+      - name: List all changed files documentation files
+        run: |
+          for file in ${{ steps.changed-markdown-files.outputs.all_changed_files }}; do
+            echo "$file was changed"
+          done
+
       - name: Run Additional Tests
         # only run additional tests if more files than just documentation have changed
         run: |
-          echo "run all files: ${{ steps.changed-files.outputs != steps.doc-changed-files.outputs }}"
+          echo "run all files: ${{ steps.changed-files.outputs != steps.changed-markdown-files.outputs }}"
         if:
-          ${{ steps.changed-files.outputs != steps.doc-changed-files.outputs }}
+          ${{ steps.changed-files.outputs != steps.changed-markdown-files.outputs }}
 
       - name: checkout
         uses: actions/checkout@v4
