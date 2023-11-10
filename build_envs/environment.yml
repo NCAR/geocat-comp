@@ -12,7 +12,7 @@ dependencies:
   - numba
   - numpy
   - pint
-  - xarray<=2023.02.0 #pin per issue #381
+  - xarray
   - xskillscore
 # Packages listed below are for testing
   - geocat-datafiles

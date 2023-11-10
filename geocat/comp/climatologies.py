@@ -1,6 +1,7 @@
 import cf_xarray
 import cftime
 import numpy as np
+import pandas as pd
 import typing
 import xarray as xr
 import warnings
@@ -12,8 +13,8 @@ def _contains_datetime_like_objects(d_arr):
     """Check if a variable contains datetime like objects (either
     np.datetime64, or cftime.datetime)"""
     return np.issubdtype(
-        d_arr.dtype,
-        np.datetime64) or xr.core.common.contains_cftime_datetimes(d_arr)
+        d_arr.dtype, np.datetime64) or xr.core.common.contains_cftime_datetimes(
+            d_arr.variable)
 
 
 def _validate_freq(freq):
@@ -302,7 +303,19 @@ def month_to_season(
     # Group the months into three and take the mean
     means = data_filter.resample({
         time_coord_name: quarter
-    }, loffset='MS').mean(keep_attrs=keep_attrs)
+    }).mean(keep_attrs=keep_attrs)
+    # Set offset for supported array formats
+    if isinstance(means.indexes[time_coord_name],
+                  xr.coding.cftimeindex.CFTimeIndex):
+        means[time_coord_name] = means.indexes[
+            time_coord_name] + xr.coding.cftime_offsets.to_offset(freq="MS")
+    elif isinstance(means.indexes[time_coord_name], pd.DatetimeIndex):
+        means[time_coord_name] = means.indexes[
+            time_coord_name] + pd.tseries.frequencies.to_offset(freq="MS")
+    else:
+        raise ValueError(
+            f"unsupported array type - {type(means.indexes[time_coord_name])}. Valid types include: (xr.coding.cftimeindex.CFTimeIndex, pandas.core.indexes.datetimes.DatetimeIndex)"
+        )
 
     # The line above tries to take the mean for all quarters even if there is not data for some of them
     # Therefore, we must filter out the NaNs
