@@ -6,7 +6,7 @@ dependencies:
     - pre_commit
     - geocat-datafiles
     - geocat-viz
-    - xarray<=2023.02.0 #pin per issue #381
+    - xarray
     - netcdf4
     - pint
     - ipykernel

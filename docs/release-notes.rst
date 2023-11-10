@@ -12,6 +12,10 @@ Maintenance
 ^^^^^^^^^^^
 * Run a subset of the testing suite when updating documentation by `Cora Schneck`_ in (:pr:`513`)
 
+Bug Fixes
+^^^^^^^^^
+* Unpin xarray in enviroment builds with changes to interpolation.py (specify dims in xr.DataArray) and climatologies.py (replace loffset with to_offset) by `Cora Schneck`_ in (:pr:`381`)
+
 Documentation
 ^^^^^^^^^^^
 * Transfered fourier filter example from Geocat-examples by `Julia Kent`_ in (:pr:`511`)
@@ -39,6 +43,7 @@ Internal Changes
 ^^^^^^^^^^^^^^^^
 * Add benchmarking to commits to main and tagged releases by `Anissa Zacharias`_ in (:pr:`496`)
 * Fix benchmarking workflow failures by `Anissa Zacharias`_ in (:pr:`499`)
+
 
 v2023.10.0 (Oct 3, 2023)
 -----------------------
