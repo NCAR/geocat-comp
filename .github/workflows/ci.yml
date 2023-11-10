@@ -32,6 +32,8 @@ jobs:
       - name: Check for all changed files
         uses: tj-actions/changed-files@v40
         id: changed-files
+        with:
+          since_last_remote_commit: true
 
       - name: List all changed files
         run: |
@@ -43,10 +45,11 @@ jobs:
         uses: tj-actions/changed-files@v40
         id: changed-markdown-files
         with:
+          since_last_remote_commit: true
           files: |
             - '**.md'
-            - docs/**
-            - README.md
+            - "docs/**"
+            - "README.md"
 
       - name: List all changed files documentation files
         run: |
