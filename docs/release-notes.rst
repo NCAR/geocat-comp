@@ -5,9 +5,12 @@
 Release Notes
 =============
 
-v2023.11.1
-----------
-This release ...
+v2023.11.0 (unreleased)
+-----------------------
+
+Bug Fixes
+^^^^^^^^^
+* Unpin xarray in enviroment builds with changes to interpolation.py (specify dims in xr.DataArray) and climatologies.py (replace loffset with to_offset) by `Cora Schneck`_ in (:pr:`381`)
 
 Documentation
 ^^^^^^^^^^^
@@ -36,6 +39,7 @@ Internal Changes
 ^^^^^^^^^^^^^^^^
 * Add benchmarking to commits to main and tagged releases by `Anissa Zacharias`_ in (:pr:`496`)
 * Fix benchmarking workflow failures by `Anissa Zacharias`_ in (:pr:`499`)
+
 
 v2023.10.0 (Oct 3, 2023)
 -----------------------
