@@ -46,7 +46,7 @@ jobs:
         # only run additional tests if more files than just documentation have changed
         run: |
           echo "run all files: ${{ steps.changed-files.outputs.any_changed == 'true' }}"
-        if: steps.changed-files.outputs.any_changed == 'true'
+        # if: steps.changed-files.outputs.any_changed == 'true'
 
       - name: checkout
         uses: actions/checkout@v4
