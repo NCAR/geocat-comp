@@ -9,6 +9,7 @@ Release Notes
 
 v2023.11.0 (unreleased)
 -----------------------
+This release ...
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
@@ -17,6 +18,10 @@ Internal Changes
 Bug Fixes
 ^^^^^^^^^
 * Unpin xarray in enviroment builds with changes to interpolation.py (specify dims in xr.DataArray) and climatologies.py (replace loffset with to_offset) by `Cora Schneck`_ in (:pr:`492`)
+
+Maintenance
+^^^^^^^^^^^
+* Remove no longer needed numpy version pin by `Katelyn FitzGerald`_ in (:pr:`515`)
 
 Documentation
 ^^^^^^^^^^^
