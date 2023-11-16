@@ -19,6 +19,7 @@ Bug Fixes
 ^^^^^^^^^
 * Unpin xarray in enviroment builds with changes to interpolation.py (specify dims in xr.DataArray) and climatologies.py (replace loffset with to_offset) by `Cora Schneck`_ in (:pr:`492`)
 * Fixes for Windows tests when EOF throws different signs by `Cora Schneck`_ in (:pr:`516`)
+* Unpin xarray in environment builds with changes to interpolation.py (specify dims in xr.DataArray) and climatologies.py (replace loffset with to_offset) by `Cora Schneck`_ in (:pr:`492`)
 
 Maintenance
 ^^^^^^^^^^^
@@ -26,7 +27,8 @@ Maintenance
 
 Documentation
 ^^^^^^^^^^^
-* Transfered fourier filter example from Geocat-examples by `Julia Kent`_ in (:pr:`511`)
+* Transferred fourier filter example from Geocat-examples by `Julia Kent`_ in (:pr:`511`)
+* Updated documentation links by `Anissa Zacharias`_ in (:pr:`518`)
 
 v2023.10.1
 ----------
