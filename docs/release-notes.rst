@@ -18,6 +18,7 @@ Internal Changes
 Bug Fixes
 ^^^^^^^^^
 * Unpin xarray in enviroment builds with changes to interpolation.py (specify dims in xr.DataArray) and climatologies.py (replace loffset with to_offset) by `Cora Schneck`_ in (:pr:`492`)
+* Fixes for Windows tests when EOF throws different signs by `Cora Schneck`_ in (:pr:`516`)
 
 Maintenance
 ^^^^^^^^^^^
