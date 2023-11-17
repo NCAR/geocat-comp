@@ -5,8 +5,15 @@
 Release Notes
 =============
 
+
+
 v2023.11.0 (unreleased)
 -----------------------
+This release ...
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Remove unnecessary tag publish trigger for ASV benchmarking CI  by `Anissa Zacharias`_ in (:pr:`509`)
 
 Maintenance
 ^^^^^^^^^^^
@@ -14,11 +21,16 @@ Maintenance
 
 Bug Fixes
 ^^^^^^^^^
-* Unpin xarray in enviroment builds with changes to interpolation.py (specify dims in xr.DataArray) and climatologies.py (replace loffset with to_offset) by `Cora Schneck`_ in (:pr:`381`)
+* Unpin xarray in environment builds with changes to interpolation.py (specify dims in xr.DataArray) and climatologies.py (replace loffset with to_offset) by `Cora Schneck`_ in (:pr:`492`)
+
+Maintenance
+^^^^^^^^^^^
+* Remove no longer needed numpy version pin by `Katelyn FitzGerald`_ in (:pr:`515`)
 
 Documentation
 ^^^^^^^^^^^
-* Transfered fourier filter example from Geocat-examples by `Julia Kent`_ in (:pr:`511`)
+* Transferred fourier filter example from Geocat-examples by `Julia Kent`_ in (:pr:`511`)
+* Updated documentation links by `Anissa Zacharias`_ in (:pr:`518`)
 
 v2023.10.1
 ----------
