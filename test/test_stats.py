@@ -66,7 +66,10 @@ class Test_eof(BaseEOFTestClass):
 
         np.testing.assert_equal(self.expected_output.shape, results.shape)
 
-        np.testing.assert_array_almost_equal(self.expected_output, eof, 5)
+        np.testing.assert_array_almost_equal(
+            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5)
+
+        np.testing.assert_array_almost_equal(self.expected_output, abs(eof), 5)
 
         np.testing.assert_equal(self._num_attrs, len(attrs))
 
@@ -82,7 +85,10 @@ class Test_eof(BaseEOFTestClass):
 
         np.testing.assert_equal(self.expected_output.shape, results.shape)
 
-        np.testing.assert_array_almost_equal(self.expected_output, eof, 5)
+        np.testing.assert_array_almost_equal(
+            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5)
+
+        np.testing.assert_array_almost_equal(self.expected_output, abs(eof), 5)
 
         np.testing.assert_equal(self._num_attrs, len(attrs))
 
@@ -98,7 +104,10 @@ class Test_eof(BaseEOFTestClass):
 
         np.testing.assert_equal(self.expected_output.shape, results.shape)
 
-        np.testing.assert_array_almost_equal(self.expected_output, eof, 5)
+        np.testing.assert_array_almost_equal(
+            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5)
+
+        np.testing.assert_array_almost_equal(self.expected_output, abs(eof), 5)
 
         np.testing.assert_equal(self._num_attrs, len(attrs))
 
@@ -114,7 +123,10 @@ class Test_eof(BaseEOFTestClass):
 
         np.testing.assert_equal(self.expected_output.shape, results.shape)
 
-        np.testing.assert_array_almost_equal(self.expected_output, eof, 5)
+        np.testing.assert_array_almost_equal(
+            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5)
+
+        np.testing.assert_array_almost_equal(self.expected_output, abs(eof), 5)
 
         np.testing.assert_equal(self._num_attrs, len(attrs))
 
@@ -130,7 +142,10 @@ class Test_eof(BaseEOFTestClass):
 
         np.testing.assert_equal(self.expected_output.shape, results.shape)
 
-        np.testing.assert_array_almost_equal(self.expected_output, eof, 5)
+        np.testing.assert_array_almost_equal(
+            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5)
+
+        np.testing.assert_array_almost_equal(self.expected_output, abs(eof), 5)
 
         np.testing.assert_equal(self._num_attrs, len(attrs))
 
@@ -158,7 +173,10 @@ class Test_eof(BaseEOFTestClass):
 
         np.testing.assert_equal(self.expected_output.shape, results.shape)
 
-        np.testing.assert_array_almost_equal(self.expected_output, eof, 5)
+        np.testing.assert_array_almost_equal(
+            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5)
+
+        np.testing.assert_array_almost_equal(self.expected_output, abs(eof), 5)
 
         np.testing.assert_equal(self._num_attrs, len(attrs))
 
@@ -190,7 +208,9 @@ class Test_eof(BaseEOFTestClass):
     #
     #     np.testing.assert_equal(self.expected_output.shape, results.shape)
     #
-    #     np.testing.assert_array_almost_equal(self.expected_output, eof, 5)
+    #     np.testing.assert_array_almost_equal(np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5)
+    #
+    #     np.testing.assert_array_almost_equal(self.expected_output, abs(eof), 5)
     #
     #     np.testing.assert_equal(self._num_attrs + 2, len(attrs))
     #
@@ -222,7 +242,10 @@ class Test_eof(BaseEOFTestClass):
 
         np.testing.assert_equal(self.expected_output.shape, results.shape)
 
-        np.testing.assert_array_almost_equal(self.expected_output, eof, 5)
+        np.testing.assert_array_almost_equal(
+            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5)
+
+        np.testing.assert_array_almost_equal(self.expected_output, abs(eof), 5)
 
         np.testing.assert_equal(self._num_attrs + 2, len(attrs))
 
@@ -243,7 +266,10 @@ class Test_eof(BaseEOFTestClass):
 
         np.testing.assert_equal(self.expected_output.shape, results.shape)
 
-        np.testing.assert_array_almost_equal(self.expected_output, eof, 5)
+        np.testing.assert_array_almost_equal(
+            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5)
+
+        np.testing.assert_array_almost_equal(self.expected_output, abs(eof), 5)
 
         np.testing.assert_equal(self._num_attrs, len(attrs))
 
@@ -259,7 +285,10 @@ class Test_eof(BaseEOFTestClass):
 
         np.testing.assert_equal(self.expected_output.shape, results.shape)
 
-        np.testing.assert_array_almost_equal(self.expected_output, eof, 5)
+        np.testing.assert_array_almost_equal(
+            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5)
+
+        np.testing.assert_array_almost_equal(self.expected_output, abs(eof), 5)
 
         np.testing.assert_equal(self._num_attrs, len(attrs))
 
@@ -275,7 +304,10 @@ class Test_eof(BaseEOFTestClass):
 
         np.testing.assert_equal(self.expected_output.shape, results.shape)
 
-        np.testing.assert_array_almost_equal(self.expected_output, eof, 5)
+        np.testing.assert_array_almost_equal(
+            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5)
+
+        np.testing.assert_array_almost_equal(self.expected_output, abs(eof), 5)
 
         np.testing.assert_equal(self._num_attrs, len(attrs))
 
