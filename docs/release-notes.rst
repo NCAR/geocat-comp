@@ -18,6 +18,7 @@ Internal Changes
 Bug Fixes
 ^^^^^^^^^
 * Unpin xarray in environment builds with changes to interpolation.py (specify dims in xr.DataArray) and climatologies.py (replace loffset with to_offset) by `Cora Schneck`_ in (:pr:`492`)
+* Fix `extlinks` for Sphinx 6 compatibility by `Anissa Zacharias`_ in (:pr:`520`)
 
 Maintenance
 ^^^^^^^^^^^
