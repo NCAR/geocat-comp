@@ -2,7 +2,6 @@ name: geocat_comp_upstream
 channels:
   - conda-forge
 dependencies:
-  - python>=3.9
   - cftime
   - eofs
   - geocat-datafiles  # for tests
