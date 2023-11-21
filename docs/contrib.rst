@@ -139,7 +139,7 @@ To run and test any changes you make in ``geocat-comp``, you will need to create
 a development environment. We recommend installing and using `conda
 <https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html>`__
 and/or `mamba
-<https://mamba.readthedocs.io/en/latest/mamba-installation.html#mamba-install>`__.
+<https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html>`__.
 
 Use the following commands to create a new conda environment to develop
 ``geocat-comp`` in.
