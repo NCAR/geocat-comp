@@ -3,7 +3,7 @@ name: Release Request
 about: Request a release for this package
 title: '[Release]: <version-number>'
 labels: release, high-priority
-assignees: 'pilotchute'
+assignees: 'anissa111'
 ---
 ## For Package Leader
 

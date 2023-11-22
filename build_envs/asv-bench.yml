@@ -1,0 +1,22 @@
+name: asv-bench
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - cf_xarray
+  - cftime
+  - cython
+  - eofs
+  - metpy
+  - scipy
+  - numpy
+  - netcdf4
+  - pint
+  - setuptools
+  - setuptools_scm
+  - xarray
+  - xskillscore
+  - pip
+  - pip:
+      - asv
+      - -e ../

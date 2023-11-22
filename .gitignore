@@ -312,3 +312,9 @@ test/dask-worker-space/
 .vscode/
 generated/
 docs/notebook-examples.txt
+
+# asv environments
+.asv
+benchmarks/env
+benchmarks/results
+benchmarks/html

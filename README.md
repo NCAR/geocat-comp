@@ -1,4 +1,4 @@
-| CI           | [![GitHub Workflow Status][github-ci-badge]][github-ci-link] [![GitHub Workflow Status][github-upstream-ci-badge]][github-upstream-ci-link] [![Code Coverage Status][codecov-badge]][codecov-link] |
+| CI           | [![GitHub Workflow Status][github-ci-badge]][github-ci-link] [![GitHub Workflow Status][github-upstream-ci-badge]][github-upstream-ci-link] [![Code Coverage Status][codecov-badge]][codecov-link] [![asv-badge]][asv-link] |
 | :----------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 | **Docs**     |                                                                    [![Documentation Status][rtd-badge]][rtd-link]                                                                    |
 | **Package**  |                                                         [![Conda][conda-badge]][conda-link] [![PyPI][pypi-badge]][pypi-link]                                                         |
@@ -7,18 +7,18 @@
 
 
 
-GeoCAT-comp is both the whole computational component of the [GeoCAT](https://geocat.ucar.edu/)
-project and a single Github repository as described here. As the computational component of
-[GeoCAT](https://geocat.ucar.edu/), GeoCAT-comp provides implementations of computational functions for operating
-on geosciences data. Many of these functions originated in NCL and were translated into Python with the help of GeoCAT-comp;
-however, developers are welcome to come up with novel computational functions for geosciences data.
+GeoCAT-comp is the computational component of the
+[GeoCAT](https://geocat.ucar.edu/) project. GeoCAT-comp provides computational
+functions for operating on geosciences data. Many of these functions originated
+in NCL and were translated into Python in GeoCAT-comp; however, developers are
+welcome to suggest novel computational functions for geosciences data.
 
 
 # Documentation
 
 [GeoCAT Homepage](https://geocat.ucar.edu/)
 
-[GeoCAT Contributor's Guide](https://geocat.ucar.edu/pages/contributing.html)
+[GeoCAT Contributor's Guide](https://github.com/NCAR/geocat-comp/blob/main/CONTRIBUTING.md)
 
 [GeoCAT-comp documentation on Read the Docs](https://geocat-comp.readthedocs.io)
 
@@ -41,6 +41,8 @@ https://geocat-comp.readthedocs.io/en/latest/citation.html) page.
 [github-upstream-ci-link]: https://github.com/NCAR/geocat-comp/actions/workflows/upstream-dev-ci.yml
 [codecov-badge]: https://img.shields.io/codecov/c/github/NCAR/geocat-comp.svg?logo=codecov&style=for-the-badge&color=brightgreen
 [codecov-link]: https://codecov.io/gh/NCAR/geocat-comp/coverage.yml
+[asv-badge]: https://img.shields.io/badge/benchmarked%20by-asv-green.svg?style=for-the-badge
+[asv-link]: https://ncar.github.io/geocat-comp-asv/
 [rtd-badge]: https://img.shields.io/readthedocs/geocat-comp/latest.svg?style=for-the-badge
 [rtd-link]: https://geocat-comp.readthedocs.io/en/latest/?badge=latest
 [pypi-badge]: https://img.shields.io/pypi/v/geocat-comp?logo=pypi&style=for-the-badge

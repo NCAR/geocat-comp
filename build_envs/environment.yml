@@ -10,9 +10,9 @@ dependencies:
   - eofs
   - metpy
   - numba
-  - numpy<1.24  # 1.24 not yet fully compatible with numba
+  - numpy
   - pint
-  - xarray<=2023.02.0 #pin per issue #381
+  - xarray
   - xskillscore
 # Packages listed below are for testing
   - geocat-datafiles

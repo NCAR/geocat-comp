@@ -5,6 +5,91 @@
 Release Notes
 =============
 
+
+
+v2023.11.0 (unreleased)
+-----------------------
+This release ...
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Remove unnecessary tag publish trigger for ASV benchmarking CI  by `Anissa Zacharias`_ in (:pr:`509`)
+
+Bug Fixes
+^^^^^^^^^
+* Unpin xarray in enviroment builds with changes to interpolation.py (specify dims in xr.DataArray) and climatologies.py (replace loffset with to_offset) by `Cora Schneck`_ in (:pr:`492`)
+* Fixes for Windows tests when EOF throws different signs by `Cora Schneck`_ in (:pr:`516`)
+* Fix `extlinks` for Sphinx 6 compatibility by `Anissa Zacharias`_ in (:pr:`520`)
+
+Maintenance
+^^^^^^^^^^^
+* Remove no longer needed numpy version pin by `Katelyn FitzGerald`_ in (:pr:`515`)
+
+Documentation
+^^^^^^^^^^^
+* Transferred fourier filter example from Geocat-examples by `Julia Kent`_ in (:pr:`511`)
+* Updated documentation links by `Anissa Zacharias`_ in (:pr:`518`)
+
+v2023.10.1
+----------
+This release includes minor changes to documentation, a full conversion to
+pytest from unittest, and is the first release to include automated
+benchmarking.
+
+Maintenance
+^^^^^^^^^^^
+* Convert Unittest to Pytest by `Cora Schneck`_ in (:pr:`462`)
+
+Documentation
+^^^^^^^^^^^^^
+* Updated office hours link by `Anissa Zacharias`_ in (:pr:`495`)
+* Added benchmark badge to README by `Anissa Zacharias`_ in (:pr:`497`)
+
+Bug Fixes
+^^^^^^^^^
+* Fix Python version in upstream CI by `Philip Chmielowiec`_ in (:pr:`436`)
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Add benchmarking to commits to main and tagged releases by `Anissa Zacharias`_ in (:pr:`496`)
+* Fix benchmarking workflow failures by `Anissa Zacharias`_ in (:pr:`499`)
+
+
+v2023.10.0 (Oct 3, 2023)
+-----------------------
+This release adds a code of conduct, minor edits to our contributor's guide, and
+sets up some structure for future ASV benchmarking
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Sets up ASV for benchmarking by `Anissa Zacharias`_ in (:pr:`474`)
+
+Documentation
+^^^^^^^^^^^^^
+* New Code of Conduct by `Cora Schneck`_ in (:pr:`461`)
+* Updated Pull Request Template by `Cora Schneck`_ in (:pr:`455`)
+* Fixes for Contributing Geocat-Comp Contributing by `Cora Schneck`_ in (:pr:`476`)
+
+v2023.09.0 (Sept 8, 2023)
+-------------------------
+This release adds `custom_seasons` to ``climatology_average`` and adds a new
+Contributor's Guide to the documentation.
+
+New Features
+^^^^^^^^^^^^
+* User-defined seasonal boundaries, `custom_seasons`, enabled for
+  ``climatology_average`` by `Julia Kent`_ in (:pr:`441`)
+
+Bug Fixes
+^^^^^^^^^
+* Fix codecov coverage reporting issue by `Anissa Zacharias`_ in (:pr:`446`)
+* Fix xarray inconsistent pinning issue by `Anissa Zacharias`_ in (:pr:`458`)
+
+Documentation
+^^^^^^^^^^^^^
+* New Contributor's Guide by `Anissa Zacharias`_ in (:pr:`450`)
+
+
 v2023.06.1 (June 23, 2023)
 --------------------------
 This releases fixes the unintentional limitation of the 2023.06.0 release to python 3.11.0
@@ -223,3 +308,5 @@ Maintenance
 .. _`Mario Rodriguez`: https://github.com/marodrig
 .. _`Julia Kent`: https://github.com/jukent
 .. _`Katelyn FitzGerald`: https://github.com/kafitzgerald
+.. _`Cora Schneck`: https://github.com/cyschneck
+.. _`Philip Chmielowiec`: https://github.com/philipc2
