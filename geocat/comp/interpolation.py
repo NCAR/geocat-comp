@@ -627,7 +627,7 @@ def interp_multidim(
     """Multidimensional interpolation of variables. Uses ``xarray.interp`` to
     perform interpolation. Will not perform extrapolation by default, returns
     missing values if any surrounding points contain missing values.
-    
+
     .. warning::
         The output data type may be promoted to that of the coordinate data.
 
