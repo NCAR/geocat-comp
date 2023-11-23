@@ -625,8 +625,11 @@ def interp_multidim(
         method: str = "linear",
         fill_value: typing.Union[str, np.number] = np.nan) -> supported_types:
     """Multidimensional interpolation of variables. Uses ``xarray.interp`` to
-    perform linear interpolation. Will not perform extrapolation, returns
+    perform interpolation. Will not perform extrapolation by default, returns
     missing values if any surrounding points contain missing values.
+
+    .. warning::
+        The output data type may be promoted to that of the coordinate data.
 
     Parameters
     ----------
@@ -662,16 +665,16 @@ def interp_multidim(
         “linear” or “nearest” for multidimensional array
 
     fill_value: str, optional
-        Set as 'extrapolate' to allow extrapoltion of data. Default is
+        Set as 'extrapolate' to allow extrapolation of data. Default is
         no extrapolation.
 
     Returns
     -------
     data_out : ndarray, :class:`xarray.DataArray`
-       Returns same data type as input ``data_in``. Shape will be the same as
-       input array except
-       for last two dimensions which will be equal to thecoordinates given in
-       ``data_out``
+       Returns the same type of object as input ``data_in``. However, the type of
+       the data in the array may be promoted to that of the coordinates. Shape
+       will be the same as input array except for last two dimensions which will
+       be equal to the coordinates given in ``data_out``.
 
     Examples
     --------

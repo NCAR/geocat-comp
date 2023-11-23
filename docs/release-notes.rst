@@ -29,6 +29,8 @@ Documentation
 ^^^^^^^^^^^
 * Transferred fourier filter example from Geocat-examples by `Julia Kent`_ in (:pr:`511`)
 * Updated documentation links by `Anissa Zacharias`_ in (:pr:`518`)
+* Augment documentation for ``interp_multidim`` by `Katelyn FitzGerald`_ in (:pr:`504`)
+
 
 v2023.10.1
 ----------
