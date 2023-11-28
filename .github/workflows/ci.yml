@@ -33,7 +33,7 @@ jobs:
         with:
           token: ${{ github.token }}
       - name: conda_setup
-        uses: conda-incubator/setup-miniconda@v2
+        uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: geocat_comp_build
           channel-priority: strict
@@ -80,7 +80,7 @@ jobs:
         with:
           token: ${{ github.token }}
       - name: conda_setup
-        uses: conda-incubator/setup-miniconda@v2
+        uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: gc-docs
           channel-priority: strict
