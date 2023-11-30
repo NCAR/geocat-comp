@@ -13,3 +13,7 @@
 - title: Fourier Filter
   path: examples/fourier_filter.ipynb
   thumbnail: _static/thumbnails/fft.png
+
+- title: Spectral Analysis
+  path: examples/specxy_anal.ipynb
+  thumbnail: examples/atmos-dennis.png
