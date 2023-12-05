@@ -15,6 +15,10 @@ Internal Changes
 ^^^^^^^^^^^^^^^^
 * Remove unnecessary tag publish trigger for ASV benchmarking CI  by `Anissa Zacharias`_ in (:pr:`509`)
 
+Maintenance
+^^^^^^^^^^^
+* Run a subset of the testing suite when updating documentation by `Cora Schneck`_ in (:pr:`513`)
+
 Bug Fixes
 ^^^^^^^^^
 * Unpin xarray in enviroment builds with changes to interpolation.py (specify dims in xr.DataArray) and climatologies.py (replace loffset with to_offset) by `Cora Schneck`_ in (:pr:`492`)

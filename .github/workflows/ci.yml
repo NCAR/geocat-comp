@@ -28,10 +28,32 @@ jobs:
         uses: styfle/cancel-workflow-action@0.12.0
         with:
           access_token: ${{ github.token }}
+
+      - name: Check for all changed files
+        uses: tj-actions/changed-files@v40
+        id: changed-files
+        with:
+          since_last_remote_commit: true
+          fetch_depth: 0
+          files_ignore: docs/**
+
+      - name: List all non-documentation changed files
+        run: |
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            echo "non-documentation file $file was changed"
+          done
+
+      - name: Run Additional Tests
+        # only run additional tests if more files than just documentation have changed
+        run: |
+          echo "run all files: ${{ steps.changed-files.outputs.any_changed == 'true' }}"
+        # if: steps.changed-files.outputs.any_changed == 'true'
+
       - name: checkout
         uses: actions/checkout@v4
         with:
           token: ${{ github.token }}
+
       - name: conda_setup
         uses: conda-incubator/setup-miniconda@v3
         with:
