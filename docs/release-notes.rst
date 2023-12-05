@@ -45,7 +45,7 @@ benchmarking.
 
 Maintenance
 ^^^^^^^^^^^
-* Convert Unittest to Pytest by `Cora Schneck`_ in (:pr:`462`)
+* Convert Unittest to Pytest by `Cora Schneck`_ in (:pr:`478`)
 
 Documentation
 ^^^^^^^^^^^^^
@@ -74,7 +74,7 @@ Internal Changes
 Documentation
 ^^^^^^^^^^^^^
 * New Code of Conduct by `Cora Schneck`_ in (:pr:`461`)
-* Updated Pull Request Template by `Cora Schneck`_ in (:pr:`455`)
+* Updated Pull Request Template by `Cora Schneck`_ in (:pr:`468`)
 * Fixes for Contributing Geocat-Comp Contributing by `Cora Schneck`_ in (:pr:`476`)
 
 v2023.09.0 (Sept 8, 2023)
