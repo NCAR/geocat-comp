@@ -6,41 +6,46 @@ Release Notes
 =============
 
 
-
-v2023.11.0 (unreleased)
------------------------
-This release ...
+v2023.12.0 (December 5, 2023)
+-----------------------------
+This release adds official windows support and unpins xarray and numpy.
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
-* Remove unnecessary tag publish trigger for ASV benchmarking CI  by `Anissa Zacharias`_ in (:pr:`509`)
+* Remove unnecessary tag publish trigger for ASV benchmarking CI  by `Anissa
+  Zacharias`_ in (:pr:`509`)
+* Add windows to testing strategy by `AnshRoshan`_ in (:pr:`460`)
 
 Bug Fixes
 ^^^^^^^^^
-* Unpin xarray in enviroment builds with changes to interpolation.py (specify dims in xr.DataArray) and climatologies.py (replace loffset with to_offset) by `Cora Schneck`_ in (:pr:`492`)
-* Fixes for Windows tests when EOF throws different signs by `Cora Schneck`_ in (:pr:`516`)
-* Fix `extlinks` for Sphinx 6 compatibility by `Anissa Zacharias`_ in (:pr:`520`)
+* Unpin xarray in environment builds with changes to interpolation.py (specify
+  dims in xr.DataArray) and ``climatologies.py`` (replace ``loffset`` with
+  ``to_offset``) by `Cora Schneck`_ in (:pr:`492`)
+* Fixes for Windows tests when EOF throws different signs by `Cora Schneck`_ in
+  (:pr:`516`)
+* Fix ``extlinks`` for Sphinx 6 compatibility by `Anissa Zacharias`_ in
+  (:pr:`520`)
 
 Maintenance
 ^^^^^^^^^^^
 * Remove no longer needed numpy version pin by `Katelyn FitzGerald`_ in (:pr:`515`)
 
 Documentation
-^^^^^^^^^^^
+^^^^^^^^^^^^^
 * Transferred fourier filter example from Geocat-examples by `Julia Kent`_ in (:pr:`511`)
 * Updated documentation links by `Anissa Zacharias`_ in (:pr:`518`)
 * Augment documentation for ``interp_multidim`` by `Katelyn FitzGerald`_ in (:pr:`504`)
 
 
-v2023.10.1
-----------
+v2023.10.1 (October 31, 2023)
+-----------------------------
 This release includes minor changes to documentation, a full conversion to
 pytest from unittest, and is the first release to include automated
 benchmarking.
 
 Maintenance
 ^^^^^^^^^^^
-* Convert Unittest to Pytest by `Cora Schneck`_ in (:pr:`462`)
+* Convert Unittest to Pytest by `Cora Schneck`_ in (:pr:`478`)
 
 Documentation
 ^^^^^^^^^^^^^
@@ -58,7 +63,7 @@ Internal Changes
 
 
 v2023.10.0 (Oct 3, 2023)
------------------------
+------------------------
 This release adds a code of conduct, minor edits to our contributor's guide, and
 sets up some structure for future ASV benchmarking
 
@@ -69,17 +74,17 @@ Internal Changes
 Documentation
 ^^^^^^^^^^^^^
 * New Code of Conduct by `Cora Schneck`_ in (:pr:`461`)
-* Updated Pull Request Template by `Cora Schneck`_ in (:pr:`455`)
+* Updated Pull Request Template by `Cora Schneck`_ in (:pr:`468`)
 * Fixes for Contributing Geocat-Comp Contributing by `Cora Schneck`_ in (:pr:`476`)
 
 v2023.09.0 (Sept 8, 2023)
 -------------------------
-This release adds `custom_seasons` to ``climatology_average`` and adds a new
+This release adds ``custom_seasons`` to ``climatology_average`` and adds a new
 Contributor's Guide to the documentation.
 
 New Features
 ^^^^^^^^^^^^
-* User-defined seasonal boundaries, `custom_seasons`, enabled for
+* User-defined seasonal boundaries, ``custom_seasons``, enabled for
   ``climatology_average`` by `Julia Kent`_ in (:pr:`441`)
 
 Bug Fixes
@@ -125,7 +130,7 @@ Breaking Changes
 
 Bug Fixes
 ^^^^^^^^^
-* Fix bug in `_temp_extrapolate` used by `interp_hybrid_to_pressure` by `Katelyn FitzGerald`_ in (:pr:`422`)
+* Fix bug in ``_temp_extrapolate`` used by ``interp_hybrid_to_pressure`` by `Katelyn FitzGerald`_ in (:pr:`422`)
 
 
 v2023.05.0 (4 May 2023)
@@ -312,3 +317,4 @@ Maintenance
 .. _`Katelyn FitzGerald`: https://github.com/kafitzgerald
 .. _`Cora Schneck`: https://github.com/cyschneck
 .. _`Philip Chmielowiec`: https://github.com/philipc2
+.. _`AnshRoshan`: https://github.com/AnshRoshan
