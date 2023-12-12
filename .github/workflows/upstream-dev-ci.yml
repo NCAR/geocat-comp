@@ -4,6 +4,10 @@ on:
   schedule:
      - cron: '0 0 * * *' # Daily “At 00:00”
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   upstream-dev:
     name:  upstream-dev-py310
@@ -13,10 +17,6 @@ jobs:
         shell: bash -l {0}
 
     steps:
-      - name: Cancel previous runs
-        uses: styfle/cancel-workflow-action@0.12.0
-        with:
-          access_token: ${{ github.token }}
       - name: checkout
         uses: actions/checkout@v4
         with:
