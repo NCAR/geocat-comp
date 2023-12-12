@@ -1,4 +1,4 @@
-name: Upstream-dev CI
+name: CI Upstream
 on:
   workflow_dispatch:
   schedule:
