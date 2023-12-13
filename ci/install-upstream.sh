@@ -10,7 +10,8 @@ conda uninstall -y --force \
     distributed \
     cftime \
     pint \
-    xarray
+    xarray \
+    xskillscore \
 
 # if available install from nightly wheels
 python -m pip install \
@@ -19,6 +20,7 @@ python -m pip install \
     --pre \
     --upgrade \
     numpy \
+    scipy \
     xarray
 
 # install rest from source
