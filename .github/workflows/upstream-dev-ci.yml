@@ -44,9 +44,6 @@ jobs:
           pip install git+https://github.com/xarray-contrib/cf-xarray.git
           pip install git+https://github.com/xarray-contrib/xskillscore.git
 
-      - name: Install conda dependencies
-        run: |
-          conda env update --file build_envs/upstream-dev-environment.yml
 
       - name: Install geocat-comp
         run: |
