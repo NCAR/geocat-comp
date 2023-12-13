@@ -22,6 +22,7 @@ python -m pip install \
     --upgrade \
     numpy \
     scipy \
+    statsmodels \
     xarray
 
 # install rest from source
@@ -33,5 +34,4 @@ python -m pip install \
     git+https://github.com/dask/distributed.git \
     git+https://github.com/hgrecco/pint.git \
     git+https://github.com/xarray-contrib/cf-xarray.git \
-    git+https://github.com/xarray-contrib/xskillscore.git \
-    git+https://github.com/statsmodels/statsmodels
+    git+https://github.com/xarray-contrib/xskillscore.git
