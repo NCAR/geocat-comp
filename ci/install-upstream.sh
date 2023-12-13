@@ -12,6 +12,7 @@ conda uninstall -y --force \
     pint \
     xarray \
     xskillscore \
+    statsmodels \
 
 # if available install from nightly wheels
 python -m pip install \
@@ -32,4 +33,5 @@ python -m pip install \
     git+https://github.com/dask/distributed.git \
     git+https://github.com/hgrecco/pint.git \
     git+https://github.com/xarray-contrib/cf-xarray.git \
-    git+https://github.com/xarray-contrib/xskillscore.git
+    git+https://github.com/xarray-contrib/xskillscore.git \
+    git+https://github.com/statsmodels/statsmodels
