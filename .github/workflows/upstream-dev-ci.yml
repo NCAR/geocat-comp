@@ -33,10 +33,13 @@ jobs:
           create-args: >-
             python=${{ matrix.python-version }}
 
+      - name: conda list
+        run: |
+          conda list
+
       - name: Install upstream versions
         run: |
           bash ci/install-upstream.sh
-
 
       - name: Install geocat-comp
         run: |

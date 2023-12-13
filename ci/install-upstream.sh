@@ -2,7 +2,7 @@
 # adapted from https://github.com/pydata/xarray/blob/main/ci/install-upstream-wheels.sh
 
 # forcibly remove packages to avoid artifacts
-conda uninstall -y --force \
+conda remove -y --force \
     metpy \
     numpy \
     scipy \
@@ -13,6 +13,9 @@ conda uninstall -y --force \
     xarray \
     xskillscore \
     statsmodels \
+
+# conda list
+conda list
 
 # if available install from nightly wheels
 python -m pip install \
