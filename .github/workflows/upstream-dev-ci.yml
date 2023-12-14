@@ -29,7 +29,6 @@ jobs:
         uses: mamba-org/setup-micromamba@v1
         with:
           environment-file: build_envs/environment.yml
-          environment-name: geocat_comp_build
           create-args: >-
             python=${{ matrix.python-version }}
 
