@@ -27,8 +27,6 @@ python -m pip install \
 
 # install rest from source
 python -m pip install \
-    --no-deps \
-    --upgrade \
     git+https://github.com/Unidata/MetPy.git \
     git+https://github.com/pydata/xarray.git \
     git+https://github.com/dask/dask.git \
