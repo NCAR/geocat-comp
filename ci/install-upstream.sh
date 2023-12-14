@@ -8,8 +8,8 @@ conda remove -y --force \
     scipy \
     dask \
     distributed \
-    cftime \
     pint \
+    cf-xarray \
     xarray \
     xskillscore
 
@@ -23,14 +23,14 @@ python -m pip install \
     --pre \
     --upgrade \
     numpy \
-    scipy \
-    xarray
+    scipy
 
 # install rest from source
 python -m pip install \
     --no-deps \
     --upgrade \
     git+https://github.com/Unidata/MetPy.git \
+    git+https://github.com/pydata/xarray.git \
     git+https://github.com/dask/dask.git \
     git+https://github.com/dask/distributed.git \
     git+https://github.com/hgrecco/pint.git \
