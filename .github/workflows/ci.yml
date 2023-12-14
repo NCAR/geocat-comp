@@ -44,7 +44,9 @@ jobs:
 
       - name: conda list
         run: |
-          conda list
+          if [[ "${{ runner.os }}" != "Windows" ]]; then
+            conda list
+          fi
 
       - name: Run Tests
         run: python -m pytest test -v
