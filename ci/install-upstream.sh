@@ -9,7 +9,7 @@ conda remove -y --force \
     dask \
     distributed \
     pint \
-    cf-xarray \
+    cf_xarray \
     xarray \
     xskillscore
 
