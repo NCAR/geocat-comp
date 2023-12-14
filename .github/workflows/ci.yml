@@ -81,7 +81,7 @@ jobs:
         with:
           activate-environment: gc-docs
           channel-priority: strict
-          python-version: 3.9
+          python-version: 3.11
           channels: conda-forge
           environment-file: build_envs/docs.yml
       - name: Install geocat-comp
