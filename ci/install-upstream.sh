@@ -3,13 +3,14 @@
 
 # forcibly remove packages to avoid artifacts
 conda remove -y --force \
-    metpy \
-    numpy \
-    scipy \
+    cf_xarray \
     dask \
     distributed \
+    metpy \
+    numpy \
+    pandas \
     pint \
-    cf_xarray \
+    scipy \
     xarray \
     xskillscore
 
@@ -23,14 +24,15 @@ python -m pip install \
     --pre \
     --upgrade \
     numpy \
+    pandas \
     scipy
 
 # install rest from source
 python -m pip install \
-    git+https://github.com/Unidata/MetPy.git \
-    git+https://github.com/pydata/xarray.git \
+    git+https://github.com/xarray-contrib/cf-xarray.git \
     git+https://github.com/dask/dask.git \
     git+https://github.com/dask/distributed.git \
+    git+https://github.com/Unidata/MetPy.git \
     git+https://github.com/hgrecco/pint.git \
-    git+https://github.com/xarray-contrib/cf-xarray.git \
+    git+https://github.com/pydata/xarray.git \
     git+https://github.com/xarray-contrib/xskillscore.git
