@@ -10,7 +10,7 @@ concurrency:
 
 jobs:
   upstream-dev:
-    name:  upstream-dev-py310
+    name:  upstream-dev-py311
     runs-on: ubuntu-latest
     defaults:
       run:
