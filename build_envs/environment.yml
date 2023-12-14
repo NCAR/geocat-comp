@@ -12,6 +12,7 @@ dependencies:
   - numba
   - numpy
   - scipy
+  - pandas
   - pint
   - xarray
   - xskillscore
