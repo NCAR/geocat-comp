@@ -31,13 +31,12 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
       - name: conda_setup
-        uses: conda-incubator/setup-miniconda@v3
+        uses: mamba-org/setup-miniconda@v1
         with:
-          activate-environment: geocat_comp_build
-          channel-priority: strict
-          python-version: ${{ matrix.python-version }}
-          channels: conda-forge
           environment-file: build_envs/environment.yml
+          environment-name: geocat_comp_build
+          create-args: >-
+            python=${{matrix.python-version}}
 
       - name: Install geocat-comp
         run: |
