@@ -31,7 +31,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
       - name: conda_setup
-        uses: mamba-org/setup-miniconda@v1
+        uses: mamba-org/setup-micromamba@v1
         with:
           environment-file: build_envs/environment.yml
           environment-name: geocat_comp_build
