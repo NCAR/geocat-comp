@@ -11,8 +11,7 @@ conda remove -y --force \
     cftime \
     pint \
     xarray \
-    xskillscore \
-    statsmodels \
+    xskillscore
 
 # conda list
 conda list
@@ -25,7 +24,6 @@ python -m pip install \
     --upgrade \
     numpy \
     scipy \
-    statsmodels \
     xarray
 
 # install rest from source
