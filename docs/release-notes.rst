@@ -5,6 +5,14 @@
 Release Notes
 =============
 
+v2024.01.0 (Unreleased)
+-----------------------
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Upstream CI improvements by `Anissa Zacharias`_ in (:pr:`527`)
+* CI improvements by `Anissa Zacharias`_ in (:pr:`528`)
+
 
 v2023.12.0 (December 5, 2023)
 -----------------------------
