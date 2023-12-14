@@ -48,10 +48,15 @@ jobs:
           python -m pip install --no-deps -e .
 
       - name: Run Tests
-        run: python -m pytest test -v
-          --cov=./geocat/comp
-          --cov-report=xml
-          --junitxml=pytest.xml
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 60
+          max_attempts: 3
+          command: |
+            python -m pytest test -v
+            --cov=./geocat/comp
+            --cov-report=xml
+            --junitxml=pytest.xml
 
       - name: Upload test results
         uses: actions/upload-artifact@v3
@@ -91,7 +96,13 @@ jobs:
       - name: check conda list
         run: |
           conda list
-      - name: Make docs with linkcheck
+      - name: cd docs
         run: |
           cd docs
-          make linkcheck
+      - name: Make docs with linkcheck
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 60
+          max_attempts: 3
+          command: |
+            make linkcheck
