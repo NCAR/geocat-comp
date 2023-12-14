@@ -37,7 +37,6 @@ jobs:
         uses: mamba-org/setup-micromamba@v1
         with:
           environment-file: build_envs/environment.yml
-          environment-name: geocat_comp_build
           cache-environment: true
           cache-environment-key: "CI ${{runner.os}}-${{runner.arch}}-py${{matrix.python-version}}-${{env.TODAY}}"
           create-args: >-
@@ -78,7 +77,6 @@ jobs:
       - name: environment setup
         uses: mamba-org/setup-micromamba@v1
         with:
-          environment-name: gc-docs
           environment-file: build_envs/docs.yml
           cache-environment: true
           cache-environment-key: "linkcheck-${{env.TODAY}}"
