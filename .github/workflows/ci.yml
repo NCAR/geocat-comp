@@ -101,5 +101,6 @@ jobs:
           max_attempts: 3
           command: |
             micromamba activate gc-docs
+            micromamba list
             cd docs
             make linkcheck
