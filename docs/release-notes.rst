@@ -12,6 +12,7 @@ Internal Changes
 ^^^^^^^^^^^^^^^^
 * Upstream CI improvements by `Anissa Zacharias`_ in (:pr:`527`)
 * CI improvements by `Anissa Zacharias`_ in (:pr:`528`)
+* Switch to PyPI Trusted Publishing by `Anissa Zacharias`_ in (:pr:`534`)
 
 
 v2023.12.0 (December 5, 2023)
