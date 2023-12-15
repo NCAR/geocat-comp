@@ -94,14 +94,11 @@ jobs:
       - name: check conda list
         run: |
           conda list
-      - name: cd docs
-        run: |
-          cd docs
       - name: Make docs with linkcheck
         uses: nick-fields/retry@v2
         with:
           timeout_minutes: 60
           max_attempts: 3
           command: |
-            pwd
+            cd docs
             make linkcheck
