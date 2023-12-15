@@ -59,6 +59,13 @@ jobs:
         run: |
           conda list
 
-      - name: Running Tests
-        run: |
-          python -m pytest test -v --cov=./geocat/comp --cov-report=xml
+      - name: Run Tests
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 60
+          max_attempts: 3
+          command: |
+            eval "$(micromamba shell hook --shell bash)"
+            micromamba activate
+            micromamba activate geocat_comp_build
+            python -m pytest test -v --cov=./geocat/comp --cov-report=xml
