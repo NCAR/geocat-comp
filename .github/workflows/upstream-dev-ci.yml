@@ -35,16 +35,11 @@ jobs:
           create-args: >-
             python=${{ matrix.python-version }}
 
-      - name: remove existing micromamba if failed
-        if: steps.env-setup.outcome == 'failure'
-        run: |
-          micromamba deactivate
-          micromamba clean --all --yes
-
       - name: retry environment set up if failed
         if: steps.env-setup.outcome == 'failure'
         uses: mamba-org/setup-micromamba@v1
         with:
+          download-micromamba: false
           environment-file: build_envs/environment.yml
           create-args: >-
             python=${{ matrix.python-version }}
