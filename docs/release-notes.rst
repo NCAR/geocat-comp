@@ -12,6 +12,7 @@ Internal Changes
 ^^^^^^^^^^^^^^^^
 * Upstream CI improvements by `Anissa Zacharias`_ in (:pr:`527`)
 * CI improvements by `Anissa Zacharias`_ in (:pr:`528`)
+* Add retry actions to CI by `Anissa Zacharias`_ in (:pr:`530`)
 
 
 v2023.12.0 (December 5, 2023)
