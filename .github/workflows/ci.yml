@@ -100,7 +100,8 @@ jobs:
           timeout_minutes: 60
           max_attempts: 3
           command: |
-            micromamba shell reinit --shell bash
+            eval "$(micromamba shell hook --shell bash)"
+            micromamba activate
             micromamba activate gc-docs
             micromamba list
             cd docs
