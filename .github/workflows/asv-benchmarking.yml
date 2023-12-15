@@ -56,12 +56,19 @@ jobs:
           fi
 
       - name: Run benchmarks
-        shell: bash -l {0}
         id: benchmark
-        run: |
-          cd benchmarks
-          asv machine --machine GH-Actions --os ubuntu-latest --arch x64 --cpu "2-core unknown" --ram 7GB
-          asv run v2023.02.0..main --skip-existing --parallel || true
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 180
+          max_attempts: 2
+          shell: bash -l {0}
+          command: |
+            eval "$(micromamba shell hook --shell bash)"
+            micromamba activate
+            micromamba acticate asv-bench
+            cd benchmarks
+            asv machine --machine GH-Actions --os ubuntu-latest --arch x64 --cpu "2-core unknown" --ram 7GB
+            asv run v2023.02.0..main --skip-existing --parallel || true
 
       - name: Commit and push benchmark results
         run: |
