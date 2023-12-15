@@ -25,7 +25,18 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
+
       - name: environment set up
+        id: env-setup
+        continue-on-error: true
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          environment-name: import_test
+          create-args: >-
+            python=${{ matrix.python-version }}
+
+      - name: retry environment setup if failed
+        if: steps.env-setup.outcome == 'failure'
         uses: mamba-org/setup-micromamba@v1
         with:
           environment-name: import_test
