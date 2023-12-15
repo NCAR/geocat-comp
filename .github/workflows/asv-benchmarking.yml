@@ -61,7 +61,6 @@ jobs:
         with:
           timeout_minutes: 180
           max_attempts: 2
-          shell: bash -l {0}
           command: |
             eval "$(micromamba shell hook --shell bash)"
             micromamba activate
