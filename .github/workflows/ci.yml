@@ -65,7 +65,12 @@ jobs:
           timeout_minutes: 60
           max_attempts: 3
           command: |
+            {{#if eq matrix.os 'windows-latest'}}
+            micromamba.exe shell hook -s powershell | Out-String | Invoke-Expression
+            {{else}}
+            # For other operating systems
             eval "$(micromamba shell hook --shell bash)"
+            {{/if}}
             micromamba activate
             micromamba activate geocat_comp_build
             python -m pytest test -v --cov=./geocat/comp --cov-report=xml --junitxml=pytest.xml
