@@ -34,18 +34,18 @@ jobs:
 
       - name: Try conda release
         run: |
-          conda install geocat-comp
-          conda activate import_test
-          conda list
-          conda activate import_test
+          micromamba install geocat-comp
+          micromamba activate import_test
+          micromamba list
+          micromamba activate import_test
           python -c "import geocat.comp"
 
       - name: Uninstall conda release
         run: |
-          conda remove geocat-comp -y
+          micromamba remove geocat-comp -y
 
       - name: Try PyPI release
         run: |
           pip install geocat-comp
-          conda list
+          micromamba list
           python -c "import geocat.comp"
