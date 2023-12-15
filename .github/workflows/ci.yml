@@ -33,7 +33,20 @@ jobs:
       - name: set environment variables
         run: |
           echo "TODAY=$(date +%Y-%m-%d)" >> $GITHUB_ENV
+
       - name: environment setup
+        id: env-setup
+        continue-on-error: true
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          environment-file: build_envs/environment.yml
+          cache-environment: true
+          cache-environment-key: "CI ${{runner.os}}-${{runner.arch}}-py${{matrix.python-version}}-${{env.TODAY}}"
+          create-args: >-
+            python=${{matrix.python-version}}
+
+      - name: retry environment set up if failed
+        if: steps.env-setup.outcome == 'failure'
         uses: mamba-org/setup-micromamba@v1
         with:
           environment-file: build_envs/environment.yml
