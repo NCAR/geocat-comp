@@ -28,12 +28,13 @@ jobs:
       - name: environment set up
         uses: mamba-org/setup-micromamba@v1
         with:
+          environment-name: import_test
           create-args: >-
             python=${{ matrix.python-version }}
 
       - name: Try conda release
         run: |
-          conda create -n import_test python=${{ matrix.python-version }} geocat-comp
+          conda install geocat-comp
           conda activate import_test
           conda list
           conda activate import_test
