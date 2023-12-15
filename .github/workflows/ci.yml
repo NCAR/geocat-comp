@@ -49,6 +49,7 @@ jobs:
         if: steps.env-setup.outcome == 'failure'
         uses: mamba-org/setup-micromamba@v1
         with:
+          download-micromamba: false
           environment-file: build_envs/environment.yml
           cache-environment: true
           cache-environment-key: "CI ${{runner.os}}-${{runner.arch}}-py${{matrix.python-version}}-${{env.TODAY}}"
@@ -105,9 +106,23 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
+
       - name: environment setup
+        id: link-env-setup
+        continue-on-error: true
         uses: mamba-org/setup-micromamba@v1
         with:
+          environment-file: build_envs/docs.yml
+          cache-environment: true
+          cache-environment-key: "linkcheck-${{env.TODAY}}"
+          create-args: >-
+            python=3.11
+
+      - name: retry environment set up if failed
+        if: steps.link-env-setup.outcome == 'failure'
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          download-micromamba: false
           environment-file: build_envs/docs.yml
           cache-environment: true
           cache-environment-key: "linkcheck-${{env.TODAY}}"

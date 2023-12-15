@@ -39,6 +39,7 @@ jobs:
         if: steps.env-setup.outcome == 'failure'
         uses: mamba-org/setup-micromamba@v1
         with:
+          download-micromamba: false
           environment-name: import_test
           create-args: >-
             python=${{ matrix.python-version }}

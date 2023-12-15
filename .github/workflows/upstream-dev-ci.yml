@@ -31,7 +31,7 @@ jobs:
         continue-on-error: true
         uses: mamba-org/setup-micromamba@v1
         with:
-          environment-file: build_envs/environment-fake.yml
+          environment-file: build_envs/environment.yml
           create-args: >-
             python=${{ matrix.python-version }}
 
