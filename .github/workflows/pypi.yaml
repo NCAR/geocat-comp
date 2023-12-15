@@ -49,5 +49,5 @@ jobs:
       - name: Publish package to PyPI
         uses: pypa/gh-action-pypi-publish@v1.8.11
         with:
-          skip_existing: true
+          skip-existing: true
           verbose: true
