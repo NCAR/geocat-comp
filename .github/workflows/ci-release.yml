@@ -4,6 +4,10 @@ on:
     - cron: '0 0 * * *' # Daily “At 00:00”
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     name: Python (${{ matrix.python-version }}, ${{ matrix.os }})
@@ -18,10 +22,6 @@ jobs:
         os: [ "ubuntu-latest", "macos-latest", "windows-latest" ]
         python-version: ["3.9", "3.10", "3.11"]
     steps:
-      - name: Cancel previous runs
-        uses: styfle/cancel-workflow-action@0.12.0
-        with:
-          access_token: ${{ github.token }}
       - name: checkout
         uses: actions/checkout@v4
         with:
