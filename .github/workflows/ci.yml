@@ -103,4 +103,5 @@ jobs:
           timeout_minutes: 60
           max_attempts: 3
           command: |
+            pwd
             make linkcheck
