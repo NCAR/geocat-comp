@@ -52,6 +52,9 @@ jobs:
           timeout_minutes: 60
           max_attempts: 3
           command: |
+            eval "$(micromamba shell hook --shell bash)"
+            micromamba activate
+            micromamba activate geocat_comp_build
             python -m pytest test -v
             --cov=./geocat/comp
             --cov-report=xml
@@ -100,9 +103,8 @@ jobs:
           timeout_minutes: 60
           max_attempts: 3
           command: |
-            # eval "$(micromamba shell hook --shell bash)"
-            # micromamba activate
-            pwd
+            eval "$(micromamba shell hook --shell bash)"
+            micromamba activate
             micromamba activate gc-docs
             cd docs
             make linkcheck
