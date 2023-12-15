@@ -1,4 +1,4 @@
-name: CI-release-test
+name: CI Release Test
 on:
   schedule:
     - cron: '0 0 * * *' # Daily “At 00:00”
