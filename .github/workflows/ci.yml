@@ -100,9 +100,9 @@ jobs:
           timeout_minutes: 60
           max_attempts: 3
           command: |
-            eval "$(micromamba shell hook --shell bash)"
-            micromamba activate
+            # eval "$(micromamba shell hook --shell bash)"
+            # micromamba activate
+            pwd
             micromamba activate gc-docs
-            micromamba list
             cd docs
             make linkcheck
