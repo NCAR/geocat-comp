@@ -25,23 +25,26 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
-      - name: conda_setup
-        uses: conda-incubator/setup-miniconda@v3
+      - name: environment set up
+        uses: mamba-org/setup-micromamba@v1
         with:
-          channel-priority: strict
-          python-version: ${{ matrix.python-version }}
-          channels: conda-forge
+          create-args: >-
+            python=${{ matrix.python-version }}
 
-      - name: Install released geocat-comp
+      - name: Try conda release
         run: |
-          conda create -n import_test geocat-comp
-
-      - name: See environment info
-        run: |
+          conda create -n import_test python=${{ matrix.python-version }} geocat-comp
           conda activate import_test
           conda list
-
-      - name: Import
-        run: |
           conda activate import_test
+          python -c "import geocat.comp"
+
+      - name: Uninstall conda release
+        run: |
+          conda remove geocat-comp -y
+
+      - name: Try PyPI release
+        run: |
+          pip install geocat-comp
+          conda list
           python -c "import geocat.comp"
