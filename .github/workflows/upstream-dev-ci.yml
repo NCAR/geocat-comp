@@ -25,9 +25,21 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ github.token }}
+
       - name: set up environment
+        id: env-setup
+        continue-on-error: true
         uses: mamba-org/setup-micromamba@v1
         with:
+          environment-file: build_envs/environment.yml
+          create-args: >-
+            python=${{ matrix.python-version }}
+
+      - name: retry environment set up if failed
+        if: steps.env-setup.outcome == 'failure'
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          download-micromamba: false
           environment-file: build_envs/environment.yml
           create-args: >-
             python=${{ matrix.python-version }}
@@ -48,6 +60,13 @@ jobs:
         run: |
           conda list
 
-      - name: Running Tests
-        run: |
-          python -m pytest test -v --cov=./geocat/comp --cov-report=xml
+      - name: Run Tests
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 60
+          max_attempts: 3
+          command: |
+            eval "$(micromamba shell hook --shell bash)"
+            micromamba activate
+            micromamba activate geocat_comp_build
+            python -m pytest test -v --cov=./geocat/comp --cov-report=xml
