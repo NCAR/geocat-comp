@@ -85,7 +85,7 @@ jobs:
             python -m pytest test -v --cov=./geocat/comp --cov-report=xml --junitxml=pytest.xml
 
       - name: Upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Test results for ${{ runner.os }}-${{ matrix.python-version }}
           path: pytest.xml
