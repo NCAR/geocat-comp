@@ -19,13 +19,14 @@ conda list
 
 # if available install from nightly wheels
 python -m pip install \
-    -i https://pypi.anaconda.org/scipy-wheels-nightly/simple \
+    -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple/ \
     --no-deps \
     --pre \
     --upgrade \
     numpy \
     pandas \
-    scipy
+    scipy \
+    xarray
 
 # install rest from source
 python -m pip install \
@@ -34,5 +35,4 @@ python -m pip install \
     git+https://github.com/dask/distributed.git \
     git+https://github.com/Unidata/MetPy.git \
     git+https://github.com/hgrecco/pint.git \
-    git+https://github.com/pydata/xarray.git \
     git+https://github.com/xarray-contrib/xskillscore.git

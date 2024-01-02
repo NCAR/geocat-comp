@@ -5,7 +5,7 @@
 Release Notes
 =============
 
-v2024.01.0 (Unreleased)
+v2024.02.0 (Unreleased)
 -----------------------
 
 Internal Changes
@@ -15,6 +15,8 @@ Internal Changes
 * Switch to PyPI Trusted Publishing by `Anissa Zacharias`_ in (:pr:`534`)
 * Add retry actions to CI by `Anissa Zacharias`_ in (:pr:`532`)
 * Improves/standardizes release tests and adds PyPI release testing by `Anissa Zacharias`_ in (:pr:`531`)
+* Updates upstream dev workflow to use `scientific-python-nightly-wheels <https://pypi.anaconda.org/scientific-python-nightly-wheels/simple/>`__
+  by `Anissa Zacharias`_ in (:pr:`537`)
 
 v2023.12.0 (December 5, 2023)
 -----------------------------
