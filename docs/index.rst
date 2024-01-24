@@ -12,7 +12,7 @@
               weather research and forecasting model, model, weather,
               numerical weather prediction, model, matplotlib, cartopy,
               wrf-arw, arw, ncar, nsf, nsf ncar, ucar, cisl, ncl,
-              ncar command language, national center for atmospheric research,
+              ncar command language, nsf national center for atmospheric research,
               university corporation for atmospheric research,
               pynio, pyngl, interpolation
 
