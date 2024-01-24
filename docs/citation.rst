@@ -23,20 +23,20 @@ the following text:
 
     **Visualization & Analysis Systems Technologies. (2019).
     Geoscience Community Analysis Toolkit: GeoCAT-comp [Software].
-    Boulder, CO: NSF UCAR/NCAR - Computational and Informational System Lab. doi:10.5281/zenodo.6607205.**
+    Boulder, CO: NSF NCAR Computational and Information System Lab. doi:10.5281/zenodo.6607205.**
 
 Instead, if you would like to cite a specific version of GeoCAT-comp, use the following text:
 
     **Visualization & Analysis Systems Technologies. (\<Year\>).
     Geoscience Community Analysis Toolkit: GeoCAT-comp (v\<version\>) [Software].
-    Boulder, CO, USA: NSF UCAR/NCAR - Computational and Informational System Lab. doi:\<DOI\>.**
+    Boulder, CO, USA: NSF NCAR Computational and Information System Lab. doi:\<DOI\>.**
 
 In the above citation text, update the year, GeoCAT-comp version, and DOI as appropriate. For
 example:
 
     **Visualization & Analysis Systems Technologies. (2022).
     Geoscience Community Analysis Toolkit: GeoCAT-comp (v2022.04.0) [Software].
-    Boulder, CO, USA: NSF UCAR/NCAR - Computational and Informational System Lab. doi:10.5281/zenodo.6607349.**
+    Boulder, CO, USA: NSF NCAR Computational and Information System Lab. doi:10.5281/zenodo.6607349.**
 
 Please note: The DOI minting service, Zenodo, might be suggesting their own citation text (as
 they are the publisher of such DOIs) in their website. We prefer the text we recommend here to be used;
