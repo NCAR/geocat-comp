@@ -328,7 +328,7 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
     -----
     ACKNOWLEDGEMENT: We'd like to thank to `Brian Medeiros <https://github.com/brianpm>`__,
     `Matthew Long <https://github.com/matt-long>`__, and `Deepak Cherian <https://github.com/dcherian>`__
-    at NCAR for their great contributions since the code implemented here is mostly
+    at NSF NCAR for their great contributions since the code implemented here is mostly
     based on their work.
 
     Parameters

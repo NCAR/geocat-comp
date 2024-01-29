@@ -255,7 +255,7 @@ html_theme_options = dict(
     home_page_in_toc=False,
     navbar_footer_text="",
     extra_footer=
-    "<em>The National Center for Atmospheric Research is sponsored by the National Science Foundation. Any opinions, findings and conclusions or recommendations expressed in this material do not necessarily reflect the views of the National Science Foundation.</em>",
+    "<em>The NSF National Center for Atmospheric Research (NSF NCAR) is sponsored by the U.S. National Science Foundation. Any opinions, findings and conclusions or recommendations expressed in this material do not necessarily reflect the views of the U.S. National Science Foundation.</em>",
 )
 
 # Add any paths that contain custom themes here, relative to this directory.
@@ -270,7 +270,7 @@ html_theme_options = dict(
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-html_logo = '_static/images/logos/GeoCAT_nsf.svg'
+html_logo = '_static/images/logos/NSF_NCAR.png'
 
 # The name of an image file (relative to this directory) to use as a favicon of
 # the docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
