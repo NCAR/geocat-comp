@@ -19,6 +19,11 @@ Internal Changes
 * Updates upstream dev workflow to use `scientific-python-nightly-wheels <https://pypi.anaconda.org/scientific-python-nightly-wheels/simple/>`__
   by `Anissa Zacharias`_ and `Katelyn FitzGerald`_ in (:pr:`537`)
 
+Documentation
+^^^^^^^^^^^^^
+* Update remaining assets to comply with NSF branding theme by `Cora Schneck`_ in (:pr:`541`)
+
+
 v2023.12.0 (December 5, 2023)
 -----------------------------
 This release adds official windows support and unpins xarray and numpy.
