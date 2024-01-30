@@ -5,6 +5,14 @@
 Release Notes
 =============
 
+v2024.02.0 (Unreleased)
+-----------------------
+
+Documentation
+^^^^^^^^^^^^^
+* Override branding for light/dark theme by `Cora Schneck`_ in (:pr:`545`)
+
+
 v2024.01.0 (January 30, 2023)
 -----------------------
 This release primarily updates our internal CI.
