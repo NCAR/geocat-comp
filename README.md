@@ -1,7 +1,7 @@
 | CI           | [![GitHub Workflow Status][github-ci-badge]][github-ci-link] [![GitHub Workflow Status][github-upstream-ci-badge]][github-upstream-ci-link] [![Code Coverage Status][codecov-badge]][codecov-link] [![asv-badge]][asv-link] |
 | :----------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 | **Docs**     |                                                                    [![Documentation Status][rtd-badge]][rtd-link]                                                                    |
-| **Package**  |                                                         [![Conda][conda-badge]][conda-link] [![PyPI][pypi-badge]][pypi-link]                                                         |
+| **Package**  |                            [![Conda][conda-badge]][conda-link] [![PyPI][pypi-badge]][pypi-link] [![Python Version][python-version-badge]][python-version-badge-link]                 |
 | **License**  |                                                                        [![License][license-badge]][repo-link]                                                                        |
 | **Citing**  |                                                                              [![DOI][doi-badge]][doi-link]                                                                            |
 
@@ -47,6 +47,8 @@ https://geocat-comp.readthedocs.io/en/latest/citation.html) page.
 [rtd-link]: https://geocat-comp.readthedocs.io/en/latest/?badge=latest
 [pypi-badge]: https://img.shields.io/pypi/v/geocat-comp?logo=pypi&style=for-the-badge
 [pypi-link]: https://pypi.org/project/geocat-comp
+[python-version-badge]: https://img.shields.io/pypi/pyversions/geocat-comp?style=for-the-badge
+[python-version-badge-link]: https://img.shields.io/pypi/pyversions/geocat-comp
 [conda-badge]: https://img.shields.io/conda/vn/conda-forge/geocat-comp?logo=anaconda&style=for-the-badge
 [conda-link]: https://anaconda.org/conda-forge/geocat-comp
 [license-badge]: https://img.shields.io/github/license/NCAR/geocat-comp?style=for-the-badge
