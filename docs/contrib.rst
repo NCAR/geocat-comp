@@ -147,7 +147,7 @@ Use the following commands to create a new conda environment to develop
 .. code-block:: bash
 
     # Create a new conda environment
-    conda create -c conda-forge -n geocat_comp_build python=3.10
+    conda create -c conda-forge -n geocat_comp_build python=3.11
 
     # Use the environment file to populate the environment with the required dependencies
     conda env update -f build_envs/environment.yml
@@ -186,6 +186,12 @@ To create and check out a new branch, use the following command:
 .. code-block:: bash
 
     git checkout -b <branch-name>
+
+Track upstream changes for `git pull` and `git push`
+
+.. code-block:: bash
+
+    git branch --set-upstream-to=origin/<branch-name> <branch-name>
 
 You can see a list of all branches in your local repository by running:
 
