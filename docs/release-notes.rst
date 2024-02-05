@@ -14,6 +14,7 @@ Documentation
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
+* Update hourly frequency aliases by `Katelyn FitzGerald`_ in (:pr:`550`)
 * Python 3.12 Support by `Cora Schneck`_ in (:pr:`548`)
 
 

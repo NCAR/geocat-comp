@@ -361,7 +361,7 @@ class Test_Month_to_Season:
 
 class Test_Calendar_Average():
     minute = _get_dummy_data('2020-01-01', '2021-12-31 23:30:00', '30min', 1, 1)
-    hourly = _get_dummy_data('2020-01-01', '2021-12-31 23:00:00', 'H', 1, 1)
+    hourly = _get_dummy_data('2020-01-01', '2021-12-31 23:00:00', 'h', 1, 1)
     daily = _get_dummy_data('2020-01-01', '2021-12-31', 'D', 1, 1)
     monthly = _get_dummy_data('2020-01-01', '2021-12-01', 'MS', 1, 1)
 
@@ -559,7 +559,7 @@ class Test_Calendar_Average():
         hour_avg = np.arange(0.5, 35088.5, 2).reshape((365 + 366) * 24, 1, 1)
         hour_avg_time = xr.cftime_range('2020-01-01 00:30:00',
                                         '2021-12-31 23:30:00',
-                                        freq='H')
+                                        freq='h')
         min_2_hour_avg = xr.Dataset(
             data_vars={'data': (('time', 'lat', 'lon'), hour_avg)},
             coords={
@@ -670,7 +670,7 @@ class Test_Calendar_Average():
 class Test_Climatology_Average():
     minute = _get_dummy_data('2020-01-01', '2021-12-31 23:30:00', '30min', 1, 1)
 
-    hourly = _get_dummy_data('2020-01-01', '2021-12-31 23:00:00', 'H', 1, 1)
+    hourly = _get_dummy_data('2020-01-01', '2021-12-31 23:00:00', 'h', 1, 1)
 
     daily = _get_dummy_data('2020-01-01', '2021-12-31', 'D', 1, 1)
 
@@ -682,7 +682,7 @@ class Test_Climatology_Average():
         .reshape(8784, 1, 1)
     hour_clim_time = xr.cftime_range('2020-01-01 00:30:00',
                                      '2020-12-31 23:30:00',
-                                     freq='H')
+                                     freq='h')
     min_2_hourly_clim = xr.Dataset(
         data_vars={'data': (('time', 'lat', 'lon'), hour_clim)},
         coords={
@@ -696,7 +696,7 @@ class Test_Climatology_Average():
         .reshape(366, 1, 1)
     day_clim_time = xr.cftime_range('2020-01-01 12:00:00',
                                     '2020-12-31 12:00:00',
-                                    freq='24H')
+                                    freq='24h')
 
     hour_2_day_clim = xr.Dataset(
         data_vars={'data': (('time', 'lat', 'lon'), day_clim)},
