@@ -12,6 +12,10 @@ Documentation
 ^^^^^^^^^^^^^
 * Override branding for light/dark theme by `Cora Schneck`_ in (:pr:`545`)
 
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Python 3.12 Support by `Cora Schneck`_ in (:pr:`548`)
+
 
 v2024.01.0 (January 30, 2023)
 -----------------------
