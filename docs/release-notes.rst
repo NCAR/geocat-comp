@@ -12,6 +12,10 @@ Documentation
 ^^^^^^^^^^^^^
 * Override branding for light/dark theme by `Cora Schneck`_ in (:pr:`545`)
 
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Update hourly frequency aliases by `Katelyn FitzGerald`_ in (:pr:`550`)
+
 
 v2024.01.0 (January 30, 2023)
 -----------------------

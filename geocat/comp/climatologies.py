@@ -379,7 +379,7 @@ def calendar_average(
     """
     # TODO: add functionality for users to select specific seasons or hours for averages
     freq_dict = {
-        'hour': ('%m-%d %H', 'H'),
+        'hour': ('%m-%d %H', 'h'),
         'day': ('%m-%d', 'D'),
         'month': ('%m', 'MS'),
         'season': (None, 'QS-DEC'),
@@ -526,7 +526,7 @@ def climatology_average(
     `month_to_season <https://www.ncl.ucar.edu/Document/Functions/Contributed/month_to_season.shtml>`__
     """
     freq_dict = {
-        'hour': ('%m-%d %H', 'H'),
+        'hour': ('%m-%d %H', 'h'),
         'day': ('%m-%d', 'D'),
         'month': ('%m', 'MS'),
         'season': (None, 'QS-DEC')
