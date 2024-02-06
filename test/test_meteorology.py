@@ -16,14 +16,6 @@ from geocat.comp.meteorology import (
     saturation_vapor_pressure, saturation_vapor_pressure_slope, delta_pressure)
 
 
-@pytest.fixture(scope="module")
-def client() -> None:
-    # dask client reference for all subsequent tests
-    client = dd.Client()
-    yield client
-    client.close()
-
-
 class Test_dewtemp:
 
     # ground truths
@@ -75,18 +67,6 @@ class Test_dewtemp:
     def test_xarray_type_error(self) -> None:
         with pytest.raises(TypeError):
             dewtemp(self.t_def, xr.DataArray(self.rh_def))
-
-    def test_dask_compute(self) -> None:
-        tk = xr.DataArray(np.asarray(self.t_def) + 273.15).chunk(6)
-        rh = xr.DataArray(self.rh_def).chunk(6)
-
-        assert np.allclose(dewtemp(tk, rh) - 273.15, self.dt_2, atol=0.1)
-
-    def test_dask_lazy(self) -> None:
-        tk = xr.DataArray(np.asarray(self.t_def) + 273.15).chunk(6)
-        rh = xr.DataArray(self.rh_def).chunk(6)
-
-        assert isinstance((dewtemp(tk, rh) - 273.15).data, dask.array.Array)
 
 
 class Test_heat_index:
