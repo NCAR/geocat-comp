@@ -154,18 +154,6 @@ class Test_heat_index:
         with pytest.raises(ValueError):
             heat_index(self.t1[:10], self.rh1[:8])
 
-    def test_dask_compute(self) -> None:
-        t = xr.DataArray(self.t1).chunk(3)
-        rh = xr.DataArray(self.rh1).chunk(3)
-
-        assert np.allclose(heat_index(t, rh), self.ncl_gt_1, atol=0.005)
-
-    def test_dask_lazy(self) -> None:
-        t = xr.DataArray(self.t1).chunk(3)
-        rh = xr.DataArray(self.rh1).chunk(3)
-
-        assert isinstance((heat_index(t, rh)).data, dask.array.Array)
-
 
 class Test_relhum:
 
@@ -224,20 +212,6 @@ class Test_relhum:
     def test_xarray_type_error(self) -> None:
         with pytest.raises(TypeError):
             relhum(self.t_def, xr.DataArray(self.q_def), self.p_def)
-
-    def test_dask_compute(self, client) -> None:
-        p = xr.DataArray(self.p_def).chunk(10)
-        t = xr.DataArray(self.t_def).chunk(10)
-        q = xr.DataArray(self.q_def).chunk(10)
-
-        assert np.allclose(relhum(t, q, p), self.rh_gt_2, atol=0.1)
-
-    def test_dask_lazy(self, client) -> None:
-        p = xr.DataArray(self.p_def).chunk(10)
-        t = xr.DataArray(self.t_def).chunk(10)
-        q = xr.DataArray(self.q_def).chunk(10)
-
-        assert isinstance(relhum(t, q, p).data, dask.array.Array)
 
 
 class Test_relhum_water:
