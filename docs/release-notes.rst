@@ -16,7 +16,7 @@ Internal Changes
 ^^^^^^^^^^^^^^^^
 * Update hourly frequency aliases by `Katelyn FitzGerald`_ in (:pr:`550`)
 * Python 3.12 Support by `Cora Schneck`_ in (:pr:`548`)
-* Temporarily pin ASV to ``<0.6.2`` by `Anissa Zacharias` in (:pr:`556`)
+* Temporarily pin ASV to ``<0.6.2`` by `Anissa Zacharias`_ in (:pr:`556`)
 
 
 v2024.01.0 (January 30, 2023)
