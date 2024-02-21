@@ -399,6 +399,9 @@ nb_execution_mode = "off"
 # generate warning for all invalid links
 # nitpicky = True
 
+# add links to ignore during link checking
+linkcheck_ignore = [r'https://stackoverflow.com/help/*']
+
 
 # Allow for changes to be made to the css in the theme_overrides file
 def setup(app):
