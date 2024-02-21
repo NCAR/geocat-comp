@@ -65,6 +65,7 @@ extensions = [
     "sphinx_design",
     "nbsphinx",
     'sphinx.ext.extlinks',
+    'sphinxcontrib.apidoc',
 ]
 
 mathjax_config = {
@@ -287,6 +288,7 @@ html_favicon = '_static/images/logos/GeoCAT_square.svg'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 html_css_files = ["style.css"]
+apidoc_extra_args = ["--implicit-namespaces"]
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
