@@ -5,10 +5,8 @@ from dask.distributed import Client
 import xarray as xr
 import numpy as np
 
-from geocat.comp.meteorology import (
-    dewtemp, heat_index, relhum, relhum_ice, relhum_water,
-    actual_saturation_vapor_pressure, max_daylight, psychrometric_constant,
-    saturation_vapor_pressure, saturation_vapor_pressure_slope, delta_pressure)
+# import everything for dask compatibility and performance tests
+from geocat.comp import *
 
 
 @pytest.fixture(scope="module")
@@ -169,3 +167,21 @@ class Test_dask_compat:
 
         assert isinstance(out.data, dask.array.Array)
         assert np.allclose(out, ncl_gt, atol=0.005)
+
+    @pytest.mark.xfail(reason="gradient not compatible with dask")
+    def test_gradient_dask(self):
+        test_data = xr.load_dataset(
+            'test/gradient_test_data.nc').to_array().squeeze().chunk(10)
+
+        expected_results = [
+            xr.load_dataset(
+                'test/gradient_test_results_longitude.nc').to_array().squeeze(),
+            xr.load_dataset(
+                'test/gradient_test_results_latitude.nc').to_array().squeeze()
+        ]
+
+        out = gradient(test_data)
+        assert isinstance(out[0].data, dask.array.Array)
+        np.testing.assert_almost_equal(np.array(out),
+                                       np.array(expected_results),
+                                       decimal=3)
