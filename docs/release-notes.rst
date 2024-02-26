@@ -11,6 +11,7 @@ v2024.02.0 (Unreleased)
 Documentation
 ^^^^^^^^^^^^^
 * Override branding for light/dark theme by `Cora Schneck`_ in (:pr:`545`)
+* Updated outdated documentation `Cora Schneck`_ in (:pr:`561`)
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
