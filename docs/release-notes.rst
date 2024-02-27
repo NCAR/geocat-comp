@@ -19,6 +19,8 @@ Internal Changes
 * Temporarily pin ASV to ``<0.6.2`` by `Anissa Zacharias`_ in (:pr:`556`)
 * Added ``linkcheck_ignore`` to ``docs/conf.py`` to address erroneous failures `Anissa Zacharias`_ in (:pr:`559`)
 * Updated Codecov upload to use token by `Anissa Zacharias`_ in (:pr:`566`)
+* Convert to implicit namespace packaging set up by `Anissa Zacharias`_ in (:pr:`563`)
+
 
 v2024.01.0 (January 30, 2023)
 -----------------------
