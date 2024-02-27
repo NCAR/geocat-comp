@@ -91,7 +91,10 @@ jobs:
           path: pytest.xml
 
       - name: Upload code coverage to Codecov
+        if: github.repository == 'NCAR/geocat-comp'
         uses: codecov/codecov-action@v4.1.0
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
           file: ./coverage.xml
           env_vars: OS,PYTHON
