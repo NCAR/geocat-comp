@@ -18,5 +18,5 @@ dependencies:
   - xarray
   - xskillscore
   - pip:
-      - asv
+      - asv<0.6.2
       - -e ../
