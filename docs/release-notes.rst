@@ -5,8 +5,10 @@
 Release Notes
 =============
 
-v2024.02.0 (Unreleased)
------------------------
+v2024.02.0 (February 28, 2024)
+------------------------------
+This release switches the package to use an implicit namespace and adds support
+for Python 3.12.
 
 Documentation
 ^^^^^^^^^^^^^
