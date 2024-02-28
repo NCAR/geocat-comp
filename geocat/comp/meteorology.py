@@ -1421,7 +1421,7 @@ def _delta_pressure1D(pressure_lev, surface_pressure):
     # Calculate delta pressure
     delta_pressure = np.full_like(pressure_lev, np.nan)
 
-    [indices] = np.nonzero(pressure_lev <= surface_pressure)
+    [indices] = np.nonzero(np.array(pressure_lev) <= surface_pressure)
 
     start_level = min(indices)
     end_level = max(indices)
