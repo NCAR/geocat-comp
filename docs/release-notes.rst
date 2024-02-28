@@ -33,6 +33,9 @@ Internal Changes
 * Convert to implicit namespace packaging set up by `Anissa Zacharias`_ in (:pr:`563`)
 * Temporarily pin ASV to ``<0.6.2`` by `Anissa Zacharias`_ in (:pr:`556` and :pr:`569`)
 
+Bug Fixes
+^^^^^^^^^
+* Fix ``delta_pressure`` to handle the case where pressure level(s) are greater than the surface pressure by `Katelyn FitzGerald`_ in (:pr:`571`)
 
 v2024.01.0 (January 30, 2023)
 -----------------------
