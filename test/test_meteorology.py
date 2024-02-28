@@ -527,9 +527,9 @@ class Test_Delta_Pressure:
             delta_p = delta_pressure(pressure_lev_negative,
                                      self.surface_pressure_scalar)
 
-    def test_relative_pressure_warning(self) -> None:
+    def test_relative_pressure_error(self) -> None:
         surface_pressure_low = 0.5
-        with pytest.warns(UserWarning):
+        with pytest.raises(ValueError):
             delta_p = delta_pressure(self.pressure_lev, surface_pressure_low)
 
     def test_output_type(self) -> None:
