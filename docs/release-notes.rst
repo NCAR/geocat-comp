@@ -5,6 +5,14 @@
 Release Notes
 =============
 
+v2024.02.0 (Unreleased)
+------------------------------
+Upcoming release
+
+Internal Changes
+^^^^^^^^^^^^^
+* Additional pre-commit hook for codespell by `Cora Schneck`_ in (:pr:`579`)
+
 v2024.02.0 (February 28, 2024)
 ------------------------------
 This release switches the package to use an implicit namespace and adds support
