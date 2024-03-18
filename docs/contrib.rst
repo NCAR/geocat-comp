@@ -299,10 +299,8 @@ need to modify to incorporate your code into the package. These include:
 Write and run tests
 -------------------
 
-``geocat-comp`` uses `pytest <https://pytest.org/>`__ for unit tests. Currently,
-we have unit tests written in both ``pytest`` and ``unittest``. We are in the
-process of converting all of our tests to ``pytest`` and we encourage you to
-write new tests using ``pytest``.
+``geocat-comp`` uses `pytest <https://pytest.org/>`__ for unit tests, so we
+encourage you to write new tests using ``pytest`` as well.
 
 To run the tests locally, use the following command from the root of the
 repository:

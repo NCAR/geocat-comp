@@ -5,19 +5,24 @@
 Release Notes
 =============
 
-v2024.02.0 (Unreleased)
------------------------
+v2024.02.0 (February 28, 2024)
+------------------------------
+This release switches the package to use an implicit namespace and adds support
+for Python 3.12.
 
 Documentation
 ^^^^^^^^^^^^^
 * Override branding for light/dark theme by `Cora Schneck`_ in (:pr:`545`)
+* Updated outdated documentation `Cora Schneck`_ in (:pr:`561`)
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
 * Update hourly frequency aliases by `Katelyn FitzGerald`_ in (:pr:`550`)
 * Python 3.12 Support by `Cora Schneck`_ in (:pr:`548`)
-* Temporarily pin ASV to ``<0.6.2`` by `Anissa Zacharias`_ in (:pr:`556`)
 * Added ``linkcheck_ignore`` to ``docs/conf.py`` to address erroneous failures `Anissa Zacharias`_ in (:pr:`559`)
+* Updated Codecov upload to use token by `Anissa Zacharias`_ in (:pr:`566`)
+* Convert to implicit namespace packaging set up by `Anissa Zacharias`_ in (:pr:`563`)
+* Temporarily pin ASV to ``<0.6.2`` by `Anissa Zacharias`_ in (:pr:`556` and :pr:`569`)
 
 
 v2024.01.0 (January 30, 2023)
