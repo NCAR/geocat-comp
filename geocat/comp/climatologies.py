@@ -127,7 +127,7 @@ def climate_anomaly(
         dimension.
 
     freq : str
-        Frequency alias. When the ``'year'`` allias is used, the yearly average is
+        Frequency alias. When the ``'year'`` alias is used, the yearly average is
         subtracted from each data point. Multiyear climatologies are not yet possible
         with this function. Accepted aliases:
 

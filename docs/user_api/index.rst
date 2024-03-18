@@ -39,7 +39,7 @@ Gradient
 
    gradient
 
-Iterpolation
+Interpolation
 ^^^^^^^^^^^^
 .. currentmodule:: geocat.comp.interpolation
 .. autosummary::
