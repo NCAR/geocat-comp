@@ -165,7 +165,7 @@ def _temp_extrapolate(data, lev_dim, lev, p_sfc, ps, phi_sfc):
     Returns
     -------
     result: :class:`xarray.DataArray`
-        The extrapolated temepratures at the provided pressure levels.
+        The extrapolated temperatures at the provided pressure levels.
     """
     R_d = 287.04  # dry air gas constant
     g_inv = 1 / 9.80616  # inverse of gravity
