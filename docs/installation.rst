@@ -42,7 +42,7 @@ compatibility between dependency packages.
 
 Also, note that the Conda package manager automatically installs all required
 dependencies of GeoCAT-comp, meaning it is not necessary to explicitly install
-Python, NumPy, Xarray, or Dask when creating an envionment and installing GeoCAT-comp.
+Python, NumPy, Xarray, or Dask when creating an environment and installing GeoCAT-comp.
 Although packages like Matplotlib are often used with GeoCAT-comp, they are considered
 `optional` dependencies and must be explicitly installed.
 

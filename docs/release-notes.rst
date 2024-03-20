@@ -5,6 +5,14 @@
 Release Notes
 =============
 
+v2024.03.0 (Unreleased)
+-----------------------
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Additional pre-commit hook for codespell by `Cora Schneck`_ in (:pr:`579`)
+* Reorganize dask compatibility tests by `Anissa Zacharias`_ in (:pr:`568`)
+
 v2024.02.0 (February 28, 2024)
 ------------------------------
 This release switches the package to use an implicit namespace and adds support
@@ -50,8 +58,7 @@ This release adds official windows support and unpins xarray and numpy.
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
-* Remove unnecessary tag publish trigger for ASV benchmarking CI  by `Anissa
-  Zacharias`_ in (:pr:`509`)
+* Remove unnecessary tag publish trigger for ASV benchmarking CI  by `Anissa Zacharias`_ in (:pr:`509`)
 * Add windows to testing strategy by `AnshRoshan`_ in (:pr:`460`)
 
 Bug Fixes

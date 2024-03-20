@@ -227,6 +227,8 @@ To manually run the pre-commit hooks, use the following command:
 
     pre-commit run --all-files
 
+If `codespell` flags on a jargon specific term, you can add the term to the `ignore-words-list` in`pyproject.toml`. Any words added to the `ignore-words-list` should be lower-case.
+
 You can skip the pre-commit hooks by adding the ``--no-verify`` flag to your
 commit command like this:
 

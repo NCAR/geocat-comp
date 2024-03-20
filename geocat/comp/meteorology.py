@@ -642,7 +642,7 @@ def heat_index(
 ) -> typing.Union[np.ndarray, xr.DataArray]:
     """Compute the 'heat index' as calculated by the National Weather Service.
 
-    The heat index calculation in this funtion is described at:
+    The heat index calculation in this function is described at:
     https://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml
 
     The 'Heat Index' is a measure of how hot weather "feels" to the body. The combination of temperature and humidity
