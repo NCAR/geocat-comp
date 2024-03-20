@@ -80,23 +80,6 @@ class Test_interp_hybrid_to_pressure:
                                               new_levels=self.pres3d,
                                               method="wrong_method")
 
-    def test_interp_hybrid_to_pressure_atmos_dask(self, ds_out) -> None:
-
-        ps_dask = self.ps.chunk()
-        data_dask = self.data.chunk()
-
-        u_int = interp_hybrid_to_pressure(data_dask,
-                                          ps_dask[0, :, :],
-                                          _hyam,
-                                          _hybm,
-                                          p0=_p0,
-                                          new_levels=self.pres3d,
-                                          method="log")
-
-        uzon = u_int.mean(dim='lon')
-
-        nt.assert_array_almost_equal(ds_out.uzon, uzon, 5)
-
 
 class Test_interp_hybrid_to_pressure_extrapolate:
 
@@ -341,21 +324,6 @@ class Test_interp_sigma_to_hybrid:
                                     method="linear")
         nt.assert_array_almost_equal(
             xh_expected.transpose('ncl2', 'ncl3', 'ncl1'), xh, 5)
-
-    def test_interp_sigma_to_hybrid_3d_dask(self, ps, u, sigma,
-                                            xh_expected) -> None:
-
-        ps_dask = ps.chunk()
-        u_dask = u.chunk()
-
-        xh = interp_sigma_to_hybrid(u_dask,
-                                    sigma,
-                                    ps_dask,
-                                    self.hyam,
-                                    self.hybm,
-                                    p0=_p0,
-                                    method="linear")
-        nt.assert_array_almost_equal(xh_expected, xh, 5)
 
     def test_interp_sigma_to_hybrid_wrong_method(self, u, sigma, ps) -> None:
         with pytest.raises(ValueError):

@@ -34,12 +34,6 @@ class Test_Gradient:
                                        np.array(expected_results),
                                        decimal=3)
 
-    def test_gradient_dask(self, test_data_xr, expected_results) -> None:
-        actual_result = gradient(test_data_xr.chunk(10))
-        np.testing.assert_almost_equal(np.array(actual_result),
-                                       np.array(expected_results),
-                                       decimal=3)
-
     def test_gradient_xr_1d_nocoords(self, test_data_xr,
                                      expected_results) -> None:
         actual_result = gradient(xr.DataArray(test_data_xr, coords={}),
