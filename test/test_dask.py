@@ -43,6 +43,7 @@ class TestDaskCompat:
         assert isinstance((out - 273.15).data, dask.array.Array)
         assert np.allclose(out - 273.15, dt_2, atol=0.1)
 
+    @pytest.mark.filterwarnings("ignore:invalid value encountered in sqrt")
     def test_heat_index_dask(self):
 
         ncl_gt_1 = [
