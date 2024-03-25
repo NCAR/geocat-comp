@@ -1,4 +1,3 @@
-import sys
 from abc import ABCMeta
 import numpy as np
 import xarray as xr
@@ -321,12 +320,11 @@ class Test_eof_ts(BaseEOFTestClass):
     def _nc_ds(self):
         try:
             return xr.open_dataset("eofunc_dataset.nc")
-        except:
+        except Exception:
             return xr.open_dataset("test/eofunc_dataset.nc")
 
     def test_01(self, _nc_ds) -> None:
         sst = _nc_ds.sst
-        evec = _nc_ds.evec
         expected_tsout = _nc_ds.tsout
 
         actual_tsout = eofunc_pcs(sst, npcs=5)
@@ -350,7 +348,6 @@ class Test_eof_ts(BaseEOFTestClass):
 
     def test_02(self, _nc_ds) -> None:
         sst = _nc_ds.sst
-        evec = _nc_ds.evec
         expected_tsout = _nc_ds.tsout
 
         actual_tsout = eofunc_pcs(sst, npcs=5, meta=True)
