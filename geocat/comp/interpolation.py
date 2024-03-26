@@ -1,5 +1,6 @@
 import typing
 
+import cf_xarray
 import metpy.interpolate
 import numpy as np
 import xarray as xr
