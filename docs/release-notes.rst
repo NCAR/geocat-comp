@@ -10,6 +10,7 @@ v2024.03.0 (Unreleased)
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
+* Reduce DeprecationWarnings in testing by `Cora Schneck`_ in (:pr:`582`)
 * Additional pre-commit hook for codespell by `Cora Schneck`_ in (:pr:`579`)
 * Add M1 runners to CI by `Katelyn FitzGerald`_ in (:pr:`581`)
 * Reorganize dask compatibility tests by `Anissa Zacharias`_ in (:pr:`568`)
