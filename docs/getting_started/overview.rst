@@ -6,11 +6,11 @@ Overview
 ========
 GeoCAT-comp is the computational component of the `GeoCAT project <https://geocat.ucar.edu/>`__. It houses Python
 implementations of NCL's non-WRF computational routines and additional geoscientific analysis functions that go beyond
-what NCL offers. It is a principle component of NCAR's `Pivot to Python Initiative <https://www.ncl.ucar.edu/Document/Pivot_to_Python/>`__.
+what NCL offers. It is a principle component of NSF NCAR's `Pivot to Python Initiative <https://www.ncl.ucar.edu/Document/Pivot_to_Python/>`__.
 
 Why GeoCAT-comp?
 ----------------
-GeoCAT-comp is a geoscience data analysis Python package created as part of NCAR's `Pivot to Python Initiative <https://www.ncl.ucar.edu/Document/Pivot_to_Python/>`__.
+GeoCAT-comp is a geoscience data analysis Python package created as part of NSF NCAR's `Pivot to Python Initiative <https://www.ncl.ucar.edu/Document/Pivot_to_Python/>`__.
 `NCL <https://www.ncl.ucar.edu/>`__, the prior language of choice for geoscience work, has been put into maintenance mode
 in favor of Python. This is due to Python's easy-to-learn, open-source nature and the benefits that provides. There are
 a plethora of scientific analysis packages designed for general use or for niche applications. Numerous tutorials exist

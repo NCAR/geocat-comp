@@ -8,15 +8,15 @@ dependencies:
   - cython
   - eofs
   - metpy
-  - scipy
-  - numpy
   - netcdf4
+  - numpy
   - pint
+  - pip
+  - scipy
   - setuptools
   - setuptools_scm
   - xarray
   - xskillscore
-  - pip
   - pip:
-      - asv
+      - asv<0.6.2
       - -e ../

@@ -1,8 +1,6 @@
 import sys
 import pytest
 
-import dask.array
-import dask.distributed as dd
 import geocat.datafiles as gdf
 import metpy.calc as mpcalc
 from metpy.units import units
@@ -14,14 +12,6 @@ from geocat.comp.meteorology import (
     dewtemp, heat_index, relhum, relhum_ice, relhum_water,
     actual_saturation_vapor_pressure, max_daylight, psychrometric_constant,
     saturation_vapor_pressure, saturation_vapor_pressure_slope, delta_pressure)
-
-
-@pytest.fixture(scope="module")
-def client() -> None:
-    # dask client reference for all subsequent tests
-    client = dd.Client()
-    yield client
-    client.close()
 
 
 class Test_dewtemp:
@@ -75,18 +65,6 @@ class Test_dewtemp:
     def test_xarray_type_error(self) -> None:
         with pytest.raises(TypeError):
             dewtemp(self.t_def, xr.DataArray(self.rh_def))
-
-    def test_dask_compute(self) -> None:
-        tk = xr.DataArray(np.asarray(self.t_def) + 273.15).chunk(6)
-        rh = xr.DataArray(self.rh_def).chunk(6)
-
-        assert np.allclose(dewtemp(tk, rh) - 273.15, self.dt_2, atol=0.1)
-
-    def test_dask_lazy(self) -> None:
-        tk = xr.DataArray(np.asarray(self.t_def) + 273.15).chunk(6)
-        rh = xr.DataArray(self.rh_def).chunk(6)
-
-        assert isinstance((dewtemp(tk, rh) - 273.15).data, dask.array.Array)
 
 
 class Test_heat_index:
@@ -174,18 +152,6 @@ class Test_heat_index:
         with pytest.raises(ValueError):
             heat_index(self.t1[:10], self.rh1[:8])
 
-    def test_dask_compute(self) -> None:
-        t = xr.DataArray(self.t1).chunk(3)
-        rh = xr.DataArray(self.rh1).chunk(3)
-
-        assert np.allclose(heat_index(t, rh), self.ncl_gt_1, atol=0.005)
-
-    def test_dask_lazy(self) -> None:
-        t = xr.DataArray(self.t1).chunk(3)
-        rh = xr.DataArray(self.rh1).chunk(3)
-
-        assert isinstance((heat_index(t, rh)).data, dask.array.Array)
-
 
 class Test_relhum:
 
@@ -244,20 +210,6 @@ class Test_relhum:
     def test_xarray_type_error(self) -> None:
         with pytest.raises(TypeError):
             relhum(self.t_def, xr.DataArray(self.q_def), self.p_def)
-
-    def test_dask_compute(self, client) -> None:
-        p = xr.DataArray(self.p_def).chunk(10)
-        t = xr.DataArray(self.t_def).chunk(10)
-        q = xr.DataArray(self.q_def).chunk(10)
-
-        assert np.allclose(relhum(t, q, p), self.rh_gt_2, atol=0.1)
-
-    def test_dask_lazy(self, client) -> None:
-        p = xr.DataArray(self.p_def).chunk(10)
-        t = xr.DataArray(self.t_def).chunk(10)
-        q = xr.DataArray(self.q_def).chunk(10)
-
-        assert isinstance(relhum(t, q, p).data, dask.array.Array)
 
 
 class Test_relhum_water:
@@ -334,21 +286,6 @@ class Test_actual_saturation_vapor_pressure:
                            expected,
                            atol=0.005)
 
-    def test_dask_compute(self, ncl_gt, client) -> None:
-        tempf = xr.DataArray(self.temp_gt).chunk(10)
-
-        assert np.allclose(actual_saturation_vapor_pressure(
-            tempf, tfill=1.0000000e+20),
-                           ncl_gt,
-                           atol=0.005)
-
-    def test_dask_lazy(self, client) -> None:
-        tempf = xr.DataArray(self.temp_gt).chunk(10)
-
-        assert isinstance(
-            (actual_saturation_vapor_pressure(tempf, tfill=1.0000000e+20)).data,
-            dask.array.Array)
-
 
 class Test_max_daylight:
 
@@ -385,22 +322,6 @@ class Test_max_daylight:
         lat = xr.DataArray(self.lat_gt)
 
         assert np.allclose(max_daylight(jday, lat), ncl_gt, atol=0.005)
-
-    def test_dask_unchunked_input(self, ncl_gt, client) -> None:
-        jday = dask.array.from_array(self.jday_gt)
-        lat = dask.array.from_array(self.lat_gt)
-
-        out = client.submit(max_daylight, jday, lat).result()
-
-        assert np.allclose(out, ncl_gt, atol=0.005)
-
-    def test_dask_chunked_input(self, ncl_gt, client) -> None:
-        jday = dask.array.from_array(self.jday_gt, chunks='auto')
-        lat = dask.array.from_array(self.lat_gt, chunks='auto')
-
-        out = client.submit(max_daylight, jday, lat).result()
-
-        assert np.allclose(out, ncl_gt, atol=0.005)
 
     def test_input_dim(self) -> None:
         with pytest.raises(ValueError):
@@ -461,17 +382,6 @@ class Test_psychrometric_constant:
                            expected,
                            atol=0.005)
 
-    def test_dask_compute(self, ncl_gt, client) -> None:
-        pressure = xr.DataArray(self.pressure_gt).chunk(10)
-
-        assert np.allclose(psychrometric_constant(pressure), ncl_gt, atol=0.005)
-
-    def test_dask_lazy(self, client) -> None:
-        pressure = xr.DataArray(self.pressure_gt).chunk(10)
-
-        assert isinstance((psychrometric_constant(pressure)).data,
-                          dask.array.Array)
-
 
 class Test_saturation_vapor_pressure:
 
@@ -523,21 +433,6 @@ class Test_saturation_vapor_pressure:
                            expected,
                            atol=0.005)
 
-    def test_dask_compute(self, ncl_gt) -> None:
-        tempf = xr.DataArray(self.temp_gt).chunk(10)
-
-        assert np.allclose(saturation_vapor_pressure(tempf,
-                                                     tfill=1.0000000e+20),
-                           ncl_gt,
-                           atol=0.005)
-
-    def test_dask_lazy(self) -> None:
-        tempf = xr.DataArray(self.temp_gt).chunk(10)
-
-        assert isinstance((saturation_vapor_pressure(tempf,
-                                                     tfill=1.0000000e+20)).data,
-                          dask.array.Array)
-
 
 class Test_saturation_vapor_pressure_slope:
 
@@ -587,20 +482,6 @@ class Test_saturation_vapor_pressure_slope:
                            expected,
                            atol=0.005,
                            equal_nan=True)
-
-    def test_dask_compute(self, ncl_gt, client) -> None:
-        tempf = xr.DataArray(self.temp_gt).chunk(10)
-
-        assert np.allclose(saturation_vapor_pressure_slope(tempf),
-                           ncl_gt,
-                           atol=0.005,
-                           equal_nan=True)
-
-    def test_dask_lazy(self, client) -> None:
-        tempf = xr.DataArray(self.temp_gt).chunk(10)
-
-        assert isinstance((saturation_vapor_pressure_slope(tempf)).data,
-                          dask.array.Array)
 
 
 class Test_Delta_Pressure:

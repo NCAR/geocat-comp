@@ -21,7 +21,7 @@ Earth System Data Science (ESDS) Office Hours
 ---------------------------------------------
 If you are affiliated with UCAR, you can `schedule an appointment <https://ncar.github.io/esds/office-hours/>`__
 with a member of the ESDS office hours team to get one-on-one support. Be sure to schedule with a GeoCAT team member for
-GeoCAT specific questions. For more info about NCAR's Earth System Data Science Initiative, check out their `homepage <https://ncar.github.io/esds/>`__.
+GeoCAT specific questions. For more info about NSF NCAR's Earth System Data Science Initiative, check out their `homepage <https://ncar.github.io/esds/>`__.
 
 Have a Usage Question?
 ----------------------

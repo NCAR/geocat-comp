@@ -147,7 +147,7 @@ Use the following commands to create a new conda environment to develop
 .. code-block:: bash
 
     # Create a new conda environment
-    conda create -c conda-forge -n geocat_comp_build python=3.10
+    conda create -c conda-forge -n geocat_comp_build python=3.11
 
     # Use the environment file to populate the environment with the required dependencies
     conda env update -f build_envs/environment.yml
@@ -187,6 +187,12 @@ To create and check out a new branch, use the following command:
 
     git checkout -b <branch-name>
 
+Track upstream changes for `git pull` and `git push`
+
+.. code-block:: bash
+
+    git branch --set-upstream-to=origin/<branch-name> <branch-name>
+
 You can see a list of all branches in your local repository by running:
 
 .. code-block:: bash
@@ -220,6 +226,8 @@ To manually run the pre-commit hooks, use the following command:
 .. code-block:: bash
 
     pre-commit run --all-files
+
+If `codespell` flags on a jargon specific term, you can add the term to the `ignore-words-list` in`pyproject.toml`. Any words added to the `ignore-words-list` should be lower-case.
 
 You can skip the pre-commit hooks by adding the ``--no-verify`` flag to your
 commit command like this:
@@ -293,10 +301,8 @@ need to modify to incorporate your code into the package. These include:
 Write and run tests
 -------------------
 
-``geocat-comp`` uses `pytest <https://pytest.org/>`__ for unit tests. Currently,
-we have unit tests written in both ``pytest`` and ``unittest``. We are in the
-process of converting all of our tests to ``pytest`` and we encourage you to
-write new tests using ``pytest``.
+``geocat-comp`` uses `pytest <https://pytest.org/>`__ for unit tests, so we
+encourage you to write new tests using ``pytest`` as well.
 
 To run the tests locally, use the following command from the root of the
 repository:

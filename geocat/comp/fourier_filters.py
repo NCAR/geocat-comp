@@ -15,7 +15,7 @@ def fourier_filter(
         band_pass: bool = False,
         band_block: bool = False) -> typing.Union[np.ndarray, xr.DataArray]:
     """Filter a dataset by frequency. This function allows for low_pass,
-    high_pass, band_pass, or band_block filtering of the data's freqency
+    high_pass, band_pass, or band_block filtering of the data's frequency
     representation.
 
     Parameters
@@ -174,8 +174,8 @@ def fourier_low_pass(
         frequency: float,
         cutoff_frequency_low: float,
         time_axis: int = 0) -> typing.Union[np.ndarray, xr.DataArray]:
-    """Filter a dataset by frequency. This function allowes for low_pass
-    filtering of the data's freqency representation.
+    """Filter a dataset by frequency. This function allows for low_pass
+    filtering of the data's frequency representation.
 
     Parameters
     ----------
@@ -208,8 +208,8 @@ def fourier_high_pass(
         frequency: float,
         cutoff_frequency_high: float,
         time_axis: int = 0) -> typing.Union[np.ndarray, xr.DataArray]:
-    """Filter a dataset by frequency. This function allowes for high_pass
-    filtering of the data's freqency representation.
+    """Filter a dataset by frequency. This function allows for high_pass
+    filtering of the data's frequency representation.
 
     Parameters
     ----------
@@ -243,8 +243,8 @@ def fourier_band_pass(
         cutoff_frequency_low: float,
         cutoff_frequency_high: float,
         time_axis: int = 0) -> typing.Union[np.ndarray, xr.DataArray]:
-    """Filter a dataset by frequency. This function allowes for band_pass
-    filtering of the data's freqency representation.
+    """Filter a dataset by frequency. This function allows for band_pass
+    filtering of the data's frequency representation.
 
     Parameters
     ----------
@@ -282,8 +282,8 @@ def fourier_band_block(
         cutoff_frequency_low: float,
         cutoff_frequency_high: float,
         time_axis: int = 0) -> typing.Union[np.ndarray, xr.DataArray]:
-    """Filter a dataset by frequency. This function allowes for band_block
-    filtering of the data's freqency representation.
+    """Filter a dataset by frequency. This function allows for band_block
+    filtering of the data's frequency representation.
 
     Parameters
     ----------
