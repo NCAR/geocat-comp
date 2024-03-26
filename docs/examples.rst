@@ -16,3 +16,4 @@ Here's some examples of how to use geocat-comp.
    examples/calendar_average.ipynb
    examples/climatology_average.ipynb
    examples/vimfc.ipynb
+   examples/fourier_filter.ipynb

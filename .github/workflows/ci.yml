@@ -8,6 +8,10 @@ on:
     - cron: '0 0 * * *' # Daily “At 00:00”
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     # if: |
@@ -21,47 +25,78 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ "ubuntu-latest", "macos-latest"]
-        python-version: ["3.9", "3.10", "3.11"]
+        os: [ "ubuntu-latest", "macos-14", "windows-latest" ]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
     steps:
-      - name: Cancel previous runs
-        uses: styfle/cancel-workflow-action@0.11.0
-        with:
-          access_token: ${{ github.token }}
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+      - name: set environment variables
+        run: |
+          echo "TODAY=$(date +%Y-%m-%d)" >> $GITHUB_ENV
+
+      - name: environment setup
+        id: env-setup
+        continue-on-error: true
+        uses: mamba-org/setup-micromamba@v1
         with:
-          token: ${{ github.token }}
-      - name: conda_setup
-        uses: conda-incubator/setup-miniconda@v2
-        with:
-          activate-environment: geocat_comp_build
-          channel-priority: strict
-          python-version: ${{ matrix.python-version }}
-          channels: conda-forge
           environment-file: build_envs/environment.yml
+          cache-environment: true
+          cache-environment-key: "CI ${{runner.os}}-${{runner.arch}}-py${{matrix.python-version}}-${{env.TODAY}}"
+          create-args: >-
+            python=${{matrix.python-version}}
+
+      - name: retry environment set up if failed
+        if: steps.env-setup.outcome == 'failure'
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          download-micromamba: false
+          environment-file: build_envs/environment.yml
+          cache-environment: true
+          cache-environment-key: "CI ${{runner.os}}-${{runner.arch}}-py${{matrix.python-version}}-${{env.TODAY}}"
+          create-args: >-
+            python=${{matrix.python-version}}
 
       - name: Install geocat-comp
         run: |
-          python -m pip install . --no-deps
+          python -m pip install --no-deps -e .
 
-      - name: conda list
-        run: |
-          conda list
+      - name: Run Tests (non-windows)
+        if: matrix.os != 'windows-latest'
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 60
+          max_attempts: 3
+          command: |
+            eval "$(micromamba shell hook --shell bash)"
+            micromamba activate
+            micromamba activate geocat_comp_build
+            python -m pytest test -v --cov=./geocat/comp --cov-report=xml --junitxml=pytest.xml
 
-      - name: Run Namespace Tests
-        run: |
-          python -m pytest test
+      - name: Run Tests (windows)
+        if: matrix.os == 'windows-latest'
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 60
+          max_attempts: 3
+          command: |
+            micromamba.exe shell hook -s powershell | Out-String | Invoke-Expression
+            micromamba activate
+            micromamba activate geocat_comp_build
+            python -m pytest test -v --cov=./geocat/comp --cov-report=xml --junitxml=pytest.xml
 
-      - name: Run Coverage Tests
-        run: |
-          python -m pytest test -v --cov=./geocat/comp --cov-report=xml
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: Test results for ${{ runner.os }}-${{ matrix.python-version }}
+          path: pytest.xml
 
       - name: Upload code coverage to Codecov
-        uses: codecov/codecov-action@v3.1.4
+        if: github.repository == 'NCAR/geocat-comp'
+        uses: codecov/codecov-action@v4.1.0
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
           file: ./coverage.xml
-          flags: unittests
           env_vars: OS,PYTHON
           name: codecov-umbrella
           fail_ci_if_error: false
@@ -73,17 +108,30 @@ jobs:
         shell: bash -l {0}
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: environment setup
+        id: link-env-setup
+        continue-on-error: true
+        uses: mamba-org/setup-micromamba@v1
         with:
-          token: ${{ github.token }}
-      - name: conda_setup
-        uses: conda-incubator/setup-miniconda@v2
-        with:
-          activate-environment: gc-docs
-          channel-priority: strict
-          python-version: 3.9
-          channels: conda-forge
           environment-file: build_envs/docs.yml
+          cache-environment: true
+          cache-environment-key: "linkcheck-${{env.TODAY}}"
+          create-args: >-
+            python=3.11
+
+      - name: retry environment set up if failed
+        if: steps.link-env-setup.outcome == 'failure'
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          download-micromamba: false
+          environment-file: build_envs/docs.yml
+          cache-environment: true
+          cache-environment-key: "linkcheck-${{env.TODAY}}"
+          create-args: >-
+            python=3.11
+
       - name: Install geocat-comp
         run: |
           python -m pip install .
@@ -91,6 +139,13 @@ jobs:
         run: |
           conda list
       - name: Make docs with linkcheck
-        run: |
-          cd docs
-          make linkcheck
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 60
+          max_attempts: 3
+          command: |
+            eval "$(micromamba shell hook --shell bash)"
+            micromamba activate
+            micromamba activate gc-docs
+            cd docs
+            make linkcheck

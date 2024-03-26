@@ -1,0 +1,86 @@
+name: ASV Benchmarking
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    env:
+      CONDA_ENV_FILE: ./build_envs/asv-bench.yml
+      ASV_DIR: ./benchmarks
+
+    steps:
+      - name: Checkout geocat-comp
+        uses: actions/checkout@v4
+        with:
+          repository: NCAR/geocat-comp
+          fetch-depth: 0
+      - name: Checkout geocat-comp-asv
+        uses: actions/checkout@v4
+        with:
+          repository: NCAR/geocat-comp-asv
+          persist-credentials: false
+          fetch-depth: 0
+          ref: main
+          path: geocat-comp-asv
+      - name: Set environment variables
+        run: |
+          echo "TODAY=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      - name: Set up conda environment
+        id: env-setup
+        continue-on-error: true
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          environment-file: ./build_envs/asv-bench.yml
+          cache-environment: true
+          cache-environment-key: "benchmark-${{runner.os}}-${{runner.arch}}-${{env.TODAY}}"
+
+      - name: retry environment set up if failed
+        if: steps.env-setup.outcome == 'failure'
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          download-micromamba: false
+          environment-file: ./build_envs/asv-bench.yml
+          cache-environment: true
+          cache-environment-key: "benchmark-${{runner.os}}-${{runner.arch}}-${{env.TODAY}}"
+
+      - name: Copy existing results
+        run: |
+          if [ -d "geocat-comp-asv/results" ]; then
+            cp -r geocat-comp-asv/results benchmarks/
+          fi
+
+      - name: Run benchmarks
+        shell: bash -l {0}
+        id: benchmark
+        run: |
+          cd benchmarks
+          asv machine --machine GH-Actions --os ubuntu-latest --arch x64 --cpu "2-core unknown" --ram 7GB
+          asv run v2023.02.0..main --skip-existing --parallel || true
+
+      - name: Commit and push benchmark results
+        run: |
+          if [ -d "geocat-comp-asv/results" ]; then
+            rm -r geocat-comp-asv/results
+          fi
+          cp -r benchmarks/results/ geocat-comp-asv/
+          cd geocat-comp-asv
+          git config --local user.email "anissaz@ucar.edu"
+          git config --local user.name "anissa111"
+          git add results
+          git commit -m "[🤖] Update benchmark results"
+
+      - name: Push to geocat-comp-asv
+        if: github.ref == 'refs/heads/main' && github.repository == 'NCAR/geocat-comp'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.COMP_ASV_PAT }}
+          branch: main
+          force: true
+          repository: NCAR/geocat-comp-asv
+          directory: geocat-comp-asv

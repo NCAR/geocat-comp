@@ -165,7 +165,7 @@ def _temp_extrapolate(data, lev_dim, lev, p_sfc, ps, phi_sfc):
     Returns
     -------
     result: :class:`xarray.DataArray`
-        The extrapolated temepratures at the provided pressure levels.
+        The extrapolated temperatures at the provided pressure levels.
     """
     R_d = 287.04  # dry air gas constant
     g_inv = 1 / 9.80616  # inverse of gravity
@@ -328,7 +328,7 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
     -----
     ACKNOWLEDGEMENT: We'd like to thank to `Brian Medeiros <https://github.com/brianpm>`__,
     `Matthew Long <https://github.com/matt-long>`__, and `Deepak Cherian <https://github.com/dcherian>`__
-    at NCAR for their great contributions since the code implemented here is mostly
+    at NSF NCAR for their great contributions since the code implemented here is mostly
     based on their work.
 
     Parameters
@@ -593,9 +593,9 @@ def interp_sigma_to_hybrid(data: xr.DataArray,
         output = data_stacked[:, :len(hyam)].copy()
 
         for idx, (d, s) in enumerate(zip(data_stacked, sigma_stacked)):
-            output[idx, :] = xr.DataArray(
-                _vertical_remap(func_interpolate, s.data, sig_coords.data,
-                                d.data))
+            output[idx, :] = xr.DataArray(_vertical_remap(
+                func_interpolate, s.data, sig_coords.data, d.data),
+                                          dims=[lev_dim])
 
         # Make output shape same as data shape
         output = output.unstack().transpose(*data.dims)
@@ -603,9 +603,9 @@ def interp_sigma_to_hybrid(data: xr.DataArray,
         h_coords = sigma
 
         output = data[:len(hyam)].copy()
-        output[:len(hyam)] = xr.DataArray(
-            _vertical_remap(func_interpolate, sigma.data, sig_coords.data,
-                            data.data))
+        output[:len(hyam)] = xr.DataArray(_vertical_remap(
+            func_interpolate, sigma.data, sig_coords.data, data.data),
+                                          dims=[lev_dim])
 
     # Set output dims and coords
     output = output.rename({lev_dim: 'hlev'})
@@ -625,8 +625,11 @@ def interp_multidim(
         method: str = "linear",
         fill_value: typing.Union[str, np.number] = np.nan) -> supported_types:
     """Multidimensional interpolation of variables. Uses ``xarray.interp`` to
-    perform linear interpolation. Will not perform extrapolation, returns
+    perform interpolation. Will not perform extrapolation by default, returns
     missing values if any surrounding points contain missing values.
+
+    .. warning::
+        The output data type may be promoted to that of the coordinate data.
 
     Parameters
     ----------
@@ -662,16 +665,16 @@ def interp_multidim(
         “linear” or “nearest” for multidimensional array
 
     fill_value: str, optional
-        Set as 'extrapolate' to allow extrapoltion of data. Default is
+        Set as 'extrapolate' to allow extrapolation of data. Default is
         no extrapolation.
 
     Returns
     -------
     data_out : ndarray, :class:`xarray.DataArray`
-       Returns same data type as input ``data_in``. Shape will be the same as
-       input array except
-       for last two dimensions which will be equal to thecoordinates given in
-       ``data_out``
+       Returns the same type of object as input ``data_in``. However, the type of
+       the data in the array may be promoted to that of the coordinates. Shape
+       will be the same as input array except for last two dimensions which will
+       be equal to the coordinates given in ``data_out``.
 
     Examples
     --------

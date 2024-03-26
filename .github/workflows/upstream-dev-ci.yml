@@ -1,49 +1,56 @@
-name: Upstream-dev CI
+name: CI Upstream
 on:
   workflow_dispatch:
   schedule:
      - cron: '0 0 * * *' # Daily “At 00:00”
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   upstream-dev:
-    name:  upstream-dev-py310
+    name:  upstream-dev-py311
     runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash -l {0}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11"]
 
     steps:
-      - name: Cancel previous runs
-        uses: styfle/cancel-workflow-action@0.11.0
-        with:
-          access_token: ${{ github.token }}
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ github.token }}
-      - name: conda_setup
-        uses: conda-incubator/setup-miniconda@v2
+
+      - name: set up environment
+        id: env-setup
+        continue-on-error: true
+        uses: mamba-org/setup-micromamba@v1
         with:
-          activate-environment: geocat_comp_upstream
-          channel-priority: strict
-          miniconda-version: "latest"
-          python-version: "3.10"
-          channels: conda-forge
+          environment-file: build_envs/environment.yml
+          create-args: >-
+            python=${{ matrix.python-version }}
 
-      - name: Install select upstream dependencies
-        run: |
-          pip install git+https://github.com/Unidata/MetPy.git
-          pip install git+https://github.com/numpy/numpy.git
-          pip install git+https://github.com/dask/dask.git
-          pip install git+https://github.com/dask/distributed.git
-          pip install git+https://github.com/hgrecco/pint.git
-          pip install git+https://github.com/pydata/xarray.git
-          pip install git+https://github.com/xarray-contrib/cf-xarray.git
-          pip install git+https://github.com/xarray-contrib/xskillscore.git
+      - name: retry environment set up if failed
+        if: steps.env-setup.outcome == 'failure'
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          download-micromamba: false
+          environment-file: build_envs/environment.yml
+          create-args: >-
+            python=${{ matrix.python-version }}
 
-      - name: Install conda dependencies
+      - name: conda list
         run: |
-          conda env update --file build_envs/upstream-dev-environment.yml
+          conda list
+
+      - name: Install upstream versions
+        run: |
+          bash ci/install-upstream.sh
 
       - name: Install geocat-comp
         run: |
@@ -53,6 +60,13 @@ jobs:
         run: |
           conda list
 
-      - name: Running Tests
-        run: |
-          python -m pytest test -v --cov=./geocat/comp --cov-report=xml
+      - name: Run Tests
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 60
+          max_attempts: 3
+          command: |
+            eval "$(micromamba shell hook --shell bash)"
+            micromamba activate
+            micromamba activate geocat_comp_build
+            python -m pytest test -v --cov=./geocat/comp --cov-report=xml

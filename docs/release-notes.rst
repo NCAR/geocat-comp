@@ -5,13 +5,142 @@
 Release Notes
 =============
 
-v2023.07.0 (Jul X, 2023)
+v2024.03.0 (Unreleased)
 -----------------------
-[Plain text summary here]
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Additional pre-commit hook for codespell by `Cora Schneck`_ in (:pr:`579`)
+* Add M1 runners to CI by `Katelyn FitzGerald`_ in (:pr:`581`)
+* Reorganize dask compatibility tests by `Anissa Zacharias`_ in (:pr:`568`)
+
+v2024.02.0 (February 28, 2024)
+------------------------------
+This release switches the package to use an implicit namespace and adds support
+for Python 3.12.
+
+Documentation
+^^^^^^^^^^^^^
+* Override branding for light/dark theme by `Cora Schneck`_ in (:pr:`545`)
+* Updated outdated documentation `Cora Schneck`_ in (:pr:`561`)
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Update hourly frequency aliases by `Katelyn FitzGerald`_ in (:pr:`550`)
+* Python 3.12 Support by `Cora Schneck`_ in (:pr:`548`)
+* Added ``linkcheck_ignore`` to ``docs/conf.py`` to address erroneous failures `Anissa Zacharias`_ in (:pr:`559`)
+* Updated Codecov upload to use token by `Anissa Zacharias`_ in (:pr:`566`)
+* Convert to implicit namespace packaging set up by `Anissa Zacharias`_ in (:pr:`563`)
+* Temporarily pin ASV to ``<0.6.2`` by `Anissa Zacharias`_ in (:pr:`556` and :pr:`569`)
+
+
+v2024.01.0 (January 30, 2023)
+-----------------------
+This release primarily updates our internal CI.
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Upstream CI improvements by `Anissa Zacharias`_ in (:pr:`527`)
+* CI improvements by `Anissa Zacharias`_ in (:pr:`528`)
+* Switch to PyPI Trusted Publishing by `Anissa Zacharias`_ in (:pr:`534`)
+* Add retry actions to CI by `Anissa Zacharias`_ in (:pr:`532`)
+* Improves/standardizes release tests and adds PyPI release testing by `Anissa Zacharias`_ in (:pr:`531`)
+* Updates upstream dev workflow to use `scientific-python-nightly-wheels <https://pypi.anaconda.org/scientific-python-nightly-wheels/simple/>`__
+  by `Anissa Zacharias`_ and `Katelyn FitzGerald`_ in (:pr:`537`)
+
+Documentation
+^^^^^^^^^^^^^
+* Update remaining assets to comply with NSF branding theme by `Cora Schneck`_ in (:pr:`541`)
+
+
+v2023.12.0 (December 5, 2023)
+-----------------------------
+This release adds official windows support and unpins xarray and numpy.
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Remove unnecessary tag publish trigger for ASV benchmarking CI  by `Anissa Zacharias`_ in (:pr:`509`)
+* Add windows to testing strategy by `AnshRoshan`_ in (:pr:`460`)
+
+Bug Fixes
+^^^^^^^^^
+* Unpin xarray in environment builds with changes to interpolation.py (specify
+  dims in xr.DataArray) and ``climatologies.py`` (replace ``loffset`` with
+  ``to_offset``) by `Cora Schneck`_ in (:pr:`492`)
+* Fixes for Windows tests when EOF throws different signs by `Cora Schneck`_ in
+  (:pr:`516`)
+* Fix ``extlinks`` for Sphinx 6 compatibility by `Anissa Zacharias`_ in
+  (:pr:`520`)
+
+Maintenance
+^^^^^^^^^^^
+* Remove no longer needed numpy version pin by `Katelyn FitzGerald`_ in (:pr:`515`)
+
+Documentation
+^^^^^^^^^^^^^
+* Transferred fourier filter example from Geocat-examples by `Julia Kent`_ in (:pr:`511`)
+* Updated documentation links by `Anissa Zacharias`_ in (:pr:`518`)
+* Augment documentation for ``interp_multidim`` by `Katelyn FitzGerald`_ in (:pr:`504`)
+
+
+v2023.10.1 (October 31, 2023)
+-----------------------------
+This release includes minor changes to documentation, a full conversion to
+pytest from unittest, and is the first release to include automated
+benchmarking.
+
+Maintenance
+^^^^^^^^^^^
+* Convert Unittest to Pytest by `Cora Schneck`_ in (:pr:`478`)
+
+Documentation
+^^^^^^^^^^^^^
+* Updated office hours link by `Anissa Zacharias`_ in (:pr:`495`)
+* Added benchmark badge to README by `Anissa Zacharias`_ in (:pr:`497`)
+
+Bug Fixes
+^^^^^^^^^
+* Fix Python version in upstream CI by `Philip Chmielowiec`_ in (:pr:`436`)
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Add benchmarking to commits to main and tagged releases by `Anissa Zacharias`_ in (:pr:`496`)
+* Fix benchmarking workflow failures by `Anissa Zacharias`_ in (:pr:`499`)
+
+
+v2023.10.0 (Oct 3, 2023)
+------------------------
+This release adds a code of conduct, minor edits to our contributor's guide, and
+sets up some structure for future ASV benchmarking
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Sets up ASV for benchmarking by `Anissa Zacharias`_ in (:pr:`474`)
+
+Documentation
+^^^^^^^^^^^^^
+* New Code of Conduct by `Cora Schneck`_ in (:pr:`461`)
+* Updated Pull Request Template by `Cora Schneck`_ in (:pr:`468`)
+* Fixes for Contributing Geocat-Comp Contributing by `Cora Schneck`_ in (:pr:`476`)
+
+v2023.09.0 (Sept 8, 2023)
+-------------------------
+This release adds ``custom_seasons`` to ``climatology_average`` and adds a new
+Contributor's Guide to the documentation.
 
 New Features
 ^^^^^^^^^^^^
-* User-defined seasonal boundaries, `custom_seasons`, enabled for `climatology_average` by `Julia Kent`_ in (:pr:441)
+* User-defined seasonal boundaries, ``custom_seasons``, enabled for
+  ``climatology_average`` by `Julia Kent`_ in (:pr:`441`)
+
+Bug Fixes
+^^^^^^^^^
+* Fix codecov coverage reporting issue by `Anissa Zacharias`_ in (:pr:`446`)
+* Fix xarray inconsistent pinning issue by `Anissa Zacharias`_ in (:pr:`458`)
+
+Documentation
+^^^^^^^^^^^^^
+* New Contributor's Guide by `Anissa Zacharias`_ in (:pr:`450`)
 
 
 v2023.06.1 (June 23, 2023)
@@ -47,7 +176,7 @@ Breaking Changes
 
 Bug Fixes
 ^^^^^^^^^
-* Fix bug in `_temp_extrapolate` used by `interp_hybrid_to_pressure` by `Katelyn FitzGerald`_ in (:pr:`422`)
+* Fix bug in ``_temp_extrapolate`` used by ``interp_hybrid_to_pressure`` by `Katelyn FitzGerald`_ in (:pr:`422`)
 
 
 v2023.05.0 (4 May 2023)
@@ -232,3 +361,6 @@ Maintenance
 .. _`Mario Rodriguez`: https://github.com/marodrig
 .. _`Julia Kent`: https://github.com/jukent
 .. _`Katelyn FitzGerald`: https://github.com/kafitzgerald
+.. _`Cora Schneck`: https://github.com/cyschneck
+.. _`Philip Chmielowiec`: https://github.com/philipc2
+.. _`AnshRoshan`: https://github.com/AnshRoshan

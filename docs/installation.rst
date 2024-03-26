@@ -6,8 +6,8 @@ Installation
 ============
 
 This installation guide includes only the GeoCAT-comp installation and build instructions.
-Please refer to `GeoCAT Contributor's Guide <https://geocat.ucar.edu/pages/contributing.html>`__ for installation of
-the whole GeoCAT project.
+
+Please refer to the relevant project documentation for how to install other GeoCAT packages.
 
 Installing GeoCAT-comp via Conda in a New Environment
 -----------------------------------------------------
@@ -42,7 +42,7 @@ compatibility between dependency packages.
 
 Also, note that the Conda package manager automatically installs all required
 dependencies of GeoCAT-comp, meaning it is not necessary to explicitly install
-Python, NumPy, Xarray, or Dask when creating an envionment and installing GeoCAT-comp.
+Python, NumPy, Xarray, or Dask when creating an environment and installing GeoCAT-comp.
 Although packages like Matplotlib are often used with GeoCAT-comp, they are considered
 `optional` dependencies and must be explicitly installed.
 

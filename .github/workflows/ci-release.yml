@@ -1,11 +1,16 @@
-name: CI-release-test
+name: CI Release Test
 on:
   schedule:
     - cron: '0 0 * * *' # Daily “At 00:00”
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
+    if: github.repository == 'NCAR/geocat-comp' && github.ref == 'refs/heads/main'
     name: Python (${{ matrix.python-version }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     defaults:
@@ -15,34 +20,44 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ "ubuntu-latest", "macos-latest"]
-        python-version: ["3.9", "3.10", "3.11"]
+        os: [ "ubuntu-latest", "macos-latest", "windows-latest" ]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
     steps:
-      - name: Cancel previous runs
-        uses: styfle/cancel-workflow-action@0.11.0
-        with:
-          access_token: ${{ github.token }}
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: environment set up
+        id: env-setup
+        continue-on-error: true
+        uses: mamba-org/setup-micromamba@v1
         with:
-          token: ${{ github.token }}
-      - name: conda_setup
-        uses: conda-incubator/setup-miniconda@v2
+          environment-name: import_test
+          create-args: >-
+            python=${{ matrix.python-version }}
+
+      - name: retry environment setup if failed
+        if: steps.env-setup.outcome == 'failure'
+        uses: mamba-org/setup-micromamba@v1
         with:
-          channel-priority: strict
-          python-version: ${{ matrix.python-version }}
-          channels: conda-forge
+          download-micromamba: false
+          environment-name: import_test
+          create-args: >-
+            python=${{ matrix.python-version }}
 
-      - name: Install released geocat-comp
+      - name: Try conda release
         run: |
-          conda create -n import_test geocat-comp
+          micromamba install geocat-comp
+          micromamba activate import_test
+          micromamba list
+          micromamba activate import_test
+          python -c "import geocat.comp"
 
-      - name: See environment info
+      - name: Uninstall conda release
         run: |
-          conda activate import_test
-          conda list
+          micromamba remove geocat-comp -y
 
-      - name: Import
+      - name: Try PyPI release
         run: |
-          conda activate import_test
+          pip install geocat-comp
+          micromamba list
           python -c "import geocat.comp"

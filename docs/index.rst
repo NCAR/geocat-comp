@@ -11,8 +11,8 @@
               wrf, python, wrf-python, weather research and forecasting,
               weather research and forecasting model, model, weather,
               numerical weather prediction, model, matplotlib, cartopy,
-              wrf-arw, arw, ncar, ucar, cisl, ncl, ncar command language,
-              national center for atmospheric research,
+              wrf-arw, arw, ncar, nsf, nsf ncar, ucar, cisl, ncl,
+              ncar command language, nsf national center for atmospheric research,
               university corporation for atmospheric research,
               pynio, pyngl, interpolation
 
@@ -90,7 +90,7 @@ novel computational functions for geosciences data.
    :caption: For Developers
 
    Release Notes <release-notes.rst>
-   Contributor's Guide <https://geocat.ucar.edu/pages/contributing.html>
+   Contributor's Guide <contrib.rst>
    Roadmap <https://geocat.ucar.edu/pages/roadmap.html>
 
 .. toctree::
