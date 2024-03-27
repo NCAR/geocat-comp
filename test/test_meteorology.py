@@ -520,6 +520,18 @@ class Test_Delta_Pressure:
         delta_p = delta_pressure(pressure_lev, self.surface_pressure_scalar)
         assert sum(delta_p) == (self.surface_pressure_scalar - pressure_top)
 
+    def test_delta_pressure_level_below_surface(self) -> None:
+        pressure_lev = [float(i) for i in self.pressure_lev]
+        surface_pressure_adjusted = 900.0
+        delta_p = delta_pressure(pressure_lev, surface_pressure_adjusted)
+        assert np.nansum(delta_p) == (surface_pressure_adjusted - min(pressure_lev))
+
+    def test_delta_pressure_levels_below_surface(self) -> None:
+        pressure_lev = [float(i) for i in self.pressure_lev]
+        surface_pressure_adjusted = 50.0
+        delta_p = delta_pressure(pressure_lev, surface_pressure_adjusted)
+        assert np.nansum(delta_p) == (surface_pressure_adjusted - min(pressure_lev))
+
     def test_negative_pressure_error(self) -> None:
         pressure_lev_negative = self.pressure_lev.copy()
         pressure_lev_negative[0] = -5
