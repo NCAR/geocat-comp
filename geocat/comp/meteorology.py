@@ -1407,7 +1407,8 @@ def _delta_pressure1D(pressure_lev, surface_pressure):
 
     # Safety checks
     if pressure_top < 0:
-        warnings.warn("'pressure_lev` must be greater than or equal to 0.")
+        raise ValueError("`pressure_lev` values must all be greater than or equal to 0.")
+
     if pressure_top > surface_pressure:
         raise ValueError(
             "`surface_pressure` must be greater than minimum `pressure_lev` value."

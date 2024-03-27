@@ -5,7 +5,7 @@
 Release Notes
 =============
 
-v2024.03.0 (Unreleased)
+v2024.04.0 (Unreleased)
 -----------------------
 
 Internal Changes
@@ -13,6 +13,11 @@ Internal Changes
 * Additional pre-commit hook for codespell by `Cora Schneck`_ in (:pr:`579`)
 * Add M1 runners to CI by `Katelyn FitzGerald`_ in (:pr:`581`)
 * Reorganize dask compatibility tests by `Anissa Zacharias`_ in (:pr:`568`)
+
+Bug Fixes
+^^^^^^^^^
+* Fix ``delta_pressure`` to handle the case where pressure level(s) are greater than surface pressure by `Katelyn FitzGerald`_ in (:pr:`571`)
+
 
 v2024.02.0 (February 28, 2024)
 ------------------------------
@@ -33,9 +38,6 @@ Internal Changes
 * Convert to implicit namespace packaging set up by `Anissa Zacharias`_ in (:pr:`563`)
 * Temporarily pin ASV to ``<0.6.2`` by `Anissa Zacharias`_ in (:pr:`556` and :pr:`569`)
 
-Bug Fixes
-^^^^^^^^^
-* Fix ``delta_pressure`` to handle the case where pressure level(s) are greater than the surface pressure by `Katelyn FitzGerald`_ in (:pr:`571`)
 
 v2024.01.0 (January 30, 2023)
 -----------------------

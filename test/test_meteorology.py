@@ -520,10 +520,10 @@ class Test_Delta_Pressure:
         delta_p = delta_pressure(pressure_lev, self.surface_pressure_scalar)
         assert sum(delta_p) == (self.surface_pressure_scalar - pressure_top)
 
-    def test_negative_pressure_warning(self) -> None:
+    def test_negative_pressure_error(self) -> None:
         pressure_lev_negative = self.pressure_lev.copy()
         pressure_lev_negative[0] = -5
-        with pytest.warns(UserWarning):
+        with pytest.raises(ValueError):
             delta_p = delta_pressure(pressure_lev_negative,
                                      self.surface_pressure_scalar)
 
