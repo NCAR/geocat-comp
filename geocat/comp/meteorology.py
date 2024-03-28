@@ -902,7 +902,7 @@ def relhum_ice(temperature: typing.Union[np.ndarray, list, float],
     # ensure all inputs same size
     if np.shape(temperature) != np.shape(mixing_ratio) or np.shape(
             temperature) != np.shape(pressure):
-        raise ValueError(f"relhum_ice: dimensions of inputs are not the same")
+        raise ValueError("relhum_ice: dimensions of inputs are not the same")
 
     relative_humidity = _relhum_ice(temperature, mixing_ratio, pressure)
 
@@ -979,7 +979,7 @@ def relhum_water(temperature: typing.Union[np.ndarray, list, float],
     # ensure all inputs same size
     if np.shape(temperature) != np.shape(mixing_ratio) or np.shape(
             temperature) != np.shape(pressure):
-        raise ValueError(f"relhum_water: dimensions of inputs are not the same")
+        raise ValueError("relhum_water: dimensions of inputs are not the same")
 
     relative_humidity = _relhum_water(temperature, mixing_ratio, pressure)
 
@@ -1401,13 +1401,17 @@ def _delta_pressure1D(pressure_lev, surface_pressure):
         The pressure layer thickness array. Shares dimensions and units of
         `pressure_lev`.
     """
+
+    # Leaving this here to lay groundwork for including it as a separate argument
     pressure_top = min(pressure_lev)
 
     # Safety checks
-    if pressure_top <= 0:
-        warnings.warn("'pressure_lev` values must all be positive.")
+    if pressure_top < 0:
+        raise ValueError(
+            "`pressure_lev` values must all be greater than or equal to 0.")
+
     if pressure_top > surface_pressure:
-        warnings.warn(
+        raise ValueError(
             "`surface_pressure` must be greater than minimum `pressure_lev` value."
         )
 
@@ -1417,15 +1421,25 @@ def _delta_pressure1D(pressure_lev, surface_pressure):
         pressure_lev = np.flip(pressure_lev)
 
     # Calculate delta pressure
-    delta_pressure = np.empty_like(pressure_lev)
+    delta_pressure = np.full_like(pressure_lev, np.nan)
 
-    delta_pressure[0] = (pressure_lev[0] +
-                         pressure_lev[1]) / 2 - pressure_top  # top level
-    delta_pressure[1:-1] = [
-        (a - b) / 2 for a, b in zip(pressure_lev[2:], pressure_lev[:-1])
+    [indices] = np.nonzero(np.array(pressure_lev) <= surface_pressure)
+
+    start_level = min(indices)
+    end_level = max(indices)
+
+    delta_pressure[start_level] = (pressure_lev[start_level] + pressure_lev[
+        start_level + 1]) / 2 - pressure_top  # top level
+
+    delta_pressure[start_level + 1:end_level] = [
+        (a - b) / 2
+        for a, b in zip(pressure_lev[start_level + 2:end_level +
+                                     1], pressure_lev[start_level:end_level])
     ]
-    delta_pressure[-1] = surface_pressure - (
-        pressure_lev[-1] + pressure_lev[-2]) / 2  # bottom level
+
+    delta_pressure[end_level] = surface_pressure - (
+        pressure_lev[end_level] +
+        pressure_lev[end_level - 1]) / 2  # bottom level
 
     # Return delta_pressure to original order
     if is_pressuredecreasing:

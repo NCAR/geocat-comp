@@ -207,12 +207,13 @@ def gradient(data: SupportedTypes,
     """
 
     if (lat is None or lon is None):
-        if type(data) in [xr.core.dataarray.DataArray, xr.core.dataset.Dataset]:
+        if isinstance(data,
+                      (xr.core.dataarray.DataArray, xr.core.dataset.Dataset)):
             if data.coords is not None:
                 if 'lat' in data.coords.keys() and 'lon' in data.coords.keys():
                     lon = data.coords['lon']
                     lat = data.coords['lat']
-        elif type(data) is type(np.ndarray):
+        elif isinstance(data, np.ndarray):
             raise Exception('lat or lon is None. \
             If the input data are in a numpy.ndarray, \
             lat and lon as either 1d or 2d ndarrays must be provided.')

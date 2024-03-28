@@ -1,5 +1,4 @@
 import math as m
-import sys
 import numpy as np
 import xarray as xr
 

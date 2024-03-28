@@ -1,6 +1,4 @@
 import math as ma
-import sys
-import pytest
 
 import numpy as np
 import scipy.special as ss
