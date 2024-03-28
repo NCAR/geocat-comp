@@ -1,4 +1,3 @@
-import sys
 import cftime
 import numpy as np
 import pandas as pd
@@ -213,7 +212,7 @@ class Test_Climate_Anomaly:
          ('daily, "year", False', daily, 'year', False)])
     def test_keep_attrs(self, name, dset, freq, keep_attrs) -> None:
         result = climate_anomaly(dset, freq, keep_attrs=keep_attrs)
-        if keep_attrs or keep_attrs == None:
+        if keep_attrs or keep_attrs is None:
             assert result.attrs == dset.attrs
         elif not keep_attrs:
             assert result.attrs == {}
@@ -304,7 +303,7 @@ class Test_Month_to_Season:
                                                   ('False', False)])
     def test_month_to_season_keep_attrs(self, name, keep_attrs) -> None:
         season_ds = month_to_season(self.ds1, 'JFM', keep_attrs=keep_attrs)
-        if keep_attrs or keep_attrs == None:
+        if keep_attrs or keep_attrs is None:
             assert season_ds.attrs == self.ds1.attrs
         elif not keep_attrs:
             assert season_ds.attrs == {}
@@ -550,7 +549,7 @@ class Test_Calendar_Average():
     def test_calendar_average_keep_attrs(self, name, dset, freq,
                                          keep_attrs) -> None:
         result = calendar_average(dset, freq, keep_attrs=keep_attrs)
-        if keep_attrs or keep_attrs == None:
+        if keep_attrs or keep_attrs is None:
             assert result.attrs == dset.attrs
         elif not keep_attrs:
             assert result.attrs == {}
@@ -863,7 +862,7 @@ class Test_Climatology_Average():
                                      freq=freq,
                                      custom_seasons=custom_seasons,
                                      keep_attrs=keep_attrs)
-        if keep_attrs or keep_attrs == None:
+        if keep_attrs or keep_attrs is None:
             assert result.attrs == dset.attrs
         elif not keep_attrs:
             assert result.attrs == {}
