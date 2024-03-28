@@ -902,7 +902,7 @@ def relhum_ice(temperature: typing.Union[np.ndarray, list, float],
     # ensure all inputs same size
     if np.shape(temperature) != np.shape(mixing_ratio) or np.shape(
             temperature) != np.shape(pressure):
-        raise ValueError(f"relhum_ice: dimensions of inputs are not the same")
+        raise ValueError("relhum_ice: dimensions of inputs are not the same")
 
     relative_humidity = _relhum_ice(temperature, mixing_ratio, pressure)
 
@@ -979,7 +979,7 @@ def relhum_water(temperature: typing.Union[np.ndarray, list, float],
     # ensure all inputs same size
     if np.shape(temperature) != np.shape(mixing_ratio) or np.shape(
             temperature) != np.shape(pressure):
-        raise ValueError(f"relhum_water: dimensions of inputs are not the same")
+        raise ValueError("relhum_water: dimensions of inputs are not the same")
 
     relative_humidity = _relhum_water(temperature, mixing_ratio, pressure)
 
