@@ -5,7 +5,7 @@
 Release Notes
 =============
 
-v2024.03.0 (Unreleased)
+v2024.04.0 (Unreleased)
 -----------------------
 
 Internal Changes
@@ -14,6 +14,11 @@ Internal Changes
 * Remove unused imports, unused variables, code cleanup `Cora Schneck`_ in (:pr:`584`)
 * Add M1 runners to CI by `Katelyn FitzGerald`_ in (:pr:`581`)
 * Reorganize dask compatibility tests by `Anissa Zacharias`_ in (:pr:`568`)
+
+Bug Fixes
+^^^^^^^^^
+* Fix ``delta_pressure`` to handle the case where pressure level(s) are greater than surface pressure by `Katelyn FitzGerald`_ in (:pr:`571`)
+
 
 v2024.02.0 (February 28, 2024)
 ------------------------------
