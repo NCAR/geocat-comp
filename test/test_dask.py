@@ -7,7 +7,9 @@ import numpy as np
 import geocat.datafiles as gdf
 
 # import everything for dask compatibility and performance tests
-from geocat.comp import dewtemp, heat_index, relhum, actual_saturation_vapor_pressure, saturation_vapor_pressure, saturation_vapor_pressure_slope, max_daylight, psychrometric_constant, gradient, interp_hybrid_to_pressure, interp_sigma_to_hybrid
+from geocat.comp import dewtemp, heat_index, relhum, actual_saturation_vapor_pressure, saturation_vapor_pressure, \
+    saturation_vapor_pressure_slope, max_daylight, psychrometric_constant, gradient, interp_hybrid_to_pressure, \
+    interp_sigma_to_hybrid
 
 
 @pytest.fixture(scope="module")
