@@ -5,8 +5,9 @@
 Release Notes
 =============
 
-v2024.04.0 (Unreleased)
+v2024.03.0 (Unreleased)
 -----------------------
+This release includes a bug fix for ``delta_pressure``.
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
@@ -41,7 +42,7 @@ Internal Changes
 
 
 v2024.01.0 (January 30, 2023)
------------------------
+-----------------------------
 This release primarily updates our internal CI.
 
 Internal Changes
