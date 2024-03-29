@@ -7,7 +7,7 @@ Release Notes
 
 v2024.03.0 (Unreleased)
 -----------------------
-This release includes a bug fix for ``delta pressure``.
+This release includes a bug fix for ``delta_pressure``.
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
