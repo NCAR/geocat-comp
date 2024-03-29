@@ -42,7 +42,7 @@ Internal Changes
 
 
 v2024.01.0 (January 30, 2023)
------------------------
+-----------------------------
 This release primarily updates our internal CI.
 
 Internal Changes
