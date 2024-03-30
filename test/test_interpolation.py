@@ -172,6 +172,8 @@ class Test_interp_hybrid_to_pressure_extrapolate:
         temp_extrap_expected = ds_out.Tpx.rename(lev_p='plev')
         xr.testing.assert_allclose(temp_extrap_expected, result)
 
+    @pytest.mark.filterwarnings(
+        "ignore: Interpolation point out of data bounds encountered")
     def test_interp_hybrid_to_pressure_extrap_geopotential(
             self, geopotential_in, press_in, _hyam, _hybm, t_bot, phis,
             ds_out) -> None:
