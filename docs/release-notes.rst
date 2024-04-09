@@ -5,6 +5,15 @@
 Release Notes
 =============
 
+v2024.04.0 (unreleased)
+-----------------------
+This release...
+
+Bug Fixes
+^^^^^^^^^
+* Fix to address slow execution times for ``interp_hybrid_to_pressure`` with extrapolation by `Katelyn FitzGerald`_ in (:pr:`592`)
+
+
 v2024.03.0 (March 29, 2024)
 ---------------------------
 This release includes a bug fix for ``delta_pressure``.
