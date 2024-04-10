@@ -5,8 +5,8 @@
 Release Notes
 =============
 
-v2024.03.0 (Unreleased)
----------------------------
+v2024.04.0 (Unreleased)
+-----------------------
 Upcoming release
 
 Internal Changes
