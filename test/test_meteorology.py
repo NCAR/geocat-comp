@@ -91,6 +91,12 @@ class Test_heat_index:
                            np.asarray(self.ncl_gt_2).reshape(2, 5),
                            atol=0.005)
 
+    def test_multi_dimensional_xarray_input(self) -> None:
+        assert np.allclose(heat_index(self.t2.reshape(2, 5),
+                                      self.rh2.reshape(2, 5), True),
+                           np.asarray(self.ncl_gt_2).reshape(2, 5),
+                           atol=0.005)
+
     def test_alt_coef(self) -> None:
         assert np.allclose(heat_index(self.t2, self.rh2, True),
                            self.ncl_gt_2,
@@ -113,6 +119,10 @@ class Test_heat_index:
     def test_xarray_input(self) -> None:
         t = xr.DataArray(self.t1)
         rh = xr.DataArray(self.rh1)
+
+        print(f't: {t}')
+        print(f'rh: {rh}')
+        print(f'heat_index(t, rh): {heat_index(t, rh)}')
 
         assert np.allclose(heat_index(t, rh), self.ncl_gt_1, atol=0.005)
 
