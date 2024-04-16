@@ -92,9 +92,11 @@ class Test_heat_index:
                            atol=0.005)
 
     def test_multi_dimensional_xarray_input(self) -> None:
-        assert np.allclose(heat_index(self.t2.reshape(2, 5),
-                                      self.rh2.reshape(2, 5), True),
-                           np.asarray(self.ncl_gt_2).reshape(2, 5),
+        assert np.allclose(heat_index(xr.DataArray(self.t2.reshape(2, 5)),
+                                      xr.DataArray(self.rh2.reshape(2, 5)),
+                                      True),
+                           xr.DataArray(
+                               np.asarray(self.ncl_gt_2).reshape(2, 5)),
                            atol=0.005)
 
     def test_alt_coef(self) -> None:
