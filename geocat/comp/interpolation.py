@@ -136,7 +136,7 @@ def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0):
 def _temp_extrapolate(data, lev_dim, lev, p_sfc, ps, phi_sfc):
     r"""This helper function extrapolates temperature below ground using the
     ECMWF formulation described in `Vertical Interpolation and Truncation of
-    Model-Coordinate Data <https://opensky.ucar.edu/islandora/object/technotes:168>`__ by Trenberth,
+    Model-Coordinate Data <https://dx.doi.org/10.5065/D6HX19NH>`__ by Trenberth,
     Berry, & Buja [NCAR/TN-396, 1993]. Specifically equation 16 is used:
 
     .. math::
@@ -191,7 +191,7 @@ def _temp_extrapolate(data, lev_dim, lev, p_sfc, ps, phi_sfc):
 def _geo_height_extrapolate(t_bot, lev, p_sfc, ps, phi_sfc):
     r"""This helper function extrapolates geopotential height below ground using
     the ECMWF formulation described in `Vertical Interpolation and Truncation
-    of Model-Coordinate Data <https://opensky.ucar.edu/islandora/object/technotes:168>`__ by
+    of Model-Coordinate Data <https://dx.doi.org/10.5065/D6HX19NH>`__ by
     Trenberth, Berry, & Buja [NCAR/TN-396, 1993]. Specifically equation 15 is
     used:
 
@@ -358,7 +358,7 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
 
     extrapolate : bool, optional
         If True, below ground extrapolation for ``variable`` will be done using
-        an `ECMWF formulation <http://dx.doi.org/10.5065/D6HX19NH>`__. Defaults
+        an `ECMWF formulation <https://dx.doi.org/10.5065/D6HX19NH>`__. Defaults
         to False.
 
     variable : str, optional
