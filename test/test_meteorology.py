@@ -96,9 +96,6 @@ class Test_heat_index:
                            self.ncl_gt_2,
                            atol=0.005)
 
-    @pytest.mark.filterwarnings(
-        "ignore:invalid value encountered in sqrt"
-    )  # ignores RuntimeWarning sqrt is negative, np.sqrt produces nan
     def test_xarray_alt_coef(self) -> None:
         assert np.allclose(heat_index(xr.DataArray(self.t2),
                                       xr.DataArray(self.rh2), True),
@@ -113,9 +110,6 @@ class Test_heat_index:
                            self.ncl_gt_1,
                            atol=0.005)
 
-    @pytest.mark.filterwarnings(
-        "ignore:invalid value encountered in sqrt"
-    )  # ignores RuntimeWarning sqrt is negative, np.sqrt produces nan
     def test_xarray_input(self) -> None:
         t = xr.DataArray(self.t1)
         rh = xr.DataArray(self.rh1)
