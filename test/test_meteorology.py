@@ -120,10 +120,6 @@ class Test_heat_index:
         t = xr.DataArray(self.t1)
         rh = xr.DataArray(self.rh1)
 
-        print(f't: {t}')
-        print(f'rh: {rh}')
-        print(f'heat_index(t, rh): {heat_index(t, rh)}')
-
         assert np.allclose(heat_index(t, rh), self.ncl_gt_1, atol=0.005)
 
     def test_alternate_xarray_tag(self) -> None:
