@@ -63,7 +63,7 @@ you used to do in NCL? See our `feature request template
 to get started.
 
 You can also use our `Feature Request Form
-<https://docs.google.com/forms/d/e/1FAIpQLSeWuogl8Z671et3DdrmglenBPKGFmHVHkpSamTQeoPGuytLZw/viewform>`__ to submit a feature request.
+<https://forms.gle/6DTo3ELLri4DAGfG8>`__ to submit a feature request.
 
 
 ***********************
@@ -320,7 +320,7 @@ To run a specific test, use the following command:
 These tests will also run automatically when you open a pull request using
 GitHub Actions and the ``.github/workflows/ci.yml`` file.
 
-See the `pytest documentation <https://pytest.org/>`__ for more information.
+See the `pytest documentation <https://docs.pytest.org/en/stable/>`__ for more information.
 
 
 *************

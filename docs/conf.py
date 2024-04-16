@@ -404,8 +404,14 @@ linkcheck_ignore = [r'https://stackoverflow.com/help/*']
 
 # ignore doi redirect warnings
 linkcheck_allowed_redirects = {
-    "https://doi.org.*": ".*",
-    "https://dx.doi.org.*": ".*"
+    "https://doi.org.*":
+        ".*",
+    "https://dx.doi.org.*":
+        ".*",
+    r"https://github\.com/NCAR/geocat-comp/issues/new?*":
+        r"https://github\.com/login?return_to=*",
+    r"https://forms\.gle/*":
+        r"https://docs\.google\.com/forms*"
 }
 
 
