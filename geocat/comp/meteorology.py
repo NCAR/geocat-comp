@@ -469,21 +469,23 @@ def _xheat_index(temperature: xr.DataArray,
                              heatindex)
 
         # adjustments
-        heatindex = [
-            hi - ((13 - rh) / 4) * np.sqrt(
-                (17 - abs(t - 95)) / 17) if rh < 13 and 80 < t < 112 else hi
-            for hi, rh, t in zip(heatindex.data.ravel(
-            ), relative_humidity.data.ravel(), temperature.data.ravel())
-        ]
+        heatindex.data = da.reshape(
+            da.block([
+                hi - ((13 - rh) / 4) * np.sqrt(
+                    (17 - abs(t - 95)) / 17) if rh < 13 and 80 < t < 112 else hi
+                for hi, rh, t in zip(heatindex.data.ravel(
+                ), relative_humidity.data.ravel(), temperature.data.ravel())
+            ]), temperature.shape)
 
-        heatindex = xr.DataArray([
-            hi + ((rh - 85.0) / 10.0) *
-            ((87.0 - t) / 5.0) if rh > 85 and 80 < t < 87 else hi
-            for hi, rh, t in zip(heatindex, relative_humidity.data.ravel(),
-                                 temperature.data.ravel())
-        ])
+        heatindex.data = da.reshape(
+            da.block([
+                hi + ((rh - 85.0) / 10.0) *
+                ((87.0 - t) / 5.0) if rh > 85 and 80 < t < 87 else hi
+                for hi, rh, t in zip(heatindex, relative_humidity.data.ravel(),
+                                     temperature.data.ravel())
+            ]), temperature.shape)
 
-    heatindex.data.shape = temperature.shape
+    heatindex.data.visualize(filename="heat_index.png")
 
     return heatindex, eqtype
 
