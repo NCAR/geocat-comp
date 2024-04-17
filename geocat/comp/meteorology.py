@@ -485,8 +485,6 @@ def _xheat_index(temperature: xr.DataArray,
                                      temperature.data.ravel())
             ]), temperature.shape)
 
-    heatindex.data.visualize(filename="heat_index.png")
-
     return heatindex, eqtype
 
 
