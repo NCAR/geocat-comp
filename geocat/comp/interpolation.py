@@ -1,4 +1,5 @@
 import typing
+import warnings
 
 import cf_xarray
 import metpy.interpolate
@@ -23,7 +24,7 @@ def _func_interpolate(method='linear'):
         func_interpolate = metpy.interpolate.log_interpolate_1d
     else:
         raise ValueError(f'Unknown interpolation method: {method}. '
-                         f'Supported methods are: "log" and "linear".')
+                        f'Supported methods are: "log" and "linear".')
 
     return func_interpolate
 
@@ -130,7 +131,9 @@ def _sigma_from_hybrid(psfc, hya, hyb, p0=100000.):
 def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0):
     """Execute the defined interpolation function on data."""
 
-    return func_interpolate(new_levels, xcoords, data, axis=interp_axis)
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", r"Interpolation point out of data bounds encountered")
+        return func_interpolate(new_levels, xcoords, data, axis=interp_axis)
 
 
 def _temp_extrapolate(data, lev_dim, lev, p_sfc, ps, phi_sfc):
