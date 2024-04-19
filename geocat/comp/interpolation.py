@@ -286,7 +286,7 @@ def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, ps,
         A DataArray containing the data after extrapolation.
     """
 
-    sfc_index = pressure[lev_dim].argmax()  # index of the model surface
+    sfc_index = pressure[lev_dim].argmax(dim=lev_dim)  # index of the model surface
     p_sfc = pressure.isel({lev_dim: sfc_index},
                           drop=True)  # extract pressure at lowest level
 
