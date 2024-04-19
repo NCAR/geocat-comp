@@ -24,7 +24,7 @@ def _func_interpolate(method='linear'):
         func_interpolate = metpy.interpolate.log_interpolate_1d
     else:
         raise ValueError(f'Unknown interpolation method: {method}. '
-                        f'Supported methods are: "log" and "linear".')
+                         f'Supported methods are: "log" and "linear".')
 
     return func_interpolate
 
@@ -132,7 +132,8 @@ def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0):
     """Execute the defined interpolation function on data."""
 
     with warnings.catch_warnings():
-        warnings.filterwarnings("ignore", r"Interpolation point out of data bounds encountered")
+        warnings.filterwarnings(
+            "ignore", r"Interpolation point out of data bounds encountered")
         return func_interpolate(new_levels, xcoords, data, axis=interp_axis)
 
 
@@ -289,7 +290,8 @@ def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, ps,
         A DataArray containing the data after extrapolation.
     """
 
-    sfc_index = pressure[lev_dim].argmax(dim=lev_dim)  # index of the model surface
+    sfc_index = pressure[lev_dim].argmax(
+        dim=lev_dim)  # index of the model surface
     p_sfc = pressure.isel({lev_dim: sfc_index},
                           drop=True)  # extract pressure at lowest level
 
