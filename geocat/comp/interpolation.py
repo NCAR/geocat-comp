@@ -464,7 +464,7 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
         data = data.chunk(data_chunk)
 
     # Chunk pressure equal to data's chunks
-    pressure = pressure.chunk(data.chunks)
+    pressure = pressure.chunk(data_chunk)
 
     # Output data structure elements
     out_chunks = list(data.chunks)
