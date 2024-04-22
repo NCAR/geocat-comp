@@ -1,4 +1,5 @@
 import typing
+import warnings
 
 import cf_xarray
 import metpy.interpolate
@@ -130,7 +131,10 @@ def _sigma_from_hybrid(psfc, hya, hyb, p0=100000.):
 def _vertical_remap(func_interpolate, new_levels, xcoords, data, interp_axis=0):
     """Execute the defined interpolation function on data."""
 
-    return func_interpolate(new_levels, xcoords, data, axis=interp_axis)
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore", r"Interpolation point out of data bounds encountered")
+        return func_interpolate(new_levels, xcoords, data, axis=interp_axis)
 
 
 def _temp_extrapolate(data, lev_dim, lev, p_sfc, ps, phi_sfc):
@@ -171,7 +175,7 @@ def _temp_extrapolate(data, lev_dim, lev, p_sfc, ps, phi_sfc):
     g_inv = 1 / 9.80616  # inverse of gravity
     alpha = 0.0065 * R_d * g_inv
 
-    tstar = data.isel(**{lev_dim: -1}) * (1 + alpha * (ps / p_sfc - 1))
+    tstar = data.isel({lev_dim: -1}, drop=True) * (1 + alpha * (ps / p_sfc - 1))
     hgt = phi_sfc * g_inv
     t0 = tstar + 0.0065 * hgt
     tplat = xr.apply_ufunc(np.minimum, 298, t0, dask='parallelized')
@@ -285,26 +289,24 @@ def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, ps,
     output: :class:`xarray.DataArray`
         A DataArray containing the data after extrapolation.
     """
-    sfc_index = pressure[lev_dim].argmax().data  # index of the model surface
-    p_sfc = pressure.isel(**dict({lev_dim: sfc_index
-                                 }))  # extract pressure at lowest level
+
+    sfc_index = pressure[lev_dim].argmax(
+        dim=lev_dim)  # index of the model surface
+    p_sfc = pressure.isel({lev_dim: sfc_index},
+                          drop=True)  # extract pressure at lowest level
 
     if variable == 'temperature':
-        for lev in new_levels:
-            output.loc[dict(plev=lev)] = xr.where(
-                lev <= p_sfc, output.sel(plev=lev),
-                _temp_extrapolate(data, lev_dim, lev, p_sfc, ps, phi_sfc))
-
+        output = output.where(
+            output.plev <= p_sfc,
+            _temp_extrapolate(data, lev_dim, output.plev, p_sfc, ps, phi_sfc))
     elif variable == 'geopotential':
-        for lev in new_levels:
-            output.loc[dict(plev=lev)] = xr.where(
-                lev <= p_sfc, output.sel(plev=lev),
-                _geo_height_extrapolate(t_bot, lev, p_sfc, ps, phi_sfc))
+        output = output.where(
+            output.plev <= p_sfc,
+            _geo_height_extrapolate(t_bot, output.plev, p_sfc, ps, phi_sfc))
     else:
-        for lev in new_levels:
-            output.loc[dict(plev=lev)] = xr.where(
-                lev <= p_sfc, output.sel(plev=lev),
-                data.isel(**dict({lev_dim: sfc_index})))
+        output = output.where(output.plev <= p_sfc,
+                              data.isel({lev_dim: sfc_index}, drop=True))
+
     return output
 
 
@@ -467,7 +469,7 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
         data = data.chunk(data_chunk)
 
     # Chunk pressure equal to data's chunks
-    pressure = pressure.chunk(data.chunks)
+    pressure = pressure.chunk(data.chunksizes)
 
     # Output data structure elements
     out_chunks = list(data.chunks)

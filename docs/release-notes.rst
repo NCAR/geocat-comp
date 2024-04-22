@@ -5,14 +5,22 @@
 Release Notes
 =============
 
-v2024.04.0 (Unreleased)
+
+v2024.04.0 (unreleased)
 -----------------------
-Upcoming release
+This release...
+
+Bug Fixes
+^^^^^^^^^
+* Fix to address slow execution times for ``interp_hybrid_to_pressure`` with extrapolation by `Katelyn FitzGerald`_ in (:pr:`592`)
+
+Compatibility
+^^^^^^^^^^^^^
+* Drop Python 3.9 Support by `Cora Schneck`_ in (:pr:`599`)
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
-* Drop Python 3.9 Support by `Cora Schneck`_ in (:pr:`599`)
-* Reduce DeprecationWarnings in testing by `Cora Schneck`_ in (:pr:`582`)
+* Update build in pypi workflow and documentation links to reduce warnings in testing and docs by `Cora Schneck`_ in (:pr:`582`)
 
 
 v2024.03.0 (March 29, 2024)
