@@ -10,6 +10,7 @@ v2024.04.0 (Unreleased)
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
+* Reduce DeprecationWarnings in testing by `Cora Schneck`_ in (:pr:`582`)
 * Prevent `heat_index` from running unnecessary calculations that may generate warnings by `Anissa Zacharias`_ in (:pr:`596`)
 
 
@@ -146,7 +147,7 @@ Contributor's Guide to the documentation.
 New Features
 ^^^^^^^^^^^^
 * User-defined seasonal boundaries, ``custom_seasons``, enabled for
-  ``climatology_average`` by `Julia Kent`_ in (:pr:`441`)
+  ``climatology_average`` by `Julia Kent`_ in (:pr:`411`)
 
 Bug Fixes
 ^^^^^^^^^
@@ -191,7 +192,7 @@ Breaking Changes
 
 Bug Fixes
 ^^^^^^^^^
-* Fix bug in ``_temp_extrapolate`` used by ``interp_hybrid_to_pressure`` by `Katelyn FitzGerald`_ in (:pr:`422`)
+* Fix bug in ``_temp_extrapolate`` used by ``interp_hybrid_to_pressure`` by `Katelyn FitzGerald`_ in (:pr:`424`)
 
 
 v2023.05.0 (4 May 2023)
