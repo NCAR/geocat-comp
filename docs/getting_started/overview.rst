@@ -17,14 +17,14 @@ a plethora of scientific analysis packages designed for general use or for niche
 for learning Python basics and for data analysis workflows. Python also enables scalability through parallel computation
 which was never possible with NCL, enabling geoscientists to tackle analysis workflows on large volumes of data.
 
-GeoCAT-comp draws from well-established analysis packages like `NumPy <https://numpy.org/>`__, `Xarray <https://docs.xarray.dev/>`__,
+GeoCAT-comp draws from well-established analysis packages like `NumPy <https://numpy.org/>`__, `Xarray <https://docs.xarray.dev/en/stable/>`__,
 `SciPy <https://scipy.org/>`__, and `MetPy <https://unidata.github.io/MetPy/>`__ to recreate and expand upon NCL
 functions in pure Python. With so many tools being used under the hood, GeoCAT-comp users have access to geoscience
 specific computational tools without needing extensive working knowledge of `Pangeo <https://pangeo.io/>`__ stack.
 
 There are syntactical benefits to using the Pangeo stack, one of which is indexing by label. NCL requires the
 dimensions of input data to be in a particular order. This results in functions with rigid data format requirements and
-multiple versions of the same function for different dimension orders. By using `Xarray <https://docs.xarray.dev/>`__,
+multiple versions of the same function for different dimension orders. By using `Xarray <https://docs.xarray.dev/en/stable/>`__,
 GeoCAT-comp avoids those data format requirements. The xarray data structures allow users to
 `refer to dimensions by label <https://docs.xarray.dev/en/stable/getting-started-guide/why-xarray.html#what-labels-enable>`__
 rather than index, thereby removing the need for multiple versions of the same function. This makes it easier for the
@@ -42,4 +42,4 @@ GeoCAT-f2py
 While our goal is to recreate NCL functions in pure Python, translating some NCL routines is challenging and time
 consuming. To ensure GeoCAT users have access to those functions while we work on full Python versions, the Fortran code
 they are based upon is wrapped in Python in the GeoCAT-f2py package. Information about
-GeoCAT-f2py can be found on the `package's homepage <https://geocat-f2py.readthedocs.io/>`__.
+GeoCAT-f2py can be found on the `package's homepage <https://geocat-f2py.readthedocs.io/en/latest/>`__.
