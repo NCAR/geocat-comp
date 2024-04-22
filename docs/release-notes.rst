@@ -10,10 +10,8 @@ v2024.04.0 (Unreleased)
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
-* Drop Python 3.9 Support by `Cora Schneck`_ in (:pr:`599`)
 * Reduce DeprecationWarnings in testing by `Cora Schneck`_ in (:pr:`582`)
 * Prevent `heat_index` from running unnecessary calculations that may generate warnings by `Anissa Zacharias`_ in (:pr:`596`)
-
 
 
 v2024.03.0 (March 29, 2024)
