@@ -34,9 +34,9 @@ in working on an issue, please comment on the issue to let us know you are
 working on it. This will help us avoid duplicate work.
 
 The code for ``geocat-comp`` is hosted on GitHub. If you do not have one, you
-will need to create a `free GitHub account <https://github.com/signup/free>`__.
+will need to create a `free GitHub account <https://github.com/signup>`__.
 The `GitHub Quickstart Guide
-<https://docs.github.com/en/get-started/quickstart>`__ is a great place to get
+<https://docs.github.com/en/get-started/start-your-journey>`__ is a great place to get
 started with git and GitHub.
 
 **************
@@ -130,7 +130,7 @@ repository.
     cd geocat-comp git remote add upstream https://github.com/NCAR/geocat-comp.git
 
 For more information, see the `GitHub quickstart section on forking a repository
-<https://docs.github.com/en/get-started/quickstart/fork-a-repo>`__.
+<https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo>`__.
 
 Create a development environment
 --------------------------------
@@ -301,7 +301,7 @@ need to modify to incorporate your code into the package. These include:
 Write and run tests
 -------------------
 
-``geocat-comp`` uses `pytest <https://pytest.org/>`__ for unit tests, so we
+``geocat-comp`` uses `pytest <https://docs.pytest.org/en/stable/>`__ for unit tests, so we
 encourage you to write new tests using ``pytest`` as well.
 
 To run the tests locally, use the following command from the root of the
@@ -320,7 +320,7 @@ To run a specific test, use the following command:
 These tests will also run automatically when you open a pull request using
 GitHub Actions and the ``.github/workflows/ci.yml`` file.
 
-See the `pytest documentation <https://pytest.org/>`__ for more information.
+See the `pytest documentation <https://docs.pytest.org/en/stable/>`__ for more information.
 
 
 *************

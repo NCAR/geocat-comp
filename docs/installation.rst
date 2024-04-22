@@ -13,7 +13,7 @@ Installing GeoCAT-comp via Conda in a New Environment
 -----------------------------------------------------
 
 The easiest way to install GeoCAT-comp is using
-`Conda <http://conda.pydata.org/docs/>`__::
+`Conda <https://docs.conda.io/projects/conda/en/latest/>`__::
 
     conda create -n geocat -c conda-forge geocat-comp
 

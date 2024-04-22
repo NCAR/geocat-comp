@@ -15,10 +15,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install setuptools setuptools-scm wheel twine check-manifest
+          python -m pip install build twine check-manifest
       - name: Build tarball and wheels
         run: |
-          python setup.py sdist bdist_wheel
+          python -m build
           python -m pip wheel . -w dist --no-deps
       - name: Test the artifacts
         run: |
@@ -39,10 +39,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install setuptools setuptools-scm wheel twine check-manifest
+          python -m pip install build twine check-manifest
       - name: Build tarball and wheels
         run: |
-          python setup.py sdist bdist_wheel
+          python -m build
           python -m pip wheel . -w dist --no-deps
       - name: Test the artifacts
         run: |
