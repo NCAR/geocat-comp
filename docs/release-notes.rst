@@ -11,7 +11,9 @@ Upcoming release
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
+* Drop Python 3.9 Support by `Cora Schneck`_ in (:pr:`599`)
 * Reduce DeprecationWarnings in testing by `Cora Schneck`_ in (:pr:`582`)
+
 
 v2024.03.0 (March 29, 2024)
 ---------------------------
