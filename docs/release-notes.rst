@@ -9,8 +9,8 @@ Release Notes
 =============
 
 
-v2024.04.0 (unreleased)
------------------------
+v2024.04.0 (April 23, 2024)
+---------------------------
 This release drops compatibility for Python 3.9 and improves performance for ``interp_hybrid_to_pressure``.
 
 Breaking Changes
