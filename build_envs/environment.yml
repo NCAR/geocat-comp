@@ -10,7 +10,7 @@ dependencies:
   - eofs
   - metpy
   - numba
-  - numpy
+  - numpy<2.0
   - scipy
   - pandas
   - pint

@@ -13,6 +13,7 @@ This release...
 Bug Fixes
 ^^^^^^^^^
 * Fix to address slow execution times for ``interp_hybrid_to_pressure`` with extrapolation by `Katelyn FitzGerald`_ in (:pr:`592`)
+* Pin ``numpy<2.0`` for occasional PyPI install issues by `Anissa Zacharias`_ in (:pr:`600`)
 
 Compatibility
 ^^^^^^^^^^^^^
