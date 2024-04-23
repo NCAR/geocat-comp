@@ -2,22 +2,25 @@
 
 .. _release:
 
+..
+    SEE TEMPLATE AT BOTTOM OF FILE WHEN STARTING A NEW RELEASE SECTION
+
 Release Notes
 =============
 
 
-v2024.04.0 (unreleased)
------------------------
-This release...
+v2024.04.0 (April 23, 2024)
+---------------------------
+This release drops compatibility for Python 3.9 and improves performance for ``interp_hybrid_to_pressure``.
+
+Breaking Changes
+^^^^^^^^^^^^^^^^
+* Drop Python 3.9 Support by `Cora Schneck`_ in (:pr:`599`)
 
 Bug Fixes
 ^^^^^^^^^
 * Fix to address slow execution times for ``interp_hybrid_to_pressure`` with extrapolation by `Katelyn FitzGerald`_ in (:pr:`592`)
 * Pin ``numpy<2.0`` for occasional PyPI install issues by `Anissa Zacharias`_ in (:pr:`600`)
-
-Compatibility
-^^^^^^^^^^^^^
-* Drop Python 3.9 Support by `Cora Schneck`_ in (:pr:`599`)
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
@@ -390,3 +393,24 @@ Maintenance
 .. _`Cora Schneck`: https://github.com/cyschneck
 .. _`Philip Chmielowiec`: https://github.com/philipc2
 .. _`AnshRoshan`: https://github.com/AnshRoshan
+
+..
+    TEMPLATE
+    vYYYY.MM.## (unreleased)
+    ------------------------
+    This release...
+
+    New Features
+    ^^^^^^^^^^^^
+
+    Breaking Changes
+    ^^^^^^^^^^^^^^^^
+
+    Bug Fixes
+    ^^^^^^^^^
+
+    Internal Changes
+    ^^^^^^^^^^^^^^^^
+
+    Documentation
+    ^^^^^^^^^^^^^
