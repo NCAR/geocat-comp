@@ -9,7 +9,7 @@ dependencies:
   - eofs
   - metpy
   - netcdf4
-  - numpy
+  - numpy<2.0
   - pint
   - pip
   - scipy
