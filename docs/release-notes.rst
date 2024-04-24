@@ -8,6 +8,13 @@
 Release Notes
 =============
 
+vYYYY.MM.## (unreleased)
+------------------------
+This release...
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Update and setup autoupdate for pre-commit hooks by `Cora Schneck`_ in (:pr:`604`)
 
 v2024.04.0 (April 23, 2024)
 ---------------------------
