@@ -15,7 +15,7 @@ This release...
 Internal Changes
 ^^^^^^^^^^^^^^^^
 * Update and setup autoupdate for pre-commit hooks by `Cora Schneck`_ in (:pr:`604`)
-* Replace pre-commit.yaml with pre-commit.ci in .pre-commit-config.yaml by `Cora Schneck`_ in (:pr:`608`)
+* Removed ``pre-commit.yaml`` action in favor of pre-commit.ci by `Cora Schneck`_ in (:pr:`608`)
 
 v2024.04.0 (April 23, 2024)
 ---------------------------
