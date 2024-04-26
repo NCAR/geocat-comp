@@ -1,0 +1,14 @@
+name: 📝 Issue
+description: General issue that's not a bug report
+
+body:
+  - type: markdown
+    attributes:
+      value: Thank you for taking the time to fill out this issue!
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: "Please describe your issue here"
+    validations:
+      required: true
