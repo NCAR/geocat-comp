@@ -2,3 +2,36 @@ name: 💡 Feature request
 description: Suggest an idea for this project
 title: '[💡]: '
 labels: ['feature', 'support', 'triage']
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this feature request!
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: "Describe the functionality you are requesting, linking any relevant usage or previous implementations in the python ecosystem or otherwise."
+      description: "the more information the better!"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: ncl
+    attributes:
+      label: "Is this a request for functionality that was previously in NCL?"
+      options:
+        - Yes
+        - No
+        - Unknown
+    validations:
+        required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: "Additional context"
+      description: "Add any other context or screenshots about the feature request here"
+    validations:
+      required: false
