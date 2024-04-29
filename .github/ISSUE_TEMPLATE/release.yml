@@ -1,0 +1,33 @@
+name: Release request
+description: Request a new release of geocat-comp
+title: '[Release]: <version-number>'
+labels: [ release, high-priority ]
+assignees: 'anissa111'
+
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: "vYYYY.MM.##"
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: "Summary"
+      description: "Plain text summary of significant changes"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: "Release progress checklist"
+      options:
+        - label: release-notes.rst has been updated with latest release notes, version, and release date
+        - label: CI tests are passing
+        - label: a new tag and release has been made on GitHub
+        - label: feedstock PR has been merged
+        - label: new version can be installed via conda
+        - label: release on pypi action has been triggered on the tag
+        - label: new version can be installed via pip
