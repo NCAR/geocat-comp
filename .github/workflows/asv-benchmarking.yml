@@ -34,7 +34,7 @@ jobs:
       - name: Set up conda environment
         uses: conda-incubator/setup-miniconda@v3
         with:
-          miniconda-version: "24.1.2-0"
+          conda-version: "24.1.2"
           environment-file: ./build_envs/asv-bench.yml
 
       - name: Copy existing results
