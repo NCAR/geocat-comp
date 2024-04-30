@@ -32,23 +32,10 @@ jobs:
           echo "TODAY=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       - name: Set up conda environment
-        id: env-setup
-        continue-on-error: true
-        uses: mamba-org/setup-micromamba@v1
+        uses: conda-incubator/setup-miniconda@v3
         with:
-          micromamba-version: "1.5.6-0"
+          miniconda-version: "24.1.2-0"
           environment-file: ./build_envs/asv-bench.yml
-          cache-environment: true
-          cache-environment-key: "benchmark-${{runner.os}}-${{runner.arch}}-${{env.TODAY}}"
-
-      - name: retry environment set up if failed
-        if: steps.env-setup.outcome == 'failure'
-        uses: mamba-org/setup-micromamba@v1
-        with:
-          download-micromamba: false
-          environment-file: ./build_envs/asv-bench.yml
-          cache-environment: true
-          cache-environment-key: "benchmark-${{runner.os}}-${{runner.arch}}-${{env.TODAY}}"
 
       - name: Copy existing results
         run: |
