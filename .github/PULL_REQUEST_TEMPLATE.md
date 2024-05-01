@@ -7,7 +7,7 @@ Closes #XXX
 **General**
 - [ ] PR includes a summary of changes
 - [ ] Link relevant issues, make one if none exist
-- [ ] Add a brief summary of changes to `docs/release-notes.rst` in a relevant section for the next unreleased release.
+- [ ] Add a brief summary of changes to `docs/release-notes.rst` in a relevant section for the upcoming release.
 - [ ] Add appropriate labels to this PR
 - [ ] PR follows the [Contributor's Guide](https://geocat-comp.readthedocs.io/en/stable/contrib.html)
 
