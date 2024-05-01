@@ -10,7 +10,6 @@ Closes #XXX
 - [ ] Add a brief summary of changes to `docs/release-notes.rst` in a relevant section for the next unreleased release.
 - [ ] Add appropriate labels to this PR
 - [ ] Make your changes in a forked repository rather than directly in this repo
-- [ ] Open this PR as a draft if it is not ready for review
 
 **Functionality**
 - [ ] Function is in appropriate module file
