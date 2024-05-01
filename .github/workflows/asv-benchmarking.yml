@@ -27,15 +27,27 @@ jobs:
           fetch-depth: 0
           ref: main
           path: geocat-comp-asv
-      - name: Set environment variables
-        run: |
-          echo "TODAY=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      - name: Cache conda
+        uses: actions/cache@v3
+        env:
+          # Increase this value to reset cache if etc/example-environment.yml has not changed
+          CACHE_NUMBER: 0
+        with:
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{
+            hashFiles('./build_envs/asv-bench.yml') }}
 
       - name: Set up conda environment
         uses: conda-incubator/setup-miniconda@v3
         with:
+          activate-environment: asv-bench
           conda-version: "24.1.2"
           environment-file: ./build_envs/asv-bench.yml
+          use-only-tar-bz2: true
+        run: conda info
+        run: conda list
 
       - name: Copy existing results
         run: |
