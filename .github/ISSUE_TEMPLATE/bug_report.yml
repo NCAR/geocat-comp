@@ -61,15 +61,16 @@ body:
     id: reproduce
     attributes:
       label: "Steps to reproduce"
-      description: "If possible, please provide a minimally reproducible example to reproduce the problem"
+      description: "If possible, please provide a minimally reproducible example to reproduce the problem. "
     validations:
       required: false
 
   - type: textarea
-    id: stack
+    id: log-output
     attributes:
-      label: "Stack trace"
-      description: "If applicable, please provide a stack trace"
+      label: "Relevant log output"
+      description: "If applicable, please copy and paste any relevant output. This will be automatically formatted into code, so no need for markdown backticks"
+      render: Python
     validations:
         required: false
 
@@ -77,6 +78,12 @@ body:
     id: environment
     attributes:
       label: "Environment"
-      description: "If possible, please paste the output of `conda list` or `pip freeze` here"
+      description: "If possible, please paste the output of `conda list` or `pip freeze` between the <details> tags, leaving an empty line following the opening tag."
+      value: |
+        <details>
+
+
+
+        </details>
     validations:
       required: false
