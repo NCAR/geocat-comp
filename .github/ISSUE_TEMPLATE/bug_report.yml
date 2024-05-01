@@ -61,7 +61,7 @@ body:
     id: reproduce
     attributes:
       label: "Steps to reproduce"
-      description: "If possible, please provide a minimally reproducible example to reproduce the problem. "
+      description: "If possible, please provide a minimal reproducible example that demonstrates the problem."
     validations:
       required: false
 
