@@ -43,6 +43,7 @@ jobs:
         uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: asv-bench
+          channel-priority: strict
           conda-version: "24.1.2"
           environment-file: ./build_envs/asv-bench.yml
           use-only-tar-bz2: true
