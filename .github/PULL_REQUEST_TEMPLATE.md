@@ -9,7 +9,7 @@ Closes #XXX
 - [ ] Link relevant issues, make one if none exist
 - [ ] Add a brief summary of changes to `docs/release-notes.rst` in a relevant section for the next unreleased release.
 - [ ] Add appropriate labels to this PR
-- [ ] Make your changes in a forked repository rather than directly in this repo
+- [ ] PR follows the [Contributor's Guide](https://geocat-comp.readthedocs.io/en/stable/contrib.html)
 
 **Functionality**
 - [ ] Function is in appropriate module file
