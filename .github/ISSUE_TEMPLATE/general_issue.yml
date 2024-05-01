@@ -1,10 +1,12 @@
 name: 📝 Issue
 description: General issue that's not a bug report
+title: "[Issue]: "
+labels: ["triage"]
 
 body:
   - type: markdown
     attributes:
-      value: Thank you for taking the time to fill out this issue!
+      value: "Thank you for taking the time to fill out this issue!"
 
   - type: textarea
     id: summary

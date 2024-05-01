@@ -1,7 +1,6 @@
 ## PR Summary
 
 ## Related Tickets & Documents
-Related to #XXX
 Closes #XXX
 
 ## PR Checklist
