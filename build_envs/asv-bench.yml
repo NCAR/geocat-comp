@@ -3,6 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - python=3.10
+  - asv
   - cf_xarray
   - cftime
   - cython
@@ -18,5 +19,4 @@ dependencies:
   - xarray
   - xskillscore
   - pip:
-      - asv<0.6.2
       - -e ../

@@ -27,27 +27,36 @@ jobs:
           fetch-depth: 0
           ref: main
           path: geocat-comp-asv
-      - name: Set environment variables
-        run: |
-          echo "TODAY=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
-      - name: Set up conda environment
-        id: env-setup
-        continue-on-error: true
-        uses: mamba-org/setup-micromamba@v1
+      - name: Setup Miniforge
+        uses: conda-incubator/setup-miniconda@v3
         with:
-          environment-file: ./build_envs/asv-bench.yml
-          cache-environment: true
-          cache-environment-key: "benchmark-${{runner.os}}-${{runner.arch}}-${{env.TODAY}}"
+          miniforge-version: "24.1.2-0"
+          activate-environment: asv-bench
 
-      - name: retry environment set up if failed
-        if: steps.env-setup.outcome == 'failure'
-        uses: mamba-org/setup-micromamba@v1
+      - name: Get date
+        id: get-date
+        run: echo "today=$(/bin/date -u '+%Y%m%d')" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Cache Conda env
+        uses: actions/cache@v4
         with:
-          download-micromamba: false
-          environment-file: ./build_envs/asv-bench.yml
-          cache-environment: true
-          cache-environment-key: "benchmark-${{runner.os}}-${{runner.arch}}-${{env.TODAY}}"
+          path: ${{ env.CONDA }}/envs
+          key:
+            conda-${{ runner.os }}--${{ runner.arch }}--${{
+            steps.get-date.outputs.today }}-${{
+            hashFiles('./build_envs/asv-bench.yml') }}-${{ env.CACHE_NUMBER}}
+        env:
+          # Increase this value to reset cache if the environment file has not changed
+          CACHE_NUMBER: 0
+        id: cache
+
+      - name: Update environment
+        run:
+          conda env update -n asv-bench -f
+          ./build_envs/asv-bench.yml
+        if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Copy existing results
         run: |
