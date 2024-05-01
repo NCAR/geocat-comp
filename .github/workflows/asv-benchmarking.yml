@@ -46,8 +46,9 @@ jobs:
           conda-version: "24.1.2"
           environment-file: ./build_envs/asv-bench.yml
           use-only-tar-bz2: true
-        run: conda info
-        run: conda list
+        run: |
+          conda info
+          conda list
 
       - name: Copy existing results
         run: |
