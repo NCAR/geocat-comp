@@ -28,26 +28,35 @@ jobs:
           ref: main
           path: geocat-comp-asv
 
-      - name: Cache conda
-        uses: actions/cache@v4
-        env:
-          # Increase this value to reset cache if etc/example-environment.yml has not changed
-          CACHE_NUMBER: 0
-        with:
-          path: ~/conda_pkgs_dir
-          key:
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{
-            hashFiles('./build_envs/asv-bench.yml') }}
-
-      - name: Set up conda environment
+      - name: Setup Miniforge
         uses: conda-incubator/setup-miniconda@v3
         with:
           miniforge-version: "24.1.2-0"
-          environment-file: ./build_envs/asv-bench.yml
-          use-only-tar-bz2: true
-      - run: |
-          conda info
-          conda list
+          activate-environment: asv-bench
+
+      - name: Get date
+        id: get-date
+        run: echo "today=$(/bin/date -u '+%Y%m%d')" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Cache Conda env
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.CONDA }}/envs
+          key:
+            conda-${{ runner.os }}--${{ runner.arch }}--${{
+            steps.get-date.outputs.today }}-${{
+            hashFiles('./build_envs/asv-bench.yml') }}-${{ env.CACHE_NUMBER}}
+        env:
+          # Increase this value to reset cache if the environment file has not changed
+          CACHE_NUMBER: 0
+        id: cache
+
+      - name: Update environment
+        run:
+          conda env update -n asv-bench -f
+          ./build_envs/asv-bench.yml
+        if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Copy existing results
         run: |
