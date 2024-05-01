@@ -12,7 +12,6 @@ Closes #XXX
 - [ ] PR follows the [Contributor's Guide](https://geocat-comp.readthedocs.io/en/stable/contrib.html)
 
 **Functionality**
-- [ ] Function is in appropriate module file
 - [ ] New function(s) intended for public API added to `geocat/comp/__init__.py` file
 
 **Testing**
