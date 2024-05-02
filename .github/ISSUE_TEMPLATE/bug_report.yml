@@ -1,0 +1,89 @@
+name: 🐛 Bug report
+description: File a bug report
+title: "[🐛]: "
+labels: ["bug", "support", "triage"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+
+  - type: input
+    id: version
+    attributes:
+      label: "Version"
+      description: "What version of geocat-comp are you running?"
+      placeholder: "v2024.01.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: installation
+    attributes:
+      label: "How did you install geocat-comp?"
+      multiple: false
+      options:
+        - conda-forge
+        - pip
+        - source
+        - pre-made maintained environment
+        - other (please explain in your summary below)
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: "Operating System"
+      description: "What operating system are you using?"
+      placeholder: "Example: macOS Big Sur"
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: "Summary"
+      description: "Please provide a summary of the issue"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: "Expected behavior"
+      description: "What did you expect to happen?"
+    validations:
+      required: false
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: "Steps to reproduce"
+      description: "If possible, please provide a minimal reproducible example that demonstrates the problem."
+    validations:
+      required: false
+
+  - type: textarea
+    id: log-output
+    attributes:
+      label: "Relevant log output"
+      description: "If applicable, please copy and paste any relevant output. This will be automatically formatted into code, so no need for markdown backticks"
+      render: Python
+    validations:
+        required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: "Environment"
+      description: "If possible, please paste the output of `conda list` or `pip freeze` between the <details> tags, leaving an empty line following the opening tag."
+      value: |
+        <details>
+
+
+
+        </details>
+    validations:
+      required: false

@@ -45,7 +45,7 @@ Reporting bugs
 
 Something not working as expected? We would love to hear about it! Please report
 any bugs you find by opening an issue on GitHub. See our `bug report template
-<https://github.com/NCAR/geocat-comp/issues/new?assignees=&labels=bug%2C+support&projects=&template=bug_report.md&title=>`__
+<https://github.com/NCAR/geocat-comp/issues/new?assignees=&labels=bug%2Csupport%2Ctriage&projects=&template=bug_report.yml&title=%5B%F0%9F%90%9B%5D%3A+>`__
 to get started.
 
 When reporting a bug, please include as much information as possible. This will
@@ -59,7 +59,7 @@ Requesting new features
 
 Have an idea for a new feature? Want to know how to do something in Python that
 you used to do in NCL? See our `feature request template
-<https://github.com/NCAR/geocat-comp/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=>`__
+<https://github.com/NCAR/geocat-comp/issues/new?assignees=&labels=feature%2Csupport%2Ctriage&projects=&template=feature_request.yml&title=%5B%F0%9F%92%A1%5D%3A+>`__
 to get started.
 
 You can also use our `Feature Request Form
