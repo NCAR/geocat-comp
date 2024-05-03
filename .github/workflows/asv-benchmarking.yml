@@ -9,6 +9,9 @@ on:
 jobs:
   benchmark:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
     env:
       CONDA_ENV_FILE: ./build_envs/asv-bench.yml
       ASV_DIR: ./benchmarks
@@ -39,7 +42,7 @@ jobs:
         run: echo "today=$(/bin/date -u '+%Y%m%d')" >> $GITHUB_OUTPUT
         shell: bash
 
-      - name: Cache Conda env
+      - name: Cache environment
         uses: actions/cache@v4
         with:
           path: ${{ env.CONDA }}/envs
@@ -58,6 +61,11 @@ jobs:
           ./build_envs/asv-bench.yml
         if: steps.cache.outputs.cache-hit != 'true'
 
+      - name: Conda list
+        run: |
+          conda info
+          conda list
+
       - name: Copy existing results
         run: |
           if [ -d "geocat-comp-asv/results" ]; then
@@ -65,7 +73,6 @@ jobs:
           fi
 
       - name: Run benchmarks
-        shell: bash -l {0}
         id: benchmark
         run: |
           cd benchmarks
