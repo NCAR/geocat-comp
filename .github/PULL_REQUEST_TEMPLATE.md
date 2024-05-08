@@ -1,40 +1,26 @@
 ## PR Summary
-<!-- Summary goes here. Replace XXX with the number of the issue this PR will resolve. -->
+
+## Related Tickets & Documents
 Closes #XXX
 
 ## PR Checklist
-<!-- Please mark any checkboxes that do not apply to this PR as [N/A]. If an entire section doesn't
-apply to this PR, comment it out or delete it. -->
 **General**
-- [ ] Make an issue if one doesn't already exist
-- [ ] Link the issue this PR resolves by adding `closes #XXX` to the PR description where XXX is the number of the issue.
-- [ ] Add a brief summary of changes to `docs/release-notes.rst` in a relevant section for the next unreleased release. Possible sections include: Documentation, New Features, Bug Fixes, Internal Changes, Breaking Changes/Deprecated
+- [ ] PR includes a summary of changes
+- [ ] Link relevant issues, make one if none exist
+- [ ] Add a brief summary of changes to `docs/release-notes.rst` in a relevant section for the upcoming release.
 - [ ] Add appropriate labels to this PR
-- [ ] Make your changes in a forked repository rather than directly in this repo
-- [ ] Open this PR as a draft if it is not ready for review
-- [ ] Convert this PR from a draft to a full PR before requesting reviewers
-- [ ] Passes `precommit`. To set up on your local, run `pre-commit install` from the top level of the repository. To manually run pre-commits, use `pre-commit run --all-files` and re-add any changed files before committing again and pushing.
-- [ ] If needed, squash and merge PR commits into a single commit to clean up commit history
+- [ ] PR follows the [Contributor's Guide](https://geocat-comp.readthedocs.io/en/stable/contrib.html)
 
 **Functionality**
-- [ ] Function is in appropriate module file
 - [ ] New function(s) intended for public API added to `geocat/comp/__init__.py` file
 
 **Testing**
-- [ ] Tests for function exists in associated module test file
-- [ ] Tests cover all possible logical paths in your function
+- [ ] Update or create tests in appropriate test file
 
 **Documentation**
-- [ ] Docstrings have been added to all new functions ([Documentation Standards](https://geocat-comp.readthedocs.io/en/stable/contrib.html#docstrings))
-- [ ] Docstrings have updated with any function changes
+- [ ] Docstrings have been created and/or updated in accordance with [Documentation Standards](https://geocat-comp.readthedocs.io/en/stable/contrib.html#docstrings).
 - [ ] Internal functions have a preceding underscore (`_`) and have been added to `docs/internal_api/index.rst`
 - [ ] User facing functions have been added to `docs/user_api/index.rst` under their module
-
-**Examples**
-- [ ] Any new notebook examples added to `docs/examples/` folder
-- [ ] Pre-run all notebook cells
-- [ ] New notebook files added to `docs/examples.rst` toctree
-- [ ] New notebook files added to new entry in `docs/gallery.yml` with appropriate thumbnail photo in `docs/_static/thumbnails/`
 
 
 <!--
@@ -59,12 +45,16 @@ consider the following points:
   name and GitHub link to bottom of `docs/release-notes.rst` as _`FirstName LastName`
   :https://github.com/githubUsername
 
+- When merging, we prefer to use squash commits.
+
+- You can install pre-commit hooks and then run them locally with `pre-commit run --all-files`
+
 **PR Etiquette Reminders**
 - This PR should be listed as a draft PR until you are ready to request reviewers
 
 - After making changes in accordance with the reviews, re-request your reviewers
 
-- Do *not* mark conversations as resolved if you didn't start them
+- Generally, don't mark conversations as resolved if you didn't open them
 
 - Do mark conversations as resolved *if you opened them* and are satisfied with the changes/discussion.
 

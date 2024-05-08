@@ -2,21 +2,60 @@
 
 .. _release:
 
+..
+    SEE TEMPLATE AT BOTTOM OF FILE WHEN STARTING A NEW RELEASE SECTION
+
 Release Notes
 =============
 
-v2024.03.0 (Unreleased)
------------------------
+vYYYY.MM.## (unreleased)
+------------------------
+This release...
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
-* Additional pre-commit hook for codespell by `Cora Schneck`_ in (:pr:`579`)
-* Add M1 runners to CI by `Katelyn FitzGerald`_ in (:pr:`581`)
-* Reorganize dask compatibility tests by `Anissa Zacharias`_ in (:pr:`568`)
+* Update and setup autoupdate for pre-commit hooks by `Cora Schneck`_ in (:pr:`604`)
+* Removed ``pre-commit.yaml`` action in favor of pre-commit.ci by `Cora Schneck`_ in (:pr:`608`)
+* Remove ASV version pin and pin Conda version for benchmarking workflow by `Katelyn FitzGerald`_ in (:pr:`610`)
+* Updates to issue and PR templates by `Anissa Zacharias`_ in (:pr:`612`)
+* Re-pin ASV and list env info by `Katelyn FitzGerald`_ in (:pr:`613`)
+
+v2024.04.0 (April 23, 2024)
+---------------------------
+This release drops compatibility for Python 3.9 and improves performance for ``interp_hybrid_to_pressure``.
+
+Breaking Changes
+^^^^^^^^^^^^^^^^
+* Drop Python 3.9 Support by `Cora Schneck`_ in (:pr:`599`)
+
+Bug Fixes
+^^^^^^^^^
+* Fix to address slow execution times for ``interp_hybrid_to_pressure`` with extrapolation by `Katelyn FitzGerald`_ in (:pr:`592`)
+* Pin ``numpy<2.0`` for occasional PyPI install issues by `Anissa Zacharias`_ in (:pr:`600`)
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Update build in pypi workflow and documentation links to reduce warnings in testing and docs by `Cora Schneck`_ in (:pr:`582`)
 
 Documentation
 ^^^^^^^^^^^^^
 * Spectral analysis example by `Julia Kent`_ in (:pr:`618`)
+
+
+v2024.03.0 (March 29, 2024)
+---------------------------
+This release includes a bug fix for ``delta_pressure``.
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Additional pre-commit hook for codespell by `Cora Schneck`_ in (:pr:`579`)
+* Remove unused imports, unused variables, code cleanup `Cora Schneck`_ in (:pr:`584`)
+* Add M1 runners to CI by `Katelyn FitzGerald`_ in (:pr:`581`)
+* Reorganize dask compatibility tests by `Anissa Zacharias`_ in (:pr:`568`)
+
+Bug Fixes
+^^^^^^^^^
+* Fix ``delta_pressure`` to handle the case where pressure level(s) are greater than surface pressure by `Katelyn FitzGerald`_ in (:pr:`571`)
 
 v2024.02.0 (February 28, 2024)
 ------------------------------
@@ -39,7 +78,7 @@ Internal Changes
 
 
 v2024.01.0 (January 30, 2023)
------------------------
+-----------------------------
 This release primarily updates our internal CI.
 
 Internal Changes
@@ -135,7 +174,7 @@ Contributor's Guide to the documentation.
 New Features
 ^^^^^^^^^^^^
 * User-defined seasonal boundaries, ``custom_seasons``, enabled for
-  ``climatology_average`` by `Julia Kent`_ in (:pr:`441`)
+  ``climatology_average`` by `Julia Kent`_ in (:pr:`411`)
 
 Bug Fixes
 ^^^^^^^^^
@@ -180,7 +219,7 @@ Breaking Changes
 
 Bug Fixes
 ^^^^^^^^^
-* Fix bug in ``_temp_extrapolate`` used by ``interp_hybrid_to_pressure`` by `Katelyn FitzGerald`_ in (:pr:`422`)
+* Fix bug in ``_temp_extrapolate`` used by ``interp_hybrid_to_pressure`` by `Katelyn FitzGerald`_ in (:pr:`424`)
 
 
 v2023.05.0 (4 May 2023)
@@ -368,3 +407,24 @@ Maintenance
 .. _`Cora Schneck`: https://github.com/cyschneck
 .. _`Philip Chmielowiec`: https://github.com/philipc2
 .. _`AnshRoshan`: https://github.com/AnshRoshan
+
+..
+    TEMPLATE
+    vYYYY.MM.## (unreleased)
+    ------------------------
+    This release...
+
+    New Features
+    ^^^^^^^^^^^^
+
+    Breaking Changes
+    ^^^^^^^^^^^^^^^^
+
+    Bug Fixes
+    ^^^^^^^^^
+
+    Internal Changes
+    ^^^^^^^^^^^^^^^^
+
+    Documentation
+    ^^^^^^^^^^^^^

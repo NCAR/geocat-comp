@@ -3,13 +3,14 @@ channels:
   - conda-forge
 dependencies:
   - python=3.10
+  - asv<0.6.2
   - cf_xarray
   - cftime
   - cython
   - eofs
   - metpy
   - netcdf4
-  - numpy
+  - numpy<2.0
   - pint
   - pip
   - scipy
@@ -18,5 +19,4 @@ dependencies:
   - xarray
   - xskillscore
   - pip:
-      - asv<0.6.2
       - -e ../
