@@ -14,6 +14,10 @@ Internal Changes
 * Add M1 runners to CI by `Katelyn FitzGerald`_ in (:pr:`581`)
 * Reorganize dask compatibility tests by `Anissa Zacharias`_ in (:pr:`568`)
 
+Documentation
+^^^^^^^^^^^^^
+* Spectral analysis example by `Julia Kent`_ in (:pr:`580`)
+
 v2024.02.0 (February 28, 2024)
 ------------------------------
 This release switches the package to use an implicit namespace and adds support
