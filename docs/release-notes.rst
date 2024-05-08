@@ -16,7 +16,7 @@ Internal Changes
 
 Documentation
 ^^^^^^^^^^^^^
-* Spectral analysis example by `Julia Kent`_ in (:pr:`580`)
+* Spectral analysis example by `Julia Kent`_ in (:pr:`618`)
 
 v2024.02.0 (February 28, 2024)
 ------------------------------
