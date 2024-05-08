@@ -402,6 +402,18 @@ nb_execution_mode = "off"
 # add links to ignore during link checking
 linkcheck_ignore = [r'https://stackoverflow.com/help/*']
 
+# ignore doi redirect warnings
+linkcheck_allowed_redirects = {
+    "https://doi.org.*":
+        ".*",
+    "https://dx.doi.org.*":
+        ".*",
+    r"https://github\.com/NCAR/geocat-comp/issues/new*":
+        r"https://github\.com/login\?return_to=*",
+    r"https://forms\.gle/*":
+        r"https://docs\.google\.com/forms*"
+}
+
 
 # Allow for changes to be made to the css in the theme_overrides file
 def setup(app):
