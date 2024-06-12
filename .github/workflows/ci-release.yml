@@ -10,6 +10,7 @@ concurrency:
 
 jobs:
   test_conda_release:
+    if: github.repository == 'NCAR/geocat-comp' && github.ref == 'refs/heads/main'
     name: Conda python${{ matrix.python-version }}, ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     defaults:
@@ -18,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ "windows-latest", "ubuntu-latest", "macos-latest" ]
+        os: [ "ubuntu-latest", "macos-latest", "windows-latest" ]
         python-version: ["3.10", "3.11", "3.12"]
     steps:
       - name: checkout
@@ -46,7 +47,6 @@ jobs:
           cache-environment: true
           cache-environment-key: "release_test-${{runner.os}}-py${{matrix.python-version}}-${{steps.date.outputs.date}}"
 
-
       - name: Try conda release
         run: |
           micromamba install geocat-comp
@@ -56,6 +56,7 @@ jobs:
           python -c "import geocat.comp"
 
   test_pypi_release:
+    if: github.repository == 'NCAR/geocat-comp' && github.ref == 'refs/heads/main'
     name: PyPI python${{ matrix.python-version }}, ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     defaults:
@@ -65,7 +66,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ "windows-latest", "ubuntu-latest", "macos-latest" ]
+        os: [ "ubuntu-latest", "macos-latest", "windows-latest" ]
         python-version: ["3.10", "3.11", "3.12"]
 
     steps:
@@ -91,11 +92,8 @@ jobs:
           cache-environment: true
           cache-environment-key: "release_test-${{runner.os}}-py${{matrix.python-version}}-${{steps.date.outputs.date}}"
 
-
       - name: Try PyPI release
         run: |
-          pip index versions geocat-comp
           pip install geocat-comp
-          which micromamba
           micromamba list
           python -c "import geocat.comp"
