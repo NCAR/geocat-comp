@@ -9,14 +9,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
+  test_conda_release:
     if: github.repository == 'NCAR/geocat-comp' && github.ref == 'refs/heads/main'
-    name: Python (${{ matrix.python-version }}, ${{ matrix.os }})
+    name: Conda python${{ matrix.python-version }}, ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     defaults:
       run:
         shell: bash -l {0}
-
     strategy:
       fail-fast: false
       matrix:
@@ -34,6 +33,8 @@ jobs:
           environment-name: import_test
           create-args: >-
             python=${{ matrix.python-version }}
+          cache-environment: true
+          cache-environment-key: "release_test-${{runner.os}}-py${{matrix.python-version}}-${{steps.date.outputs.date}}"
 
       - name: retry environment setup if failed
         if: steps.env-setup.outcome == 'failure'
@@ -43,6 +44,8 @@ jobs:
           environment-name: import_test
           create-args: >-
             python=${{ matrix.python-version }}
+          cache-environment: true
+          cache-environment-key: "release_test-${{runner.os}}-py${{matrix.python-version}}-${{steps.date.outputs.date}}"
 
       - name: Try conda release
         run: |
@@ -52,9 +55,42 @@ jobs:
           micromamba activate import_test
           python -c "import geocat.comp"
 
-      - name: Uninstall conda release
-        run: |
-          micromamba remove geocat-comp -y
+  test_pypi_release:
+    if: github.repository == 'NCAR/geocat-comp' && github.ref == 'refs/heads/main'
+    name: PyPI python${{ matrix.python-version }}, ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ "ubuntu-latest", "macos-latest", "windows-latest" ]
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - name: environment set up
+        id: env-setup
+        continue-on-error: true
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          environment-name: import_test
+          create-args: >-
+            python=${{ matrix.python-version }}
+          cache-environment: true
+          cache-environment-key: "release_test-${{runner.os}}-py${{matrix.python-version}}-${{steps.date.outputs.date}}"
+
+      - name: retry environment setup if failed
+        if: steps.env-setup.outcome == 'failure'
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          download-micromamba: false
+          environment-name: import_test
+          create-args: >-
+            python=${{ matrix.python-version }}
+          cache-environment: true
+          cache-environment-key: "release_test-${{runner.os}}-py${{matrix.python-version}}-${{steps.date.outputs.date}}"
 
       - name: Try PyPI release
         run: |
