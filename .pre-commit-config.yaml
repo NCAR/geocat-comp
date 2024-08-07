@@ -31,3 +31,4 @@ repos:
     - id: end-of-file-fixer        # Makes sure files end with a newline.
     - id: trailing-whitespace      # Checks for any tabs or spaces after the last non-whitespace character on the line.
     - id: check-docstring-first    # Checks that code comes after the docstrings.
+    - id: check-yaml               # Check valid yml file
