@@ -40,6 +40,10 @@ Internal Changes
 ^^^^^^^^^^^^^^^^
 * Update build in pypi workflow and documentation links to reduce warnings in testing and docs by `Cora Schneck`_ in (:pr:`582`)
 
+Documentation
+^^^^^^^^^^^^^
+* Spectral analysis example by `Julia Kent`_ in (:pr:`618`)
+
 
 v2024.03.0 (March 29, 2024)
 ---------------------------
@@ -55,7 +59,6 @@ Internal Changes
 Bug Fixes
 ^^^^^^^^^
 * Fix ``delta_pressure`` to handle the case where pressure level(s) are greater than surface pressure by `Katelyn FitzGerald`_ in (:pr:`571`)
-
 
 v2024.02.0 (February 28, 2024)
 ------------------------------
