@@ -14,12 +14,14 @@ This release...
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
+* Pre-commit hook to check for valid yml by `Cora Schneck`_ in (:pr:`625`)
 * CI to run on macos-latest instead of macos-14 by `Cora Schneck`_ in (:pr:`617`)
 * Update and setup autoupdate for pre-commit hooks by `Cora Schneck`_ in (:pr:`604`)
 * Removed ``pre-commit.yaml`` action in favor of pre-commit.ci by `Cora Schneck`_ in (:pr:`608`)
 * Remove ASV version pin and pin Conda version for benchmarking workflow by `Katelyn FitzGerald`_ in (:pr:`610`)
 * Updates to issue and PR templates by `Anissa Zacharias`_ in (:pr:`612`)
 * Re-pin ASV and list env info by `Katelyn FitzGerald`_ in (:pr:`613`)
+* Refactor ``pre-commit.ci`` by `Anissa Zacharias`_ in (:pr:`628`)
 * Temporarily pin micromamba for CI by `Anissa Zacharias`_ in (:pr:`645`)
 
 v2024.04.0 (April 23, 2024)
