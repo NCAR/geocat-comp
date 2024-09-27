@@ -30,6 +30,7 @@ jobs:
         continue-on-error: true
         uses: mamba-org/setup-micromamba@v1
         with:
+          micromamba-version: '1.5.10-0'
           environment-name: import_test
           create-args: >-
             python=${{ matrix.python-version }}
