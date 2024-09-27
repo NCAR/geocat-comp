@@ -20,6 +20,7 @@ Internal Changes
 * Remove ASV version pin and pin Conda version for benchmarking workflow by `Katelyn FitzGerald`_ in (:pr:`610`)
 * Updates to issue and PR templates by `Anissa Zacharias`_ in (:pr:`612`)
 * Re-pin ASV and list env info by `Katelyn FitzGerald`_ in (:pr:`613`)
+* Temporarily pin micromamba for CI by `Anissa Zacharias`_ in (:pr:`645`)
 
 v2024.04.0 (April 23, 2024)
 ---------------------------
