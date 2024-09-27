@@ -50,7 +50,6 @@ jobs:
         if: steps.env-setup.outcome == 'failure'
         uses: mamba-org/setup-micromamba@v1
         with:
-          micromamba-version: '1.5.10-0'
           download-micromamba: false
           environment-file: build_envs/environment.yml
           cache-environment: true
@@ -117,6 +116,7 @@ jobs:
         continue-on-error: true
         uses: mamba-org/setup-micromamba@v1
         with:
+          micromamba-version: '1.5.10-0'
           environment-file: build_envs/docs.yml
           cache-environment: true
           cache-environment-key: "linkcheck-${{env.TODAY}}"
