@@ -18,7 +18,7 @@ welcome to suggest novel computational functions for geosciences data.
 
 [GeoCAT Homepage](https://geocat.ucar.edu/)
 
-[GeoCAT Contributor's Guide](https://github.com/NCAR/geocat-comp/blob/main/CONTRIBUTING.md)
+[GeoCAT Contributor's Guide](https://geocat-comp.readthedocs.io/en/stable/contrib.html)
 
 [GeoCAT-comp documentation on Read the Docs](https://geocat-comp.readthedocs.io)
 
