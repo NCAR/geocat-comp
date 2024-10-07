@@ -37,7 +37,7 @@ jobs:
       - name: environment setup
         id: env-setup
         continue-on-error: true
-        uses: mamba-org/setup-micromamba@v1
+        uses: mamba-org/setup-micromamba@v2
         with:
           micromamba-version: '1.5.10-0'
           environment-file: build_envs/environment.yml
@@ -48,7 +48,7 @@ jobs:
 
       - name: retry environment set up if failed
         if: steps.env-setup.outcome == 'failure'
-        uses: mamba-org/setup-micromamba@v1
+        uses: mamba-org/setup-micromamba@v2
         with:
           download-micromamba: false
           environment-file: build_envs/environment.yml
@@ -114,7 +114,7 @@ jobs:
       - name: environment setup
         id: link-env-setup
         continue-on-error: true
-        uses: mamba-org/setup-micromamba@v1
+        uses: mamba-org/setup-micromamba@v2
         with:
           micromamba-version: '1.5.10-0'
           environment-file: build_envs/docs.yml
@@ -125,7 +125,7 @@ jobs:
 
       - name: retry environment set up if failed
         if: steps.link-env-setup.outcome == 'failure'
-        uses: mamba-org/setup-micromamba@v1
+        uses: mamba-org/setup-micromamba@v2
         with:
           download-micromamba: false
           environment-file: build_envs/docs.yml
