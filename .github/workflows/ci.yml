@@ -39,7 +39,6 @@ jobs:
         continue-on-error: true
         uses: mamba-org/setup-micromamba@v2
         with:
-          micromamba-version: '1.5.10-0'
           environment-file: build_envs/environment.yml
           cache-environment: true
           cache-environment-key: "CI ${{runner.os}}-${{runner.arch}}-py${{matrix.python-version}}-${{env.TODAY}}"
@@ -116,7 +115,6 @@ jobs:
         continue-on-error: true
         uses: mamba-org/setup-micromamba@v2
         with:
-          micromamba-version: '1.5.10-0'
           environment-file: build_envs/docs.yml
           cache-environment: true
           cache-environment-key: "linkcheck-${{env.TODAY}}"
