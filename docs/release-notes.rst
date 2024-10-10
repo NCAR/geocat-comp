@@ -23,6 +23,7 @@ Internal Changes
 * Re-pin ASV and list env info by `Katelyn FitzGerald`_ in (:pr:`613`)
 * Refactor ``pre-commit.ci`` by `Anissa Zacharias`_ in (:pr:`628`)
 * Temporarily pin micromamba for CI by `Anissa Zacharias`_ in (:pr:`645`)
+* Remove micromamba pin for CI by `Katelyn FitzGerald`_ in (:pr:`650`)
 
 v2024.04.0 (April 23, 2024)
 ---------------------------
