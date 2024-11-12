@@ -243,20 +243,30 @@ autosummary_imported_members = True
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_theme_options = dict(
-    # analytics_id=''  this is configured in rtfd.io
-    # canonical_url="",
-    repository_url="https://github.com/NCAR/geocat-comp",
-    repository_branch="main",
-    path_to_docs="docs",
-    use_edit_page_button=True,
-    use_repository_button=True,
-    use_issues_button=True,
-    home_page_in_toc=False,
-    navbar_footer_text="",
-    extra_footer=
-    "<em>The NSF National Center for Atmospheric Research (NSF NCAR) is sponsored by the U.S. National Science Foundation. Any opinions, findings and conclusions or recommendations expressed in this material do not necessarily reflect the views of the U.S. National Science Foundation.</em>",
-)
+html_theme_options = {
+    "repository_url":
+        "https://github.com/NCAR/geocat-comp",
+    "repository_branch":
+        "main",
+    "path_to_docs":
+        "docs",
+    "use_edit_page_button":
+        True,
+    "use_repository_button":
+        True,
+    "use_issues_button":
+        True,
+    "home_page_in_toc":
+        False,
+    "navbar_footer_text":
+        "",
+    "logo": {
+        "image_light": "_static/images/logos/NSF_NCAR_light.png",
+        "image_dark": "_static/images/logos/NSF_NCAR_dark.png",
+    },
+    "extra_footer":
+        "<em>The NSF National Center for Atmospheric Research (NSF NCAR) is sponsored by the U.S. National Science Foundation. Any opinions, findings and conclusions or recommendations expressed in this material do not necessarily reflect the views of the U.S. National Science Foundation.</em>",
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
@@ -267,15 +277,6 @@ html_theme_options = dict(
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #html_short_title = None
-
-# The name of an image file (relative to this directory) to place at the top
-# of the sidebar.
-html_theme_options = {
-    "logo": {
-        "image_light": "_static/images/logos/NSF_NCAR_light.png",
-        "image_dark": "_static/images/logos/NSF_NCAR_dark.png",
-    }
-}
 
 # The name of an image file (relative to this directory) to use as a favicon of
 # the docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
