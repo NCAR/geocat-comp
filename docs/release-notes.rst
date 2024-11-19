@@ -15,6 +15,7 @@ This release...
 Documentation
 ^^^^^^^^^^^^^
 * Fix to documentation theme configuration by `Katelyn FitzGerald`_ in (:pr:`657`)
+* Update links to eofs documentation by `Katelyn FitzGerald`_ in (:pr:`661`)
 
 Internal Changes
 ^^^^^^^^^^^^^^^^

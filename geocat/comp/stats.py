@@ -121,11 +121,11 @@ def eofunc_eofs(data,
     2. EOFs are computed only from covariance matrix and there is no support for computation from correlation matrix,
     3. percentage of non-missing points that must exist at any single point is no longer an input.
 
-    This implementation uses the `eofs package <https://anaconda.org/conda-forge/eofs>`__,
-    which is built upon the following study: Dawson, Andrew, "eofs: A library
+    This implementation uses the `eofs package <https://github.com/ajdawson/eofs>`__,
+    documented in the following paper: Dawson, Andrew, "eofs: A library
     for EOF analysis of meteorological, oceanographic, and climate data,"
-    Journal of Open Research Software, vol. 4, no. 1, 2016. Further information about this
-    package can be found `here <https://ajdawson.github.io/eofs/latest/index.html>`__.
+    Journal of Open Research Software, vol. 4, no. 1, 2016. Further information can be
+    found in the `eofs documentation <https://ajdawson.github.io/eofs/>`__.
 
     This implementation provides a few conveniences to the user on top of
     ``eofs`` package that are described below.
@@ -286,10 +286,11 @@ def eofunc_pcs(data,
     2. EOFs are computed only from covariance matrix and there is no support for computation from correlation matrix,
     3. percentage of non-missing points that must exist at any single point is no longer an input.
 
-    This implementation uses `eofs package <https://anaconda.org/conda-forge/eofs>`__, which is built upon the
-    following study: Dawson, Andrew, "eofs: A library for EOF analysis of meteorological, oceanographic, and
-    climate data," Journal of Open Research Software, vol. 4, no. 1, 2016. Further information about this
-    package can be found `here <https://ajdawson.github.io/eofs/latest/index.html>`__.
+    This implementation uses the `eofs package <https://github.com/ajdawson/eofs>`__,
+    documented in the following paper: Dawson, Andrew, "eofs: A library
+    for EOF analysis of meteorological, oceanographic, and climate data,"
+    Journal of Open Research Software, vol. 4, no. 1, 2016. Further information can be
+    found in the `eofs documentation <https://ajdawson.github.io/eofs/>`__.
 
     This implementation provides a few conveniences to the user on top of ``eofs`` package that are described below
     in the Parameters section.
