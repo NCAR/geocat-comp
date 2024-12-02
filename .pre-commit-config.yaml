@@ -4,7 +4,7 @@ ci:
 
 repos:
 -   repo: https://github.com/google/yapf    # To format the code to conform YAPF
-    rev: v0.40.2
+    rev: v0.43.0
     hooks:
       - id: yapf
         args: ['--in-place', '--recursive', '--style', 'google']
