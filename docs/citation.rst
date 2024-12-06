@@ -23,13 +23,13 @@ Example citations
 
 Citing a specific version of GeoCAT-comp:
 
-.. attention::
-
-   Requires updating the year, GeoCAT-comp version, and DOI
-
     **Visualization & Analysis Systems Technologies. (2022).
     Geoscience Community Analysis Toolkit: GeoCAT-comp (v2022.04.0) [Software].
     Boulder, CO, USA: NSF NCAR Computational and Information System Lab. doi:10.5281/zenodo.6607349.**
+
+.. attention::
+
+   Requires updating the year, GeoCAT-comp version, and DOI
 
 Citing GeoCAT-comp without referring to a specific version:
 
