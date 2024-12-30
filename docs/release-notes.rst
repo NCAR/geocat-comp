@@ -17,6 +17,7 @@ Documentation
 * Fix to documentation theme configuration by `Katelyn FitzGerald`_ in (:pr:`657`)
 * Update links to eofs documentation by `Katelyn FitzGerald`_ in (:pr:`661`)
 * Update citation documentation removing reference to old GeoCAT website by `Katelyn FitzGerald`_ in (:pr:`666`)
+* Fix link to `satvpr_slope_fao56` in `saturation_vapor_pressure_slope` documentation by `Cora Schneck`_ in (:pr:`671`)
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
