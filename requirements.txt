@@ -8,7 +8,7 @@ dask[array]
 eofs
 metpy
 numpy<2.0
-scipy
+scipy<1.15
 xarray
 xskillscore
 packaging
