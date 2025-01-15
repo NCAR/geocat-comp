@@ -13,7 +13,7 @@ dependencies:
   - numpy<2.0
   - pint
   - pip
-  - scipy
+  - scipy<1.15
   - setuptools
   - setuptools_scm
   - xarray
