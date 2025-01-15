@@ -21,6 +21,7 @@ Documentation
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
+* Pin SciPy version <1.15 by `Katelyn FitzGerald`_ in (:pr:`674`)
 * Temporarily remove docformatter from pre-commit by `Katelyn FitzGerald`_ in (:pr:`653`)
 * Pre-commit hook to check for valid yml by `Cora Schneck`_ in (:pr:`625`)
 * CI to run on macos-latest instead of macos-14 by `Cora Schneck`_ in (:pr:`617`)
