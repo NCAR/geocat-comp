@@ -1,8 +1,8 @@
 from typing import Union
 
 import numpy as np
-import scipy.special as sspecial
-import scipy.spatial as sspatial
+from scipy.special import sph_harm_y
+from scipy.spatial import SphericalVoronoi
 import xarray as xr
 
 SupportedTypes = Union[np.ndarray, xr.DataArray]
@@ -56,8 +56,7 @@ def decomposition(
     # scale_val is the inverse of the total sphere area times the magnitude of
     # the first harmonic. This is used to scale the output so that the output
     # is unaffected by the surface area of the original sphere.
-    scale_val = 1 / (np.sum(scale, axis=(0, 1)) *
-                     sspecial.sph_harm(0, 0, 0, 0)**2)
+    scale_val = 1 / (np.sum(scale, axis=(0, 1)) * sph_harm_y(0, 0, 0, 0)**2)
 
     mlist = []  # ordered list of the m harmonics sspecial.sphere(m,n,theta,phi)
     nlist = []  # ordered list of the n harmonics sspecial.sphere(m,n,theta,phi)
@@ -102,7 +101,7 @@ def decomposition(
         phi = xr.DataArray(phi, dims=data.dims).chunk((chunk_size))
 
     results = np.sum(
-        np.multiply(scale_dat, sspecial.sph_harm(m, n, theta, phi)),
+        np.multiply(scale_dat, sph_harm_y(m, n, theta, phi)),
         axis=(0, 1),
     ) * scale_res
     return results
@@ -174,10 +173,10 @@ def recomposition(
         phi = xr.DataArray(phi, dims=phi.dims).chunk((chunk_size))
 
     results = np.sum(
-        np.multiply(sspecial.sph_harm(m, n, theta, phi).real, data.real),
+        np.multiply(sph_harm_y(m, n, theta, phi).real, data.real),
         axis=(0),
     ) + np.sum(
-        np.multiply(sspecial.sph_harm(m, n, theta, phi).imag, data.imag),
+        np.multiply(sph_harm_y(m, n, theta, phi).imag, data.imag),
         axis=(0),
     )
 
@@ -225,7 +224,7 @@ def scale_voronoi(
     data_locs_3d[:, 2] = np.cos(phi_1d)
 
     scale = np.array(
-        sspatial.SphericalVoronoi(
+        SphericalVoronoi(
             data_locs_3d,
             radius=1.0,
             center=np.array([0, 0, 0]),

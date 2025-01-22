@@ -11,7 +11,7 @@ dependencies:
   - metpy
   - numba
   - numpy<2.0
-  - scipy<1.15
+  - scipy
   - pandas
   - pint
   - xarray

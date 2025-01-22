@@ -1,8 +1,8 @@
 import math as ma
-
 import numpy as np
-import scipy.special as ss
+from scipy.special import sph_harm_y
 import xarray as xr
+import pytest
 
 from geocat.comp import decomposition, recomposition, scale_voronoi
 
@@ -28,6 +28,7 @@ class Test_Spherical:
         dims=['lat', 'lon'],
     ).compute()
 
+    count = 0
     test_data = np.zeros(theta_np.shape)
     test_results = []
     test_harmonics = []
@@ -38,21 +39,23 @@ class Test_Spherical:
             if n in [0, 2, 3, 5, 7, 11, 13, 17, 19, 23
                     ] and m in [0, 2, 3, 5, 7, 11, 13, 17, 19, 23]:
                 if m in [2, 5, 11, 17, 23]:
-                    test_data += ss.sph_harm(
+                    test_data += sph_harm_y(
                         m,
                         n,
                         theta_np,
                         phi_np,
                     ).imag
                     test_results[-1] = 1j
+                    count += 1
                 else:
-                    test_data += ss.sph_harm(
+                    test_data += sph_harm_y(
                         m,
                         n,
                         theta_np,
                         phi_np,
                     ).real
                     test_results[-1] = 1
+                    count += 1
 
     test_harmonics_np = np.array(test_harmonics)
     test_harmonics_xr = xr.DataArray(
@@ -95,6 +98,9 @@ class Test_Spherical:
             self.test_results_xr.to_numpy(),
             decimal=2,
         )
+
+    def test_normal_sph_harm(self) -> None:
+        sph_harm_y(1, 1, 0, 0)
 
     def test_recomposition_np(self) -> None:
         data_np = recomposition(
