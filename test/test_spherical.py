@@ -1,4 +1,4 @@
-import math as ma
+from math import pi, tau
 import numpy as np
 from scipy.special import sph_harm_y
 import xarray as xr
@@ -8,15 +8,14 @@ from geocat.comp import decomposition, recomposition, scale_voronoi
 
 
 class Test_Spherical:
-
     max_harm = 23
     num_phi = 90
     num_theta = 180
 
-    theta = np.linspace(0, ma.tau - ma.tau / num_theta, num_theta)
+    theta = np.linspace(0, tau - tau / num_theta, num_theta)
     phi = np.linspace(
-        ma.pi / (2 * num_phi),
-        ma.pi - ma.pi / (2 * num_phi),
+        pi / (2 * num_phi),
+        pi - pi / (2 * num_phi),
         num_phi,
     )
     theta_np, phi_np = np.meshgrid(theta, phi)
@@ -29,30 +28,30 @@ class Test_Spherical:
     ).compute()
 
     count = 0
-    test_data = np.zeros(theta_np.shape)
+    primes = [0, 2, 3, 5, 7, 11, 13, 17, 19, 23]
+    test_data = np.zeros(phi_np.shape)
     test_results = []
     test_harmonics = []
     for n in range(max_harm + 1):
         for m in range(n + 1):
-            test_harmonics.append([m, n])
+            test_harmonics.append([n, m])
             test_results.append(0)
-            if n in [0, 2, 3, 5, 7, 11, 13, 17, 19, 23
-                    ] and m in [0, 2, 3, 5, 7, 11, 13, 17, 19, 23]:
-                if m in [2, 5, 11, 17, 23]:
+            if n in primes and m in primes:
+                if m in primes[1::2]:
                     test_data += sph_harm_y(
-                        m,
                         n,
-                        theta_np,
+                        m,
                         phi_np,
+                        theta_np,
                     ).imag
                     test_results[-1] = 1j
                     count += 1
                 else:
                     test_data += sph_harm_y(
-                        m,
                         n,
-                        theta_np,
+                        m,
                         phi_np,
+                        theta_np,
                     ).real
                     test_results[-1] = 1
                     count += 1
@@ -79,6 +78,7 @@ class Test_Spherical:
             self.test_scale_np,
             self.theta_np,
             self.phi_np,
+            self.max_harm,
         )
         np.testing.assert_almost_equal(
             results_np,

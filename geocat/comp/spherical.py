@@ -100,8 +100,10 @@ def decomposition(
         theta = xr.DataArray(theta, dims=data.dims).chunk((chunk_size))
         phi = xr.DataArray(phi, dims=data.dims).chunk((chunk_size))
 
+    # scipy 1.15 flips the definitions of theta and phi
+    theta, phi = phi, theta
     results = np.sum(
-        np.multiply(scale_dat, sph_harm_y(m, n, theta, phi)),
+        np.multiply(scale_dat, sph_harm_y(n, m, theta, phi)),
         axis=(0, 1),
     ) * scale_res
     return results
@@ -147,38 +149,56 @@ def recomposition(
         The spherical harmonic recomposition of the input data
     """
 
+    in_type = type(data)
+
+    # if xarray, standardize data input dimension name to 'harmonic'
+    if in_type is xr.DataArray:
+        data = data.rename({data.dims[0]: 'harmonic'})
+
     mlist = []  # ordered list of the m harmonics sspecial.sphere(m,n,theta,phi)
     nlist = []  # ordered list of the n harmonics sspecial.sphere(m,n,theta,phi)
     for nvalue in range(max_harm + 1):
         for mvalue in range(nvalue + 1):
             mlist.append(mvalue)
             nlist.append(nvalue)
-    m = np.array(mlist)
-    n = np.array(nlist)
+
+    m = np.expand_dims(mlist, axis=(1, 2))
+    n = np.expand_dims(nlist, axis=(1, 2))
 
     # if numpy, change dimensions to allow for broadcast in ss.sph_harm
     if type(data) is np.ndarray:
-        m = np.expand_dims(m, axis=(1, 2))
-        n = np.expand_dims(n, axis=(1, 2))
         data = np.expand_dims(data, axis=(1, 2))
-        theta = np.expand_dims(theta, axis=(0))
-        phi = np.expand_dims(phi, axis=(0))
+        theta = np.expand_dims(theta, axis=0)
+        phi = np.expand_dims(phi, axis=0)
 
     # if xarray, set dims and chunks for broadcast in ss.sphere_harm
-    if type(data) is xr.DataArray:
-        m = xr.DataArray(m, dims=['har']).chunk((chunk_size))
-        n = xr.DataArray(n, dims=['har']).chunk((chunk_size))
-        data = xr.DataArray(data, dims=['har']).chunk((chunk_size))
-        theta = xr.DataArray(theta, dims=theta.dims).chunk((chunk_size))
-        phi = xr.DataArray(phi, dims=phi.dims).chunk((chunk_size))
+    if in_type is xr.DataArray:
+        m = xr.DataArray(m).expand_dims(dim={
+            'dim_1': 1,
+            'dim_2': 1
+        }).chunk(chunk_size)
+        n = xr.DataArray(n).expand_dims(dim={
+            'dim_1': 1,
+            'dim_2': 1
+        }).chunk(chunk_size)
+        data = data.expand_dims(dim={'dim_1': 1, 'dim_2': 1}).chunk(chunk_size)
+        theta = theta.expand_dims(dim={'dim_0': 1}).chunk(chunk_size)
+        phi = phi.expand_dims(dim={'dim_0': 1}).chunk(chunk_size)
 
-    results = np.sum(
-        np.multiply(sph_harm_y(m, n, theta, phi).real, data.real),
-        axis=(0),
-    ) + np.sum(
-        np.multiply(sph_harm_y(m, n, theta, phi).imag, data.imag),
-        axis=(0),
+    print(
+        f'm: {m.shape}, n: {n.shape}, data: {data.shape}, theta: {theta.shape}, phi: {phi.shape}'
     )
+
+    # scipy 1.15 flips the definitions of theta and phi
+    theta, phi = phi, theta
+    harmonics = sph_harm_y(n, m, theta, phi)
+
+    # if data is xarray, prepare data for broadcast
+    if in_type is xr.DataArray:
+        harmonics, data = xr.broadcast(xr.DataArray(harmonics), data.squeeze())
+
+    results = (np.sum(np.multiply(harmonics.real, data.real), axis=0) +
+               np.sum(np.multiply(harmonics.imag, data.imag), axis=0))
 
     return results.real
 
