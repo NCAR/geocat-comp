@@ -10,16 +10,16 @@ Release Notes
 
 v2025.01.0 (January 28, 2025)
 -----------------------------
-v2025.01.0 releases a collection of small changes and pins scipy to <1.15
-while we finalize removing the deprecating `sph_harm` in favor of
-`sph_harm_y`.
+v2025.01.0 releases a collection of small changes and pins ``scipy`` to <1.15
+while we finalize removing the deprecating ``sph_harm`` in favor of
+``sph_harm_y``.
 
 Documentation
 ^^^^^^^^^^^^^
 * Fix to documentation theme configuration by `Katelyn FitzGerald`_ in (:pr:`657`)
 * Update links to eofs documentation by `Katelyn FitzGerald`_ in (:pr:`661`)
 * Update citation documentation removing reference to old GeoCAT website by `Katelyn FitzGerald`_ in (:pr:`666`)
-* Fix link to `satvpr_slope_fao56` in `saturation_vapor_pressure_slope` documentation by `Cora Schneck`_ in (:pr:`671`)
+* Fix link to ``satvpr_slope_fao56`` in ``saturation_vapor_pressure_slope`` documentation by `Cora Schneck`_ in (:pr:`671`)
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
