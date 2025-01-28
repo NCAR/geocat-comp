@@ -8,9 +8,11 @@
 Release Notes
 =============
 
-vYYYY.MM.## (unreleased)
-------------------------
-This release...
+v2025.01.0 (January 28, 2025)
+-----------------------------
+v2025.01.0 releases a collection of small changes and pins scipy to <1.15
+while we finalize removing the deprecating `sph_harm` in favor of
+`sph_harm_y`.
 
 Documentation
 ^^^^^^^^^^^^^
