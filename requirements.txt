@@ -7,7 +7,7 @@ cftime
 dask[array]
 eofs
 metpy
-numpy<2.0
+numpy
 scipy<1.15
 xarray
 xskillscore
