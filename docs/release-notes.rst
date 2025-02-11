@@ -8,6 +8,13 @@
 Release Notes
 =============
 
+vYYYY.MM.## (unreleased)
+------------------------
+
+Maintenance
+^^^^^^^^^^^
+* Remove NumPy version pin by `Katelyn FitzGerald`_ in (:pr:`686`)
+
 v2025.01.0 (January 28, 2025)
 -----------------------------
 v2025.01.0 releases a collection of small changes and pins ``scipy`` to <1.15
