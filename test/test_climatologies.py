@@ -945,6 +945,7 @@ class Test_Climatology_Average():
         result = climatology_average(dset, freq='month')
         xr.testing.assert_allclose(result, expected)
 
+
 @pytest.mark.parametrize("units", ("s", "ms", "us", "ns"))
 def test_units_infer_calendar_name(units):
     time = xr.date_range("2000-01-01", periods=10, freq="1D", unit=units)
