@@ -6,6 +6,7 @@ import xarray.testing
 import xarray as xr
 
 from geocat.comp import climate_anomaly, month_to_season, calendar_average, climatology_average
+from geocat.comp.climatologies import _infer_calendar_name
 
 
 ##### Helper Functions #####
@@ -943,3 +944,8 @@ class Test_Climatology_Average():
                                                         expected) -> None:
         result = climatology_average(dset, freq='month')
         xr.testing.assert_allclose(result, expected)
+
+@pytest.mark.parametrize("units", ("s", "ms", "us", "ns"))
+def test_units_infer_calendar_name(units):
+    time = xr.date_range("2000-01-01", periods=10, freq="1D", unit=units)
+    assert _infer_calendar_name(time) == "proleptic_gregorian"
