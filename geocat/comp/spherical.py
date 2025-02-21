@@ -137,9 +137,10 @@ def recomposition(
 
     in_type = type(data)
 
-    # if xarray, standardize data input dimension name to 'harmonic'
+    # if xarray, standardize data input dimension names
     if in_type is xr.DataArray:
         data = data.rename({data.dims[0]: 'harmonic'})
+        theta_dims = theta.dims
 
     mlist = []  # ordered list of the m harmonics sspecial.sphere(m,n,theta,phi)
     nlist = []  # ordered list of the n harmonics sspecial.sphere(m,n,theta,phi)
@@ -159,9 +160,8 @@ def recomposition(
 
     # if xarray, set dims and chunks for broadcast
     if in_type is xr.DataArray:
-        data = data.expand_dims(dim={'dim_1': 1, 'dim_2': 1})
-        theta = theta.expand_dims(dim={'dim_0': 1})
-        phi = phi.expand_dims(dim={'dim_0': 1})
+        theta = theta.expand_dims(dim={'harmonic': 1}, axis=0)
+        phi = phi.expand_dims(dim={'harmonic': 1}, axis=0)
 
     print(
         f'm: {m.shape}, n: {n.shape}, data: {data.shape}, theta: {theta.shape}, phi: {phi.shape}'
@@ -171,9 +171,10 @@ def recomposition(
     theta, phi = phi, theta
     harmonics = sph_harm_y(n, m, theta, phi)
 
-    # if data is xarray, prepare data for broadcast
+    # if xarray, make harmonics into xarray and align dims
     if in_type is xr.DataArray:
-        harmonics, data = xr.broadcast(xr.DataArray(harmonics), data.squeeze())
+        harmonics = xr.DataArray(
+            harmonics, dims=['harmonic', theta_dims[0], theta_dims[1]])
 
     results = (np.sum(np.multiply(harmonics.real, data.real), axis=0) +
                np.sum(np.multiply(harmonics.imag, data.imag), axis=0))
