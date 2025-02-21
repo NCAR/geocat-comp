@@ -15,7 +15,6 @@ def decomposition(
     theta: SupportedTypes,
     phi: SupportedTypes,
     max_harm: int = default_max_harm,
-    chunk_size: int = 'auto',
 ) -> SupportedTypes:
     """Calculate the spherical harmonics of a dataset.
 
@@ -40,12 +39,6 @@ def decomposition(
         The maximum harmonic value for both m and n.
         The total of harmonics calculated is ``(max_harm+1)*(max_harm+2)/2``
         Defaults to 23, for 300 total harmonics.
-
-    chunk_size: int, optional
-        The size of each edge of the dask chunks if using xarray.DataArray inputs.
-        Some arrays will be 2d, and others 1d, and the final calculation operates on a 3d array.
-        thus the chunks used in the largest calculation scale at ``chunk_size^3``
-        A chunk size of 256 is recommended. Defaults to 'auto'
 
     Returns
     -------
@@ -87,18 +80,18 @@ def decomposition(
 
     # if xarray, set dims and chunks for broadcast in ss.sphere_harm
     if type(data) is xr.DataArray:
-        m = xr.DataArray(m, dims=['har']).chunk((chunk_size))
-        n = xr.DataArray(n, dims=['har']).chunk((chunk_size))
+        m = xr.DataArray(m, dims=['har'])
+        n = xr.DataArray(n, dims=['har'])
         scale_res = xr.DataArray(
             scale_mul,
             dims=['har'],
-        ).chunk((chunk_size)) * scale_val
+        ) * scale_val
         scale_dat = xr.DataArray(
             np.multiply(data, scale),
             dims=data.dims,
-        ).chunk((chunk_size))
-        theta = xr.DataArray(theta, dims=data.dims).chunk((chunk_size))
-        phi = xr.DataArray(phi, dims=data.dims).chunk((chunk_size))
+        )
+        theta = xr.DataArray(theta, dims=data.dims)
+        phi = xr.DataArray(phi, dims=data.dims)
 
     # scipy 1.15 flips the definitions of theta and phi
     theta, phi = phi, theta
@@ -114,7 +107,6 @@ def recomposition(
     theta: SupportedTypes,
     phi: SupportedTypes,
     max_harm: int = default_max_harm,
-    chunk_size: int = 'auto',
 ) -> SupportedTypes:
     """Calculate a dataset from spherical harmonics.
 
@@ -136,12 +128,6 @@ def recomposition(
         The total of harmonics calculated is ``(max_harm+1)*(max_harm+2)/2``
         The number of total harmonics must equal the number of harmoncs in the input data.
         Defaults to 23, for 300 total harmonics.
-
-    chunk_size: int, optional
-        The size of each edge of the dask chunks if using xarray.DataArray inputs.
-        Some arrays will be 2d, and others 1d, and the final calculation operates on a 3d array.
-        thus the chunks used in the largest calculation scale at ``chunk_size^3``
-        A chunk size of 256 is recommended. Defaults to 'auto'
 
     Returns
     -------
@@ -165,25 +151,17 @@ def recomposition(
     m = np.expand_dims(mlist, axis=(1, 2))
     n = np.expand_dims(nlist, axis=(1, 2))
 
-    # if numpy, change dimensions to allow for broadcast in ss.sph_harm
+    # if numpy, change dimensions to allow for broadcast
     if type(data) is np.ndarray:
         data = np.expand_dims(data, axis=(1, 2))
         theta = np.expand_dims(theta, axis=0)
         phi = np.expand_dims(phi, axis=0)
 
-    # if xarray, set dims and chunks for broadcast in ss.sphere_harm
+    # if xarray, set dims and chunks for broadcast
     if in_type is xr.DataArray:
-        m = xr.DataArray(m).expand_dims(dim={
-            'dim_1': 1,
-            'dim_2': 1
-        }).chunk(chunk_size)
-        n = xr.DataArray(n).expand_dims(dim={
-            'dim_1': 1,
-            'dim_2': 1
-        }).chunk(chunk_size)
-        data = data.expand_dims(dim={'dim_1': 1, 'dim_2': 1}).chunk(chunk_size)
-        theta = theta.expand_dims(dim={'dim_0': 1}).chunk(chunk_size)
-        phi = phi.expand_dims(dim={'dim_0': 1}).chunk(chunk_size)
+        data = data.expand_dims(dim={'dim_1': 1, 'dim_2': 1})
+        theta = theta.expand_dims(dim={'dim_0': 1})
+        phi = phi.expand_dims(dim={'dim_0': 1})
 
     print(
         f'm: {m.shape}, n: {n.shape}, data: {data.shape}, theta: {theta.shape}, phi: {phi.shape}'
