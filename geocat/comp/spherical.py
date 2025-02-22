@@ -46,13 +46,16 @@ def decomposition(
         The spherical harmonic decomposition of the input data
     """
 
+    in_type = type(data)
+
     # scale_val is the inverse of the total sphere area times the magnitude of
     # the first harmonic. This is used to scale the output so that the output
     # is unaffected by the surface area of the original sphere.
-    scale_val = 1 / (np.sum(scale, axis=(0, 1)) * sph_harm_y(0, 0, 0, 0)**2)
+    scale_val = np.array(
+        (1 / (np.sum(scale, axis=(0, 1)) * sph_harm_y(0, 0, 0, 0)**2)))
 
-    mlist = []  # ordered list of the m harmonics sspecial.sphere(m,n,theta,phi)
-    nlist = []  # ordered list of the n harmonics sspecial.sphere(m,n,theta,phi)
+    mlist = []  # ordered list of the m harmonics
+    nlist = []  # ordered list of the n harmonics
     # the real value of the output varies on a factor of two when m is 0,
     # due to m=0 being a symmetric case with no imaginary component,
     # this accounts for that difference in output sum.
@@ -65,40 +68,40 @@ def decomposition(
                 scale_mul.append(1)
             else:
                 scale_mul.append(2)
-    m = np.array(mlist)
-    n = np.array(nlist)
+    m = np.expand_dims(mlist, axis=(1, 2))
+    n = np.expand_dims(nlist, axis=(1, 2))
     scale_mul = np.array(scale_mul)
+    scale_res = scale_mul * scale_val
+    scale_dat = np.multiply(data, scale)
 
-    # if numpy, change dimensions to allow for broadcast in ss.sph_harm
-    if type(data) is np.ndarray:
-        m = np.expand_dims(m, axis=(0, 1))
-        n = np.expand_dims(n, axis=(0, 1))
-        theta = np.expand_dims(theta, axis=(2))
-        phi = np.expand_dims(phi, axis=(2))
-        scale_res = scale_mul * scale_val
-        scale_dat = np.expand_dims(np.multiply(data, scale), axis=(2))
-
-    # if xarray, set dims and chunks for broadcast in ss.sphere_harm
-    if type(data) is xr.DataArray:
-        m = xr.DataArray(m, dims=['har'])
-        n = xr.DataArray(n, dims=['har'])
-        scale_res = xr.DataArray(
-            scale_mul,
-            dims=['har'],
-        ) * scale_val
-        scale_dat = xr.DataArray(
-            np.multiply(data, scale),
-            dims=data.dims,
-        )
+    # set dims for broadcasting
+    if in_type is xr.DataArray:
+        scale_res = xr.DataArray(scale_res, dims=['harmonic'])
+        scale_dat = xr.DataArray(scale_dat, dims=data.dims)
         theta = xr.DataArray(theta, dims=data.dims)
         phi = xr.DataArray(phi, dims=data.dims)
 
+        # np.multiply produces (lat, lon, harmonic) dimensions for xarray input
+        sum_ax = (0, 1)
+    else:
+        theta = np.expand_dims(theta, axis=0)
+        phi = np.expand_dims(phi, axis=0)
+
+        # np.multiply produces (harmonic, lat, lon) dimensions for numpy input
+        sum_ax = (1, 2)
+
     # scipy 1.15 flips the definitions of theta and phi
     theta, phi = phi, theta
-    results = np.sum(
-        np.multiply(scale_dat, sph_harm_y(n, m, theta, phi)),
-        axis=(0, 1),
-    ) * scale_res
+
+    harmonics = sph_harm_y(n, m, theta, phi)
+
+    # if xarray, make harmonics into xarray and align dims
+    if in_type is xr.DataArray:
+        harmonics = xr.DataArray(harmonics,
+                                 dims=['harmonic', data.dims[0], data.dims[1]])
+
+    results = np.sum(np.multiply(scale_dat, harmonics), axis=sum_ax) * scale_res
+
     return results
 
 
@@ -142,8 +145,8 @@ def recomposition(
         data = data.rename({data.dims[0]: 'harmonic'})
         theta_dims = theta.dims
 
-    mlist = []  # ordered list of the m harmonics sspecial.sphere(m,n,theta,phi)
-    nlist = []  # ordered list of the n harmonics sspecial.sphere(m,n,theta,phi)
+    mlist = []  # ordered list of the m harmonics
+    nlist = []  # ordered list of the n harmonics
     for nvalue in range(max_harm + 1):
         for mvalue in range(nvalue + 1):
             mlist.append(mvalue)
@@ -152,23 +155,18 @@ def recomposition(
     m = np.expand_dims(mlist, axis=(1, 2))
     n = np.expand_dims(nlist, axis=(1, 2))
 
-    # if numpy, change dimensions to allow for broadcast
-    if type(data) is np.ndarray:
+    # set dims for broadcasting
+    if in_type is xr.DataArray:
+        theta = theta.expand_dims(dim='harmonic', axis=0)
+        phi = phi.expand_dims(dim='harmonic', axis=0)
+    else:
         data = np.expand_dims(data, axis=(1, 2))
         theta = np.expand_dims(theta, axis=0)
         phi = np.expand_dims(phi, axis=0)
 
-    # if xarray, set dims and chunks for broadcast
-    if in_type is xr.DataArray:
-        theta = theta.expand_dims(dim={'harmonic': 1}, axis=0)
-        phi = phi.expand_dims(dim={'harmonic': 1}, axis=0)
-
-    print(
-        f'm: {m.shape}, n: {n.shape}, data: {data.shape}, theta: {theta.shape}, phi: {phi.shape}'
-    )
-
     # scipy 1.15 flips the definitions of theta and phi
     theta, phi = phi, theta
+
     harmonics = sph_harm_y(n, m, theta, phi)
 
     # if xarray, make harmonics into xarray and align dims
