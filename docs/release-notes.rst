@@ -11,9 +11,13 @@ Release Notes
 vYYYY.MM.## (unreleased)
 ------------------------
 
+Enhancements
+^^^^^^^^^^^^
+* Add tests and support for non-nanosecond datetime objects by `Katelyn FitzGerald`_ in (:pr:`691`)
+
 Maintenance
 ^^^^^^^^^^^
-* Add support and testing for Python 3.13 by`Katelyn FitzGerald`_ in (:pr:`687`)
+* Add support and testing for Python 3.13 by `Katelyn FitzGerald`_ in (:pr:`687`)
 * Remove NumPy version pin by `Katelyn FitzGerald`_ in (:pr:`686`)
 
 v2025.01.0 (January 28, 2025)
