@@ -8,8 +8,11 @@
 Release Notes
 =============
 
-vYYYY.MM.## (unreleased)
-------------------------
+v2025.02.0 (February 25, 2025)
+------------------------------
+This release adds support and testing for Python 3.13, unpins numpy dependency, increases support for
+`non-nanosecond datetime objects <https://github.com/NCAR/geocat-comp/issues/682>`__,
+and updates our `code of conduct <https://github.com/NCAR/geocat-comp/commit/48b16cc0143ce63ebc4ce2735d0d1afc5f7bee5f>`__.
 
 Enhancements
 ^^^^^^^^^^^^
@@ -17,8 +20,12 @@ Enhancements
 
 Maintenance
 ^^^^^^^^^^^
-* Add support and testing for Python 3.13 by `Katelyn FitzGerald`_ in (:pr:`687`)
+* Add support and testing for Python 3.13 by `Katelyn FitzGerald`_ in (:pr:`688`)
 * Remove NumPy version pin by `Katelyn FitzGerald`_ in (:pr:`686`)
+
+Documentation
+^^^^^^^^^^^^^
+* Updates Code of Conduct by `Orhan Eroglu`_ in `48b16cc <https://github.com/NCAR/geocat-comp/commit/48b16cc0143ce63ebc4ce2735d0d1afc5f7bee5f>`__
 
 v2025.01.0 (January 28, 2025)
 -----------------------------
@@ -432,6 +439,7 @@ Maintenance
 .. _`Cora Schneck`: https://github.com/cyschneck
 .. _`Philip Chmielowiec`: https://github.com/philipc2
 .. _`AnshRoshan`: https://github.com/AnshRoshan
+.. _`Orhan Eroglu`: https://github.com/erogluorhan
 
 ..
     TEMPLATE
