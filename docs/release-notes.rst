@@ -8,16 +8,37 @@
 Release Notes
 =============
 
-vYYYY.MM.## (unreleased)
-------------------------
-This release...
+v2025.02.0 (February 25, 2025)
+------------------------------
+This release adds support and testing for Python 3.13, unpins numpy dependency, increases support for
+`non-nanosecond datetime objects <https://github.com/NCAR/geocat-comp/issues/682>`__,
+and updates our `code of conduct <https://github.com/NCAR/geocat-comp/commit/48b16cc0143ce63ebc4ce2735d0d1afc5f7bee5f>`__.
+
+Enhancements
+^^^^^^^^^^^^
+* Add tests and support for non-nanosecond datetime objects by `Katelyn FitzGerald`_ in (:pr:`691`)
+
+Maintenance
+^^^^^^^^^^^
+* Add support and testing for Python 3.13 by `Katelyn FitzGerald`_ in (:pr:`688`)
+* Remove NumPy version pin by `Katelyn FitzGerald`_ in (:pr:`686`)
+
+Documentation
+^^^^^^^^^^^^^
+* Updates Code of Conduct by `Orhan Eroglu`_ in `48b16cc <https://github.com/NCAR/geocat-comp/commit/48b16cc0143ce63ebc4ce2735d0d1afc5f7bee5f>`__
+
+v2025.01.0 (January 28, 2025)
+-----------------------------
+v2025.01.0 releases a collection of small changes and pins ``scipy`` to <1.15
+while we finalize removing the deprecating ``sph_harm`` in favor of
+``sph_harm_y``.
 
 Documentation
 ^^^^^^^^^^^^^
 * Fix to documentation theme configuration by `Katelyn FitzGerald`_ in (:pr:`657`)
 * Update links to eofs documentation by `Katelyn FitzGerald`_ in (:pr:`661`)
 * Update citation documentation removing reference to old GeoCAT website by `Katelyn FitzGerald`_ in (:pr:`666`)
-* Fix link to `satvpr_slope_fao56` in `saturation_vapor_pressure_slope` documentation by `Cora Schneck`_ in (:pr:`671`)
+* Fix link to ``satvpr_slope_fao56`` in ``saturation_vapor_pressure_slope`` documentation by `Cora Schneck`_ in (:pr:`671`)
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
@@ -418,6 +439,7 @@ Maintenance
 .. _`Cora Schneck`: https://github.com/cyschneck
 .. _`Philip Chmielowiec`: https://github.com/philipc2
 .. _`AnshRoshan`: https://github.com/AnshRoshan
+.. _`Orhan Eroglu`: https://github.com/erogluorhan
 
 ..
     TEMPLATE

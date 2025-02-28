@@ -105,7 +105,8 @@ def _infer_calendar_name(dates):
     anytime. It was copied to preserve the version that is compatible with
     functions in climatologies.py
     """
-    if np.asarray(dates).dtype == "datetime64[ns]":
+
+    if np.issubdtype(dates.dtype, np.datetime64):
         return "proleptic_gregorian"
     else:
         return np.asarray(dates).ravel()[0].calendar
