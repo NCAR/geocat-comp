@@ -10,8 +10,8 @@ dependencies:
   - eofs
   - metpy
   - numba
+  - scipy
   - numpy
-  - scipy<1.15
   - pandas
   - pint
   - xarray
