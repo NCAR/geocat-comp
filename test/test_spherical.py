@@ -1,8 +1,19 @@
 from math import pi, tau
 import numpy as np
-from scipy.special import sph_harm_y
+from packaging.version import Version
+from scipy import __version__ as scipy_version
 import xarray as xr
 import pytest
+
+# import scipy shp_harm[_y] function depending on scipy version
+scipy_version = Version(scipy_version)
+if scipy_version < Version('1.15.0'):
+    from scipy.special import sph_harm as sph_harm
+
+    def sph_harm_y(n, m, theta, phi):
+        return sph_harm(m, n, phi, theta)
+else:
+    from scipy.special import sph_harm_y
 
 from geocat.comp import decomposition, recomposition, scale_voronoi
 

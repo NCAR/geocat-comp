@@ -1,9 +1,23 @@
 from typing import Union
 
 import numpy as np
-from scipy.special import sph_harm_y
+from packaging.version import Version
 from scipy.spatial import SphericalVoronoi
+from scipy import __version__ as scipy_version
 import xarray as xr
+
+# import scipy shp_harm[_y] function depending on scipy version
+old_scipy = False
+scipy_version = Version(scipy_version)
+if scipy_version < Version('1.15.0'):
+    from scipy.special import sph_harm
+
+    def sph_harm_y(n, m, theta, phi):
+        return sph_harm(m, n, phi, theta)
+
+    old_scipy = True
+else:
+    from scipy.special import sph_harm_y
 
 SupportedTypes = Union[np.ndarray, xr.DataArray]
 default_max_harm = 23  # 300 harmonics from 0,0 to 23,23
@@ -76,10 +90,14 @@ def decomposition(
 
     # set dims for broadcasting
     if in_type is xr.DataArray:
-        scale_res = xr.DataArray(scale_res, dims=['harmonic'])
-        scale_dat = xr.DataArray(scale_dat, dims=data.dims)
-        theta = xr.DataArray(theta, dims=data.dims)
-        phi = xr.DataArray(phi, dims=data.dims)
+        if not old_scipy:
+            scale_res = xr.DataArray(scale_res, dims=['harmonic'])
+            scale_dat = xr.DataArray(scale_dat, dims=data.dims)
+            theta = xr.DataArray(theta, dims=data.dims)
+            phi = xr.DataArray(phi, dims=data.dims)
+        else:
+            theta = np.expand_dims(theta, axis=0)
+            phi = np.expand_dims(phi, axis=0)
 
         # np.multiply produces (lat, lon, harmonic) dimensions for xarray input
         sum_ax = (0, 1)
@@ -156,7 +174,7 @@ def recomposition(
     n = np.expand_dims(nlist, axis=(1, 2))
 
     # set dims for broadcasting
-    if in_type is xr.DataArray:
+    if in_type is xr.DataArray and not old_scipy:
         theta = theta.expand_dims(dim='harmonic', axis=0)
         phi = phi.expand_dims(dim='harmonic', axis=0)
     else:
