@@ -10,11 +10,16 @@ dependencies:
   - distributed
   - eofs
   - metpy
+  - netcdf4
   - numpy=1.25
   - packaging
   - pandas=2.0
   - scipy=1.11
   - xarray
+  - xskillscore
   - pip
+  - parameterized
+  - pre-commit
   - pytest
   - pytest-cov
+  - geocat-datafiles
