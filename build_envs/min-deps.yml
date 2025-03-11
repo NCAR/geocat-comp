@@ -14,7 +14,7 @@ dependencies:
   - packaging
   - pandas=2.0
   - scipy=1.11
-  - xarray=2023.3
+  - xarray
   - pip
   - pytest
   - pytest-cov
