@@ -11,6 +11,10 @@ Release Notes
 vYYYY.MM.## (unreleased)
 ------------------------
 
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Reconfigure analytics by `Katelyn FitzGerald`_ in (:pr:`698`)
+
 Bug Fixes
 ^^^^^^^^^
 * Unpin scipy and update ``sph_harm`` to ``sph_harm_y`` by `Anissa Zacharias`_ in (:pr:`695`)
