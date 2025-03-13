@@ -8,6 +8,13 @@
 Release Notes
 =============
 
+vYYYY.MM.## (unreleased)
+------------------------
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Reconfigure analytics by `Katelyn FitzGerald`_ in (:pr:`698`)
+
 v2025.02.0 (February 25, 2025)
 ------------------------------
 This release adds support and testing for Python 3.13, unpins numpy dependency, increases support for
