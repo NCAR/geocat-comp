@@ -16,7 +16,7 @@ jobs:
   test:
     # if: |
     #   github.repository == 'NCAR/geocat-comp'
-    name: Python (${{ matrix.python-version }}, ${{ matrix.os }})
+    name: Python ${{ matrix.python-version }}, ${{ matrix.os }}, ${{ matrix.env }}
     runs-on: ${{ matrix.os }}
     defaults:
       run:
