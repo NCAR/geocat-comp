@@ -16,7 +16,7 @@ jobs:
   test:
     # if: |
     #   github.repository == 'NCAR/geocat-comp'
-    name: Python ${{ matrix.python-version }}, ${{ matrix.os }}, ${{ matrix.env }}
+    name: Python ${{ matrix.python-version }} ${{ matrix.os }} ${{ matrix.env }}
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -98,7 +98,7 @@ jobs:
       - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
-          name: Test results for ${{ runner.os }}-${{ matrix.python-version }}
+          name: Test results for ${{ runner.os }}-${{ matrix.python-version }} ${{ matrix.env }}
           path: pytest.xml
 
       - name: Upload code coverage to Codecov
