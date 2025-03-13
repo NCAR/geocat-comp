@@ -309,10 +309,10 @@ def month_to_season(
     if isinstance(means.indexes[time_coord_name],
                   xr.coding.cftimeindex.CFTimeIndex):
         means[time_coord_name] = means.indexes[
-            time_coord_name] + xr.coding.cftime_offsets.to_offset(freq="MS")
+            time_coord_name] + xr.coding.cftime_offsets.to_offset("MS")
     elif isinstance(means.indexes[time_coord_name], pd.DatetimeIndex):
         means[time_coord_name] = means.indexes[
-            time_coord_name] + pd.tseries.frequencies.to_offset(freq="MS")
+            time_coord_name] + pd.tseries.frequencies.to_offset("MS")
     else:
         raise ValueError(
             f"unsupported array type - {type(means.indexes[time_coord_name])}. Valid types include: (xr.coding.cftimeindex.CFTimeIndex, pandas.core.indexes.datetimes.DatetimeIndex)"
