@@ -1,0 +1,25 @@
+name: geocat_comp_build
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.10
+  - cf_xarray
+  - cftime
+  - dask-core
+  - distributed
+  - eofs
+  - metpy
+  - netcdf4
+  - numpy=1.25
+  - packaging
+  - pandas=2.0
+  - scipy=1.11
+  - xarray
+  - xskillscore
+  - pip
+  - parameterized
+  - pre-commit
+  - pytest
+  - pytest-cov
+  - geocat-datafiles

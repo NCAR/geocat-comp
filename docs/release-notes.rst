@@ -11,6 +11,11 @@ Release Notes
 vYYYY.MM.## (unreleased)
 ------------------------
 
+Enhancements
+^^^^^^^^^^^^
+* Add minimum dependency version testing and address minor compatibility issues with Pandas and Xarray by
+`Katelyn FitzGerald`_ in (:pr:`699`)
+
 Internal Changes
 ^^^^^^^^^^^^^^^^
 * Reconfigure analytics by `Katelyn FitzGerald`_ in (:pr:`698`)
