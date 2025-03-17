@@ -948,5 +948,5 @@ class Test_Climatology_Average():
 
 @pytest.mark.parametrize("units", ("s", "ms", "us", "ns"))
 def test_units_infer_calendar_name(units):
-    time = xr.date_range("2000-01-01", periods=10, freq="1D", unit=units)
+    time = pd.date_range("2000-01-01", periods=10, freq="1D", unit=units)
     assert _infer_calendar_name(time) == "proleptic_gregorian"
