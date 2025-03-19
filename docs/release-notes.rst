@@ -19,6 +19,7 @@ Enhancements
 Internal Changes
 ^^^^^^^^^^^^^^^^
 * Reconfigure analytics by `Katelyn FitzGerald`_ in (:pr:`698`)
+* Remove `docformatter` and setup `ruff` by `Cora Schneck`_ in (:pr:`700`)
 
 v2025.02.0 (February 25, 2025)
 ------------------------------
