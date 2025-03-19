@@ -75,7 +75,6 @@ def _generate_eofs_solver(data, time_dim=0, weights=None, center=True, ddof=1):
 
     # ''' Start of boilerplate
     if not isinstance(data, xr.DataArray):
-
         data = np.asarray(data)
 
         if (time_dim >= data.ndim) or (time_dim < -data.ndim):
@@ -100,15 +99,17 @@ def _generate_eofs_solver(data, time_dim=0, weights=None, center=True, ddof=1):
     return data, solver
 
 
-def eofunc_eofs(data,
-                neofs=1,
-                time_dim=0,
-                eofscaling=0,
-                weights=None,
-                center=True,
-                ddof=1,
-                vfscaled=False,
-                meta=False):
+def eofunc_eofs(
+    data,
+    neofs=1,
+    time_dim=0,
+    eofscaling=0,
+    weights=None,
+    center=True,
+    ddof=1,
+    vfscaled=False,
+    meta=False,
+):
     """Computes empirical orthogonal functions (EOFs, aka: Principal Component
     Analysis).
 
@@ -405,7 +406,8 @@ def eofunc(data: Iterable, neval, **kwargs) -> xr.DataArray:
         "correlation"
         "`, and 'missing_value' other than np.nan. The output "
         " and its attributes may thus not be as expected, too. Use `eofunc_eofs` instead.",
-        PendingDeprecationWarning)
+        PendingDeprecationWarning,
+    )
 
     if not isinstance(data, xr.DataArray) or not isinstance(data, np.ndarray):
         data = np.asarray(data)
@@ -423,7 +425,8 @@ def eofunc_ts(data: Iterable, evec, **kwargs) -> xr.DataArray:
         "correlation"
         "`, and 'missing_value' other than np.nan. The output "
         " and its attributes may thus not be as expected, too. Use `eofunc_pcs` instead.",
-        PendingDeprecationWarning)
+        PendingDeprecationWarning,
+    )
 
     if not isinstance(data, xr.DataArray) or not isinstance(data, np.ndarray):
         data = np.asarray(data)

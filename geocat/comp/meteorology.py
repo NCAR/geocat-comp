@@ -8,9 +8,8 @@ from .gc_util import _generate_wrapper_docstring
 
 
 def _dewtemp(
-    tk: typing.Union[np.ndarray, xr.DataArray, list,
-                     float], rh: typing.Union[np.ndarray, xr.DataArray, list,
-                                              float]
+    tk: typing.Union[np.ndarray, xr.DataArray, list, float],
+    rh: typing.Union[np.ndarray, xr.DataArray, list, float],
 ) -> typing.Union[np.ndarray, xr.DataArray, list, float]:
     """This function calculates the dew point temperature given temperature and
     relative humidity using equations from John Dutton's "Ceaseless Wind" (pp
@@ -48,10 +47,11 @@ def _dewtemp(
     return tdk
 
 
-def _heat_index(temperature: np.ndarray,
-                relative_humidity: typing.Union[np.ndarray, xr.DataArray, list,
-                                                float],
-                alternate_coeffs: bool = False) -> np.ndarray:
+def _heat_index(
+    temperature: np.ndarray,
+    relative_humidity: typing.Union[np.ndarray, xr.DataArray, list, float],
+    alternate_coeffs: bool = False,
+) -> np.ndarray:
     """Compute the 'heat index' as calculated by the National Weather Service.
 
     Internal function for heat_index
@@ -86,8 +86,15 @@ def _heat_index(temperature: np.ndarray,
     """
     # Default coefficients for (t>=80F) and (40<gh<100)
     coeffs = [
-        -42.379, 2.04901523, 10.14333127, -0.22475541, -0.00683783, -0.05481717,
-        0.00122874, 0.00085282, -0.00000199
+        -42.379,
+        2.04901523,
+        10.14333127,
+        -0.22475541,
+        -0.00683783,
+        -0.05481717,
+        0.00122874,
+        0.00085282,
+        -0.00000199,
     ]
     crit = [80, 40, 100]  # [T_low [F], RH_low, RH_high]
 
@@ -95,8 +102,15 @@ def _heat_index(temperature: np.ndarray,
     # within 3F of default coeffs
     if alternate_coeffs:
         coeffs = [
-            0.363445176, 0.988622465, 4.777114035, -0.114037667, -0.000850208,
-            -0.020716198, 0.000687678, 0.000274954, 0.0
+            0.363445176,
+            0.988622465,
+            4.777114035,
+            -0.114037667,
+            -0.000850208,
+            -0.020716198,
+            0.000687678,
+            0.000274954,
+            0.0,
         ]
         crit = [70, 0, 80]  # [T_low [F], RH_low, RH_high]
 
@@ -110,26 +124,33 @@ def _heat_index(temperature: np.ndarray,
 
     # if all t values less than critical, return hi
     # otherwise perform calculation
-    eqtype = 0
     if not all(temperature.ravel() < crit[0]):
-        eqtype = 1
-
-        heatindex = xr.where(heatindex > crit[0],
-                             _nws_eqn(coeffs, temperature, relative_humidity),
-                             heatindex)
+        heatindex = xr.where(
+            heatindex > crit[0],
+            _nws_eqn(coeffs, temperature, relative_humidity),
+            heatindex,
+        )
 
         # adjustments
         heatindex = xr.where(
-            np.logical_and(relative_humidity < 13,
-                           np.logical_and(temperature > 80, temperature < 112)),
+            np.logical_and(
+                relative_humidity < 13,
+                np.logical_and(temperature > 80, temperature < 112),
+            ),
             heatindex - ((13 - relative_humidity) / 4) * np.sqrt(
-                (17 - abs(temperature - 95)) / 17), heatindex)
+                (17 - abs(temperature - 95)) / 17),
+            heatindex,
+        )
 
         heatindex = xr.where(
-            np.logical_and(relative_humidity > 85,
-                           np.logical_and(temperature > 80, temperature < 87)),
+            np.logical_and(
+                relative_humidity > 85,
+                np.logical_and(temperature > 80, temperature < 87),
+            ),
             heatindex + ((relative_humidity - 85.0) / 10.0) *
-            ((87.0 - temperature) / 5.0), heatindex)
+            ((87.0 - temperature) / 5.0),
+            heatindex,
+        )
 
     return heatindex
 
@@ -166,24 +187,20 @@ def _nws_eqn(coeffs, temp, rel_hum):
     Related NCL Functions:
     `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__,
     """
-    heatindex = coeffs[0] \
-                + coeffs[1] * temp \
-                + coeffs[2] * rel_hum \
-                + coeffs[3] * temp * rel_hum \
-                + coeffs[4] * temp ** 2 \
-                + coeffs[5] * rel_hum ** 2 \
-                + coeffs[6] * temp ** 2 * rel_hum \
-                + coeffs[7] * temp * rel_hum ** 2 \
-                + coeffs[8] * temp ** 2 * rel_hum ** 2
+    heatindex = (coeffs[0] + coeffs[1] * temp + coeffs[2] * rel_hum +
+                 coeffs[3] * temp * rel_hum + coeffs[4] * temp**2 +
+                 coeffs[5] * rel_hum**2 + coeffs[6] * temp**2 * rel_hum +
+                 coeffs[7] * temp * rel_hum**2 +
+                 coeffs[8] * temp**2 * rel_hum**2)
 
     return heatindex
 
 
 def _relhum(
-        t: typing.Union[np.ndarray, list, float],
-        w: typing.Union[np.ndarray, xr.DataArray, list,
-                        float], p: typing.Union[np.ndarray, xr.DataArray, list,
-                                                float]) -> np.ndarray:
+    t: typing.Union[np.ndarray, list, float],
+    w: typing.Union[np.ndarray, xr.DataArray, list, float],
+    p: typing.Union[np.ndarray, xr.DataArray, list, float],
+) -> np.ndarray:
     """Calculates relative humidity with respect to ice, given temperature,
     mixing ratio, and pressure.
 
@@ -224,31 +241,210 @@ def _relhum(
     """
 
     table = np.asarray([
-        0.01403, 0.01719, 0.02101, 0.02561, 0.03117, 0.03784, 0.04584, 0.05542,
-        0.06685, 0.08049, 0.09672, 0.1160, 0.1388, 0.1658, 0.1977, 0.2353,
-        0.2796, 0.3316, 0.3925, 0.4638, 0.5472, 0.6444, 0.7577, 0.8894, 1.042,
-        1.220, 1.425, 1.662, 1.936, 2.252, 2.615, 3.032, 3.511, 4.060, 4.688,
-        5.406, 6.225, 7.159, 8.223, 9.432, 10.80, 12.36, 14.13, 16.12, 18.38,
-        20.92, 23.80, 27.03, 30.67, 34.76, 39.35, 44.49, 50.26, 56.71, 63.93,
-        71.98, 80.97, 90.98, 102.1, 114.5, 128.3, 143.6, 160.6, 179.4, 200.2,
-        223.3, 248.8, 276.9, 307.9, 342.1, 379.8, 421.3, 466.9, 517.0, 572.0,
-        632.3, 698.5, 770.9, 850.2, 937.0, 1032.0, 1146.6, 1272.0, 1408.1,
-        1556.7, 1716.9, 1890.3, 2077.6, 2279.6, 2496.7, 2729.8, 2980.0, 3247.8,
-        3534.1, 3839.8, 4164.8, 4510.5, 4876.9, 5265.1, 5675.2, 6107.8, 6566.2,
-        7054.7, 7575.3, 8129.4, 8719.2, 9346.50, 10013.0, 10722.0, 11474.0,
-        12272.0, 13119.0, 14017.0, 14969.0, 15977.0, 17044.0, 18173.0, 19367.0,
-        20630.0, 21964.0, 23373.0, 24861.0, 26430.0, 28086.0, 29831.0, 31671.0,
-        33608.0, 35649.0, 37796.0, 40055.0, 42430.0, 44927.0, 47551.0, 50307.0,
-        53200.0, 56236.0, 59422.0, 62762.0, 66264.0, 69934.0, 73777.0, 77802.0,
-        82015.0, 86423.0, 91034.0, 95855.0, 100890.0, 106160.0, 111660.0,
-        117400.0, 123400.0, 129650.0, 136170.0, 142980.0, 150070.0, 157460.0,
-        165160.0, 173180.0, 181530.0, 190220.0, 199260.0, 208670.0, 218450.0,
-        228610.0, 239180.0, 250160.0, 261560.0, 273400.0, 285700.0, 298450.0,
-        311690.0, 325420.0, 339650.0, 354410.0, 369710.0, 385560.0, 401980.0,
-        418980.0, 436590.0, 454810.0, 473670.0, 493170.0, 513350.0, 534220.0,
-        555800.0, 578090.0, 601130.0, 624940.0, 649530.0, 674920.0, 701130.0,
-        728190.0, 756110.0, 784920.0, 814630.0, 845280.0, 876880.0, 909450.0,
-        943020.0, 977610.0, 1013250.0, 1049940.0, 1087740.0, 1087740.
+        0.01403,
+        0.01719,
+        0.02101,
+        0.02561,
+        0.03117,
+        0.03784,
+        0.04584,
+        0.05542,
+        0.06685,
+        0.08049,
+        0.09672,
+        0.1160,
+        0.1388,
+        0.1658,
+        0.1977,
+        0.2353,
+        0.2796,
+        0.3316,
+        0.3925,
+        0.4638,
+        0.5472,
+        0.6444,
+        0.7577,
+        0.8894,
+        1.042,
+        1.220,
+        1.425,
+        1.662,
+        1.936,
+        2.252,
+        2.615,
+        3.032,
+        3.511,
+        4.060,
+        4.688,
+        5.406,
+        6.225,
+        7.159,
+        8.223,
+        9.432,
+        10.80,
+        12.36,
+        14.13,
+        16.12,
+        18.38,
+        20.92,
+        23.80,
+        27.03,
+        30.67,
+        34.76,
+        39.35,
+        44.49,
+        50.26,
+        56.71,
+        63.93,
+        71.98,
+        80.97,
+        90.98,
+        102.1,
+        114.5,
+        128.3,
+        143.6,
+        160.6,
+        179.4,
+        200.2,
+        223.3,
+        248.8,
+        276.9,
+        307.9,
+        342.1,
+        379.8,
+        421.3,
+        466.9,
+        517.0,
+        572.0,
+        632.3,
+        698.5,
+        770.9,
+        850.2,
+        937.0,
+        1032.0,
+        1146.6,
+        1272.0,
+        1408.1,
+        1556.7,
+        1716.9,
+        1890.3,
+        2077.6,
+        2279.6,
+        2496.7,
+        2729.8,
+        2980.0,
+        3247.8,
+        3534.1,
+        3839.8,
+        4164.8,
+        4510.5,
+        4876.9,
+        5265.1,
+        5675.2,
+        6107.8,
+        6566.2,
+        7054.7,
+        7575.3,
+        8129.4,
+        8719.2,
+        9346.50,
+        10013.0,
+        10722.0,
+        11474.0,
+        12272.0,
+        13119.0,
+        14017.0,
+        14969.0,
+        15977.0,
+        17044.0,
+        18173.0,
+        19367.0,
+        20630.0,
+        21964.0,
+        23373.0,
+        24861.0,
+        26430.0,
+        28086.0,
+        29831.0,
+        31671.0,
+        33608.0,
+        35649.0,
+        37796.0,
+        40055.0,
+        42430.0,
+        44927.0,
+        47551.0,
+        50307.0,
+        53200.0,
+        56236.0,
+        59422.0,
+        62762.0,
+        66264.0,
+        69934.0,
+        73777.0,
+        77802.0,
+        82015.0,
+        86423.0,
+        91034.0,
+        95855.0,
+        100890.0,
+        106160.0,
+        111660.0,
+        117400.0,
+        123400.0,
+        129650.0,
+        136170.0,
+        142980.0,
+        150070.0,
+        157460.0,
+        165160.0,
+        173180.0,
+        181530.0,
+        190220.0,
+        199260.0,
+        208670.0,
+        218450.0,
+        228610.0,
+        239180.0,
+        250160.0,
+        261560.0,
+        273400.0,
+        285700.0,
+        298450.0,
+        311690.0,
+        325420.0,
+        339650.0,
+        354410.0,
+        369710.0,
+        385560.0,
+        401980.0,
+        418980.0,
+        436590.0,
+        454810.0,
+        473670.0,
+        493170.0,
+        513350.0,
+        534220.0,
+        555800.0,
+        578090.0,
+        601130.0,
+        624940.0,
+        649530.0,
+        674920.0,
+        701130.0,
+        728190.0,
+        756110.0,
+        784920.0,
+        814630.0,
+        845280.0,
+        876880.0,
+        909450.0,
+        943020.0,
+        977610.0,
+        1013250.0,
+        1049940.0,
+        1087740.0,
+        1087740.0,
     ])
 
     maxtemp = 375.16
@@ -271,9 +467,11 @@ def _relhum(
     return rh
 
 
-def _relhum_ice(t: typing.Union[np.ndarray, list, float],
-                w: typing.Union[np.ndarray, list, float],
-                p: typing.Union[np.ndarray, list, float]) -> np.ndarray:
+def _relhum_ice(
+    t: typing.Union[np.ndarray, list, float],
+    w: typing.Union[np.ndarray, list, float],
+    p: typing.Union[np.ndarray, list, float],
+) -> np.ndarray:
     """Calculates relative humidity with respect to ice, given temperature,
     mixing ratio, and pressure.
 
@@ -330,9 +528,11 @@ def _relhum_ice(t: typing.Union[np.ndarray, list, float],
     return rh
 
 
-def _relhum_water(t: typing.Union[np.ndarray, list, float],
-                  w: typing.Union[np.ndarray, list, float],
-                  p: typing.Union[np.ndarray, list, float]) -> np.ndarray:
+def _relhum_water(
+    t: typing.Union[np.ndarray, list, float],
+    w: typing.Union[np.ndarray, list, float],
+    p: typing.Union[np.ndarray, list, float],
+) -> np.ndarray:
     """Calculates relative humidity with respect to water, given temperature,
     mixing ratio, and pressure.
 
@@ -394,9 +594,11 @@ def _relhum_water(t: typing.Union[np.ndarray, list, float],
     return rh
 
 
-def _xheat_index(temperature: xr.DataArray,
-                 relative_humidity: xr.DataArray,
-                 alternate_coeffs: bool = False) -> tuple([xr.DataArray, int]):
+def _xheat_index(
+    temperature: xr.DataArray,
+    relative_humidity: xr.DataArray,
+    alternate_coeffs: bool = False,
+) -> tuple([xr.DataArray, int]):
     """Compute the 'heat index' as calculated by the National Weather Service.
 
     Internal function for heat_index for dask
@@ -433,8 +635,15 @@ def _xheat_index(temperature: xr.DataArray,
     """
     # Default coefficients for (t>=80F) and (40<gh<100)
     coeffs = [
-        -42.379, 2.04901523, 10.14333127, -0.22475541, -0.00683783, -0.05481717,
-        0.00122874, 0.00085282, -0.00000199
+        -42.379,
+        2.04901523,
+        10.14333127,
+        -0.22475541,
+        -0.00683783,
+        -0.05481717,
+        0.00122874,
+        0.00085282,
+        -0.00000199,
     ]
     crit = [80, 40, 100]  # [T_low [F], RH_low, RH_high]
 
@@ -442,8 +651,15 @@ def _xheat_index(temperature: xr.DataArray,
     # within 3F of default coeffs
     if alternate_coeffs:
         coeffs = [
-            0.363445176, 0.988622465, 4.777114035, -0.114037667, -0.000850208,
-            -0.020716198, 0.000687678, 0.000274954, 0.0
+            0.363445176,
+            0.988622465,
+            4.777114035,
+            -0.114037667,
+            -0.000850208,
+            -0.020716198,
+            0.000687678,
+            0.000274954,
+            0.0,
         ]
         crit = [70, 0, 80]  # [T_low [F], RH_low, RH_high]
 
@@ -461,22 +677,32 @@ def _xheat_index(temperature: xr.DataArray,
     if not all(temperature.data.ravel() < crit[0]):
         eqtype = 1
 
-        heatindex = xr.where(heatindex > crit[0],
-                             _nws_eqn(coeffs, temperature, relative_humidity),
-                             heatindex)
+        heatindex = xr.where(
+            heatindex > crit[0],
+            _nws_eqn(coeffs, temperature, relative_humidity),
+            heatindex,
+        )
 
         # adjustments
         heatindex = xr.where(
-            np.logical_and(relative_humidity < 13,
-                           np.logical_and(temperature > 80, temperature < 112)),
+            np.logical_and(
+                relative_humidity < 13,
+                np.logical_and(temperature > 80, temperature < 112),
+            ),
             heatindex - ((13 - relative_humidity) / 4) * np.sqrt(
-                (17 - abs(temperature - 95)) / 17), heatindex)
+                (17 - abs(temperature - 95)) / 17),
+            heatindex,
+        )
 
         heatindex = xr.where(
-            np.logical_and(relative_humidity > 85,
-                           np.logical_and(temperature > 80, temperature < 87)),
+            np.logical_and(
+                relative_humidity > 85,
+                np.logical_and(temperature > 80, temperature < 87),
+            ),
             heatindex + ((relative_humidity - 85.0) / 10.0) *
-            ((87.0 - temperature) / 5.0), heatindex)
+            ((87.0 - temperature) / 5.0),
+            heatindex,
+        )
 
     return heatindex, eqtype
 
@@ -521,31 +747,210 @@ def _xrelhum(t: xr.DataArray, w: xr.DataArray, p: xr.DataArray) -> xr.DataArray:
     """
 
     table = da.from_array([
-        0.01403, 0.01719, 0.02101, 0.02561, 0.03117, 0.03784, 0.04584, 0.05542,
-        0.06685, 0.08049, 0.09672, 0.1160, 0.1388, 0.1658, 0.1977, 0.2353,
-        0.2796, 0.3316, 0.3925, 0.4638, 0.5472, 0.6444, 0.7577, 0.8894, 1.042,
-        1.220, 1.425, 1.662, 1.936, 2.252, 2.615, 3.032, 3.511, 4.060, 4.688,
-        5.406, 6.225, 7.159, 8.223, 9.432, 10.80, 12.36, 14.13, 16.12, 18.38,
-        20.92, 23.80, 27.03, 30.67, 34.76, 39.35, 44.49, 50.26, 56.71, 63.93,
-        71.98, 80.97, 90.98, 102.1, 114.5, 128.3, 143.6, 160.6, 179.4, 200.2,
-        223.3, 248.8, 276.9, 307.9, 342.1, 379.8, 421.3, 466.9, 517.0, 572.0,
-        632.3, 698.5, 770.9, 850.2, 937.0, 1032.0, 1146.6, 1272.0, 1408.1,
-        1556.7, 1716.9, 1890.3, 2077.6, 2279.6, 2496.7, 2729.8, 2980.0, 3247.8,
-        3534.1, 3839.8, 4164.8, 4510.5, 4876.9, 5265.1, 5675.2, 6107.8, 6566.2,
-        7054.7, 7575.3, 8129.4, 8719.2, 9346.50, 10013.0, 10722.0, 11474.0,
-        12272.0, 13119.0, 14017.0, 14969.0, 15977.0, 17044.0, 18173.0, 19367.0,
-        20630.0, 21964.0, 23373.0, 24861.0, 26430.0, 28086.0, 29831.0, 31671.0,
-        33608.0, 35649.0, 37796.0, 40055.0, 42430.0, 44927.0, 47551.0, 50307.0,
-        53200.0, 56236.0, 59422.0, 62762.0, 66264.0, 69934.0, 73777.0, 77802.0,
-        82015.0, 86423.0, 91034.0, 95855.0, 100890.0, 106160.0, 111660.0,
-        117400.0, 123400.0, 129650.0, 136170.0, 142980.0, 150070.0, 157460.0,
-        165160.0, 173180.0, 181530.0, 190220.0, 199260.0, 208670.0, 218450.0,
-        228610.0, 239180.0, 250160.0, 261560.0, 273400.0, 285700.0, 298450.0,
-        311690.0, 325420.0, 339650.0, 354410.0, 369710.0, 385560.0, 401980.0,
-        418980.0, 436590.0, 454810.0, 473670.0, 493170.0, 513350.0, 534220.0,
-        555800.0, 578090.0, 601130.0, 624940.0, 649530.0, 674920.0, 701130.0,
-        728190.0, 756110.0, 784920.0, 814630.0, 845280.0, 876880.0, 909450.0,
-        943020.0, 977610.0, 1013250.0, 1049940.0, 1087740.0, 1087740.
+        0.01403,
+        0.01719,
+        0.02101,
+        0.02561,
+        0.03117,
+        0.03784,
+        0.04584,
+        0.05542,
+        0.06685,
+        0.08049,
+        0.09672,
+        0.1160,
+        0.1388,
+        0.1658,
+        0.1977,
+        0.2353,
+        0.2796,
+        0.3316,
+        0.3925,
+        0.4638,
+        0.5472,
+        0.6444,
+        0.7577,
+        0.8894,
+        1.042,
+        1.220,
+        1.425,
+        1.662,
+        1.936,
+        2.252,
+        2.615,
+        3.032,
+        3.511,
+        4.060,
+        4.688,
+        5.406,
+        6.225,
+        7.159,
+        8.223,
+        9.432,
+        10.80,
+        12.36,
+        14.13,
+        16.12,
+        18.38,
+        20.92,
+        23.80,
+        27.03,
+        30.67,
+        34.76,
+        39.35,
+        44.49,
+        50.26,
+        56.71,
+        63.93,
+        71.98,
+        80.97,
+        90.98,
+        102.1,
+        114.5,
+        128.3,
+        143.6,
+        160.6,
+        179.4,
+        200.2,
+        223.3,
+        248.8,
+        276.9,
+        307.9,
+        342.1,
+        379.8,
+        421.3,
+        466.9,
+        517.0,
+        572.0,
+        632.3,
+        698.5,
+        770.9,
+        850.2,
+        937.0,
+        1032.0,
+        1146.6,
+        1272.0,
+        1408.1,
+        1556.7,
+        1716.9,
+        1890.3,
+        2077.6,
+        2279.6,
+        2496.7,
+        2729.8,
+        2980.0,
+        3247.8,
+        3534.1,
+        3839.8,
+        4164.8,
+        4510.5,
+        4876.9,
+        5265.1,
+        5675.2,
+        6107.8,
+        6566.2,
+        7054.7,
+        7575.3,
+        8129.4,
+        8719.2,
+        9346.50,
+        10013.0,
+        10722.0,
+        11474.0,
+        12272.0,
+        13119.0,
+        14017.0,
+        14969.0,
+        15977.0,
+        17044.0,
+        18173.0,
+        19367.0,
+        20630.0,
+        21964.0,
+        23373.0,
+        24861.0,
+        26430.0,
+        28086.0,
+        29831.0,
+        31671.0,
+        33608.0,
+        35649.0,
+        37796.0,
+        40055.0,
+        42430.0,
+        44927.0,
+        47551.0,
+        50307.0,
+        53200.0,
+        56236.0,
+        59422.0,
+        62762.0,
+        66264.0,
+        69934.0,
+        73777.0,
+        77802.0,
+        82015.0,
+        86423.0,
+        91034.0,
+        95855.0,
+        100890.0,
+        106160.0,
+        111660.0,
+        117400.0,
+        123400.0,
+        129650.0,
+        136170.0,
+        142980.0,
+        150070.0,
+        157460.0,
+        165160.0,
+        173180.0,
+        181530.0,
+        190220.0,
+        199260.0,
+        208670.0,
+        218450.0,
+        228610.0,
+        239180.0,
+        250160.0,
+        261560.0,
+        273400.0,
+        285700.0,
+        298450.0,
+        311690.0,
+        325420.0,
+        339650.0,
+        354410.0,
+        369710.0,
+        385560.0,
+        401980.0,
+        418980.0,
+        436590.0,
+        454810.0,
+        473670.0,
+        493170.0,
+        513350.0,
+        534220.0,
+        555800.0,
+        578090.0,
+        601130.0,
+        624940.0,
+        649530.0,
+        674920.0,
+        701130.0,
+        728190.0,
+        756110.0,
+        784920.0,
+        814630.0,
+        845280.0,
+        876880.0,
+        909450.0,
+        943020.0,
+        977610.0,
+        1013250.0,
+        1049940.0,
+        1087740.0,
+        1087740.0,
     ])
 
     maxtemp = 375.16
@@ -572,7 +977,7 @@ def _xrelhum(t: xr.DataArray, w: xr.DataArray, p: xr.DataArray) -> xr.DataArray:
 
 def dewtemp(
     temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
-    relative_humidity: typing.Union[np.ndarray, xr.DataArray, list, float]
+    relative_humidity: typing.Union[np.ndarray, xr.DataArray, list, float],
 ) -> typing.Union[np.ndarray, float]:
     """This function calculates the dew point temperature given temperature and
     relative humidity using equations from John Dutton's "Ceaseless Wind" (pp
@@ -610,7 +1015,6 @@ def dewtemp(
     in_types = [type(item) for item in inputs]
 
     if xr.DataArray in in_types:
-
         # check all inputs are xarray.DataArray
         if any(x != xr.DataArray for x in in_types):
             raise TypeError(
@@ -636,9 +1040,9 @@ def dewtemp(
 
 
 def heat_index(
-        temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
-        relative_humidity: typing.Union[np.ndarray, xr.DataArray, list, float],
-        alternate_coeffs: bool = False
+    temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
+    relative_humidity: typing.Union[np.ndarray, xr.DataArray, list, float],
+    alternate_coeffs: bool = False,
 ) -> typing.Union[np.ndarray, xr.DataArray]:
     """Compute the 'heat index' as calculated by the National Weather Service.
 
@@ -709,7 +1113,6 @@ def heat_index(
 
     # run dask compatible version if input is xarray
     if xr.DataArray in in_types:
-
         # check all inputs are xarray.DataArray
         if not all(x == xr.DataArray for x in in_types):
             raise TypeError(
@@ -732,13 +1135,13 @@ def heat_index(
         # set xarray attributes
         heatindex.attrs['long_name'] = "heat index: NWS"
         heatindex.attrs['units'] = "F"
-        heatindex.attrs[
-            'www'] = "https://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml"
+        heatindex.attrs['www'] = (
+            "https://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml")
         heatindex.attrs['info'] = "appropriate for shady locations with no wind"
 
         if eqtype == 1:
-            heatindex.attrs[
-                'tag'] = "NCL: heat_index_nws; (Steadman+t)*0.5 and Rothfusz"
+            heatindex.attrs['tag'] = (
+                "NCL: heat_index_nws; (Steadman+t)*0.5 and Rothfusz")
         else:
             heatindex.attrs['tag'] = "NCL: heat_index_nws; (Steadman+t)*0.5"
 
@@ -767,7 +1170,7 @@ def heat_index(
 def relhum(
     temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
     mixing_ratio: typing.Union[np.ndarray, xr.DataArray, list, float],
-    pressure: typing.Union[np.ndarray, xr.DataArray, list, float]
+    pressure: typing.Union[np.ndarray, xr.DataArray, list, float],
 ) -> typing.Union[np.ndarray, xr.DataArray]:
     """This function calculates the relative humidity given temperature, mixing
     ratio, and pressure.
@@ -818,7 +1221,6 @@ def relhum(
 
     # run dask compatible version if input is xarray
     if xr.DataArray in in_types:
-
         # check all inputs are xarray.DataArray
         if not all(x == xr.DataArray for x in in_types):
             raise TypeError(
@@ -830,8 +1232,9 @@ def relhum(
         # set xarray attributes
         relative_humidity.attrs['long_name'] = "relative humidity"
         relative_humidity.attrs['units'] = 'percentage'
-        relative_humidity.attrs[
-            'info'] = 'https://journals.ametsoc.org/view/journals/apme/35/4/1520-0450_1996_035_0601_imfaos_2_0_co_2.xml'
+        relative_humidity.attrs['info'] = (
+            'https://journals.ametsoc.org/view/journals/apme/35/4/1520-0450_1996_035_0601_imfaos_2_0_co_2.xml'
+        )
 
     else:
         # ensure in numpy array for function call
@@ -845,9 +1248,11 @@ def relhum(
     return relative_humidity
 
 
-def relhum_ice(temperature: typing.Union[np.ndarray, list, float],
-               mixing_ratio: typing.Union[np.ndarray, list, float],
-               pressure: typing.Union[np.ndarray, list, float]) -> np.ndarray:
+def relhum_ice(
+    temperature: typing.Union[np.ndarray, list, float],
+    mixing_ratio: typing.Union[np.ndarray, list, float],
+    pressure: typing.Union[np.ndarray, list, float],
+) -> np.ndarray:
     """Calculates relative humidity with respect to ice, given temperature,
     mixing ratio, and pressure.
 
@@ -916,9 +1321,11 @@ def relhum_ice(temperature: typing.Union[np.ndarray, list, float],
     return relative_humidity
 
 
-def relhum_water(temperature: typing.Union[np.ndarray, list, float],
-                 mixing_ratio: typing.Union[np.ndarray, list, float],
-                 pressure: typing.Union[np.ndarray, list, float]) -> np.ndarray:
+def relhum_water(
+    temperature: typing.Union[np.ndarray, list, float],
+    mixing_ratio: typing.Union[np.ndarray, list, float],
+    pressure: typing.Union[np.ndarray, list, float],
+) -> np.ndarray:
     """Calculates relative humidity with respect to water, given temperature,
     mixing ratio, and pressure.
 
@@ -994,9 +1401,8 @@ def relhum_water(temperature: typing.Union[np.ndarray, list, float],
 
 
 def max_daylight(
-    jday: typing.Union[np.ndarray, xr.DataArray, list,
-                       float], lat: typing.Union[np.ndarray, xr.DataArray, list,
-                                                 float]
+    jday: typing.Union[np.ndarray, xr.DataArray, list, float],
+    lat: typing.Union[np.ndarray, xr.DataArray, list, float],
 ) -> typing.Union[np.ndarray, xr.DataArray, float]:
     """Computes maximum number of daylight hours as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
@@ -1090,7 +1496,7 @@ def max_daylight(
 
 
 def psychrometric_constant(
-    pressure: typing.Union[np.ndarray, xr.DataArray, list, float]
+    pressure: typing.Union[np.ndarray, xr.DataArray, list, float],
 ) -> typing.Union[np.ndarray, xr.DataArray]:
     """Compute psychrometric constant [kPa / C] as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
@@ -1161,7 +1567,7 @@ def psychrometric_constant(
 
 def saturation_vapor_pressure(
     temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
-    tfill: typing.Union[float] = np.nan
+    tfill: typing.Union[float] = np.nan,
 ) -> typing.Union[np.ndarray, xr.DataArray]:
     """Compute saturation vapor pressure as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56
@@ -1213,7 +1619,6 @@ def saturation_vapor_pressure(
     in_type = type(temperature)
 
     if in_type is xr.DataArray:
-
         # convert temperature to Celsius
         temp_c = (temperature - 32) * 5 / 9
 
@@ -1239,7 +1644,7 @@ def saturation_vapor_pressure(
 
 def actual_saturation_vapor_pressure(
     tdew: typing.Union[np.ndarray, xr.DataArray, list, float],
-    tfill: typing.Union[float] = np.nan
+    tfill: typing.Union[float] = np.nan,
 ) -> typing.Union[np.ndarray, xr.DataArray]:
     """Compute 'actual' saturation vapor pressure [kPa] as described in the
     Food and Agriculture Organization (FAO) Irrigation and Drainage Paper 56
@@ -1302,7 +1707,7 @@ def actual_saturation_vapor_pressure(
 
 def saturation_vapor_pressure_slope(
     temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
-    tfill: typing.Union[float] = np.nan
+    tfill: typing.Union[float] = np.nan,
 ) -> typing.Union[np.ndarray, xr.DataArray]:
     """Compute the slope [kPa/C] of saturation vapor pressure curve as
     described in the Food and Agriculture Organization (FAO) Irrigation and
@@ -1346,15 +1751,16 @@ def saturation_vapor_pressure_slope(
     in_type = type(temperature)
 
     if in_type is xr.DataArray:
-
         # convert to Celsius
         temp_c = (temperature - 32) * 5 / 9
 
         # calculate svp_slope
         svp_slope = xr.where(
-            temp_c > 0, 4096 * (0.6108 * np.exp(
+            temp_c > 0,
+            4096 * (0.6108 * np.exp(
                 (17.27 * temp_c) / (temp_c + 237.3)) / (temp_c + 237.3)**2),
-            tfill)
+            tfill,
+        )
 
         # add relevant metadata
         svp_slope.attrs['long_name'] = "slope saturation vapor pressure curve"
@@ -1372,9 +1778,11 @@ def saturation_vapor_pressure_slope(
 
         # calculate svp_slope
         svp_slope = np.where(
-            temp_c > 0, 4096 * (0.6108 * np.exp(
+            temp_c > 0,
+            4096 * (0.6108 * np.exp(
                 (17.27 * temp_c) / (temp_c + 237.3)) / (temp_c + 237.3)**2),
-            tfill)
+            tfill,
+        )
 
     return svp_slope
 
@@ -1431,15 +1839,15 @@ def _delta_pressure1D(pressure_lev, surface_pressure):
     delta_pressure[start_level] = (pressure_lev[start_level] + pressure_lev[
         start_level + 1]) / 2 - pressure_top  # top level
 
-    delta_pressure[start_level + 1:end_level] = [
-        (a - b) / 2
-        for a, b in zip(pressure_lev[start_level + 2:end_level +
-                                     1], pressure_lev[start_level:end_level])
-    ]
+    delta_pressure[start_level + 1:end_level] = [(a - b) / 2 for a, b in zip(
+        pressure_lev[start_level + 2:end_level + 1],
+        pressure_lev[start_level:end_level],
+    )]
 
-    delta_pressure[end_level] = surface_pressure - (
-        pressure_lev[end_level] +
-        pressure_lev[end_level - 1]) / 2  # bottom level
+    delta_pressure[end_level] = (
+        surface_pressure -
+        (pressure_lev[end_level] + pressure_lev[end_level - 1]) / 2
+    )  # bottom level
 
     # Return delta_pressure to original order
     if is_pressuredecreasing:
@@ -1513,15 +1921,18 @@ def delta_pressure(pressure_lev, surface_pressure):
     # If passed in an Xarray array, return an Xarray array
     # Change this to return a dataset that has both surface pressure and delta pressure?
     if type_surface_pressure == xr.DataArray:
-        da_coords['lev'] = pressure_lev.values if (
-            type_pressure_level == xr.DataArray) else pressure_lev
+        da_coords['lev'] = (pressure_lev.values if
+                            (type_pressure_level
+                             == xr.DataArray) else pressure_lev)
         da_dims = da_dims + ("lev",)
         da_attrs.update({"long name": "pressure layer thickness"})
-        delta_pressure = xr.DataArray(delta_pressure,
-                                      coords=da_coords,
-                                      dims=da_dims,
-                                      attrs=da_attrs,
-                                      name="delta pressure")
+        delta_pressure = xr.DataArray(
+            delta_pressure,
+            coords=da_coords,
+            dims=da_dims,
+            attrs=da_attrs,
+            name="delta pressure",
+        )
 
     return delta_pressure
 

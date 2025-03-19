@@ -19,7 +19,7 @@ class Test_Gradient:
             xr.load_dataset(
                 'test/gradient_test_results_longitude.nc').to_array().squeeze(),
             xr.load_dataset(
-                'test/gradient_test_results_latitude.nc').to_array().squeeze()
+                'test/gradient_test_results_latitude.nc').to_array().squeeze(),
         ]
 
     @pytest.fixture(scope="class")
@@ -35,9 +35,11 @@ class Test_Gradient:
 
     def test_gradient_xr_1d_nocoords(self, test_data_xr,
                                      expected_results) -> None:
-        actual_result = gradient(xr.DataArray(test_data_xr, coords={}),
-                                 lon=test_data_xr.coords["lon"],
-                                 lat=test_data_xr.coords["lat"])
+        actual_result = gradient(
+            xr.DataArray(test_data_xr, coords={}),
+            lon=test_data_xr.coords["lon"],
+            lat=test_data_xr.coords["lat"],
+        )
         np.testing.assert_almost_equal(np.array(actual_result),
                                        np.array(expected_results),
                                        decimal=3)

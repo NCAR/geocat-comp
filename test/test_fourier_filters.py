@@ -2,12 +2,15 @@ import math as m
 import numpy as np
 import xarray as xr
 
-from geocat.comp import (fourier_band_block, fourier_band_pass,
-                         fourier_high_pass, fourier_low_pass)
+from geocat.comp import (
+    fourier_band_block,
+    fourier_band_pass,
+    fourier_high_pass,
+    fourier_low_pass,
+)
 
 
 class Test_Fourier_One_Bands_Pass:
-
     freq = 1000
     t = np.arange(1000) / freq
     t_data = (np.sin(t * m.tau) / 0.1 + np.sin(2 * t * m.tau) / 0.2 +
@@ -91,7 +94,6 @@ class Test_Fourier_Two_Bands_Pass:
 
 
 class Test_Fourier_Three_Bands_Pass:
-
     freq = 200
     t = np.arange(200) / freq
     t = t[:, None] + t

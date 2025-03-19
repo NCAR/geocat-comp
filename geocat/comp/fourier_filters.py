@@ -5,15 +5,16 @@ import xarray as xr
 
 
 def fourier_filter(
-        signal: typing.Union[np.ndarray, xr.DataArray],
-        frequency: float,
-        cutoff_frequency_low: float = 0,
-        cutoff_frequency_high: float = 0,
-        time_axis: int = 0,
-        low_pass: bool = False,
-        high_pass: bool = False,
-        band_pass: bool = False,
-        band_block: bool = False) -> typing.Union[np.ndarray, xr.DataArray]:
+    signal: typing.Union[np.ndarray, xr.DataArray],
+    frequency: float,
+    cutoff_frequency_low: float = 0,
+    cutoff_frequency_high: float = 0,
+    time_axis: int = 0,
+    low_pass: bool = False,
+    high_pass: bool = False,
+    band_pass: bool = False,
+    band_block: bool = False,
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """Filter a dataset by frequency. This function allows for low_pass,
     high_pass, band_pass, or band_block filtering of the data's frequency
     representation.
@@ -162,7 +163,7 @@ def fourier_filter(
     result = np.fft.ifft(res_fft, axis=0)
     result = np.real(result)
     result = np.swapaxes(result, time_axis, 0)
-    if type(signal) == xr.DataArray:
+    if type(signal) is xr.DataArray:
         xr_result = signal.copy()
         xr_result.data = result
         result = xr_result
@@ -170,10 +171,11 @@ def fourier_filter(
 
 
 def fourier_low_pass(
-        signal: typing.Union[np.ndarray, xr.DataArray],
-        frequency: float,
-        cutoff_frequency_low: float,
-        time_axis: int = 0) -> typing.Union[np.ndarray, xr.DataArray]:
+    signal: typing.Union[np.ndarray, xr.DataArray],
+    frequency: float,
+    cutoff_frequency_low: float,
+    time_axis: int = 0,
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """Filter a dataset by frequency. This function allows for low_pass
     filtering of the data's frequency representation.
 
@@ -196,18 +198,21 @@ def fourier_low_pass(
     return_signal : ndarray, :class:`xarray.DataArray`
         signal with specified filters applied
     """
-    return fourier_filter(signal,
-                          frequency,
-                          cutoff_frequency_low=cutoff_frequency_low,
-                          time_axis=time_axis,
-                          low_pass=True)
+    return fourier_filter(
+        signal,
+        frequency,
+        cutoff_frequency_low=cutoff_frequency_low,
+        time_axis=time_axis,
+        low_pass=True,
+    )
 
 
 def fourier_high_pass(
-        signal: typing.Union[np.ndarray, xr.DataArray],
-        frequency: float,
-        cutoff_frequency_high: float,
-        time_axis: int = 0) -> typing.Union[np.ndarray, xr.DataArray]:
+    signal: typing.Union[np.ndarray, xr.DataArray],
+    frequency: float,
+    cutoff_frequency_high: float,
+    time_axis: int = 0,
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """Filter a dataset by frequency. This function allows for high_pass
     filtering of the data's frequency representation.
 
@@ -230,19 +235,22 @@ def fourier_high_pass(
     return_signal : ndarray, :class:`xarray.DataArray`
         signal with specified filters applied
     """
-    return fourier_filter(signal,
-                          frequency,
-                          cutoff_frequency_high=cutoff_frequency_high,
-                          time_axis=time_axis,
-                          high_pass=True)
+    return fourier_filter(
+        signal,
+        frequency,
+        cutoff_frequency_high=cutoff_frequency_high,
+        time_axis=time_axis,
+        high_pass=True,
+    )
 
 
 def fourier_band_pass(
-        signal: typing.Union[np.ndarray, xr.DataArray],
-        frequency: float,
-        cutoff_frequency_low: float,
-        cutoff_frequency_high: float,
-        time_axis: int = 0) -> typing.Union[np.ndarray, xr.DataArray]:
+    signal: typing.Union[np.ndarray, xr.DataArray],
+    frequency: float,
+    cutoff_frequency_low: float,
+    cutoff_frequency_high: float,
+    time_axis: int = 0,
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """Filter a dataset by frequency. This function allows for band_pass
     filtering of the data's frequency representation.
 
@@ -268,20 +276,23 @@ def fourier_band_pass(
     return_signal : ndarray, :class:`xarray.DataArray`
         signal with specified filters applied
     """
-    return fourier_filter(signal,
-                          frequency,
-                          cutoff_frequency_low=cutoff_frequency_low,
-                          cutoff_frequency_high=cutoff_frequency_high,
-                          time_axis=time_axis,
-                          band_pass=True)
+    return fourier_filter(
+        signal,
+        frequency,
+        cutoff_frequency_low=cutoff_frequency_low,
+        cutoff_frequency_high=cutoff_frequency_high,
+        time_axis=time_axis,
+        band_pass=True,
+    )
 
 
 def fourier_band_block(
-        signal: typing.Union[np.ndarray, xr.DataArray],
-        frequency: float,
-        cutoff_frequency_low: float,
-        cutoff_frequency_high: float,
-        time_axis: int = 0) -> typing.Union[np.ndarray, xr.DataArray]:
+    signal: typing.Union[np.ndarray, xr.DataArray],
+    frequency: float,
+    cutoff_frequency_low: float,
+    cutoff_frequency_high: float,
+    time_axis: int = 0,
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """Filter a dataset by frequency. This function allows for band_block
     filtering of the data's frequency representation.
 
@@ -307,9 +318,11 @@ def fourier_band_block(
     return_signal : ndarray, :class:`xarray.DataArray`
         signal with specified filters applied
     """
-    return fourier_filter(signal,
-                          frequency,
-                          cutoff_frequency_low=cutoff_frequency_low,
-                          cutoff_frequency_high=cutoff_frequency_high,
-                          time_axis=time_axis,
-                          band_block=True)
+    return fourier_filter(
+        signal,
+        frequency,
+        cutoff_frequency_low=cutoff_frequency_low,
+        cutoff_frequency_high=cutoff_frequency_high,
+        time_axis=time_axis,
+        band_block=True,
+    )

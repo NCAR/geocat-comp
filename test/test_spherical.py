@@ -8,7 +8,6 @@ from geocat.comp import decomposition, recomposition, scale_voronoi
 
 
 class Test_Spherical:
-
     max_harm = 23
     num_phi = 90
     num_theta = 180
@@ -35,8 +34,18 @@ class Test_Spherical:
         for m in range(n + 1):
             test_harmonics.append([m, n])
             test_results.append(0)
-            if n in [0, 2, 3, 5, 7, 11, 13, 17, 19, 23
-                    ] and m in [0, 2, 3, 5, 7, 11, 13, 17, 19, 23]:
+            if n in [0, 2, 3, 5, 7, 11, 13, 17, 19, 23] and m in [
+                    0,
+                    2,
+                    3,
+                    5,
+                    7,
+                    11,
+                    13,
+                    17,
+                    19,
+                    23,
+            ]:
                 if m in [2, 5, 11, 17, 23]:
                     test_data += ss.sph_harm(
                         m,

@@ -4,7 +4,11 @@ import numpy.testing as nt
 import xarray as xr
 import pytest
 
-from geocat.comp import interp_multidim, interp_hybrid_to_pressure, interp_sigma_to_hybrid
+from geocat.comp import (
+    interp_multidim,
+    interp_hybrid_to_pressure,
+    interp_sigma_to_hybrid,
+)
 
 # Global input data
 
@@ -17,11 +21,10 @@ except Exception:
 
 _hyam = ds_atmos.hyam
 _hybm = ds_atmos.hybm
-_p0 = 1000. * 100  # Pa
+_p0 = 1000.0 * 100  # Pa
 
 
 class Test_interp_hybrid_to_pressure:
-
     # Expected output from above sample input
     @pytest.fixture(scope="class")
     def ds_out(self):
@@ -40,13 +43,15 @@ class Test_interp_hybrid_to_pressure:
     pres3d = pres3d * 100  # mb to Pa
 
     def test_interp_hybrid_to_pressure_atmos(self, ds_out) -> None:
-        u_int = interp_hybrid_to_pressure(self.data,
-                                          self.ps[0, :, :],
-                                          _hyam,
-                                          _hybm,
-                                          p0=_p0,
-                                          new_levels=self.pres3d,
-                                          method="log")
+        u_int = interp_hybrid_to_pressure(
+            self.data,
+            self.ps[0, :, :],
+            _hyam,
+            _hybm,
+            p0=_p0,
+            new_levels=self.pres3d,
+            method="log",
+        )
 
         uzon = u_int.mean(dim='lon')
 
@@ -70,13 +75,15 @@ class Test_interp_hybrid_to_pressure:
 
     def test_interp_hybrid_to_pressure_atmos_wrong_method(self) -> None:
         with pytest.raises(ValueError):
-            interp_hybrid_to_pressure(self.data,
-                                      self.ps[0, :, :],
-                                      _hyam,
-                                      _hybm,
-                                      p0=_p0,
-                                      new_levels=self.pres3d,
-                                      method="wrong_method")
+            interp_hybrid_to_pressure(
+                self.data,
+                self.ps[0, :, :],
+                _hyam,
+                _hybm,
+                p0=_p0,
+                new_levels=self.pres3d,
+                method="wrong_method",
+            )
 
 
 class Test_interp_hybrid_to_pressure_extrapolate:
@@ -141,13 +148,15 @@ class Test_interp_hybrid_to_pressure_extrapolate:
     def test_interp_hybrid_to_pressure_interp_temp(self, temp_in, press_in,
                                                    _hyam, _hybm,
                                                    ds_out) -> None:
-        result = interp_hybrid_to_pressure(temp_in,
-                                           press_in,
-                                           _hyam,
-                                           _hybm,
-                                           p0=self._p0,
-                                           new_levels=self.new_levels,
-                                           method="linear")
+        result = interp_hybrid_to_pressure(
+            temp_in,
+            press_in,
+            _hyam,
+            _hybm,
+            p0=self._p0,
+            new_levels=self.new_levels,
+            method="linear",
+        )
         result = result.transpose('time', 'plev', 'lat', 'lon')
         result = result.assign_coords(dict(plev=self.new_levels / 100))
         temp_interp_expected = ds_out.Tp.rename(lev_p='plev')
@@ -156,17 +165,19 @@ class Test_interp_hybrid_to_pressure_extrapolate:
     def test_interp_hybrid_to_pressure_extrap_temp(self, temp_in, press_in,
                                                    _hyam, _hybm, t_bot, phis,
                                                    ds_out) -> None:
-        result = interp_hybrid_to_pressure(temp_in,
-                                           press_in,
-                                           _hyam,
-                                           _hybm,
-                                           p0=self._p0,
-                                           new_levels=self.new_levels,
-                                           method="linear",
-                                           extrapolate=True,
-                                           variable='temperature',
-                                           t_bot=t_bot,
-                                           phi_sfc=phis)
+        result = interp_hybrid_to_pressure(
+            temp_in,
+            press_in,
+            _hyam,
+            _hybm,
+            p0=self._p0,
+            new_levels=self.new_levels,
+            method="linear",
+            extrapolate=True,
+            variable='temperature',
+            t_bot=t_bot,
+            phi_sfc=phis,
+        )
         result = result.transpose('time', 'plev', 'lat', 'lon')
         result = result.assign_coords(dict(plev=self.new_levels / 100))
         temp_extrap_expected = ds_out.Tpx.rename(lev_p='plev')
@@ -175,17 +186,19 @@ class Test_interp_hybrid_to_pressure_extrapolate:
     def test_interp_hybrid_to_pressure_extrap_geopotential(
             self, geopotential_in, press_in, _hyam, _hybm, t_bot, phis,
             ds_out) -> None:
-        result = interp_hybrid_to_pressure(geopotential_in,
-                                           press_in,
-                                           _hyam,
-                                           _hybm,
-                                           p0=self._p0,
-                                           new_levels=self.new_levels,
-                                           method="linear",
-                                           extrapolate=True,
-                                           variable='geopotential',
-                                           t_bot=t_bot,
-                                           phi_sfc=phis)
+        result = interp_hybrid_to_pressure(
+            geopotential_in,
+            press_in,
+            _hyam,
+            _hybm,
+            p0=self._p0,
+            new_levels=self.new_levels,
+            method="linear",
+            extrapolate=True,
+            variable='geopotential',
+            t_bot=t_bot,
+            phi_sfc=phis,
+        )
         result = result.transpose('time', 'plev', 'lat', 'lon')
         result = result.assign_coords(dict(plev=self.new_levels / 100))
         geopotential_extrap_expected = ds_out.Zpx.rename(lev_p='plev')
@@ -194,17 +207,19 @@ class Test_interp_hybrid_to_pressure_extrapolate:
     def test_interp_hybrid_to_pressure_extrap_other(self, humidity_in, press_in,
                                                     _hyam, _hybm, t_bot, phis,
                                                     ds_out) -> None:
-        result = interp_hybrid_to_pressure(humidity_in,
-                                           press_in,
-                                           _hyam,
-                                           _hybm,
-                                           p0=self._p0,
-                                           new_levels=self.new_levels,
-                                           method="linear",
-                                           extrapolate=True,
-                                           variable='other',
-                                           t_bot=t_bot,
-                                           phi_sfc=phis)
+        result = interp_hybrid_to_pressure(
+            humidity_in,
+            press_in,
+            _hyam,
+            _hybm,
+            p0=self._p0,
+            new_levels=self.new_levels,
+            method="linear",
+            extrapolate=True,
+            variable='other',
+            t_bot=t_bot,
+            phi_sfc=phis,
+        )
         result = result.transpose('time', 'plev', 'lat', 'lon')
         result = result.assign_coords(dict(plev=self.new_levels / 100))
         humidity_extrap_expected = ds_out.Qpx.rename(lev_p='plev')
@@ -214,29 +229,33 @@ class Test_interp_hybrid_to_pressure_extrapolate:
                                                      press_in, _hyam,
                                                      _hybm) -> None:
         with pytest.raises(ValueError):
-            interp_hybrid_to_pressure(humidity_in,
-                                      press_in,
-                                      _hyam,
-                                      _hybm,
-                                      p0=self._p0,
-                                      new_levels=self.new_levels,
-                                      method="linear",
-                                      extrapolate=True)
+            interp_hybrid_to_pressure(
+                humidity_in,
+                press_in,
+                _hyam,
+                _hybm,
+                p0=self._p0,
+                new_levels=self.new_levels,
+                method="linear",
+                extrapolate=True,
+            )
 
     def test_interp_hybrid_to_pressure_extrap_invalid_var(
             self, humidity_in, press_in, _hyam, _hybm, t_bot, phis) -> None:
         with pytest.raises(ValueError):
-            interp_hybrid_to_pressure(humidity_in,
-                                      press_in,
-                                      _hyam,
-                                      _hybm,
-                                      p0=self._p0,
-                                      new_levels=self.new_levels,
-                                      method="linear",
-                                      extrapolate=True,
-                                      variable=' ',
-                                      t_bot=t_bot,
-                                      phi_sfc=phis)
+            interp_hybrid_to_pressure(
+                humidity_in,
+                press_in,
+                _hyam,
+                _hybm,
+                p0=self._p0,
+                new_levels=self.new_levels,
+                method="linear",
+                extrapolate=True,
+                variable=' ',
+                t_bot=t_bot,
+                phi_sfc=phis,
+            )
 
 
 class Test_interp_sigma_to_hybrid:
@@ -313,13 +332,15 @@ class Test_interp_sigma_to_hybrid:
 
     def test_interp_sigma_to_hybrid_3d_transposed(self, u, sigma, ps,
                                                   xh_expected) -> None:
-        xh = interp_sigma_to_hybrid(u.transpose('ycoord', 'sigma', 'xcoord'),
-                                    sigma,
-                                    ps.transpose('ycoord', 'xcoord'),
-                                    self.hyam,
-                                    self.hybm,
-                                    p0=_p0,
-                                    method="linear")
+        xh = interp_sigma_to_hybrid(
+            u.transpose('ycoord', 'sigma', 'xcoord'),
+            sigma,
+            ps.transpose('ycoord', 'xcoord'),
+            self.hyam,
+            self.hybm,
+            p0=_p0,
+            method="linear",
+        )
         nt.assert_array_almost_equal(
             xh_expected.transpose('ncl2', 'ncl3', 'ncl1'), xh, 5)
 
@@ -349,28 +370,34 @@ class Test_interp_manually_calc:
     def test_float32(self, test_input, test_output) -> None:
         np.testing.assert_almost_equal(
             test_output['normal'].values.astype(np.float32),
-            interp_multidim(xr.DataArray(
-                test_input['normal'].values.astype(np.float32),
-                dims=['lat', 'lon'],
-                coords={
-                    'lat': test_input['normal']['lat'].values,
-                    'lon': test_input['normal']['lon'].values,
-                }),
-                            test_output['normal']['lat'].values,
-                            test_output['normal']['lon'].values,
-                            cyclic=True).values,
-            decimal=7)
+            interp_multidim(
+                xr.DataArray(
+                    test_input['normal'].values.astype(np.float32),
+                    dims=['lat', 'lon'],
+                    coords={
+                        'lat': test_input['normal']['lat'].values,
+                        'lon': test_input['normal']['lon'].values,
+                    },
+                ),
+                test_output['normal']['lat'].values,
+                test_output['normal']['lon'].values,
+                cyclic=True,
+            ).values,
+            decimal=7,
+        )
 
     def test_float64(self, test_input, test_output) -> None:
         np.testing.assert_almost_equal(
             test_output['normal'].values.astype(np.float64),
             interp_multidim(
-                xr.DataArray(test_input['normal'].values.astype(np.float64),
-                             dims=['lat', 'lon'],
-                             coords={
-                                 'lat': test_input['normal']['lat'].values,
-                                 'lon': test_input['normal']['lon'].values,
-                             }),
+                xr.DataArray(
+                    test_input['normal'].values.astype(np.float64),
+                    dims=['lat', 'lon'],
+                    coords={
+                        'lat': test_input['normal']['lat'].values,
+                        'lon': test_input['normal']['lon'].values,
+                    },
+                ),
                 test_output['normal']['lat'].values,
                 test_output['normal']['lon'].values,
                 cyclic=True,
@@ -437,18 +464,21 @@ class Test_interp_manually_calc:
                 lon_in=test_input['normal']['lon'].values,
                 cyclic=True,
             ),
-            decimal=8)
+            decimal=8,
+        )
 
     def test_extrapolate(self, test_input, test_output) -> None:
-        np.testing.assert_almost_equal(test_output['normal'].values,
-                                       interp_multidim(
-                                           test_input['normal'],
-                                           test_output['normal']['lat'].values,
-                                           test_output['normal']['lon'].values,
-                                           cyclic=True,
-                                           fill_value='extrapolate',
-                                       ),
-                                       decimal=8)
+        np.testing.assert_almost_equal(
+            test_output['normal'].values,
+            interp_multidim(
+                test_input['normal'],
+                test_output['normal']['lat'].values,
+                test_output['normal']['lon'].values,
+                cyclic=True,
+                fill_value='extrapolate',
+            ),
+            decimal=8,
+        )
 
 
 class Test_interp_larger_dataset:

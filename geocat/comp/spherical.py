@@ -90,10 +90,10 @@ def decomposition(
     if type(data) is xr.DataArray:
         m = xr.DataArray(m, dims=['har']).chunk((chunk_size))
         n = xr.DataArray(n, dims=['har']).chunk((chunk_size))
-        scale_res = xr.DataArray(
+        scale_res = (xr.DataArray(
             scale_mul,
             dims=['har'],
-        ).chunk((chunk_size)) * scale_val
+        ).chunk((chunk_size)) * scale_val)
         scale_dat = xr.DataArray(
             np.multiply(data, scale),
             dims=data.dims,
@@ -101,10 +101,10 @@ def decomposition(
         theta = xr.DataArray(theta, dims=data.dims).chunk((chunk_size))
         phi = xr.DataArray(phi, dims=data.dims).chunk((chunk_size))
 
-    results = np.sum(
+    results = (np.sum(
         np.multiply(scale_dat, sspecial.sph_harm(m, n, theta, phi)),
         axis=(0, 1),
-    ) * scale_res
+    ) * scale_res)
     return results
 
 

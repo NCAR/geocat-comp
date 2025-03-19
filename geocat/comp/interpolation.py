@@ -1,7 +1,6 @@
 import typing
 import warnings
 
-import cf_xarray
 import metpy.interpolate
 import numpy as np
 import xarray as xr
@@ -9,8 +8,27 @@ import xarray as xr
 supported_types = typing.Union[xr.DataArray, np.ndarray]
 
 __pres_lev_mandatory__ = np.array([
-    1000, 925, 850, 700, 500, 400, 300, 250, 200, 150, 100, 70, 50, 30, 20, 10,
-    7, 5, 3, 2, 1
+    1000,
+    925,
+    850,
+    700,
+    500,
+    400,
+    300,
+    250,
+    200,
+    150,
+    100,
+    70,
+    50,
+    30,
+    20,
+    10,
+    7,
+    5,
+    3,
+    2,
+    1,
 ]).astype(np.float32)  # Mandatory pressure levels (mb)
 __pres_lev_mandatory__ = __pres_lev_mandatory__ * 100.0  # Convert mb to Pa
 
@@ -29,7 +47,7 @@ def _func_interpolate(method='linear'):
     return func_interpolate
 
 
-def _pressure_from_hybrid(psfc, hya, hyb, p0=100000.):
+def _pressure_from_hybrid(psfc, hya, hyb, p0=100000.0):
     """Calculate pressure at the hybrid levels."""
 
     # p(k) = hya(k) * p0 + hyb(k) * psfc
@@ -69,10 +87,11 @@ def _pre_interp_multidim(
     """
     # replace missing_val with np.nan
     if missing_val is not None:
-        data_in = xr.DataArray(np.where(data_in.values == missing_val, np.nan,
-                                        data_in.values),
-                               dims=data_in.dims,
-                               coords=data_in.coords)
+        data_in = xr.DataArray(
+            np.where(data_in.values == missing_val, np.nan, data_in.values),
+            dims=data_in.dims,
+            coords=data_in.coords,
+        )
 
     # add cyclic points and create new data array
     if cyclic:
@@ -111,15 +130,16 @@ def _post_interp_multidim(data_in, missing_val):
        The data input with np.nan values replaced with missing_val
     """
     if missing_val is not None:
-        data_in = xr.DataArray(np.where(np.isnan(data_in.values), missing_val,
-                                        data_in.values),
-                               dims=data_in.dims,
-                               coords=data_in.coords)
+        data_in = xr.DataArray(
+            np.where(np.isnan(data_in.values), missing_val, data_in.values),
+            dims=data_in.dims,
+            coords=data_in.coords,
+        )
 
     return data_in
 
 
-def _sigma_from_hybrid(psfc, hya, hyb, p0=100000.):
+def _sigma_from_hybrid(psfc, hya, hyb, p0=100000.0):
     """Calculate sigma at the hybrid levels."""
 
     # sig(k) = hya(k) * p0 / psfc + hyb(k)
@@ -180,13 +200,18 @@ def _temp_extrapolate(data, lev_dim, lev, p_sfc, ps, phi_sfc):
     t0 = tstar + 0.0065 * hgt
     tplat = xr.apply_ufunc(np.minimum, 298, t0, dask='parallelized')
 
-    tprime0 = xr.where((2000 <= hgt) & (hgt <= 2500),
-                       0.002 * ((2500 - hgt) * t0 + ((hgt - 2000) * tplat)),
-                       np.nan)
+    tprime0 = xr.where(
+        (2000 <= hgt) & (hgt <= 2500),
+        0.002 * ((2500 - hgt) * t0 + ((hgt - 2000) * tplat)),
+        np.nan,
+    )
     tprime0 = xr.where(2500 < hgt, tplat, tprime0)
 
-    alnp = xr.where(hgt < 2000, alpha * np.log(lev / ps),
-                    R_d * (tprime0 - tstar) / phi_sfc * np.log(lev / ps))
+    alnp = xr.where(
+        hgt < 2000,
+        alpha * np.log(lev / ps),
+        R_d * (tprime0 - tstar) / phi_sfc * np.log(lev / ps),
+    )
     alnp = xr.where(tprime0 < tstar, 0, alnp)
 
     return tstar * (1 + alnp + (0.5 * (alnp**2)) + (1 / 6 * (alnp**3)))
@@ -298,11 +323,13 @@ def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, ps,
     if variable == 'temperature':
         output = output.where(
             output.plev <= p_sfc,
-            _temp_extrapolate(data, lev_dim, output.plev, p_sfc, ps, phi_sfc))
+            _temp_extrapolate(data, lev_dim, output.plev, p_sfc, ps, phi_sfc),
+        )
     elif variable == 'geopotential':
         output = output.where(
             output.plev <= p_sfc,
-            _geo_height_extrapolate(t_bot, output.plev, p_sfc, ps, phi_sfc))
+            _geo_height_extrapolate(t_bot, output.plev, p_sfc, ps, phi_sfc),
+        )
     else:
         output = output.where(output.plev <= p_sfc,
                               data.isel({lev_dim: sfc_index}, drop=True))
@@ -310,18 +337,20 @@ def _vertical_remap_extrap(new_levels, lev_dim, data, output, pressure, ps,
     return output
 
 
-def interp_hybrid_to_pressure(data: xr.DataArray,
-                              ps: xr.DataArray,
-                              hyam: xr.DataArray,
-                              hybm: xr.DataArray,
-                              p0: float = 100000.,
-                              new_levels: np.ndarray = __pres_lev_mandatory__,
-                              lev_dim: str = None,
-                              method: str = 'linear',
-                              extrapolate: bool = False,
-                              variable: str = None,
-                              t_bot: xr.DataArray = None,
-                              phi_sfc: xr.DataArray = None) -> xr.DataArray:
+def interp_hybrid_to_pressure(
+    data: xr.DataArray,
+    ps: xr.DataArray,
+    hyam: xr.DataArray,
+    hybm: xr.DataArray,
+    p0: float = 100000.0,
+    new_levels: np.ndarray = __pres_lev_mandatory__,
+    lev_dim: str = None,
+    method: str = 'linear',
+    extrapolate: bool = False,
+    variable: str = None,
+    t_bot: xr.DataArray = None,
+    phi_sfc: xr.DataArray = None,
+) -> xr.DataArray:
     """Interpolate and extrapolate data from hybrid-sigma levels to isobaric
     levels. Keeps attributes (i.e. metadata) of the input data in the output as
     default.
@@ -393,7 +422,7 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
     """
 
     # Check inputs
-    if (extrapolate and (variable is None)):
+    if extrapolate and (variable is None):
         raise ValueError(
             "If `extrapolate` is True, `variable` must be provided.")
 
@@ -403,7 +432,7 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
             "If `variable` is 'geopotential' or 'temperature', both `t_bot` and `phi_sfc` must be provided"
         )
 
-    if (variable not in ['geopotential', 'temperature', 'other', None]):
+    if variable not in ['geopotential', 'temperature', 'other', None]:
         raise ValueError(
             "The value of `variable` is " + variable +
             ", but the accepted values are 'temperature', 'geopotential', 'other', or None."
@@ -478,6 +507,7 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
     # ''' end of boilerplate
 
     from dask.array.core import map_blocks
+
     output = map_blocks(
         _vertical_remap,
         func_interpolate,
@@ -506,7 +536,7 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
     output = output.rename(dims_dict)
 
     coords = {}
-    for (k, v) in data.coords.items():
+    for k, v in data.coords.items():
         if k != lev_dim:
             coords.update({k: v})
         else:
@@ -521,14 +551,16 @@ def interp_hybrid_to_pressure(data: xr.DataArray,
     return output
 
 
-def interp_sigma_to_hybrid(data: xr.DataArray,
-                           sig_coords: xr.DataArray,
-                           ps: xr.DataArray,
-                           hyam: xr.DataArray,
-                           hybm: xr.DataArray,
-                           p0: float = 100000.,
-                           lev_dim: str = None,
-                           method: str = 'linear') -> xr.DataArray:
+def interp_sigma_to_hybrid(
+    data: xr.DataArray,
+    sig_coords: xr.DataArray,
+    ps: xr.DataArray,
+    hyam: xr.DataArray,
+    hybm: xr.DataArray,
+    p0: float = 100000.0,
+    lev_dim: str = None,
+    method: str = 'linear',
+) -> xr.DataArray:
     """Interpolate data from sigma to hybrid coordinates.  Keeps the attributes
     (i.e. meta information) of the input data in the output as default.
 
@@ -585,7 +617,7 @@ def interp_sigma_to_hybrid(data: xr.DataArray,
     sigma = _sigma_from_hybrid(ps, hyam, hybm, p0)  # Pa
 
     non_lev_dims = list(data.dims)
-    if (data.ndim > 1):
+    if data.ndim > 1:
         non_lev_dims.remove(lev_dim)
         data_stacked = data.stack(combined=non_lev_dims).transpose()
         sigma_stacked = sigma.stack(combined=non_lev_dims).transpose()
@@ -595,9 +627,11 @@ def interp_sigma_to_hybrid(data: xr.DataArray,
         output = data_stacked[:, :len(hyam)].copy()
 
         for idx, (d, s) in enumerate(zip(data_stacked, sigma_stacked)):
-            output[idx, :] = xr.DataArray(_vertical_remap(
-                func_interpolate, s.data, sig_coords.data, d.data),
-                                          dims=[lev_dim])
+            output[idx, :] = xr.DataArray(
+                _vertical_remap(func_interpolate, s.data, sig_coords.data,
+                                d.data),
+                dims=[lev_dim],
+            )
 
         # Make output shape same as data shape
         output = output.unstack().transpose(*data.dims)
@@ -605,9 +639,11 @@ def interp_sigma_to_hybrid(data: xr.DataArray,
         h_coords = sigma
 
         output = data[:len(hyam)].copy()
-        output[:len(hyam)] = xr.DataArray(_vertical_remap(
-            func_interpolate, sigma.data, sig_coords.data, data.data),
-                                          dims=[lev_dim])
+        output[:len(hyam)] = xr.DataArray(
+            _vertical_remap(func_interpolate, sigma.data, sig_coords.data,
+                            data.data),
+            dims=[lev_dim],
+        )
 
     # Set output dims and coords
     output = output.rename({lev_dim: 'hlev'})
@@ -617,15 +653,16 @@ def interp_sigma_to_hybrid(data: xr.DataArray,
 
 
 def interp_multidim(
-        data_in: supported_types,
-        lat_out: np.ndarray,
-        lon_out: np.ndarray,
-        lat_in: np.ndarray = None,
-        lon_in: np.ndarray = None,
-        cyclic: bool = False,
-        missing_val: np.number = None,
-        method: str = "linear",
-        fill_value: typing.Union[str, np.number] = np.nan) -> supported_types:
+    data_in: supported_types,
+    lat_out: np.ndarray,
+    lon_out: np.ndarray,
+    lat_in: np.ndarray = None,
+    lon_in: np.ndarray = None,
+    cyclic: bool = False,
+    missing_val: np.number = None,
+    method: str = "linear",
+    fill_value: typing.Union[str, np.number] = np.nan,
+) -> supported_types:
     """Multidimensional interpolation of variables. Uses ``xarray.interp`` to
     perform interpolation. Will not perform extrapolation by default, returns
     missing values if any surrounding points contain missing values.
