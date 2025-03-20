@@ -66,7 +66,8 @@ def decomposition(
     # the first harmonic. This is used to scale the output so that the output
     # is unaffected by the surface area of the original sphere.
     scale_val = np.array(
-        (1 / (np.sum(scale, axis=(0, 1)) * sph_harm_y(0, 0, 0, 0)**2)))
+        (1 / (np.sum(scale, axis=(0, 1)) * sph_harm_y(0, 0, 0, 0) ** 2))
+    )
 
     mlist = []  # ordered list of the m harmonics
     nlist = []  # ordered list of the n harmonics
@@ -115,8 +116,9 @@ def decomposition(
 
     # if xarray, make harmonics into xarray and align dims
     if in_type is xr.DataArray:
-        harmonics = xr.DataArray(harmonics,
-                                 dims=['harmonic', data.dims[0], data.dims[1]])
+        harmonics = xr.DataArray(
+            harmonics, dims=['harmonic', data.dims[0], data.dims[1]]
+        )
 
     results = np.sum(np.multiply(scale_dat, harmonics), axis=sum_ax) * scale_res
 
@@ -190,10 +192,12 @@ def recomposition(
     # if xarray, make harmonics into xarray and align dims
     if in_type is xr.DataArray:
         harmonics = xr.DataArray(
-            harmonics, dims=['harmonic', theta_dims[0], theta_dims[1]])
+            harmonics, dims=['harmonic', theta_dims[0], theta_dims[1]]
+        )
 
-    results = (np.sum(np.multiply(harmonics.real, data.real), axis=0) +
-               np.sum(np.multiply(harmonics.imag, data.imag), axis=0))
+    results = np.sum(np.multiply(harmonics.real, data.real), axis=0) + np.sum(
+        np.multiply(harmonics.imag, data.imag), axis=0
+    )
 
     return results.real
 
@@ -243,7 +247,8 @@ def scale_voronoi(
             data_locs_3d,
             radius=1.0,
             center=np.array([0, 0, 0]),
-        ).calculate_areas()).reshape(theta.shape)
+        ).calculate_areas()
+    ).reshape(theta.shape)
 
     if type(theta) is xr.DataArray:
         scale = xr.DataArray(scale, dims=theta.dims).chunk(chunk_size)

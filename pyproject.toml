@@ -11,3 +11,12 @@ fallback_version = "999"
 [tool.codespell]
 ignore-words-list = "alph, ond,"
 skip = '*.ipynb'
+
+[tool.ruff.format]
+# preserve mixture of single and double quotes
+quote-style = "preserve"
+
+[tool.ruff.lint]
+# Skip E402 Module level import not at top of cell
+# Skip F401 Module imported but unused
+ignore = ["E402", "F401"]
