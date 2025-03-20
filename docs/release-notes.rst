@@ -20,6 +20,10 @@ Internal Changes
 ^^^^^^^^^^^^^^^^
 * Reconfigure analytics by `Katelyn FitzGerald`_ in (:pr:`698`)
 
+Bug Fixes
+^^^^^^^^^
+* Unpin scipy and update ``sph_harm`` to ``sph_harm_y`` by `Anissa Zacharias`_ in (:pr:`695`)
+
 v2025.02.0 (February 25, 2025)
 ------------------------------
 This release adds support and testing for Python 3.13, unpins numpy dependency, increases support for
