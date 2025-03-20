@@ -1,3 +1,4 @@
+import cf_xarray
 import cftime
 import numpy as np
 import pandas as pd
@@ -39,14 +40,13 @@ def _get_time_coordinate_info(dset, time_coord_name):
 
 
 def _calculate_center_of_time_bounds(
-    dset: typing.Union[xr.Dataset, xr.DataArray],
-    time_dim: str,
-    freq: str,
-    calendar: str,
-    start: typing.Union[str, cftime.datetime],
-    end: typing.Union[str, cftime.datetime],
-    keep_attrs: bool = None,
-) -> typing.Union[xr.Dataset, xr.DataArray]:
+        dset: typing.Union[xr.Dataset, xr.DataArray],
+        time_dim: str,
+        freq: str,
+        calendar: str,
+        start: typing.Union[str, cftime.datetime],
+        end: typing.Union[str, cftime.datetime],
+        keep_attrs: bool = None) -> typing.Union[xr.Dataset, xr.DataArray]:
     """Helper function to determine the time bounds based on the given dataset
     and frequency and then calculate the averages of them.
 
@@ -91,9 +91,9 @@ def _calculate_center_of_time_bounds(
 
     time_bounds = xr.cftime_range(start, end, freq=freq, calendar=calendar)
     time_bounds = time_bounds.append(time_bounds[-1:].shift(1, freq=freq))
-    time = xr.DataArray(np.vstack((time_bounds[:-1], time_bounds[1:])).T,
-                        dims=[time_dim, 'nbd']).mean(dim='nbd',
-                                                     keep_attrs=keep_attrs)
+    time =  xr.DataArray(np.vstack((time_bounds[:-1], time_bounds[1:])).T,
+                         dims=[time_dim, 'nbd']) \
+        .mean(dim='nbd', keep_attrs=keep_attrs)
     return dset.assign_coords({time_dim: time})
 
 
@@ -113,11 +113,10 @@ def _infer_calendar_name(dates):
 
 
 def climate_anomaly(
-    dset: typing.Union[xr.DataArray, xr.Dataset],
-    freq: str,
-    time_dim: str = None,
-    keep_attrs: bool = 'default',
-) -> typing.Union[xr.DataArray, xr.Dataset]:
+        dset: typing.Union[xr.DataArray, xr.Dataset],
+        freq: str,
+        time_dim: str = None,
+        keep_attrs: bool = 'default') -> typing.Union[xr.DataArray, xr.Dataset]:
     """This function calculates climate anomalies by subtracting the long term
     mean of each ``freq`` period (day, month, season, or year) from each
     datapoint.
@@ -182,7 +181,7 @@ def climate_anomaly(
         'day': ('%m-%d', 'D'),
         'month': ('%m', 'MS'),
         'season': (None, 'QS-DEC'),
-        'year': ('%y', 'Y'),
+        'year': ('%y', 'Y')
     }
 
     if freq not in freq_dict:
@@ -202,17 +201,16 @@ def climate_anomaly(
         anom = dset.groupby(f"{time_dim}.season") - clim
         return anom.assign_attrs(attrs)
     else:
-        anom = (dset.groupby(dset[time_dim].dt.strftime(format)) -
-                clim.groupby(clim[time_dim].dt.strftime(format)).sum())
+        anom = dset.groupby(dset[time_dim].dt.strftime(format)) - clim.groupby(
+            clim[time_dim].dt.strftime(format)).sum()
         return anom.drop_vars('strftime').assign_attrs(attrs)
 
 
 def month_to_season(
-    dset: typing.Union[xr.Dataset, xr.DataArray],
-    season: str,
-    time_coord_name: str = None,
-    keep_attrs: bool = None,
-) -> typing.Union[xr.Dataset, xr.DataArray]:
+        dset: typing.Union[xr.Dataset, xr.DataArray],
+        season: str,
+        time_coord_name: str = None,
+        keep_attrs: bool = None) -> typing.Union[xr.Dataset, xr.DataArray]:
     """Computes a user-specified three-month seasonal mean.
 
     This function takes an xarray dataset containing monthly data spanning years and
@@ -298,13 +296,9 @@ def month_to_season(
     data_filter = dset.sel(
         {time_coord_name: dset[time_coord_name].dt.month.isin(months)})
 
-    if (
-            season == 'DJF'
-    ):  # For this season, the last "mean" will be the value for Dec so we drop the last month
+    if season == 'DJF':  # For this season, the last "mean" will be the value for Dec so we drop the last month
         data_filter = data_filter.isel({time_coord_name: slice(None, -1)})
-    elif (
-            season == 'NDJ'
-    ):  # For this season, the first "mean" will be the value for Jan so we drop the first month
+    elif season == 'NDJ':  # For this season, the first "mean" will be the value for Jan so we drop the first month
         data_filter = data_filter.isel({time_coord_name: slice(1, None)})
 
     # Group the months into three and take the mean
@@ -331,11 +325,10 @@ def month_to_season(
 
 
 def calendar_average(
-    dset: typing.Union[xr.DataArray, xr.Dataset],
-    freq: str,
-    time_dim: str = None,
-    keep_attrs: bool = 'default',
-) -> typing.Union[xr.DataArray, xr.Dataset]:
+        dset: typing.Union[xr.DataArray, xr.Dataset],
+        freq: str,
+        time_dim: str = None,
+        keep_attrs: bool = 'default') -> typing.Union[xr.DataArray, xr.Dataset]:
     """This function divides the data into time periods (months, seasons, etc)
     and computes the average for the data in each one.
 
@@ -391,7 +384,7 @@ def calendar_average(
         'day': ('%m-%d', 'D'),
         'month': ('%m', 'MS'),
         'season': (None, 'QS-DEC'),
-        'year': (None, 'YS'),
+        'year': (None, 'YS')
     }
 
     if freq not in freq_dict:
@@ -417,9 +410,9 @@ def calendar_average(
     calendar = _infer_calendar_name(dset[time_dim])
 
     # Group data
-    dset = (dset.resample({
+    dset = dset.resample({
         time_dim: frequency
-    }).mean(keep_attrs=keep_attrs).dropna(time_dim))
+    }).mean(keep_attrs=keep_attrs).dropna(time_dim)
 
     # Weight the data by the number of days in each month
     if freq in ['season', 'year']:
@@ -439,15 +432,13 @@ def calendar_average(
         dset = (dset_weighted).resample({time_dim: frequency}).sum()
 
     # Center the time coordinate by inferring and then averaging the time bounds
-    dset = _calculate_center_of_time_bounds(
-        dset,
-        time_dim,
-        frequency,
-        calendar,
-        start=dset[time_dim].values[0],
-        end=dset[time_dim].values[-1],
-        keep_attrs=keep_attrs,
-    )
+    dset = _calculate_center_of_time_bounds(dset,
+                                            time_dim,
+                                            frequency,
+                                            calendar,
+                                            start=dset[time_dim].values[0],
+                                            end=dset[time_dim].values[-1],
+                                            keep_attrs=keep_attrs)
     if freq in ['season', 'year']:
         return dset.assign_attrs(attrs)
     else:
@@ -455,12 +446,11 @@ def calendar_average(
 
 
 def climatology_average(
-    dset: typing.Union[xr.DataArray, xr.Dataset],
-    freq: str,
-    custom_seasons: typing.Union[list, str] = None,
-    time_dim: str = None,
-    keep_attrs: bool = None,
-) -> typing.Union[xr.DataArray, xr.Dataset]:
+        dset: typing.Union[xr.DataArray, xr.Dataset],
+        freq: str,
+        custom_seasons: typing.Union[list, str] = None,
+        time_dim: str = None,
+        keep_attrs: bool = None) -> typing.Union[xr.DataArray, xr.Dataset]:
     """This function calculates long term hourly, daily, monthly, or seasonal
     averages across all years in the given dataset.
 
@@ -540,7 +530,7 @@ def climatology_average(
         'hour': ('%m-%d %H', 'h'),
         'day': ('%m-%d', 'D'),
         'month': ('%m', 'MS'),
-        'season': (None, 'QS-DEC'),
+        'season': (None, 'QS-DEC')
     }
 
     seasons_dict = {
@@ -604,6 +594,7 @@ def climatology_average(
 
         seasonal_climates = []
         for season in seasons:
+
             # Grab the months for each season
             months = seasons_dict[season]
 
@@ -612,9 +603,9 @@ def climatology_average(
                 {time_dim: dset[time_dim].dt.month.isin(months)})
 
             # Calculate monthly average before calculating seasonal climatologies
-            dset_filter = (dset_filter.resample({
+            dset_filter = dset_filter.resample({
                 time_dim: frequency
-            }).mean(keep_attrs=keep_attrs).dropna(time_dim))
+            }).mean(keep_attrs=keep_attrs).dropna(time_dim)
 
             # Compute the weights for the months in each season so that the
             # seasonal averages account for months being of different lengths
@@ -632,8 +623,8 @@ def climatology_average(
         median_yr = np.median(dset[time_dim].dt.year.values)
 
         # Group data by format then calculate average of groups
-        dset = (dset.groupby(dset[time_dim].dt.strftime(format)).mean(
-            keep_attrs=keep_attrs).rename({'strftime': time_dim}))
+        dset = dset.groupby(dset[time_dim].dt.strftime(format)).mean(
+            keep_attrs=keep_attrs).rename({'strftime': time_dim})
 
         # Center the time coordinate by inferring and then averaging the time bounds
         start_time = dset[time_dim].values[0]
@@ -645,7 +636,6 @@ def climatology_average(
             calendar,
             start=f'{median_yr:.0f}-{start_time}',
             end=f'{median_yr:.0f}-{end_time}',
-            keep_attrs=keep_attrs,
-        )
+            keep_attrs=keep_attrs)
 
         return dset
