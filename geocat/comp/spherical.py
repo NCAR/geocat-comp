@@ -66,7 +66,8 @@ def decomposition(
     # the first harmonic. This is used to scale the output so that the output
     # is unaffected by the surface area of the original sphere.
     scale_val = np.array(
-        (1 / (np.sum(scale, axis=(0, 1)) * sph_harm_y(0, 0, 0, 0)**2)))
+        (1 / (np.sum(scale, axis=(0, 1)) * sph_harm_y(0, 0, 0, 0) ** 2))
+    )
 
     mlist = []  # ordered list of the m harmonics
     nlist = []  # ordered list of the n harmonics
@@ -115,45 +116,12 @@ def decomposition(
 
     # if xarray, make harmonics into xarray and align dims
     if in_type is xr.DataArray:
-        harmonics = xr.DataArray(harmonics,
-                                 dims=['harmonic', data.dims[0], data.dims[1]])
+        harmonics = xr.DataArray(
+            harmonics, dims=['harmonic', data.dims[0], data.dims[1]]
+        )
 
     results = np.sum(np.multiply(scale_dat, harmonics), axis=sum_ax) * scale_res
 
-    # if numpy, change dimensions to allow for broadcast in ss.sph_harm
-    if type(data) is np.ndarray:
-        m = np.expand_dims(m, axis=(0, 1))
-        n = np.expand_dims(n, axis=(0, 1))
-        theta = np.expand_dims(theta, axis=(2))
-        phi = np.expand_dims(phi, axis=(2))
-        scale_res = scale_mul * scale_val
-        scale_dat = np.expand_dims(np.multiply(data, scale), axis=(2))
-
-    # if xarray, set dims and chunks for broadcast in ss.sphere_harm
-    if type(data) is xr.DataArray:
-        m = xr.DataArray(m, dims=['har']).chunk((chunk_size))
-        n = xr.DataArray(n, dims=['har']).chunk((chunk_size))
-        scale_res = (
-            xr.DataArray(
-                scale_mul,
-                dims=['har'],
-            ).chunk((chunk_size))
-            * scale_val
-        )
-        scale_dat = xr.DataArray(
-            np.multiply(data, scale),
-            dims=data.dims,
-        ).chunk((chunk_size))
-        theta = xr.DataArray(theta, dims=data.dims).chunk((chunk_size))
-        phi = xr.DataArray(phi, dims=data.dims).chunk((chunk_size))
-
-    results = (
-        np.sum(
-            np.multiply(scale_dat, sspecial.sph_harm(m, n, theta, phi)),
-            axis=(0, 1),
-        )
-        * scale_res
-    )
     return results
 
 
@@ -224,10 +192,12 @@ def recomposition(
     # if xarray, make harmonics into xarray and align dims
     if in_type is xr.DataArray:
         harmonics = xr.DataArray(
-            harmonics, dims=['harmonic', theta_dims[0], theta_dims[1]])
+            harmonics, dims=['harmonic', theta_dims[0], theta_dims[1]]
+        )
 
-    results = (np.sum(np.multiply(harmonics.real, data.real), axis=0) +
-               np.sum(np.multiply(harmonics.imag, data.imag), axis=0))
+    results = np.sum(np.multiply(harmonics.real, data.real), axis=0) + np.sum(
+        np.multiply(harmonics.imag, data.imag), axis=0
+    )
 
     return results.real
 
