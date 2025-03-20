@@ -116,8 +116,16 @@ def _heat_index(
 
     # NWS practice
     # average Steadman and t
-    heatindex = (0.5 * (temperature + 61.0 + ((temperature - 68.0) * 1.2) +
-                        (relative_humidity * 0.094)) + temperature) * 0.5
+    heatindex = (
+        0.5
+        * (
+            temperature
+            + 61.0
+            + ((temperature - 68.0) * 1.2)
+            + (relative_humidity * 0.094)
+        )
+        + temperature
+    ) * 0.5
 
     # http://ehp.niehs.nih.gov/1206273/
     heatindex = xr.where(temperature < 40, temperature, heatindex)
@@ -137,8 +145,9 @@ def _heat_index(
                 relative_humidity < 13,
                 np.logical_and(temperature > 80, temperature < 112),
             ),
-            heatindex - ((13 - relative_humidity) / 4) * np.sqrt(
-                (17 - abs(temperature - 95)) / 17),
+            heatindex
+            - ((13 - relative_humidity) / 4)
+            * np.sqrt((17 - abs(temperature - 95)) / 17),
             heatindex,
         )
 
@@ -147,8 +156,8 @@ def _heat_index(
                 relative_humidity > 85,
                 np.logical_and(temperature > 80, temperature < 87),
             ),
-            heatindex + ((relative_humidity - 85.0) / 10.0) *
-            ((87.0 - temperature) / 5.0),
+            heatindex
+            + ((relative_humidity - 85.0) / 10.0) * ((87.0 - temperature) / 5.0),
             heatindex,
         )
 
@@ -187,11 +196,17 @@ def _nws_eqn(coeffs, temp, rel_hum):
     Related NCL Functions:
     `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__,
     """
-    heatindex = (coeffs[0] + coeffs[1] * temp + coeffs[2] * rel_hum +
-                 coeffs[3] * temp * rel_hum + coeffs[4] * temp**2 +
-                 coeffs[5] * rel_hum**2 + coeffs[6] * temp**2 * rel_hum +
-                 coeffs[7] * temp * rel_hum**2 +
-                 coeffs[8] * temp**2 * rel_hum**2)
+    heatindex = (
+        coeffs[0]
+        + coeffs[1] * temp
+        + coeffs[2] * rel_hum
+        + coeffs[3] * temp * rel_hum
+        + coeffs[4] * temp**2
+        + coeffs[5] * rel_hum**2
+        + coeffs[6] * temp**2 * rel_hum
+        + coeffs[7] * temp * rel_hum**2
+        + coeffs[8] * temp**2 * rel_hum**2
+    )
 
     return heatindex
 
@@ -240,212 +255,214 @@ def _relhum(
     `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`__
     """
 
-    table = np.asarray([
-        0.01403,
-        0.01719,
-        0.02101,
-        0.02561,
-        0.03117,
-        0.03784,
-        0.04584,
-        0.05542,
-        0.06685,
-        0.08049,
-        0.09672,
-        0.1160,
-        0.1388,
-        0.1658,
-        0.1977,
-        0.2353,
-        0.2796,
-        0.3316,
-        0.3925,
-        0.4638,
-        0.5472,
-        0.6444,
-        0.7577,
-        0.8894,
-        1.042,
-        1.220,
-        1.425,
-        1.662,
-        1.936,
-        2.252,
-        2.615,
-        3.032,
-        3.511,
-        4.060,
-        4.688,
-        5.406,
-        6.225,
-        7.159,
-        8.223,
-        9.432,
-        10.80,
-        12.36,
-        14.13,
-        16.12,
-        18.38,
-        20.92,
-        23.80,
-        27.03,
-        30.67,
-        34.76,
-        39.35,
-        44.49,
-        50.26,
-        56.71,
-        63.93,
-        71.98,
-        80.97,
-        90.98,
-        102.1,
-        114.5,
-        128.3,
-        143.6,
-        160.6,
-        179.4,
-        200.2,
-        223.3,
-        248.8,
-        276.9,
-        307.9,
-        342.1,
-        379.8,
-        421.3,
-        466.9,
-        517.0,
-        572.0,
-        632.3,
-        698.5,
-        770.9,
-        850.2,
-        937.0,
-        1032.0,
-        1146.6,
-        1272.0,
-        1408.1,
-        1556.7,
-        1716.9,
-        1890.3,
-        2077.6,
-        2279.6,
-        2496.7,
-        2729.8,
-        2980.0,
-        3247.8,
-        3534.1,
-        3839.8,
-        4164.8,
-        4510.5,
-        4876.9,
-        5265.1,
-        5675.2,
-        6107.8,
-        6566.2,
-        7054.7,
-        7575.3,
-        8129.4,
-        8719.2,
-        9346.50,
-        10013.0,
-        10722.0,
-        11474.0,
-        12272.0,
-        13119.0,
-        14017.0,
-        14969.0,
-        15977.0,
-        17044.0,
-        18173.0,
-        19367.0,
-        20630.0,
-        21964.0,
-        23373.0,
-        24861.0,
-        26430.0,
-        28086.0,
-        29831.0,
-        31671.0,
-        33608.0,
-        35649.0,
-        37796.0,
-        40055.0,
-        42430.0,
-        44927.0,
-        47551.0,
-        50307.0,
-        53200.0,
-        56236.0,
-        59422.0,
-        62762.0,
-        66264.0,
-        69934.0,
-        73777.0,
-        77802.0,
-        82015.0,
-        86423.0,
-        91034.0,
-        95855.0,
-        100890.0,
-        106160.0,
-        111660.0,
-        117400.0,
-        123400.0,
-        129650.0,
-        136170.0,
-        142980.0,
-        150070.0,
-        157460.0,
-        165160.0,
-        173180.0,
-        181530.0,
-        190220.0,
-        199260.0,
-        208670.0,
-        218450.0,
-        228610.0,
-        239180.0,
-        250160.0,
-        261560.0,
-        273400.0,
-        285700.0,
-        298450.0,
-        311690.0,
-        325420.0,
-        339650.0,
-        354410.0,
-        369710.0,
-        385560.0,
-        401980.0,
-        418980.0,
-        436590.0,
-        454810.0,
-        473670.0,
-        493170.0,
-        513350.0,
-        534220.0,
-        555800.0,
-        578090.0,
-        601130.0,
-        624940.0,
-        649530.0,
-        674920.0,
-        701130.0,
-        728190.0,
-        756110.0,
-        784920.0,
-        814630.0,
-        845280.0,
-        876880.0,
-        909450.0,
-        943020.0,
-        977610.0,
-        1013250.0,
-        1049940.0,
-        1087740.0,
-        1087740.0,
-    ])
+    table = np.asarray(
+        [
+            0.01403,
+            0.01719,
+            0.02101,
+            0.02561,
+            0.03117,
+            0.03784,
+            0.04584,
+            0.05542,
+            0.06685,
+            0.08049,
+            0.09672,
+            0.1160,
+            0.1388,
+            0.1658,
+            0.1977,
+            0.2353,
+            0.2796,
+            0.3316,
+            0.3925,
+            0.4638,
+            0.5472,
+            0.6444,
+            0.7577,
+            0.8894,
+            1.042,
+            1.220,
+            1.425,
+            1.662,
+            1.936,
+            2.252,
+            2.615,
+            3.032,
+            3.511,
+            4.060,
+            4.688,
+            5.406,
+            6.225,
+            7.159,
+            8.223,
+            9.432,
+            10.80,
+            12.36,
+            14.13,
+            16.12,
+            18.38,
+            20.92,
+            23.80,
+            27.03,
+            30.67,
+            34.76,
+            39.35,
+            44.49,
+            50.26,
+            56.71,
+            63.93,
+            71.98,
+            80.97,
+            90.98,
+            102.1,
+            114.5,
+            128.3,
+            143.6,
+            160.6,
+            179.4,
+            200.2,
+            223.3,
+            248.8,
+            276.9,
+            307.9,
+            342.1,
+            379.8,
+            421.3,
+            466.9,
+            517.0,
+            572.0,
+            632.3,
+            698.5,
+            770.9,
+            850.2,
+            937.0,
+            1032.0,
+            1146.6,
+            1272.0,
+            1408.1,
+            1556.7,
+            1716.9,
+            1890.3,
+            2077.6,
+            2279.6,
+            2496.7,
+            2729.8,
+            2980.0,
+            3247.8,
+            3534.1,
+            3839.8,
+            4164.8,
+            4510.5,
+            4876.9,
+            5265.1,
+            5675.2,
+            6107.8,
+            6566.2,
+            7054.7,
+            7575.3,
+            8129.4,
+            8719.2,
+            9346.50,
+            10013.0,
+            10722.0,
+            11474.0,
+            12272.0,
+            13119.0,
+            14017.0,
+            14969.0,
+            15977.0,
+            17044.0,
+            18173.0,
+            19367.0,
+            20630.0,
+            21964.0,
+            23373.0,
+            24861.0,
+            26430.0,
+            28086.0,
+            29831.0,
+            31671.0,
+            33608.0,
+            35649.0,
+            37796.0,
+            40055.0,
+            42430.0,
+            44927.0,
+            47551.0,
+            50307.0,
+            53200.0,
+            56236.0,
+            59422.0,
+            62762.0,
+            66264.0,
+            69934.0,
+            73777.0,
+            77802.0,
+            82015.0,
+            86423.0,
+            91034.0,
+            95855.0,
+            100890.0,
+            106160.0,
+            111660.0,
+            117400.0,
+            123400.0,
+            129650.0,
+            136170.0,
+            142980.0,
+            150070.0,
+            157460.0,
+            165160.0,
+            173180.0,
+            181530.0,
+            190220.0,
+            199260.0,
+            208670.0,
+            218450.0,
+            228610.0,
+            239180.0,
+            250160.0,
+            261560.0,
+            273400.0,
+            285700.0,
+            298450.0,
+            311690.0,
+            325420.0,
+            339650.0,
+            354410.0,
+            369710.0,
+            385560.0,
+            401980.0,
+            418980.0,
+            436590.0,
+            454810.0,
+            473670.0,
+            493170.0,
+            513350.0,
+            534220.0,
+            555800.0,
+            578090.0,
+            601130.0,
+            624940.0,
+            649530.0,
+            674920.0,
+            701130.0,
+            728190.0,
+            756110.0,
+            784920.0,
+            814630.0,
+            845280.0,
+            876880.0,
+            909450.0,
+            943020.0,
+            977610.0,
+            1013250.0,
+            1049940.0,
+            1087740.0,
+            1087740.0,
+        ]
+    )
 
     maxtemp = 375.16
     mintemp = 173.16
@@ -665,8 +682,16 @@ def _xheat_index(
 
     # NWS practice
     # average Steadman and t
-    heatindex = (0.5 * (temperature + 61.0 + ((temperature - 68.0) * 1.2) +
-                        (relative_humidity * 0.094)) + temperature) * 0.5
+    heatindex = (
+        0.5
+        * (
+            temperature
+            + 61.0
+            + ((temperature - 68.0) * 1.2)
+            + (relative_humidity * 0.094)
+        )
+        + temperature
+    ) * 0.5
 
     # http://ehp.niehs.nih.gov/1206273/
     heatindex = xr.where(temperature < 40, temperature, heatindex)
@@ -689,8 +714,9 @@ def _xheat_index(
                 relative_humidity < 13,
                 np.logical_and(temperature > 80, temperature < 112),
             ),
-            heatindex - ((13 - relative_humidity) / 4) * np.sqrt(
-                (17 - abs(temperature - 95)) / 17),
+            heatindex
+            - ((13 - relative_humidity) / 4)
+            * np.sqrt((17 - abs(temperature - 95)) / 17),
             heatindex,
         )
 
@@ -699,8 +725,8 @@ def _xheat_index(
                 relative_humidity > 85,
                 np.logical_and(temperature > 80, temperature < 87),
             ),
-            heatindex + ((relative_humidity - 85.0) / 10.0) *
-            ((87.0 - temperature) / 5.0),
+            heatindex
+            + ((relative_humidity - 85.0) / 10.0) * ((87.0 - temperature) / 5.0),
             heatindex,
         )
 
@@ -746,212 +772,214 @@ def _xrelhum(t: xr.DataArray, w: xr.DataArray, p: xr.DataArray) -> xr.DataArray:
     `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`__
     """
 
-    table = da.from_array([
-        0.01403,
-        0.01719,
-        0.02101,
-        0.02561,
-        0.03117,
-        0.03784,
-        0.04584,
-        0.05542,
-        0.06685,
-        0.08049,
-        0.09672,
-        0.1160,
-        0.1388,
-        0.1658,
-        0.1977,
-        0.2353,
-        0.2796,
-        0.3316,
-        0.3925,
-        0.4638,
-        0.5472,
-        0.6444,
-        0.7577,
-        0.8894,
-        1.042,
-        1.220,
-        1.425,
-        1.662,
-        1.936,
-        2.252,
-        2.615,
-        3.032,
-        3.511,
-        4.060,
-        4.688,
-        5.406,
-        6.225,
-        7.159,
-        8.223,
-        9.432,
-        10.80,
-        12.36,
-        14.13,
-        16.12,
-        18.38,
-        20.92,
-        23.80,
-        27.03,
-        30.67,
-        34.76,
-        39.35,
-        44.49,
-        50.26,
-        56.71,
-        63.93,
-        71.98,
-        80.97,
-        90.98,
-        102.1,
-        114.5,
-        128.3,
-        143.6,
-        160.6,
-        179.4,
-        200.2,
-        223.3,
-        248.8,
-        276.9,
-        307.9,
-        342.1,
-        379.8,
-        421.3,
-        466.9,
-        517.0,
-        572.0,
-        632.3,
-        698.5,
-        770.9,
-        850.2,
-        937.0,
-        1032.0,
-        1146.6,
-        1272.0,
-        1408.1,
-        1556.7,
-        1716.9,
-        1890.3,
-        2077.6,
-        2279.6,
-        2496.7,
-        2729.8,
-        2980.0,
-        3247.8,
-        3534.1,
-        3839.8,
-        4164.8,
-        4510.5,
-        4876.9,
-        5265.1,
-        5675.2,
-        6107.8,
-        6566.2,
-        7054.7,
-        7575.3,
-        8129.4,
-        8719.2,
-        9346.50,
-        10013.0,
-        10722.0,
-        11474.0,
-        12272.0,
-        13119.0,
-        14017.0,
-        14969.0,
-        15977.0,
-        17044.0,
-        18173.0,
-        19367.0,
-        20630.0,
-        21964.0,
-        23373.0,
-        24861.0,
-        26430.0,
-        28086.0,
-        29831.0,
-        31671.0,
-        33608.0,
-        35649.0,
-        37796.0,
-        40055.0,
-        42430.0,
-        44927.0,
-        47551.0,
-        50307.0,
-        53200.0,
-        56236.0,
-        59422.0,
-        62762.0,
-        66264.0,
-        69934.0,
-        73777.0,
-        77802.0,
-        82015.0,
-        86423.0,
-        91034.0,
-        95855.0,
-        100890.0,
-        106160.0,
-        111660.0,
-        117400.0,
-        123400.0,
-        129650.0,
-        136170.0,
-        142980.0,
-        150070.0,
-        157460.0,
-        165160.0,
-        173180.0,
-        181530.0,
-        190220.0,
-        199260.0,
-        208670.0,
-        218450.0,
-        228610.0,
-        239180.0,
-        250160.0,
-        261560.0,
-        273400.0,
-        285700.0,
-        298450.0,
-        311690.0,
-        325420.0,
-        339650.0,
-        354410.0,
-        369710.0,
-        385560.0,
-        401980.0,
-        418980.0,
-        436590.0,
-        454810.0,
-        473670.0,
-        493170.0,
-        513350.0,
-        534220.0,
-        555800.0,
-        578090.0,
-        601130.0,
-        624940.0,
-        649530.0,
-        674920.0,
-        701130.0,
-        728190.0,
-        756110.0,
-        784920.0,
-        814630.0,
-        845280.0,
-        876880.0,
-        909450.0,
-        943020.0,
-        977610.0,
-        1013250.0,
-        1049940.0,
-        1087740.0,
-        1087740.0,
-    ])
+    table = da.from_array(
+        [
+            0.01403,
+            0.01719,
+            0.02101,
+            0.02561,
+            0.03117,
+            0.03784,
+            0.04584,
+            0.05542,
+            0.06685,
+            0.08049,
+            0.09672,
+            0.1160,
+            0.1388,
+            0.1658,
+            0.1977,
+            0.2353,
+            0.2796,
+            0.3316,
+            0.3925,
+            0.4638,
+            0.5472,
+            0.6444,
+            0.7577,
+            0.8894,
+            1.042,
+            1.220,
+            1.425,
+            1.662,
+            1.936,
+            2.252,
+            2.615,
+            3.032,
+            3.511,
+            4.060,
+            4.688,
+            5.406,
+            6.225,
+            7.159,
+            8.223,
+            9.432,
+            10.80,
+            12.36,
+            14.13,
+            16.12,
+            18.38,
+            20.92,
+            23.80,
+            27.03,
+            30.67,
+            34.76,
+            39.35,
+            44.49,
+            50.26,
+            56.71,
+            63.93,
+            71.98,
+            80.97,
+            90.98,
+            102.1,
+            114.5,
+            128.3,
+            143.6,
+            160.6,
+            179.4,
+            200.2,
+            223.3,
+            248.8,
+            276.9,
+            307.9,
+            342.1,
+            379.8,
+            421.3,
+            466.9,
+            517.0,
+            572.0,
+            632.3,
+            698.5,
+            770.9,
+            850.2,
+            937.0,
+            1032.0,
+            1146.6,
+            1272.0,
+            1408.1,
+            1556.7,
+            1716.9,
+            1890.3,
+            2077.6,
+            2279.6,
+            2496.7,
+            2729.8,
+            2980.0,
+            3247.8,
+            3534.1,
+            3839.8,
+            4164.8,
+            4510.5,
+            4876.9,
+            5265.1,
+            5675.2,
+            6107.8,
+            6566.2,
+            7054.7,
+            7575.3,
+            8129.4,
+            8719.2,
+            9346.50,
+            10013.0,
+            10722.0,
+            11474.0,
+            12272.0,
+            13119.0,
+            14017.0,
+            14969.0,
+            15977.0,
+            17044.0,
+            18173.0,
+            19367.0,
+            20630.0,
+            21964.0,
+            23373.0,
+            24861.0,
+            26430.0,
+            28086.0,
+            29831.0,
+            31671.0,
+            33608.0,
+            35649.0,
+            37796.0,
+            40055.0,
+            42430.0,
+            44927.0,
+            47551.0,
+            50307.0,
+            53200.0,
+            56236.0,
+            59422.0,
+            62762.0,
+            66264.0,
+            69934.0,
+            73777.0,
+            77802.0,
+            82015.0,
+            86423.0,
+            91034.0,
+            95855.0,
+            100890.0,
+            106160.0,
+            111660.0,
+            117400.0,
+            123400.0,
+            129650.0,
+            136170.0,
+            142980.0,
+            150070.0,
+            157460.0,
+            165160.0,
+            173180.0,
+            181530.0,
+            190220.0,
+            199260.0,
+            208670.0,
+            218450.0,
+            228610.0,
+            239180.0,
+            250160.0,
+            261560.0,
+            273400.0,
+            285700.0,
+            298450.0,
+            311690.0,
+            325420.0,
+            339650.0,
+            354410.0,
+            369710.0,
+            385560.0,
+            401980.0,
+            418980.0,
+            436590.0,
+            454810.0,
+            473670.0,
+            493170.0,
+            513350.0,
+            534220.0,
+            555800.0,
+            578090.0,
+            601130.0,
+            624940.0,
+            649530.0,
+            674920.0,
+            701130.0,
+            728190.0,
+            756110.0,
+            784920.0,
+            814630.0,
+            845280.0,
+            876880.0,
+            909450.0,
+            943020.0,
+            977610.0,
+            1013250.0,
+            1049940.0,
+            1087740.0,
+            1087740.0,
+        ]
+    )
 
     maxtemp = 375.16
     mintemp = 173.16
@@ -964,8 +992,9 @@ def _xrelhum(t: xr.DataArray, w: xr.DataArray, p: xr.DataArray) -> xr.DataArray:
 
     it_shape = it.shape
 
-    es = (t2 + 1 - t) * table[it.ravel()].reshape(it_shape) + (
-        t - t2) * table[it.ravel() + 1].reshape(it_shape)
+    es = (t2 + 1 - t) * table[it.ravel()].reshape(it_shape) + (t - t2) * table[
+        it.ravel() + 1
+    ].reshape(it_shape)
     es = es * 0.1
 
     rh = (w * (p - 0.378 * es) / (0.622 * es)) * 100
@@ -1017,8 +1046,7 @@ def dewtemp(
     if xr.DataArray in in_types:
         # check all inputs are xarray.DataArray
         if any(x != xr.DataArray for x in in_types):
-            raise TypeError(
-                "relhum: if using xarray, all inputs must be xarray")
+            raise TypeError("relhum: if using xarray, all inputs must be xarray")
 
         # call internal computation function
         # note: no alternative internal function required for dewtemp
@@ -1115,33 +1143,35 @@ def heat_index(
     if xr.DataArray in in_types:
         # check all inputs are xarray.DataArray
         if not all(x == xr.DataArray for x in in_types):
-            raise TypeError(
-                "heat_index: if using xarray, all inputs must be xarray")
+            raise TypeError("heat_index: if using xarray, all inputs must be xarray")
 
         # input validation on relative humidity
         if any(relative_humidity.data.ravel() < 0) or any(
-                relative_humidity.data.ravel() > 100):
+            relative_humidity.data.ravel() > 100
+        ):
             raise ValueError('heat_index: invalid values for relative humidity')
 
         # Check if relative humidity fractional
         if all(relative_humidity.data.ravel() < 1):
-            warnings.warn(
-                "WARNING: rh must be %, not fractional; All rh are < 1")
+            warnings.warn("WARNING: rh must be %, not fractional; All rh are < 1")
 
         # call internal computation function
-        heatindex, eqtype = _xheat_index(temperature, relative_humidity,
-                                         alternate_coeffs)
+        heatindex, eqtype = _xheat_index(
+            temperature, relative_humidity, alternate_coeffs
+        )
 
         # set xarray attributes
         heatindex.attrs['long_name'] = "heat index: NWS"
         heatindex.attrs['units'] = "F"
         heatindex.attrs['www'] = (
-            "https://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml")
+            "https://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml"
+        )
         heatindex.attrs['info'] = "appropriate for shady locations with no wind"
 
         if eqtype == 1:
             heatindex.attrs['tag'] = (
-                "NCL: heat_index_nws; (Steadman+t)*0.5 and Rothfusz")
+                "NCL: heat_index_nws; (Steadman+t)*0.5 and Rothfusz"
+            )
         else:
             heatindex.attrs['tag'] = "NCL: heat_index_nws; (Steadman+t)*0.5"
 
@@ -1151,18 +1181,15 @@ def heat_index(
         relative_humidity = np.atleast_1d(relative_humidity)
 
         # input validation on relative humidity
-        if any(relative_humidity.ravel() < 0) or any(
-                relative_humidity.ravel() > 100):
+        if any(relative_humidity.ravel() < 0) or any(relative_humidity.ravel() > 100):
             raise ValueError('heat_index: invalid values for relative humidity')
 
         # Check if relative humidity fractional
         if all(relative_humidity.ravel() < 1):
-            warnings.warn(
-                "WARNING: rh must be %, not fractional; All rh are < 1")
+            warnings.warn("WARNING: rh must be %, not fractional; All rh are < 1")
 
         # function call for non-dask/xarray
-        heatindex = _heat_index(temperature, relative_humidity,
-                                alternate_coeffs)
+        heatindex = _heat_index(temperature, relative_humidity, alternate_coeffs)
 
     return heatindex
 
@@ -1223,8 +1250,7 @@ def relhum(
     if xr.DataArray in in_types:
         # check all inputs are xarray.DataArray
         if not all(x == xr.DataArray for x in in_types):
-            raise TypeError(
-                "relhum: if using xarray, all inputs must be xarray")
+            raise TypeError("relhum: if using xarray, all inputs must be xarray")
 
         # call internal computation function
         relative_humidity = _xrelhum(temperature, mixing_ratio, pressure)
@@ -1306,17 +1332,17 @@ def relhum_ice(
 
     # ensure all inputs same size
     if np.shape(temperature) != np.shape(mixing_ratio) or np.shape(
-            temperature) != np.shape(pressure):
+        temperature
+    ) != np.shape(pressure):
         raise ValueError("relhum_ice: dimensions of inputs are not the same")
 
     relative_humidity = _relhum_ice(temperature, mixing_ratio, pressure)
 
     # output as xarray if input as xarray
     if x_out:
-        relative_humidity = xr.DataArray(data=relative_humidity,
-                                         coords=save_coords,
-                                         dims=save_dims,
-                                         attrs=save_attrs)
+        relative_humidity = xr.DataArray(
+            data=relative_humidity, coords=save_coords, dims=save_dims, attrs=save_attrs
+        )
 
     return relative_humidity
 
@@ -1385,17 +1411,17 @@ def relhum_water(
 
     # ensure all inputs same size
     if np.shape(temperature) != np.shape(mixing_ratio) or np.shape(
-            temperature) != np.shape(pressure):
+        temperature
+    ) != np.shape(pressure):
         raise ValueError("relhum_water: dimensions of inputs are not the same")
 
     relative_humidity = _relhum_water(temperature, mixing_ratio, pressure)
 
     # output as xarray if input as xarray
     if x_out:
-        relative_humidity = xr.DataArray(data=relative_humidity,
-                                         coords=save_coords,
-                                         dims=save_dims,
-                                         attrs=save_attrs)
+        relative_humidity = xr.DataArray(
+            data=relative_humidity, coords=save_coords, dims=save_dims, attrs=save_attrs
+        )
 
     return relative_humidity
 
@@ -1461,12 +1487,12 @@ def max_daylight(
     # warn if more than abs(55)
     # Give stronger warning if more than abs(66)
     if (abs(lat) > 55).all() and (abs(lat) <= 66).all():
-        warnings.warn(
-            "WARNING: max_daylight has limited validity for abs(lat) > 55 ")
+        warnings.warn("WARNING: max_daylight has limited validity for abs(lat) > 55 ")
     elif (abs(lat) > 66).all():
         warnings.warn(
             'WARNING: max_daylight: calculation not possible for abs(lat) > 66 for all values of jday, '
-            'errors may occur')
+            'errors may occur'
+        )
 
     # define constants
     pi = np.pi
@@ -1558,8 +1584,7 @@ def psychrometric_constant(
         psy_const = con * pressure
         psy_const.attrs['long_name'] = "psychrometric constant"
         psy_const.attrs['units'] = "kPa/C"
-        psy_const.attrs[
-            'url'] = "https://www.fao.org/docrep/X0490E/x0490e07.htm"
+        psy_const.attrs['url'] = "https://www.fao.org/docrep/X0490E/x0490e07.htm"
         psy_const.attrs['info'] = "FAO 56; EQN 8; psychrometric_constant"
 
     return psy_const
@@ -1623,8 +1648,9 @@ def saturation_vapor_pressure(
         temp_c = (temperature - 32) * 5 / 9
 
         # calculate svp
-        svp = xr.where(temp_c > 0, 0.6108 * np.exp(
-            (17.27 * temp_c) / (temp_c + 237.3)), tfill)
+        svp = xr.where(
+            temp_c > 0, 0.6108 * np.exp((17.27 * temp_c) / (temp_c + 237.3)), tfill
+        )
 
         # add relevant metadata
         svp.attrs['long_name'] = "saturation vapor pressure"
@@ -1636,8 +1662,9 @@ def saturation_vapor_pressure(
         temperature = np.asarray(temperature)
 
         temp_c = (temperature - 32) * 5 / 9
-        svp = np.where(temp_c > 0, 0.6108 * np.exp(
-            (17.27 * temp_c) / (temp_c + 237.3)), tfill)
+        svp = np.where(
+            temp_c > 0, 0.6108 * np.exp((17.27 * temp_c) / (temp_c + 237.3)), tfill
+        )
 
     return svp
 
@@ -1757,18 +1784,20 @@ def saturation_vapor_pressure_slope(
         # calculate svp_slope
         svp_slope = xr.where(
             temp_c > 0,
-            4096 * (0.6108 * np.exp(
-                (17.27 * temp_c) / (temp_c + 237.3)) / (temp_c + 237.3)**2),
+            4096
+            * (
+                0.6108
+                * np.exp((17.27 * temp_c) / (temp_c + 237.3))
+                / (temp_c + 237.3) ** 2
+            ),
             tfill,
         )
 
         # add relevant metadata
         svp_slope.attrs['long_name'] = "slope saturation vapor pressure curve"
         svp_slope.attrs['units'] = "kPa/C"
-        svp_slope.attrs[
-            'url'] = "https://www.fao.org/docrep/X0490E/x0490e07.htm"
-        svp_slope.attrs[
-            'info'] = "FAO 56; EQN 13; saturation_vapor_pressure_slope"
+        svp_slope.attrs['url'] = "https://www.fao.org/docrep/X0490E/x0490e07.htm"
+        svp_slope.attrs['info'] = "FAO 56; EQN 13; saturation_vapor_pressure_slope"
 
     else:
         temperature = np.asarray(temperature)
@@ -1779,8 +1808,12 @@ def saturation_vapor_pressure_slope(
         # calculate svp_slope
         svp_slope = np.where(
             temp_c > 0,
-            4096 * (0.6108 * np.exp(
-                (17.27 * temp_c) / (temp_c + 237.3)) / (temp_c + 237.3)**2),
+            4096
+            * (
+                0.6108
+                * np.exp((17.27 * temp_c) / (temp_c + 237.3))
+                / (temp_c + 237.3) ** 2
+            ),
             tfill,
         )
 
@@ -1816,7 +1849,8 @@ def _delta_pressure1D(pressure_lev, surface_pressure):
     # Safety checks
     if pressure_top < 0:
         raise ValueError(
-            "`pressure_lev` values must all be greater than or equal to 0.")
+            "`pressure_lev` values must all be greater than or equal to 0."
+        )
 
     if pressure_top > surface_pressure:
         raise ValueError(
@@ -1836,17 +1870,20 @@ def _delta_pressure1D(pressure_lev, surface_pressure):
     start_level = min(indices)
     end_level = max(indices)
 
-    delta_pressure[start_level] = (pressure_lev[start_level] + pressure_lev[
-        start_level + 1]) / 2 - pressure_top  # top level
+    delta_pressure[start_level] = (
+        pressure_lev[start_level] + pressure_lev[start_level + 1]
+    ) / 2 - pressure_top  # top level
 
-    delta_pressure[start_level + 1:end_level] = [(a - b) / 2 for a, b in zip(
-        pressure_lev[start_level + 2:end_level + 1],
-        pressure_lev[start_level:end_level],
-    )]
+    delta_pressure[start_level + 1 : end_level] = [
+        (a - b) / 2
+        for a, b in zip(
+            pressure_lev[start_level + 2 : end_level + 1],
+            pressure_lev[start_level:end_level],
+        )
+    ]
 
     delta_pressure[end_level] = (
-        surface_pressure -
-        (pressure_lev[end_level] + pressure_lev[end_level - 1]) / 2
+        surface_pressure - (pressure_lev[end_level] + pressure_lev[end_level - 1]) / 2
     )  # bottom level
 
     # Return delta_pressure to original order
@@ -1899,21 +1936,23 @@ def delta_pressure(pressure_lev, surface_pressure):
         da_dims = surface_pressure.dims
     if type_pressure_level == xr.DataArray:
         da_attrs = dict(
-            pressure_lev.attrs)  # Overwrite attributes to match pressure_lev
+            pressure_lev.attrs
+        )  # Overwrite attributes to match pressure_lev
 
     # Calculate delta pressure
     if np.isscalar(surface_pressure):  # scalar case
         delta_pressure = _delta_pressure1D(pressure_lev, surface_pressure)
     else:  # multi-dimensional cases
         shape = surface_pressure.shape
-        delta_pressure_shape = shape + (len(pressure_lev),
-                                       )  # preserve shape for reshaping
+        delta_pressure_shape = shape + (
+            len(pressure_lev),
+        )  # preserve shape for reshaping
 
         surface_pressure_flattened = np.ravel(
-            surface_pressure)  # flatten to avoid nested for loops
+            surface_pressure
+        )  # flatten to avoid nested for loops
         delta_pressure = [
-            _delta_pressure1D(pressure_lev, e)
-            for e in surface_pressure_flattened
+            _delta_pressure1D(pressure_lev, e) for e in surface_pressure_flattened
         ]
 
         delta_pressure = np.array(delta_pressure).reshape(delta_pressure_shape)
@@ -1921,9 +1960,11 @@ def delta_pressure(pressure_lev, surface_pressure):
     # If passed in an Xarray array, return an Xarray array
     # Change this to return a dataset that has both surface pressure and delta pressure?
     if type_surface_pressure == xr.DataArray:
-        da_coords['lev'] = (pressure_lev.values if
-                            (type_pressure_level
-                             == xr.DataArray) else pressure_lev)
+        da_coords['lev'] = (
+            pressure_lev.values
+            if (type_pressure_level == xr.DataArray)
+            else pressure_lev
+        )
         da_dims = da_dims + ("lev",)
         da_attrs.update({"long name": "pressure layer thickness"})
         delta_pressure = xr.DataArray(

@@ -10,7 +10,8 @@ def grid_to_triple(*args, **kwargs):
     """
     warnings.warn(
         "To use this function, install the geocat-f2py package and import as "
-        "``geocat.f2py.grid_to_triple``.")
+        "``geocat.f2py.grid_to_triple``."
+    )
 
     return None
 
@@ -24,7 +25,8 @@ def linint1(*args, **kwargs):
     """
     warnings.warn(
         "To use this function, install the geocat-f2py package and import as "
-        "``geocat.f2py.linint1``.")
+        "``geocat.f2py.linint1``."
+    )
 
     return None
 
@@ -38,7 +40,8 @@ def linint2(*args, **kwargs):
     """
     warnings.warn(
         "To use this function, install the geocat-f2py package and import as "
-        "``geocat.f2py.linint2``.")
+        "``geocat.f2py.linint2``."
+    )
 
     return None
 
@@ -52,7 +55,8 @@ def linint2pts(*args, **kwargs):
     """
     warnings.warn(
         "To use this function, install the geocat-f2py package and import as "
-        "``geocat.f2py.linint2pts``.")
+        "``geocat.f2py.linint2pts``."
+    )
 
     return None
 
@@ -66,7 +70,8 @@ def moc_globe_atl(*args, **kwargs):
     """
     warnings.warn(
         "To use this function, install the geocat-f2py package and import as "
-        "``geocat.f2py.moc_globe_atl``.")
+        "``geocat.f2py.moc_globe_atl``."
+    )
 
     return None
 
@@ -80,7 +85,8 @@ def rcm2points(*args, **kwargs):
     """
     warnings.warn(
         "To use this function, install the geocat-f2py package and import as "
-        "``geocat.f2py.rcm2points``.")
+        "``geocat.f2py.rcm2points``."
+    )
 
     return None
 
@@ -94,7 +100,8 @@ def rcm2rgrid(*args, **kwargs):
     """
     warnings.warn(
         "To use this function, install the geocat-f2py package and import as "
-        "``geocat.f2py.rcm2rgrid``.")
+        "``geocat.f2py.rcm2rgrid``."
+    )
 
     return None
 
@@ -108,7 +115,8 @@ def rgrid2rcm(*args, **kwargs):
     """
     warnings.warn(
         "To use this function, install the geocat-f2py package and import as "
-        "``geocat.f2py.rgrid2rcm``.")
+        "``geocat.f2py.rgrid2rcm``."
+    )
 
     return None
 
@@ -122,6 +130,7 @@ def triple_to_grid(*args, **kwargs):
     """
     warnings.warn(
         "To use this function, install the geocat-f2py package and import as "
-        "``geocat.f2py.triple_to_grid``.")
+        "``geocat.f2py.triple_to_grid``."
+    )
 
     return None

@@ -35,16 +35,16 @@ class Test_Spherical:
             test_harmonics.append([m, n])
             test_results.append(0)
             if n in [0, 2, 3, 5, 7, 11, 13, 17, 19, 23] and m in [
-                    0,
-                    2,
-                    3,
-                    5,
-                    7,
-                    11,
-                    13,
-                    17,
-                    19,
-                    23,
+                0,
+                2,
+                3,
+                5,
+                7,
+                11,
+                13,
+                17,
+                19,
+                23,
             ]:
                 if m in [2, 5, 11, 17, 23]:
                     test_data += ss.sph_harm(

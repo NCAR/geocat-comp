@@ -10,15 +10,14 @@ class BaseEOFTestClass(metaclass=ABCMeta):
     _sample_data_eof = []
 
     # _sample_data[ 0 ]
-    _sample_data_eof.append([
-        [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15]],
-        [[16, 17, 18, 19], [20, 21, 22, 23], [24, 25, 26, 27], [28, 29, 30,
-                                                                31]],
-        [[32, 33, 34, 35], [36, 37, 38, 39], [40, 41, 42, 43], [44, 45, 46,
-                                                                47]],
-        [[48, 49, 50, 51], [52, 53, 54, 55], [56, 57, 58, 59], [60, 61, 62,
-                                                                63]],
-    ])
+    _sample_data_eof.append(
+        [
+            [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15]],
+            [[16, 17, 18, 19], [20, 21, 22, 23], [24, 25, 26, 27], [28, 29, 30, 31]],
+            [[32, 33, 34, 35], [36, 37, 38, 39], [40, 41, 42, 43], [44, 45, 46, 47]],
+            [[48, 49, 50, 51], [52, 53, 54, 55], [56, 57, 58, 59], [60, 61, 62, 63]],
+        ]
+    )
 
     # _sample_data[ 1 ]
     _sample_data_eof.append(np.arange(64, dtype='double').reshape((4, 4, 4)))
@@ -180,7 +179,6 @@ class BaseEOFTestClass(metaclass=ABCMeta):
 
 
 class Test_eof(BaseEOFTestClass):
-
     def test_eof_00(self) -> None:
         data = self._sample_data_eof[0]
 
@@ -191,14 +189,16 @@ class Test_eof(BaseEOFTestClass):
         np.testing.assert_equal(self.expected_output.shape, results.shape)
 
         np.testing.assert_array_almost_equal(
-            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5)
+            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5
+        )
 
         np.testing.assert_array_almost_equal(self.expected_output, abs(eof), 5)
 
         np.testing.assert_equal(self._num_attrs, len(attrs))
 
-        np.testing.assert_almost_equal(self.expected_eigen_val_time_dim_2,
-                                       attrs['eigenvalues'].values[0], 5)
+        np.testing.assert_almost_equal(
+            self.expected_eigen_val_time_dim_2, attrs['eigenvalues'].values[0], 5
+        )
 
     def test_eof_deprecated(self) -> None:
         data = self._sample_data_eof[0]
@@ -210,14 +210,16 @@ class Test_eof(BaseEOFTestClass):
         np.testing.assert_equal(self.expected_output.shape, results.shape)
 
         np.testing.assert_array_almost_equal(
-            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5)
+            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5
+        )
 
         np.testing.assert_array_almost_equal(self.expected_output, abs(eof), 5)
 
         np.testing.assert_equal(self._num_attrs, len(attrs))
 
-        np.testing.assert_almost_equal(self.expected_eigen_val_time_dim_2,
-                                       attrs['eigenvalues'].values[0], 5)
+        np.testing.assert_almost_equal(
+            self.expected_eigen_val_time_dim_2, attrs['eigenvalues'].values[0], 5
+        )
 
     def test_eof_01(self) -> None:
         data = self._sample_data_eof[1]
@@ -229,14 +231,16 @@ class Test_eof(BaseEOFTestClass):
         np.testing.assert_equal(self.expected_output.shape, results.shape)
 
         np.testing.assert_array_almost_equal(
-            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5)
+            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5
+        )
 
         np.testing.assert_array_almost_equal(self.expected_output, abs(eof), 5)
 
         np.testing.assert_equal(self._num_attrs, len(attrs))
 
-        np.testing.assert_almost_equal(self.expected_eigen_val_time_dim_2,
-                                       attrs['eigenvalues'].values[0], 5)
+        np.testing.assert_almost_equal(
+            self.expected_eigen_val_time_dim_2, attrs['eigenvalues'].values[0], 5
+        )
 
     def test_eof_02(self) -> None:
         data = self._sample_data_eof[1]
@@ -248,14 +252,16 @@ class Test_eof(BaseEOFTestClass):
         np.testing.assert_equal(self.expected_output.shape, results.shape)
 
         np.testing.assert_array_almost_equal(
-            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5)
+            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5
+        )
 
         np.testing.assert_array_almost_equal(self.expected_output, abs(eof), 5)
 
         np.testing.assert_equal(self._num_attrs, len(attrs))
 
-        np.testing.assert_almost_equal(self.expected_eigen_val_time_dim_2,
-                                       attrs['eigenvalues'].values[0], 5)
+        np.testing.assert_almost_equal(
+            self.expected_eigen_val_time_dim_2, attrs['eigenvalues'].values[0], 5
+        )
 
     def test_eof_14(self) -> None:
         data = self._sample_data_eof[4]
@@ -267,14 +273,16 @@ class Test_eof(BaseEOFTestClass):
         np.testing.assert_equal(self.expected_output.shape, results.shape)
 
         np.testing.assert_array_almost_equal(
-            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5)
+            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5
+        )
 
         np.testing.assert_array_almost_equal(self.expected_output, abs(eof), 5)
 
         np.testing.assert_equal(self._num_attrs, len(attrs))
 
-        np.testing.assert_almost_equal(self.expected_eigen_val_time_dim_2,
-                                       attrs['eigenvalues'].values[0], 5)
+        np.testing.assert_almost_equal(
+            self.expected_eigen_val_time_dim_2, attrs['eigenvalues'].values[0], 5
+        )
 
     def test_eof_15(self) -> None:
         data = np.asarray(self._sample_data_eof[0])
@@ -283,12 +291,7 @@ class Test_eof(BaseEOFTestClass):
         dims = [f"dim_{i}" for i in range(data.ndim)]
         dims[0] = 'time'
 
-        data = xr.DataArray(data,
-                            dims=dims,
-                            attrs={
-                                "prop1": "prop1",
-                                "prop2": 2
-                            })
+        data = xr.DataArray(data, dims=dims, attrs={"prop1": "prop1", "prop2": 2})
 
         results = eofunc_eofs(data, neofs=1)
         eof = results.data
@@ -297,14 +300,16 @@ class Test_eof(BaseEOFTestClass):
         np.testing.assert_equal(self.expected_output.shape, results.shape)
 
         np.testing.assert_array_almost_equal(
-            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5)
+            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5
+        )
 
         np.testing.assert_array_almost_equal(self.expected_output, abs(eof), 5)
 
         np.testing.assert_equal(self._num_attrs, len(attrs))
 
-        np.testing.assert_almost_equal(self.expected_eigen_val_time_dim_2,
-                                       attrs['eigenvalues'].values[0], 5)
+        np.testing.assert_almost_equal(
+            self.expected_eigen_val_time_dim_2, attrs['eigenvalues'].values[0], 5
+        )
 
         np.testing.assert_equal(False, ("prop1" in attrs))
         np.testing.assert_equal(False, ("prop2" in attrs))
@@ -368,14 +373,16 @@ class Test_eof(BaseEOFTestClass):
         np.testing.assert_equal(self.expected_output.shape, results.shape)
 
         np.testing.assert_array_almost_equal(
-            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5)
+            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5
+        )
 
         np.testing.assert_array_almost_equal(self.expected_output, abs(eof), 5)
 
         np.testing.assert_equal(self._num_attrs + 2, len(attrs))
 
-        np.testing.assert_almost_equal(self.expected_eigen_val_time_dim_2,
-                                       attrs['eigenvalues'].values[0], 5)
+        np.testing.assert_almost_equal(
+            self.expected_eigen_val_time_dim_2, attrs['eigenvalues'].values[0], 5
+        )
 
         np.testing.assert_equal(True, ("prop1" in attrs))
         np.testing.assert_equal(True, ("prop2" in attrs))
@@ -392,14 +399,16 @@ class Test_eof(BaseEOFTestClass):
         np.testing.assert_equal(self.expected_output.shape, results.shape)
 
         np.testing.assert_array_almost_equal(
-            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5)
+            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5
+        )
 
         np.testing.assert_array_almost_equal(self.expected_output, abs(eof), 5)
 
         np.testing.assert_equal(self._num_attrs, len(attrs))
 
-        np.testing.assert_almost_equal(self.expected_eigen_val_time_dim_1,
-                                       attrs['eigenvalues'].values[0], 5)
+        np.testing.assert_almost_equal(
+            self.expected_eigen_val_time_dim_1, attrs['eigenvalues'].values[0], 5
+        )
 
     def test_eof_n_03(self) -> None:
         data = self._sample_data_eof[1]
@@ -411,14 +420,16 @@ class Test_eof(BaseEOFTestClass):
         np.testing.assert_equal(self.expected_output.shape, results.shape)
 
         np.testing.assert_array_almost_equal(
-            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5)
+            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5
+        )
 
         np.testing.assert_array_almost_equal(self.expected_output, abs(eof), 5)
 
         np.testing.assert_equal(self._num_attrs, len(attrs))
 
-        np.testing.assert_almost_equal(self.expected_eigen_val_time_dim_0,
-                                       attrs['eigenvalues'].values[0], 5)
+        np.testing.assert_almost_equal(
+            self.expected_eigen_val_time_dim_0, attrs['eigenvalues'].values[0], 5
+        )
 
     def test_eof_n_03_1(self) -> None:
         data = self._sample_data_eof[1]
@@ -430,18 +441,19 @@ class Test_eof(BaseEOFTestClass):
         np.testing.assert_equal(self.expected_output.shape, results.shape)
 
         np.testing.assert_array_almost_equal(
-            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5)
+            np.linalg.norm(self.expected_output), np.linalg.norm(eof), 5
+        )
 
         np.testing.assert_array_almost_equal(self.expected_output, abs(eof), 5)
 
         np.testing.assert_equal(self._num_attrs, len(attrs))
 
-        np.testing.assert_almost_equal(self.expected_eigen_val_time_dim_0,
-                                       attrs['eigenvalues'].values[0], 5)
+        np.testing.assert_almost_equal(
+            self.expected_eigen_val_time_dim_0, attrs['eigenvalues'].values[0], 5
+        )
 
 
 class Test_eof_ts(BaseEOFTestClass):
-
     @pytest.fixture(scope="class")
     def _nc_ds(self):
         try:
@@ -457,8 +469,7 @@ class Test_eof_ts(BaseEOFTestClass):
 
         np.testing.assert_equal(actual_tsout.shape, expected_tsout.shape)
 
-        np.testing.assert_array_almost_equal(actual_tsout, expected_tsout.data,
-                                             3)
+        np.testing.assert_array_almost_equal(actual_tsout, expected_tsout.data, 3)
 
     def test_01_deprecated(self, _nc_ds) -> None:
         sst = _nc_ds.sst
@@ -469,8 +480,7 @@ class Test_eof_ts(BaseEOFTestClass):
 
         np.testing.assert_equal(actual_tsout.shape, expected_tsout.shape)
 
-        np.testing.assert_array_almost_equal(actual_tsout, expected_tsout.data,
-                                             3)
+        np.testing.assert_array_almost_equal(actual_tsout, expected_tsout.data, 3)
 
     def test_02(self, _nc_ds) -> None:
         sst = _nc_ds.sst
@@ -480,11 +490,11 @@ class Test_eof_ts(BaseEOFTestClass):
 
         np.testing.assert_equal(actual_tsout.shape, expected_tsout.shape)
 
-        np.testing.assert_array_almost_equal(actual_tsout, expected_tsout.data,
-                                             3)
+        np.testing.assert_array_almost_equal(actual_tsout, expected_tsout.data, 3)
 
-        np.testing.assert_equal(actual_tsout.coords["time"].data,
-                                sst.coords["time"].data)
+        np.testing.assert_equal(
+            actual_tsout.coords["time"].data, sst.coords["time"].data
+        )
 
 
 class Test_pearson_r:
@@ -505,11 +515,7 @@ class Test_pearson_r:
             'b': (('lat', 'lon', 'time'), b),
             'weights': (('lat', 'lon', 'time'), weights),
         },
-        coords={
-            'lat': lats,
-            'lon': lons,
-            'time': times
-        },
+        coords={'lat': lats, 'lon': lons, 'time': times},
         attrs={'description': 'Test data'},
     )
 

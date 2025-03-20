@@ -136,7 +136,8 @@ def fourier_filter(
     if low_pass:
         if cfl_index > 1:
             res_fft[cfl_index:cfln_index] = np.zeros(
-                res_fft[cfl_index:cfln_index].shape)
+                res_fft[cfl_index:cfln_index].shape
+            )
         else:
             res_fft[cfl_index:] = np.zeros(res_fft[cfl_index:].shape)
     if high_pass:
@@ -147,17 +148,18 @@ def fourier_filter(
         res_fft[:cfl_index] = np.zeros(res_fft[:cfl_index].shape)
         if cfh_index > 1:
             res_fft[cfh_index:cfhn_index] = np.zeros(
-                res_fft[cfh_index:cfhn_index].shape)
+                res_fft[cfh_index:cfhn_index].shape
+            )
         else:
             res_fft[cfh_index:] = np.zeros(res_fft[cfh_index:].shape)
         if cfl_index > 1:
             res_fft[cfln_index:] = np.zeros(res_fft[cfln_index:].shape)
     if band_block:
-        res_fft[cfl_index:cfh_index] = np.zeros(
-            res_fft[cfl_index:cfh_index].shape)
+        res_fft[cfl_index:cfh_index] = np.zeros(res_fft[cfl_index:cfh_index].shape)
         if cfl_index > 1 and cfh_index > 1:
             res_fft[cfhn_index:cfln_index] = np.zeros(
-                res_fft[cfhn_index:cfln_index].shape)
+                res_fft[cfhn_index:cfln_index].shape
+            )
         elif cfh_index > 1:
             res_fft[cfhn_index:] = np.zeros(res_fft[cfhn_index:].shape)
     result = np.fft.ifft(res_fft, axis=0)

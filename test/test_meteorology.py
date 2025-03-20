@@ -150,9 +150,9 @@ class Test_heat_index:
     rh2 = np.array([10, 75, 15, 80, 65, 25, 30, 40, 50, 5])
 
     def test_numpy_input(self) -> None:
-        assert np.allclose(heat_index(self.t1, self.rh1, False),
-                           self.ncl_gt_1,
-                           atol=0.005)
+        assert np.allclose(
+            heat_index(self.t1, self.rh1, False), self.ncl_gt_1, atol=0.005
+        )
 
     def test_multi_dimensional_input(self) -> None:
         assert np.allclose(
@@ -162,9 +162,9 @@ class Test_heat_index:
         )
 
     def test_alt_coef(self) -> None:
-        assert np.allclose(heat_index(self.t2, self.rh2, True),
-                           self.ncl_gt_2,
-                           atol=0.005)
+        assert np.allclose(
+            heat_index(self.t2, self.rh2, True), self.ncl_gt_2, atol=0.005
+        )
 
     def test_xarray_alt_coef(self) -> None:
         assert np.allclose(
@@ -177,9 +177,9 @@ class Test_heat_index:
         assert np.allclose(heat_index(80, 75), 83.5751, atol=0.005)
 
     def test_list_input(self) -> None:
-        assert np.allclose(heat_index(self.t1.tolist(), self.rh1.tolist()),
-                           self.ncl_gt_1,
-                           atol=0.005)
+        assert np.allclose(
+            heat_index(self.t1.tolist(), self.rh1.tolist()), self.ncl_gt_1, atol=0.005
+        )
 
     def test_xarray_input(self) -> None:
         t = xr.DataArray(self.t1)
@@ -363,9 +363,9 @@ class Test_relhum:
         assert np.allclose(relhum(t, q, p), self.rh_gt_1, atol=0.1)
 
     def test_list_input(self) -> None:
-        assert np.allclose(relhum(self.t_def, self.q_def, self.p_def),
-                           self.rh_gt_2,
-                           atol=0.1)
+        assert np.allclose(
+            relhum(self.t_def, self.q_def, self.p_def), self.rh_gt_2, atol=0.1
+        )
 
     def test_numpy_input(self) -> None:
         p = np.asarray(self.p_def)
@@ -430,22 +430,20 @@ class Test_actual_saturation_vapor_pressure:
     def test_float_input(self) -> None:
         degf = 59
         expected = 1.70535
-        assert np.allclose(actual_saturation_vapor_pressure(degf),
-                           expected,
-                           atol=0.005)
+        assert np.allclose(actual_saturation_vapor_pressure(degf), expected, atol=0.005)
 
     def test_list_input(self, ncl_gt) -> None:
         assert np.allclose(
-            actual_saturation_vapor_pressure(self.temp_gt.tolist(),
-                                             tfill=1.0000000e20),
+            actual_saturation_vapor_pressure(self.temp_gt.tolist(), tfill=1.0000000e20),
             ncl_gt.tolist(),
             atol=0.005,
         )
 
     def test_multi_dimensional_input(self, ncl_gt) -> None:
         assert np.allclose(
-            actual_saturation_vapor_pressure(self.temp_gt.reshape(2, 50),
-                                             tfill=1.0000000e20),
+            actual_saturation_vapor_pressure(
+                self.temp_gt.reshape(2, 50), tfill=1.0000000e20
+            ),
             ncl_gt.reshape(2, 50),
             atol=0.005,
         )
@@ -477,9 +475,7 @@ class Test_max_daylight:
             return xr.open_dataarray("test/max_daylight_test.nc").values
 
     def test_numpy_input(self, ncl_gt) -> None:
-        assert np.allclose(max_daylight(self.jday_gt, self.lat_gt),
-                           ncl_gt,
-                           atol=0.005)
+        assert np.allclose(max_daylight(self.jday_gt, self.lat_gt), ncl_gt, atol=0.005)
 
     def test_float_input(self) -> None:
         assert np.allclose(max_daylight(246, -20.0), 11.66559, atol=0.005)
@@ -525,16 +521,12 @@ class Test_psychrometric_constant:
             return xr.open_dataarray("test/psychro_fao56_output.nc").values
 
     def test_numpy_input(self, ncl_gt) -> None:
-        assert np.allclose(psychrometric_constant(self.pressure_gt),
-                           ncl_gt,
-                           atol=0.005)
+        assert np.allclose(psychrometric_constant(self.pressure_gt), ncl_gt, atol=0.005)
 
     def test_float_input(self) -> None:
         pressure = 81.78
         expected = 0.05434634
-        assert np.allclose(psychrometric_constant(pressure),
-                           expected,
-                           atol=0.005)
+        assert np.allclose(psychrometric_constant(pressure), expected, atol=0.005)
 
     def test_list_input(self, ncl_gt) -> None:
         assert np.allclose(
@@ -554,9 +546,7 @@ class Test_psychrometric_constant:
         pressure = xr.DataArray(self.pressure_gt)
         expected = xr.DataArray(ncl_gt)
 
-        assert np.allclose(psychrometric_constant(pressure),
-                           expected,
-                           atol=0.005)
+        assert np.allclose(psychrometric_constant(pressure), expected, atol=0.005)
 
 
 class Test_saturation_vapor_pressure:
@@ -583,22 +573,18 @@ class Test_saturation_vapor_pressure:
     def test_float_input(self) -> None:
         degf = 59
         expected = 1.70535
-        assert np.allclose(saturation_vapor_pressure(degf),
-                           expected,
-                           atol=0.005)
+        assert np.allclose(saturation_vapor_pressure(degf), expected, atol=0.005)
 
     def test_list_input(self, ncl_gt) -> None:
         assert np.allclose(
-            saturation_vapor_pressure(self.temp_gt.tolist(),
-                                      tfill=1.0000000e20),
+            saturation_vapor_pressure(self.temp_gt.tolist(), tfill=1.0000000e20),
             ncl_gt.tolist(),
             atol=0.005,
         )
 
     def test_multi_dimensional_input(self, ncl_gt) -> None:
         assert np.allclose(
-            saturation_vapor_pressure(self.temp_gt.reshape(2, 50),
-                                      tfill=1.0000000e20),
+            saturation_vapor_pressure(self.temp_gt.reshape(2, 50), tfill=1.0000000e20),
             ncl_gt.reshape(2, 50),
             atol=0.005,
         )
@@ -607,9 +593,9 @@ class Test_saturation_vapor_pressure:
         tempf = xr.DataArray(self.temp_gt)
         expected = xr.DataArray(ncl_gt)
 
-        assert np.allclose(saturation_vapor_pressure(tempf, tfill=1.0000000e20),
-                           expected,
-                           atol=0.005)
+        assert np.allclose(
+            saturation_vapor_pressure(tempf, tfill=1.0000000e20), expected, atol=0.005
+        )
 
 
 class Test_saturation_vapor_pressure_slope:
@@ -627,16 +613,14 @@ class Test_saturation_vapor_pressure_slope:
             return xr.open_dataarray("test/satvpr_slope_fao56_output.nc").values
 
     def test_numpy_input(self, ncl_gt) -> None:
-        assert np.allclose(saturation_vapor_pressure_slope(self.temp_gt),
-                           ncl_gt,
-                           equal_nan=True)
+        assert np.allclose(
+            saturation_vapor_pressure_slope(self.temp_gt), ncl_gt, equal_nan=True
+        )
 
     def test_float_input(self) -> None:
         degf = 67.55
         expected = 0.142793
-        assert np.allclose(saturation_vapor_pressure_slope(degf),
-                           expected,
-                           atol=0.005)
+        assert np.allclose(saturation_vapor_pressure_slope(degf), expected, atol=0.005)
 
     def test_list_input(self, ncl_gt) -> None:
         assert np.allclose(
@@ -657,10 +641,9 @@ class Test_saturation_vapor_pressure_slope:
         tempf = xr.DataArray(self.temp_gt)
         expected = xr.DataArray(ncl_gt)
 
-        assert np.allclose(saturation_vapor_pressure_slope(tempf),
-                           expected,
-                           atol=0.005,
-                           equal_nan=True)
+        assert np.allclose(
+            saturation_vapor_pressure_slope(tempf), expected, atol=0.005, equal_nan=True
+        )
 
 
 class Test_Delta_Pressure:
@@ -675,21 +658,15 @@ class Test_Delta_Pressure:
     surface_pressure_scalar = 1018
     surface_pressure_1D = np.array([1018, 1019])
     surface_pressure_2D = np.array([[1018, 1019], [1017, 1019.5]])
-    surface_pressure_3D = np.array([[[1018, 1019], [1017, 1019.5]],
-                                    [[1019, 1020], [1018, 1020.5]]])
+    surface_pressure_3D = np.array(
+        [[[1018, 1019], [1017, 1019.5]], [[1019, 1020], [1018, 1020.5]]]
+    )
 
     surface_pressure_3D_da = xr.DataArray(
         surface_pressure_3D,
-        coords={
-            "time": [1, 2],
-            "lat": [3, 4],
-            "lon": [5, 6]
-        },
+        coords={"time": [1, 2], "lat": [3, 4], "lon": [5, 6]},
         dims=["time", "lat", "lon"],
-        attrs={
-            "long name": "surface pressure",
-            "units": "hPa"
-        },
+        attrs={"long name": "surface pressure", "units": "hPa"},
     )
 
     def test_delta_pressure1D(self) -> None:
@@ -702,15 +679,13 @@ class Test_Delta_Pressure:
         pressure_lev = [float(i) for i in self.pressure_lev]
         surface_pressure_adjusted = 900.0
         delta_p = delta_pressure(pressure_lev, surface_pressure_adjusted)
-        assert np.nansum(delta_p) == (surface_pressure_adjusted -
-                                      min(pressure_lev))
+        assert np.nansum(delta_p) == (surface_pressure_adjusted - min(pressure_lev))
 
     def test_delta_pressure_levels_below_surface(self) -> None:
         pressure_lev = [float(i) for i in self.pressure_lev]
         surface_pressure_adjusted = 50.0
         delta_p = delta_pressure(pressure_lev, surface_pressure_adjusted)
-        assert np.nansum(delta_p) == (surface_pressure_adjusted -
-                                      min(pressure_lev))
+        assert np.nansum(delta_p) == (surface_pressure_adjusted - min(pressure_lev))
 
     def test_negative_pressure_error(self) -> None:
         pressure_lev_negative = self.pressure_lev.copy()
@@ -724,50 +699,52 @@ class Test_Delta_Pressure:
             delta_pressure(self.pressure_lev, surface_pressure_low)
 
     def test_output_type(self) -> None:
-        delta_pressure_da = delta_pressure(self.pressure_lev_da,
-                                           self.surface_pressure_3D_da)
+        delta_pressure_da = delta_pressure(
+            self.pressure_lev_da, self.surface_pressure_3D_da
+        )
         assert isinstance(delta_pressure_da, xr.DataArray)
 
-        delta_pressure_np = delta_pressure(self.pressure_lev,
-                                           self.surface_pressure_3D)
+        delta_pressure_np = delta_pressure(self.pressure_lev, self.surface_pressure_3D)
         assert isinstance(delta_pressure_np, np.ndarray)
 
     def test_output_dimensions(self) -> None:
-        delta_pressure_scalar = delta_pressure(self.pressure_lev,
-                                               self.surface_pressure_scalar)
+        delta_pressure_scalar = delta_pressure(
+            self.pressure_lev, self.surface_pressure_scalar
+        )
         assert delta_pressure_scalar.shape == (4,)
 
-        delta_pressure_1D = delta_pressure(self.pressure_lev,
-                                           self.surface_pressure_1D)
+        delta_pressure_1D = delta_pressure(self.pressure_lev, self.surface_pressure_1D)
         assert delta_pressure_1D.shape == (2, 4)
 
-        delta_pressure_2D = delta_pressure(self.pressure_lev,
-                                           self.surface_pressure_2D)
+        delta_pressure_2D = delta_pressure(self.pressure_lev, self.surface_pressure_2D)
         assert delta_pressure_2D.shape == (2, 2, 4)
 
-        delta_pressure_3D = delta_pressure(self.pressure_lev,
-                                           self.surface_pressure_3D)
+        delta_pressure_3D = delta_pressure(self.pressure_lev, self.surface_pressure_3D)
         assert delta_pressure_3D.shape == (2, 2, 2, 4)
 
     def test_output_attrs(self) -> None:
-        delta_pressure_da = delta_pressure(self.pressure_lev_da,
-                                           self.surface_pressure_3D_da)
+        delta_pressure_da = delta_pressure(
+            self.pressure_lev_da, self.surface_pressure_3D_da
+        )
         for item in self.pressure_lev_da.attrs:
             assert item in delta_pressure_da.attrs
 
     def test_output_coords(self) -> None:
-        delta_pressure_da = delta_pressure(self.pressure_lev_da,
-                                           self.surface_pressure_3D_da)
+        delta_pressure_da = delta_pressure(
+            self.pressure_lev_da, self.surface_pressure_3D_da
+        )
         for item in self.surface_pressure_3D_da.coords:
             assert item in delta_pressure_da.coords
         for item in self.pressure_lev_da.coords:
             assert item in delta_pressure_da.coords
 
     def test_mismatch_input_types(self) -> None:
-        delta_pressure_da = delta_pressure(self.pressure_lev,
-                                           self.surface_pressure_3D_da)
+        delta_pressure_da = delta_pressure(
+            self.pressure_lev, self.surface_pressure_3D_da
+        )
         assert isinstance(delta_pressure_da, xr.DataArray)
 
-        delta_pressure_np = delta_pressure(self.pressure_lev_da,
-                                           self.surface_pressure_3D)
+        delta_pressure_np = delta_pressure(
+            self.pressure_lev_da, self.surface_pressure_3D
+        )
         assert isinstance(delta_pressure_np, np.ndarray)

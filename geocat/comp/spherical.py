@@ -56,8 +56,7 @@ def decomposition(
     # scale_val is the inverse of the total sphere area times the magnitude of
     # the first harmonic. This is used to scale the output so that the output
     # is unaffected by the surface area of the original sphere.
-    scale_val = 1 / (np.sum(scale, axis=(0, 1)) *
-                     sspecial.sph_harm(0, 0, 0, 0)**2)
+    scale_val = 1 / (np.sum(scale, axis=(0, 1)) * sspecial.sph_harm(0, 0, 0, 0) ** 2)
 
     mlist = []  # ordered list of the m harmonics sspecial.sphere(m,n,theta,phi)
     nlist = []  # ordered list of the n harmonics sspecial.sphere(m,n,theta,phi)
@@ -90,10 +89,13 @@ def decomposition(
     if type(data) is xr.DataArray:
         m = xr.DataArray(m, dims=['har']).chunk((chunk_size))
         n = xr.DataArray(n, dims=['har']).chunk((chunk_size))
-        scale_res = (xr.DataArray(
-            scale_mul,
-            dims=['har'],
-        ).chunk((chunk_size)) * scale_val)
+        scale_res = (
+            xr.DataArray(
+                scale_mul,
+                dims=['har'],
+            ).chunk((chunk_size))
+            * scale_val
+        )
         scale_dat = xr.DataArray(
             np.multiply(data, scale),
             dims=data.dims,
@@ -101,10 +103,13 @@ def decomposition(
         theta = xr.DataArray(theta, dims=data.dims).chunk((chunk_size))
         phi = xr.DataArray(phi, dims=data.dims).chunk((chunk_size))
 
-    results = (np.sum(
-        np.multiply(scale_dat, sspecial.sph_harm(m, n, theta, phi)),
-        axis=(0, 1),
-    ) * scale_res)
+    results = (
+        np.sum(
+            np.multiply(scale_dat, sspecial.sph_harm(m, n, theta, phi)),
+            axis=(0, 1),
+        )
+        * scale_res
+    )
     return results
 
 
@@ -229,7 +234,8 @@ def scale_voronoi(
             data_locs_3d,
             radius=1.0,
             center=np.array([0, 0, 0]),
-        ).calculate_areas()).reshape(theta.shape)
+        ).calculate_areas()
+    ).reshape(theta.shape)
 
     if type(theta) is xr.DataArray:
         scale = xr.DataArray(scale, dims=theta.dims).chunk(chunk_size)

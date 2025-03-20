@@ -32,7 +32,6 @@ except ImportError:
 
 
 class Mock(MagicMock):
-
     @classmethod
     def __getattr__(cls, name):
         return MagicMock()
@@ -73,28 +72,11 @@ mathjax_config = {
         'processEscapes': True,
     },
     'HTML-CSS': {
-        'linebreaks': {
-            'automatic': True,
-            'width': 'container'
-        },
-        'fonts': {
-            'availableFonts': ['TeX'],
-            'preferredFont': 'TeX',
-            'webFont': 'TeX'
-        },
+        'linebreaks': {'automatic': True, 'width': 'container'},
+        'fonts': {'availableFonts': ['TeX'], 'preferredFont': 'TeX', 'webFont': 'TeX'},
     },
-    'CommonHTML': {
-        'linebreaks': {
-            'automatic': True,
-            'width': 'container'
-        }
-    },
-    'SVG': {
-        'linebreaks': {
-            'automatic': True,
-            'width': 'container'
-        }
-    },
+    'CommonHTML': {'linebreaks': {'automatic': True, 'width': 'container'}},
+    'SVG': {'linebreaks': {'automatic': True, 'width': 'container'}},
 }
 
 mathjax_path = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
@@ -245,28 +227,19 @@ html_theme_options = {
     "analytics": {
         "google_analytics_id": "G-TYWFW2KJSP",
     },
-    "repository_url":
-        "https://github.com/NCAR/geocat-comp",
-    "repository_branch":
-        "main",
-    "path_to_docs":
-        "docs",
-    "use_edit_page_button":
-        True,
-    "use_repository_button":
-        True,
-    "use_issues_button":
-        True,
-    "home_page_in_toc":
-        False,
-    "navbar_footer_text":
-        "",
+    "repository_url": "https://github.com/NCAR/geocat-comp",
+    "repository_branch": "main",
+    "path_to_docs": "docs",
+    "use_edit_page_button": True,
+    "use_repository_button": True,
+    "use_issues_button": True,
+    "home_page_in_toc": False,
+    "navbar_footer_text": "",
     "logo": {
         "image_light": "_static/images/logos/NSF_NCAR_light.png",
         "image_dark": "_static/images/logos/NSF_NCAR_dark.png",
     },
-    "extra_footer":
-        "<em>The NSF National Center for Atmospheric Research (NSF NCAR) is sponsored by the U.S. National Science Foundation. Any opinions, findings and conclusions or recommendations expressed in this material do not necessarily reflect the views of the U.S. National Science Foundation.</em>",
+    "extra_footer": "<em>The NSF National Center for Atmospheric Research (NSF NCAR) is sponsored by the U.S. National Science Foundation. Any opinions, findings and conclusions or recommendations expressed in this material do not necessarily reflect the views of the U.S. National Science Foundation.</em>",
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
@@ -365,8 +338,7 @@ def update_gallery(app: Sphinx):
 
     LOGGER.info("creating gallery...")
 
-    notebooks = yaml.safe_load(
-        pathlib.Path(app.srcdir, "gallery.yml").read_bytes())
+    notebooks = yaml.safe_load(pathlib.Path(app.srcdir, "gallery.yml").read_bytes())
 
     items = [
         f"""
@@ -378,7 +350,8 @@ def update_gallery(app: Sphinx):
                 :alt: {item['title']}
             +++
             {item['title']}
-            """ for item in notebooks
+            """
+        for item in notebooks
     ]
 
     items_md = indent(dedent("\n".join(items)), prefix="    ")
@@ -406,14 +379,10 @@ linkcheck_ignore = [r'https://stackoverflow.com/help/*']
 
 # ignore doi redirect warnings
 linkcheck_allowed_redirects = {
-    "https://doi.org.*":
-        ".*",
-    "https://dx.doi.org.*":
-        ".*",
-    r"https://github\.com/NCAR/geocat-comp/issues/new*":
-        r"https://github\.com/login\?return_to=*",
-    r"https://forms\.gle/*":
-        r"https://docs\.google\.com/forms*",
+    "https://doi.org.*": ".*",
+    "https://dx.doi.org.*": ".*",
+    r"https://github\.com/NCAR/geocat-comp/issues/new*": r"https://github\.com/login\?return_to=*",
+    r"https://forms\.gle/*": r"https://docs\.google\.com/forms*",
 }
 
 

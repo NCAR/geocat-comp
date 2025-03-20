@@ -3,12 +3,6 @@ ci:
     autoupdate_schedule: monthly
 
 repos:
--   repo: https://github.com/google/yapf    # To format the code to conform YAPF
-    rev: v0.43.0
-    hooks:
-      - id: yapf
-        args: ['--in-place', '--recursive', '--style', 'google']
-
 -   repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.9.9
     hooks:
@@ -16,6 +10,8 @@ repos:
      - id: ruff
        types_or: [ python, pyi ]
        args: [ --fix ]
+     - id: ruff-format
+       types_or: [ python, pyi ]
 
 -   repo: https://github.com/codespell-project/codespell
     rev: v2.4.1
