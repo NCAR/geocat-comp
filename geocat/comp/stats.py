@@ -7,13 +7,7 @@ import xarray as xr
 import warnings
 
 
-def pearson_r(a,
-              b,
-              dim=None,
-              weights=None,
-              skipna=False,
-              keep_attrs=False,
-              axis=None):
+def pearson_r(a, b, dim=None, weights=None, skipna=False, keep_attrs=False, axis=None):
     """This function wraps the function of the same name from `xskillscore <htt
     ps://xskillscore.readthedocs.io/en/stable/api/xskillscore.pearson_r.html#xs
     killscore.pearson_r>`__. The difference between the xskillscore version and
@@ -48,7 +42,8 @@ def pearson_r(a,
     if not isinstance(a, xr.DataArray) and not isinstance(b, xr.DataArray):
         if (dim is not None) and (axis is not None):
             warnings.warn(
-                "The `dim` keyword is unused with non xarray.DataArray inputs")
+                "The `dim` keyword is unused with non xarray.DataArray inputs"
+            )
         if axis is None:  # squash array to 1D for element wise computation
             axis = 0
             a = np.ravel(a)
@@ -61,8 +56,7 @@ def pearson_r(a,
             print('Data along `axis` must have the same dimension as `weights`')
     else:  # if a and b are xr.DataArrays
         if (dim is not None) and (axis is not None):
-            warnings.warn(
-                "The `axis` keyword is unused with xarray.DataArray inputs")
+            warnings.warn("The `axis` keyword is unused with xarray.DataArray inputs")
         try:
             return xs.pearson_r(a, b, dim, weights, skipna, keep_attrs)
         except ValueError:
@@ -75,7 +69,6 @@ def _generate_eofs_solver(data, time_dim=0, weights=None, center=True, ddof=1):
 
     # ''' Start of boilerplate
     if not isinstance(data, xr.DataArray):
-
         data = np.asarray(data)
 
         if (time_dim >= data.ndim) or (time_dim < -data.ndim):
@@ -84,7 +77,8 @@ def _generate_eofs_solver(data, time_dim=0, weights=None, center=True, ddof=1):
         # Transpose data if time_dim is not 0 (i.e. the first/left-most dimension)
         dims_to_transpose = np.arange(data.ndim).tolist()
         dims_to_transpose.insert(
-            0, dims_to_transpose.pop(dims_to_transpose.index(time_dim)))
+            0, dims_to_transpose.pop(dims_to_transpose.index(time_dim))
+        )
         data = np.transpose(data, axes=dims_to_transpose)
 
         dims = [f"dim_{i}" for i in range(data.ndim)]
@@ -100,15 +94,17 @@ def _generate_eofs_solver(data, time_dim=0, weights=None, center=True, ddof=1):
     return data, solver
 
 
-def eofunc_eofs(data,
-                neofs=1,
-                time_dim=0,
-                eofscaling=0,
-                weights=None,
-                center=True,
-                ddof=1,
-                vfscaled=False,
-                meta=False):
+def eofunc_eofs(
+    data,
+    neofs=1,
+    time_dim=0,
+    eofscaling=0,
+    weights=None,
+    center=True,
+    ddof=1,
+    vfscaled=False,
+    meta=False,
+):
     """Computes empirical orthogonal functions (EOFs, aka: Principal Component
     Analysis).
 
@@ -229,11 +225,9 @@ def eofunc_eofs(data,
     `eofunc_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc_n.shtml>`__,
     `eofunc_n_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_n_Wrap.shtml>`__
     """
-    data, solver = _generate_eofs_solver(data,
-                                         time_dim=time_dim,
-                                         weights=weights,
-                                         center=center,
-                                         ddof=ddof)
+    data, solver = _generate_eofs_solver(
+        data, time_dim=time_dim, weights=weights, center=center, ddof=ddof
+    )
 
     # Checking number of EOFs
     if neofs <= 0:
@@ -255,11 +249,8 @@ def eofunc_eofs(data,
     attrs['varianceFraction'] = solver.varianceFraction(neigs=neofs)
 
     if meta:
-        dims = ["eof"
-               ] + [data.dims[i] for i in range(data.ndim) if i != time_dim]
-        coords = {
-            k: v for (k, v) in data.coords.items() if k != data.dims[time_dim]
-        }
+        dims = ["eof"] + [data.dims[i] for i in range(data.ndim) if i != time_dim]
+        coords = {k: v for (k, v) in data.coords.items() if k != data.dims[time_dim]}
     else:
         dims = ["eof"] + [f"dim_{i}" for i in range(data.ndim) if i != time_dim]
         coords = {}
@@ -267,14 +258,9 @@ def eofunc_eofs(data,
     return xr.DataArray(eofs, attrs=attrs, dims=dims, coords=coords)
 
 
-def eofunc_pcs(data,
-               npcs=1,
-               time_dim=0,
-               pcscaling=0,
-               weights=None,
-               center=True,
-               ddof=1,
-               meta=False):
+def eofunc_pcs(
+    data, npcs=1, time_dim=0, pcscaling=0, weights=None, center=True, ddof=1, meta=False
+):
     """Computes the principal components (time projection) in the empirical
     orthogonal function analysis.
 
@@ -363,11 +349,9 @@ def eofunc_pcs(data,
     `eofunc_ts_n_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_ts_n_Wrap.shtml>`__
     """
 
-    data, solver = _generate_eofs_solver(data,
-                                         time_dim=time_dim,
-                                         weights=weights,
-                                         center=center,
-                                         ddof=ddof)
+    data, solver = _generate_eofs_solver(
+        data, time_dim=time_dim, weights=weights, center=center, ddof=ddof
+    )
 
     # Checking number of EOFs
     if npcs <= 0:
@@ -405,7 +389,8 @@ def eofunc(data: Iterable, neval, **kwargs) -> xr.DataArray:
         "correlation"
         "`, and 'missing_value' other than np.nan. The output "
         " and its attributes may thus not be as expected, too. Use `eofunc_eofs` instead.",
-        PendingDeprecationWarning)
+        PendingDeprecationWarning,
+    )
 
     if not isinstance(data, xr.DataArray) or not isinstance(data, np.ndarray):
         data = np.asarray(data)
@@ -423,7 +408,8 @@ def eofunc_ts(data: Iterable, evec, **kwargs) -> xr.DataArray:
         "correlation"
         "`, and 'missing_value' other than np.nan. The output "
         " and its attributes may thus not be as expected, too. Use `eofunc_pcs` instead.",
-        PendingDeprecationWarning)
+        PendingDeprecationWarning,
+    )
 
     if not isinstance(data, xr.DataArray) or not isinstance(data, np.ndarray):
         data = np.asarray(data)

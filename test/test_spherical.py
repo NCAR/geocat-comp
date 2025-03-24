@@ -19,7 +19,6 @@ from geocat.comp import decomposition, recomposition, scale_voronoi
 
 
 class Test_Spherical:
-
     @pytest.fixture
     def spherical_data(self):
         max_harm = 23
@@ -70,11 +69,6 @@ class Test_Spherical:
                         test_results[-1] = 1
                         count += 1
 
-        test_harmonics_np = np.array(test_harmonics)
-        test_harmonics_xr = xr.DataArray(
-            test_harmonics_np,
-            dims=['har', 'm,n'],
-        )
         test_data_np = test_data
         test_data_xr = xr.DataArray(
             test_data_np,
@@ -158,8 +152,8 @@ class Test_Spherical:
         )
         np.testing.assert_almost_equal(
             scale_np / np.sum(scale_np, axis=(0, 1)),
-            spherical_data['test_scale_np'] /
-            np.sum(spherical_data['test_scale_np'], axis=(0, 1)),
+            spherical_data['test_scale_np']
+            / np.sum(spherical_data['test_scale_np'], axis=(0, 1)),
         )
 
     def test_scale_voronoi_xr(self, spherical_data) -> None:
@@ -169,6 +163,6 @@ class Test_Spherical:
         )
         np.testing.assert_almost_equal(
             scale_xr / np.sum(scale_xr, axis=(0, 1)),
-            spherical_data['test_scale_xr'] /
-            np.sum(spherical_data['test_scale_xr'], axis=(0, 1)),
+            spherical_data['test_scale_xr']
+            / np.sum(spherical_data['test_scale_xr'], axis=(0, 1)),
         )
