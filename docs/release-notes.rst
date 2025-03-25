@@ -24,7 +24,7 @@ Internal Changes
 
 Bug Fixes
 ^^^^^^^^^
-* Unpin scipy and update ``.sph_harm`` to ``sph_harm_y`` by `Anissa Zacharias`_ in (:pr:`695`)
+* Unpin scipy and update ``sph_harm`` to ``sph_harm_y`` by `Anissa Zacharias`_ in (:pr:`695`)
 
 
 Breaking Changes
