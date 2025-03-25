@@ -26,7 +26,6 @@ Bug Fixes
 ^^^^^^^^^
 * Unpin scipy and update ``sph_harm`` to ``sph_harm_y`` by `Anissa Zacharias`_ in (:pr:`695`)
 
-
 Breaking Changes
 ^^^^^^^^^^^^^^^^
 * The ``chunk_size`` parameter was removed from :func:`.decomposition` and :func:`.recomposition` in (:pr:`695`)
