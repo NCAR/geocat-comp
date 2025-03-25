@@ -8,22 +8,27 @@
 Release Notes
 =============
 
-vYYYY.MM.## (unreleased)
-------------------------
+v2025.03.0 (March 25, 2025)
+---------------------------
+This release unpins scipy, establishes minimum version testing, and switches
+from ``yapf`` to ``ruff`` formatting.
 
 Enhancements
 ^^^^^^^^^^^^
-* Add minimum dependency version testing and address minor compatibility issues with Pandas and Xarray by
-`Katelyn FitzGerald`_ in (:pr:`699`)
+* Add minimum dependency version testing and address minor compatibility issues with Pandas and Xarray by `Katelyn FitzGerald`_ in (:pr:`699`)
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
 * Reconfigure analytics by `Katelyn FitzGerald`_ in (:pr:`698`)
-* Remove `docformatter` and setup `ruff` by `Cora Schneck`_ in (:pr:`700`)
+* Remove ``docformatter`` and setup ``ruff`` by `Cora Schneck`_ in (:pr:`700`)
 
 Bug Fixes
 ^^^^^^^^^
 * Unpin scipy and update ``sph_harm`` to ``sph_harm_y`` by `Anissa Zacharias`_ in (:pr:`695`)
+
+Breaking Changes
+^^^^^^^^^^^^^^^^
+* The ``chunk_size`` parameter was removed from :func:`.decomposition` and :func:`.recomposition` in (:pr:`695`)
 
 v2025.02.0 (February 25, 2025)
 ------------------------------
