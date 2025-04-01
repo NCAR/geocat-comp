@@ -530,16 +530,19 @@ def _relhum_ice(
 
     # Define data variables
 
-    t0 = 273.15
-    ep = 0.622
-    onemep = 0.378
-    es0 = 6.1128
-    a = 22.571
-    b = 273.71
+    t0 = 273.15  # Temperature 0 degrees C in Kelvin
+    ep = 0.622  # Molar mass of vapor and dry air (18.02/28.9634)
+    onemep = 0.378  # Correction = 1 - ep = 1 - 0.622
+    es0 = 6.1128  # Vapor pressure of water at 0 degrees C in Pa
+    a = 22.571  # Constant for Magnus Equation
+    b = 273.71  # Constant for Magnus Equation
 
+    # Approximation of vapor pressure over water from Magnus Form (Magnus, 1996) Equation 8
     est = es0 * np.exp((a * (t - t0)) / ((t - t0) + b))
+    # Calculate Specific Humidity
     qst = (ep * est) / ((p * 0.01) - onemep * est)
 
+    # Calculate Relative Humidity
     rh = 100 * (w / qst)
 
     return rh
@@ -595,17 +598,19 @@ def _relhum_water(
     """
 
     # Define data variables
+    t0 = 273.15  # Temperature 0 degrees C in Kelvin
+    ep = 0.622  # Molar mass of vapor and dry air (18.02/28.9634)
+    onemep = 0.378  # Correction = 1 - ep = 1 - 0.622
+    es0 = 6.1128  # Vapor pressure of water at 0 degrees C in Pa
+    a = 17.269  # Constant for Magnus Equation
+    b = 35.86  # Constant for Magnus Equation
 
-    t0 = 273.15
-    ep = 0.622
-    onemep = 0.378
-    es0 = 6.1128
-    a = 17.269
-    b = 35.86
-
+    # Approximation of vapor pressure over water from Magnus Form (Magnus, 1996) Equation 8
     est = es0 * np.exp((a * (t - t0)) / (t - b))
+    # Calculate Specific Humidity
     qst = (ep * est) / ((p * 0.01) - onemep * est)
 
+    # Calculate Relative Humidity
     rh = 100 * (w / qst)
 
     return rh
