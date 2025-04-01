@@ -9,6 +9,7 @@ Release Notes
 =============
 
 vYYYY.MM.## (unreleased)
+------------------------
 This release...
 
 Documentation
