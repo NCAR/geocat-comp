@@ -533,12 +533,18 @@ def _relhum_ice(
     t0 = 273.15  # Temperature 0 degrees C in Kelvin
     ep = 0.622  # Molar mass of vapor and dry air (18.02/28.9634)
     onemep = 0.378  # Correction = 1 - ep = 1 - 0.622
-    es0 = 6.1128  # Vapor pressure of water at 0 degrees C in Pa
-    a = 22.571  # Constant for Magnus Equation
-    b = 273.71  # Constant for Magnus Equation
 
-    # Approximation of vapor pressure over water from Magnus Form (Magnus, 1996) Equation 8
+    # Notes and Correspondence: "Improved Magnus Form Approximation of Saturation Vapor Pressure" (Alduchov & Eskridge, 1996)
+    # https://doi.org/10.1175/1520-0450(1996)035%3C0601:IMFAOS%3E2.0.CO;2
+    es0 = 6.1128  # Vapor pressure of water at 0 degrees C in Pa, AEDKi (Table 4)
+    a = 22.571  # Saturation Vapor Pressure Coefficient over ice, AEDKi (Table 4)
+    b = 273.71  # Saturation Vapor Pressure Coefficient over ice, AEDKi (Table 4)
+
+    # "Improved Magnus' Form Approximation of Saturation Vapor Pressure" (Alduchov & Eskridge, 1997)
+    # https://doi.org/10.2172/548871
+    # Approximation of vapor pressure from Magnus Form, Equation 8
     est = es0 * np.exp((a * (t - t0)) / ((t - t0) + b))
+
     # Calculate Specific Humidity
     qst = (ep * est) / ((p * 0.01) - onemep * est)
 
@@ -601,12 +607,20 @@ def _relhum_water(
     t0 = 273.15  # Temperature 0 degrees C in Kelvin
     ep = 0.622  # Molar mass of vapor and dry air (18.02/28.9634)
     onemep = 0.378  # Correction = 1 - ep = 1 - 0.622
-    es0 = 6.1128  # Vapor pressure of water at 0 degrees C in Pa
-    a = 17.269  # Constant for Magnus Equation
-    b = 35.86  # Constant for Magnus Equation
 
-    # Approximation of vapor pressure over water from Magnus Form (Magnus, 1996) Equation 8
+    # Notes and Correspondence: "Improved Magnus Form Approximation of Saturation Vapor Pressure" (Alduchov & Eskridge, 1996)
+    # https://doi.org/10.1175/1520-0450(1996)035%3C0601:IMFAOS%3E2.0.CO;2
+    es0 = 6.1128  # Vapor pressure of water at 0 degrees C in Pa, AEDKi (Table 4)
+
+    # "The Computation of Saturation Vapor Pressure" (Lowe et al, 1974)
+    # https://apps.dtic.mil/sti/tr/pdf/AD0778316.pdf
+    # Coefficients are approximations from Magnus Tetens (Murray, 1967)
+    a = 17.269  # Saturation Vapor Pressure Coefficient over water, Equation 4.3
+    b = 35.86  # Saturation Vapor Pressure Coefficient over water, Equation 4.3
+
+    # Approximation of vapor pressure (Lowe et al, 1874), Equation 4.3
     est = es0 * np.exp((a * (t - t0)) / (t - b))
+
     # Calculate Specific Humidity
     qst = (ep * est) / ((p * 0.01) - onemep * est)
 
