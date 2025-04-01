@@ -219,9 +219,9 @@ def _relhum(
     """Calculates relative humidity with respect to ice, given temperature,
     mixing ratio, and pressure.
 
-     "Improved Magnus' Form Approx. of Saturation Vapor pressure"
-     Oleg A. Alduchov and Robert E. Eskridge
-     https://journals.ametsoc.org/view/journals/apme/35/4/1520-0450_1996_035_0601_imfaos_2_0_co_2.xml
+    Notes and Correspondence: "Improved Magnus Form Approximation of Saturation Vapor Pressure"
+    Oleg A. Alduchov and Robert E. Eskridge
+    https://doi.org/10.1175/1520-0450(1996)035%3C0601:IMFAOS%3E2.0.CO;2
 
     Parameters
     ----------
@@ -492,9 +492,13 @@ def _relhum_ice(
     """Calculates relative humidity with respect to ice, given temperature,
     mixing ratio, and pressure.
 
-    "Improved Magnus' Form Approx. of Saturation Vapor pressure"
+    Notes and Correspondence: "Improved Magnus Form Approximation of Saturation Vapor Pressure"
     Oleg A. Alduchov and Robert E. Eskridge
-    https://journals.ametsoc.org/view/journals/apme/35/4/1520-0450_1996_035_0601_imfaos_2_0_co_2.xml
+    https://doi.org/10.1175/1520-0450(1996)035%3C0601:IMFAOS%3E2.0.CO;2
+
+    "Improved Magnus' Form Approximation of Saturation Vapor Pressure"
+    Oleg A. Alduchov and Robert E. Eskridge
+    https://doi.org/10.2172/548871
 
     Parameters
     ----------
@@ -571,6 +575,10 @@ def _relhum_water(
 
     .. math::
         rh =  100*  q / ( (ep*es)/(p-es) )
+
+    "The Computation of Saturation Vapor Pressure"
+    Pual R. Lowe, et al
+    https://apps.dtic.mil/sti/tr/pdf/AD0778316.pdf
 
     Parameters
     ----------
