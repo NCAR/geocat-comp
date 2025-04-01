@@ -8,6 +8,14 @@
 Release Notes
 =============
 
+vYYYY.MM.## (unreleased)
+------------------------
+This release...
+
+Documentation
+^^^^^^^^^^^^^
+* Remove reference to NCAR/geocat repo from support page by `Katelyn FitzGerald`_ in (:pr:`709`)
+
 v2025.03.0 (March 25, 2025)
 ---------------------------
 This release unpins scipy, establishes minimum version testing, and switches
