@@ -99,4 +99,4 @@ novel computational functions for geosciences data.
 
    Support <support>
    GitHub Issues <https://github.com/NCAR/geocat-comp/issues>
-   Feature Request Form <https://forms.gle/6DTo3ELLri4DAGfG8>
+   Suggestion Box <https://forms.gle/6DTo3ELLri4DAGfG8>
