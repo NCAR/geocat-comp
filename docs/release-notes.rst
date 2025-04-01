@@ -8,6 +8,17 @@
 Release Notes
 =============
 
+vYYYY.MM.## (unreleased)
+---------------------------
+
+
+Enhancements
+^^^^^^^^^^^^
+* Add additional relative humidity documentation by `Cora Schneck`_ in (:pr:`710`)
+
+Release Notes
+=============
+
 v2025.03.0 (March 25, 2025)
 ---------------------------
 This release unpins scipy, establishes minimum version testing, and switches
