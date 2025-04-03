@@ -216,7 +216,7 @@ def _relhum(
     w: typing.Union[np.ndarray, xr.DataArray, list, float],
     p: typing.Union[np.ndarray, xr.DataArray, list, float],
 ) -> np.ndarray:
-    """Calculates relative humidity with respect to ice, given temperature,
+    """Calculates relative humidity given temperature,
     mixing ratio, and pressure.
 
     Notes and Correspondence: "Improved Magnus Form Approximation of Saturation Vapor Pressure"
