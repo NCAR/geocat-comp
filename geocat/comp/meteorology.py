@@ -216,12 +216,12 @@ def _relhum(
     w: typing.Union[np.ndarray, xr.DataArray, list, float],
     p: typing.Union[np.ndarray, xr.DataArray, list, float],
 ) -> np.ndarray:
-    """Calculates relative humidity with respect to ice, given temperature,
+    """Calculates relative humidity given temperature,
     mixing ratio, and pressure.
 
-     "Improved Magnus' Form Approx. of Saturation Vapor pressure"
-     Oleg A. Alduchov and Robert E. Eskridge
-     https://journals.ametsoc.org/view/journals/apme/35/4/1520-0450_1996_035_0601_imfaos_2_0_co_2.xml
+    Notes and Correspondence: "Improved Magnus Form Approximation of Saturation Vapor Pressure"
+    Oleg A. Alduchov and Robert E. Eskridge
+    https://doi.org/10.1175/1520-0450(1996)035%3C0601:IMFAOS%3E2.0.CO;2
 
     Parameters
     ----------
@@ -492,9 +492,13 @@ def _relhum_ice(
     """Calculates relative humidity with respect to ice, given temperature,
     mixing ratio, and pressure.
 
-    "Improved Magnus' Form Approx. of Saturation Vapor pressure"
+    Notes and Correspondence: "Improved Magnus Form Approximation of Saturation Vapor Pressure"
     Oleg A. Alduchov and Robert E. Eskridge
-    https://journals.ametsoc.org/view/journals/apme/35/4/1520-0450_1996_035_0601_imfaos_2_0_co_2.xml
+    https://doi.org/10.1175/1520-0450(1996)035%3C0601:IMFAOS%3E2.0.CO;2
+
+    "Improved Magnus' Form Approximation of Saturation Vapor Pressure"
+    Oleg A. Alduchov and Robert E. Eskridge
+    https://doi.org/10.2172/548871
 
     Parameters
     ----------
@@ -529,17 +533,25 @@ def _relhum_ice(
     """
 
     # Define data variables
+    t0 = 273.15  # Temperature 0 degrees C in Kelvin
+    ep = 0.622  # Molar mass of vapor and dry air (18.02/28.9634)
+    onemep = 0.378  # Correction = 1 - ep = 1 - 0.622
 
-    t0 = 273.15
-    ep = 0.622
-    onemep = 0.378
-    es0 = 6.1128
-    a = 22.571
-    b = 273.71
+    # Notes and Correspondence: "Improved Magnus Form Approximation of Saturation Vapor Pressure" (Alduchov & Eskridge, 1996)
+    # https://doi.org/10.1175/1520-0450(1996)035%3C0601:IMFAOS%3E2.0.CO;2
+    es0 = 6.1128  # Vapor pressure of water at 0 degrees C in Pa, AEDKi (Table 4)
+    a = 22.571  # Saturation Vapor Pressure Coefficient over ice, AEDKi (Table 4)
+    b = 273.71  # Saturation Vapor Pressure Coefficient over ice, AEDKi (Table 4)
 
+    # "Improved Magnus' Form Approximation of Saturation Vapor Pressure" (Alduchov & Eskridge, 1997)
+    # https://doi.org/10.2172/548871
+    # Approximation of vapor pressure from Magnus Form, Equation 8
     est = es0 * np.exp((a * (t - t0)) / ((t - t0) + b))
+
+    # Calculate Specific Humidity
     qst = (ep * est) / ((p * 0.01) - onemep * est)
 
+    # Calculate Relative Humidity
     rh = 100 * (w / qst)
 
     return rh
@@ -563,6 +575,14 @@ def _relhum_water(
     .. math::
         rh =  100*  q / ( (ep*es)/(p-es) )
 
+    Notes and Correspondence: "Improved Magnus Form Approximation of Saturation Vapor Pressure"
+    Oleg A. Alduchov and Robert E. Eskridge
+    https://doi.org/10.1175/1520-0450(1996)035%3C0601:IMFAOS%3E2.0.CO;2
+
+    "On the Computation of Saturation Vapor Pressure"
+    F. W. Murray
+    https://doi.org/10.1175/1520-0450(1967)006%3C0203:OTCOSV%3E2.0.CO;2
+
     Parameters
     ----------
     t : ndarray, :obj:`list`, :obj:`float`
@@ -595,17 +615,27 @@ def _relhum_water(
     """
 
     # Define data variables
+    t0 = 273.15  # Temperature 0 degrees C in Kelvin
+    ep = 0.622  # Molar mass of vapor and dry air (18.02/28.9634)
+    onemep = 0.378  # Correction = 1 - ep = 1 - 0.622
 
-    t0 = 273.15
-    ep = 0.622
-    onemep = 0.378
-    es0 = 6.1128
-    a = 17.269
-    b = 35.86
+    # Notes and Correspondence: "Improved Magnus Form Approximation of Saturation Vapor Pressure" (Alduchov & Eskridge, 1996)
+    # https://doi.org/10.1175/1520-0450(1996)035%3C0601:IMFAOS%3E2.0.CO;2
+    es0 = 6.1128  # Vapor pressure of water at 0 degrees C in Pa, AEDKi (Table 4)
 
+    # "On the Computation of Saturation Vapor Pressure" (Murray, 1967)
+    # https://doi.org/10.1175/1520-0450(1967)006%3C0203:OTCOSV%3E2.0.CO;2
+    # Coefficients are approximations from Magnus Tetens
+    a = 17.269  # Saturation Vapor Pressure coefficient over water, Equation 6
+    b = 35.86  # Saturation Vapor Pressure coefficient over water, Equation 6
+
+    # Approximation of saturation vapor pressure (Murray, 1967) Equation 6
     est = es0 * np.exp((a * (t - t0)) / (t - b))
+
+    # Calculate Specific Humidity
     qst = (ep * est) / ((p * 0.01) - onemep * est)
 
+    # Calculate Relative Humidity
     rh = 100 * (w / qst)
 
     return rh

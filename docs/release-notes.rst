@@ -15,6 +15,7 @@ This release...
 Documentation
 ^^^^^^^^^^^^^
 * Remove reference to NCAR/geocat repo from support page by `Katelyn FitzGerald`_ in (:pr:`709`)
+* Add additional relative humidity documentation by `Cora Schneck`_ in (:pr:`710`)
 
 v2025.03.0 (March 25, 2025)
 ---------------------------
