@@ -533,7 +533,6 @@ def _relhum_ice(
     """
 
     # Define data variables
-
     t0 = 273.15  # Temperature 0 degrees C in Kelvin
     ep = 0.622  # Molar mass of vapor and dry air (18.02/28.9634)
     onemep = 0.378  # Correction = 1 - ep = 1 - 0.622
@@ -576,9 +575,13 @@ def _relhum_water(
     .. math::
         rh =  100*  q / ( (ep*es)/(p-es) )
 
-    "The Computation of Saturation Vapor Pressure"
-    Pual R. Lowe, et al
-    https://apps.dtic.mil/sti/tr/pdf/AD0778316.pdf
+    Notes and Correspondence: "Improved Magnus Form Approximation of Saturation Vapor Pressure"
+    Oleg A. Alduchov and Robert E. Eskridge
+    https://doi.org/10.1175/1520-0450(1996)035%3C0601:IMFAOS%3E2.0.CO;2
+
+    "On the Computation of Saturation Vapor Pressure"
+    F. W. Murray
+    https://doi.org/10.1175/1520-0450(1967)006%3C0203:OTCOSV%3E2.0.CO;2
 
     Parameters
     ----------
@@ -620,13 +623,13 @@ def _relhum_water(
     # https://doi.org/10.1175/1520-0450(1996)035%3C0601:IMFAOS%3E2.0.CO;2
     es0 = 6.1128  # Vapor pressure of water at 0 degrees C in Pa, AEDKi (Table 4)
 
-    # "The Computation of Saturation Vapor Pressure" (Lowe et al, 1974)
-    # https://apps.dtic.mil/sti/tr/pdf/AD0778316.pdf
-    # Coefficients are approximations from Magnus Tetens (Murray, 1967)
-    a = 17.269  # Saturation Vapor Pressure Coefficient over water, Equation 4.3
-    b = 35.86  # Saturation Vapor Pressure Coefficient over water, Equation 4.3
+    # "On the Computation of Saturation Vapor Pressure" (Murray, 1967)
+    # https://doi.org/10.1175/1520-0450(1967)006%3C0203:OTCOSV%3E2.0.CO;2
+    # Coefficients are approximations from Magnus Tetens
+    a = 17.269  # Saturation Vapor Pressure coefficient over water, Equation 6
+    b = 35.86  # Saturation Vapor Pressure coefficient over water, Equation 6
 
-    # Approximation of vapor pressure (Lowe et al, 1874), Equation 4.3
+    # Approximation of saturation vapor pressure (Murray, 1967) Equation 6
     est = es0 * np.exp((a * (t - t0)) / (t - b))
 
     # Calculate Specific Humidity
