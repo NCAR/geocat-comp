@@ -45,8 +45,6 @@ Project administrators are also expected to keep this Code of Conduct updated wi
 
 ## Reporting
 
-## Reporting
-
 Instances of unacceptable behavior can be brought to the attention of the project administrator(s) who may take any reasonable and necessary action to address and stop the behavior. However, making a report to a project administrator is not considered an ‘official report’ to UCAR.
 
 Instances of unacceptable behavior may also be reported:
