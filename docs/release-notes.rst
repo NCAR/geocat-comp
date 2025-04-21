@@ -17,6 +17,10 @@ Documentation
 * Remove reference to NCAR/geocat repo from support page by `Katelyn FitzGerald`_ in (:pr:`709`)
 * Add additional relative humidity documentation by `Cora Schneck`_ in (:pr:`710`)
 
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Updates Github Actions workflows per new guidance by `Cora Schneck`_ in (:pr:`716`)
+
 v2025.03.0 (March 25, 2025)
 ---------------------------
 This release unpins scipy, establishes minimum version testing, and switches
