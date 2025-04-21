@@ -48,7 +48,7 @@ jobs:
       - name: environment setup
         id: env-setup
         continue-on-error: true
-        uses: mamba-org/setup-micromamba@v2
+        uses: mamba-org/setup-micromamba@0dea6379afdaffa5d528b3d1dabc45da37f443fc # v2
         with:
           environment-file: ${{ env.CONDA_ENV_FILE }}
           cache-environment: true
@@ -58,7 +58,7 @@ jobs:
 
       - name: retry environment set up if failed
         if: steps.env-setup.outcome == 'failure'
-        uses: mamba-org/setup-micromamba@v2
+        uses: mamba-org/setup-micromamba@0dea6379afdaffa5d528b3d1dabc45da37f443fc # v2
         with:
           download-micromamba: false
           environment-file: ${{ env.CONDA_ENV_FILE }}
@@ -73,7 +73,7 @@ jobs:
 
       - name: Run Tests (non-windows)
         if: matrix.os != 'windows-latest'
-        uses: nick-fields/retry@v3
+        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3
         with:
           timeout_minutes: 60
           max_attempts: 3
@@ -85,7 +85,7 @@ jobs:
 
       - name: Run Tests (windows)
         if: matrix.os == 'windows-latest'
-        uses: nick-fields/retry@v3
+        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3
         with:
           timeout_minutes: 60
           max_attempts: 3
@@ -103,7 +103,7 @@ jobs:
 
       - name: Upload code coverage to Codecov
         if: github.repository == 'NCAR/geocat-comp'
-        uses: codecov/codecov-action@v5.4.2
+        uses: codecov/codecov-action@ad3126e916f78f00edff4ed0317cf185271ccc2d # v5.4.2
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
@@ -124,7 +124,7 @@ jobs:
       - name: environment setup
         id: link-env-setup
         continue-on-error: true
-        uses: mamba-org/setup-micromamba@v2
+        uses: mamba-org/setup-micromamba@0dea6379afdaffa5d528b3d1dabc45da37f443fc # v2
         with:
           environment-file: build_envs/docs.yml
           cache-environment: true
@@ -134,7 +134,7 @@ jobs:
 
       - name: retry environment set up if failed
         if: steps.link-env-setup.outcome == 'failure'
-        uses: mamba-org/setup-micromamba@v2
+        uses: mamba-org/setup-micromamba@0dea6379afdaffa5d528b3d1dabc45da37f443fc # v2
         with:
           download-micromamba: false
           environment-file: build_envs/docs.yml
@@ -150,7 +150,7 @@ jobs:
         run: |
           conda list
       - name: Make docs with linkcheck
-        uses: nick-fields/retry@v3
+        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3
         with:
           timeout_minutes: 60
           max_attempts: 3
