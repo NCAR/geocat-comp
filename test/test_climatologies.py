@@ -1,9 +1,11 @@
 import cftime
 import numpy as np
+from packaging.version import Version
 import pandas as pd
 import pytest
 import xarray.testing
 import xarray as xr
+from xarray import __version__ as xarray_version
 
 from geocat.comp import (
     climate_anomaly,
@@ -1020,7 +1022,10 @@ class Test_Climatology_Average:
 
     def test_datetime_climatology_average(self) -> None:
         array = self.daily['data']
-        array['time'] = array.time.to_index().to_datetimeindex(time_unit='ns')
+        if xarray_version < Version('2025.01.2'):
+            array['time'] = array.time.to_index().to_datetimeindex()
+        else:
+            array['time'] = array.time.to_index().to_datetimeindex(time_unit='ns')
         array_expected = self.day_2_month_clim['data']
         result = climatology_average(array, freq='month')
         xr.testing.assert_allclose(result, array_expected)
