@@ -1000,6 +1000,13 @@ class Test_Climatology_Average:
         result = climatology_average(array, freq='month')
         xr.testing.assert_allclose(result, array_expected)
 
+    def test_datetime_climatology_average(self) -> None:
+        array = self.daily['data']
+        array['time'] = array.time.to_index().to_datetimeindex()
+        array_expected = self.day_2_month_clim['data']
+        result = climatology_average(array, freq='month')
+        xr.testing.assert_allclose(result, array_expected)
+
     def test_non_datetime_like_objects_climatology_average(self) -> None:
         dset_encoded = xr.tutorial.open_dataset("air_temperature", decode_cf=False)
         with pytest.raises(ValueError):
