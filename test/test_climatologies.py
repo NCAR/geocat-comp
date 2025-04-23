@@ -1022,7 +1022,7 @@ class Test_Climatology_Average:
 
     def test_datetime_climatology_average(self) -> None:
         array = self.daily['data']
-        if xarray_version < Version('2025.01.2'):
+        if Version(xarray_version) < Version('2025.01.2'):
             array['time'] = array.time.to_index().to_datetimeindex()
         else:
             array['time'] = array.time.to_index().to_datetimeindex(time_unit='ns')
