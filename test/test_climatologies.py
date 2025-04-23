@@ -1002,7 +1002,7 @@ class Test_Climatology_Average:
 
     def test_datetime_climatology_average(self) -> None:
         array = self.daily['data']
-        array['time'] = array.time.to_index().to_datetimeindex()
+        array['time'] = array.time.to_index().to_datetimeindex(time_unit='ns')
         array_expected = self.day_2_month_clim['data']
         result = climatology_average(array, freq='month')
         xr.testing.assert_allclose(result, array_expected)
