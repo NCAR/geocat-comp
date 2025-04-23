@@ -48,7 +48,9 @@ def _get_dummy_data(start_date, end_date, freq, nlats, nlons, calendar='standard
     Data can be hourly, daily, or monthly.
     """
     # Coordinates
-    time = xr.date_range(start=start_date, end=end_date, freq=freq, calendar=calendar, use_cftime=True)
+    time = xr.date_range(
+        start=start_date, end=end_date, freq=freq, calendar=calendar, use_cftime=True
+    )
     lats = np.linspace(start=-90, stop=90, num=nlats, dtype='float32')
     lons = np.linspace(start=-180, stop=180, num=nlons, dtype='float32')
 
@@ -84,7 +86,9 @@ class Test_Climate_Anomaly:
                 'data': (('time', 'lat', 'lon'), np.reshape(expected_anom, (731, 1, 1)))
             },
             coords={
-                'time': xr.date_range(start='2020-01-01', end='2021-12-31', freq='D', use_cftime=True),
+                'time': xr.date_range(
+                    start='2020-01-01', end='2021-12-31', freq='D', use_cftime=True
+                ),
                 'lat': [-90],
                 'lon': [-180],
             },
@@ -127,7 +131,9 @@ class Test_Climate_Anomaly:
                 'data': (('time', 'lat', 'lon'), np.reshape(expected_anom, (731, 1, 1)))
             },
             coords={
-                'time': xr.date_range(start='2020-01-01', end='2021-12-31', freq='D', use_cftime=True),
+                'time': xr.date_range(
+                    start='2020-01-01', end='2021-12-31', freq='D', use_cftime=True
+                ),
                 'lat': [-90],
                 'lon': [-180],
             },
@@ -167,7 +173,9 @@ class Test_Climate_Anomaly:
                 'data': (('time', 'lat', 'lon'), np.reshape(expected_anom, (731, 1, 1)))
             },
             coords={
-                'time': xr.date_range(start='2020-01-01', end='2021-12-31', freq='D', use_cftime=True),
+                'time': xr.date_range(
+                    start='2020-01-01', end='2021-12-31', freq='D', use_cftime=True
+                ),
                 'lat': [-90],
                 'lon': [-180],
                 'season': ('time', seasons),
@@ -184,7 +192,9 @@ class Test_Climate_Anomaly:
                 'data': (('time', 'lat', 'lon'), np.reshape(expected_anom, (731, 1, 1)))
             },
             coords={
-                'time': xr.date_range(start='2020-01-01', end='2021-12-31', freq='D', use_cftime=True),
+                'time': xr.date_range(
+                    start='2020-01-01', end='2021-12-31', freq='D', use_cftime=True
+                ),
                 'lat': [-90],
                 'lon': [-180],
             },
@@ -398,7 +408,9 @@ class Test_Calendar_Average:
             715,
         ]
     ).reshape(24, 1, 1)
-    month_avg_time = xr.date_range('2020-01-01', '2022-01-01', freq='MS', use_cftime=True)
+    month_avg_time = xr.date_range(
+        '2020-01-01', '2022-01-01', freq='MS', use_cftime=True
+    )
     month_avg_time = xr.DataArray(
         np.vstack((month_avg_time[:-1], month_avg_time[1:])).T, dims=['time', 'nbd']
     ).mean(dim='nbd')
@@ -410,7 +422,9 @@ class Test_Calendar_Average:
     season_avg = np.array(
         [29.5, 105.5, 197.5, 289, 379.5, 470.5, 562.5, 654, 715]
     ).reshape(9, 1, 1)
-    season_avg_time = xr.date_range('2019-12-01', '2022-03-01', freq='QS-DEC', use_cftime=True)
+    season_avg_time = xr.date_range(
+        '2019-12-01', '2022-03-01', freq='QS-DEC', use_cftime=True
+    )
     season_avg_time = xr.DataArray(
         np.vstack((season_avg_time[:-1], season_avg_time[1:])).T, dims=['time', 'nbd']
     ).mean(dim='nbd')
@@ -666,7 +680,9 @@ class Test_Calendar_Average:
                 715,
             ]
         ).reshape(24, 1, 1)
-        month_avg_time = xr.date_range('2020-01-01', '2022-01-01', freq='MS', use_cftime=True)
+        month_avg_time = xr.date_range(
+            '2020-01-01', '2022-01-01', freq='MS', use_cftime=True
+        )
         month_avg_time = xr.DataArray(
             np.vstack((month_avg_time[:-1], month_avg_time[1:])).T, dims=['time', 'nbd']
         ).mean(dim='nbd')
@@ -787,7 +803,9 @@ class Test_Climatology_Average:
     month_clim = np.array(
         [198, 224.5438596, 257.5, 288, 318.5, 349, 379.5, 410.5, 441, 471.5, 502, 532.5]
     ).reshape(12, 1, 1)
-    month_clim_time = xr.date_range('2020-01-01', '2021-01-01', freq='MS', use_cftime=True)
+    month_clim_time = xr.date_range(
+        '2020-01-01', '2021-01-01', freq='MS', use_cftime=True
+    )
     month_clim_time = xr.DataArray(
         np.vstack((month_clim_time[:-1], month_clim_time[1:])).T, dims=['time', 'nbd']
     ).mean(dim='nbd')

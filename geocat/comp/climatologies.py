@@ -91,9 +91,13 @@ def _calculate_center_of_time_bounds(
     """
 
     if isinstance(start, cftime.datetime):
-        time_bounds = xr.date_range(start=start, end=end, freq=freq, calendar=calendar, use_cftime=True)
+        time_bounds = xr.date_range(
+            start=start, end=end, freq=freq, calendar=calendar, use_cftime=True
+        )
     elif isinstance(start, str):
-        time_bounds = xr.date_range(start=start, end=end, freq=freq, calendar=calendar, use_cftime=True)
+        time_bounds = xr.date_range(
+            start=start, end=end, freq=freq, calendar=calendar, use_cftime=True
+        )
     else:
         time_bounds = xr.date_range(start=start, end=end, freq=freq, calendar=calendar)
     time_bounds = time_bounds.append(time_bounds[-1:].shift(1, freq=freq))
