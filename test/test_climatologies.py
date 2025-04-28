@@ -1,9 +1,11 @@
 import cftime
 import numpy as np
+from packaging.version import Version
 import pandas as pd
 import pytest
 import xarray.testing
 import xarray as xr
+from xarray import __version__ as xarray_version
 
 from geocat.comp import (
     climate_anomaly,
@@ -48,7 +50,9 @@ def _get_dummy_data(start_date, end_date, freq, nlats, nlons, calendar='standard
     Data can be hourly, daily, or monthly.
     """
     # Coordinates
-    time = xr.cftime_range(start=start_date, end=end_date, freq=freq, calendar=calendar)
+    time = xr.date_range(
+        start=start_date, end=end_date, freq=freq, calendar=calendar, use_cftime=True
+    )
     lats = np.linspace(start=-90, stop=90, num=nlats, dtype='float32')
     lons = np.linspace(start=-180, stop=180, num=nlons, dtype='float32')
 
@@ -84,7 +88,9 @@ class Test_Climate_Anomaly:
                 'data': (('time', 'lat', 'lon'), np.reshape(expected_anom, (731, 1, 1)))
             },
             coords={
-                'time': xr.cftime_range(start='2020-01-01', end='2021-12-31', freq='D'),
+                'time': xr.date_range(
+                    start='2020-01-01', end='2021-12-31', freq='D', use_cftime=True
+                ),
                 'lat': [-90],
                 'lon': [-180],
             },
@@ -127,7 +133,9 @@ class Test_Climate_Anomaly:
                 'data': (('time', 'lat', 'lon'), np.reshape(expected_anom, (731, 1, 1)))
             },
             coords={
-                'time': xr.cftime_range(start='2020-01-01', end='2021-12-31', freq='D'),
+                'time': xr.date_range(
+                    start='2020-01-01', end='2021-12-31', freq='D', use_cftime=True
+                ),
                 'lat': [-90],
                 'lon': [-180],
             },
@@ -167,7 +175,9 @@ class Test_Climate_Anomaly:
                 'data': (('time', 'lat', 'lon'), np.reshape(expected_anom, (731, 1, 1)))
             },
             coords={
-                'time': xr.cftime_range(start='2020-01-01', end='2021-12-31', freq='D'),
+                'time': xr.date_range(
+                    start='2020-01-01', end='2021-12-31', freq='D', use_cftime=True
+                ),
                 'lat': [-90],
                 'lon': [-180],
                 'season': ('time', seasons),
@@ -184,7 +194,9 @@ class Test_Climate_Anomaly:
                 'data': (('time', 'lat', 'lon'), np.reshape(expected_anom, (731, 1, 1)))
             },
             coords={
-                'time': xr.cftime_range(start='2020-01-01', end='2021-12-31', freq='D'),
+                'time': xr.date_range(
+                    start='2020-01-01', end='2021-12-31', freq='D', use_cftime=True
+                ),
                 'lat': [-90],
                 'lon': [-180],
             },
@@ -252,8 +264,8 @@ class Test_Climate_Anomaly:
                 )
             },
             coords={
-                time_dim: xr.cftime_range(
-                    start='2020-01-01', end='2021-12-31', freq='D'
+                time_dim: xr.date_range(
+                    start='2020-01-01', end='2021-12-31', freq='D', use_cftime=True
                 ),
                 'lat': [-90],
                 'lon': [-180],
@@ -398,7 +410,9 @@ class Test_Calendar_Average:
             715,
         ]
     ).reshape(24, 1, 1)
-    month_avg_time = xr.cftime_range('2020-01-01', '2022-01-01', freq='MS')
+    month_avg_time = xr.date_range(
+        '2020-01-01', '2022-01-01', freq='MS', use_cftime=True
+    )
     month_avg_time = xr.DataArray(
         np.vstack((month_avg_time[:-1], month_avg_time[1:])).T, dims=['time', 'nbd']
     ).mean(dim='nbd')
@@ -410,7 +424,9 @@ class Test_Calendar_Average:
     season_avg = np.array(
         [29.5, 105.5, 197.5, 289, 379.5, 470.5, 562.5, 654, 715]
     ).reshape(9, 1, 1)
-    season_avg_time = xr.cftime_range('2019-12-01', '2022-03-01', freq='QS-DEC')
+    season_avg_time = xr.date_range(
+        '2019-12-01', '2022-03-01', freq='QS-DEC', use_cftime=True
+    )
     season_avg_time = xr.DataArray(
         np.vstack((season_avg_time[:-1], season_avg_time[1:])).T, dims=['time', 'nbd']
     ).mean(dim='nbd')
@@ -484,8 +500,8 @@ class Test_Calendar_Average:
             715,
         ]
     ).reshape(24, 1, 1)
-    julian_month_avg_time = xr.cftime_range(
-        '2020-01-01', '2022-01-01', freq='MS', calendar='julian'
+    julian_month_avg_time = xr.date_range(
+        '2020-01-01', '2022-01-01', freq='MS', calendar='julian', use_cftime=True
     )
     julian_month_avg_time = xr.DataArray(
         np.vstack((julian_month_avg_time[:-1], julian_month_avg_time[1:])).T,
@@ -524,8 +540,8 @@ class Test_Calendar_Average:
             714,
         ]
     ).reshape(24, 1, 1)
-    noleap_month_avg_time = xr.cftime_range(
-        '2020-01-01', '2022-01-01', freq='MS', calendar='noleap'
+    noleap_month_avg_time = xr.date_range(
+        '2020-01-01', '2022-01-01', freq='MS', calendar='noleap', use_cftime=True
     )
     noleap_month_avg_time = xr.DataArray(
         np.vstack((noleap_month_avg_time[:-1], noleap_month_avg_time[1:])).T,
@@ -564,8 +580,8 @@ class Test_Calendar_Average:
             716,
         ]
     ).reshape(24, 1, 1)
-    all_leap_month_avg_time = xr.cftime_range(
-        '2020-01-01', '2022-01-01', freq='MS', calendar='all_leap'
+    all_leap_month_avg_time = xr.date_range(
+        '2020-01-01', '2022-01-01', freq='MS', calendar='all_leap', use_cftime=True
     )
     all_leap_month_avg_time = xr.DataArray(
         np.vstack((all_leap_month_avg_time[:-1], all_leap_month_avg_time[1:])).T,
@@ -577,8 +593,8 @@ class Test_Calendar_Average:
     )
     # Daily -> Monthly Means for 360 Day Calendar
     day_360_leap_month_avg = np.arange(14.5, 734.5, 30).reshape(24, 1, 1)
-    day_360_leap_month_avg_time = xr.cftime_range(
-        '2020-01-01', '2022-01-01', freq='MS', calendar='360_day'
+    day_360_leap_month_avg_time = xr.date_range(
+        '2020-01-01', '2022-01-01', freq='MS', calendar='360_day', use_cftime=True
     )
     day_360_leap_month_avg_time = xr.DataArray(
         np.vstack(
@@ -614,8 +630,8 @@ class Test_Calendar_Average:
 
     def test_30min_to_hourly_calendar_average(self) -> None:
         hour_avg = np.arange(0.5, 35088.5, 2).reshape((365 + 366) * 24, 1, 1)
-        hour_avg_time = xr.cftime_range(
-            '2020-01-01 00:30:00', '2021-12-31 23:30:00', freq='h'
+        hour_avg_time = xr.date_range(
+            '2020-01-01 00:30:00', '2021-12-31 23:30:00', freq='h', use_cftime=True
         )
         min_2_hour_avg = xr.Dataset(
             data_vars={'data': (('time', 'lat', 'lon'), hour_avg)},
@@ -627,8 +643,8 @@ class Test_Calendar_Average:
 
     def test_hourly_to_daily_calendar_average(self) -> None:
         day_avg = np.arange(11.5, 17555.5, 24).reshape(366 + 365, 1, 1)
-        day_avg_time = xr.cftime_range(
-            '2020-01-01 12:00:00', '2021-12-31 12:00:00', freq='D'
+        day_avg_time = xr.date_range(
+            '2020-01-01 12:00:00', '2021-12-31 12:00:00', freq='D', use_cftime=True
         )
         hour_2_day_avg = xr.Dataset(
             data_vars={'data': (('time', 'lat', 'lon'), day_avg)},
@@ -666,7 +682,9 @@ class Test_Calendar_Average:
                 715,
             ]
         ).reshape(24, 1, 1)
-        month_avg_time = xr.cftime_range('2020-01-01', '2022-01-01', freq='MS')
+        month_avg_time = xr.date_range(
+            '2020-01-01', '2022-01-01', freq='MS', use_cftime=True
+        )
         month_avg_time = xr.DataArray(
             np.vstack((month_avg_time[:-1], month_avg_time[1:])).T, dims=['time', 'nbd']
         ).mean(dim='nbd')
@@ -766,8 +784,8 @@ class Test_Climatology_Average:
             np.arange(11640.5, 26328.5, 2),
         ]
     ).reshape(8784, 1, 1)
-    hour_clim_time = xr.cftime_range(
-        '2020-01-01 00:30:00', '2020-12-31 23:30:00', freq='h'
+    hour_clim_time = xr.date_range(
+        '2020-01-01 00:30:00', '2020-12-31 23:30:00', freq='h', use_cftime=True
     )
     min_2_hourly_clim = xr.Dataset(
         data_vars={'data': (('time', 'lat', 'lon'), hour_clim)},
@@ -776,8 +794,8 @@ class Test_Climatology_Average:
     day_clim = np.concatenate(
         [np.arange(4403.5, 5819.5, 24), [1427.5], np.arange(5831.5, 13175.5, 24)]
     ).reshape(366, 1, 1)
-    day_clim_time = xr.cftime_range(
-        '2020-01-01 12:00:00', '2020-12-31 12:00:00', freq='24h'
+    day_clim_time = xr.date_range(
+        '2020-01-01 12:00:00', '2020-12-31 12:00:00', freq='24h', use_cftime=True
     )
 
     hour_2_day_clim = xr.Dataset(
@@ -787,7 +805,9 @@ class Test_Climatology_Average:
     month_clim = np.array(
         [198, 224.5438596, 257.5, 288, 318.5, 349, 379.5, 410.5, 441, 471.5, 502, 532.5]
     ).reshape(12, 1, 1)
-    month_clim_time = xr.cftime_range('2020-01-01', '2021-01-01', freq='MS')
+    month_clim_time = xr.date_range(
+        '2020-01-01', '2021-01-01', freq='MS', use_cftime=True
+    )
     month_clim_time = xr.DataArray(
         np.vstack((month_clim_time[:-1], month_clim_time[1:])).T, dims=['time', 'nbd']
     ).mean(dim='nbd')
@@ -847,8 +867,8 @@ class Test_Climatology_Average:
             532.5,
         ]
     ).reshape(12, 1, 1)
-    julian_month_clim_time = xr.cftime_range(
-        '2020-01-01', '2021-01-01', freq='MS', calendar='julian'
+    julian_month_clim_time = xr.date_range(
+        '2020-01-01', '2021-01-01', freq='MS', calendar='julian', use_cftime=True
     )
     julian_month_clim_time = xr.DataArray(
         np.vstack((julian_month_clim_time[:-1], julian_month_clim_time[1:])).T,
@@ -862,8 +882,8 @@ class Test_Climatology_Average:
     noleap_month_clim = np.array(
         [197.5, 227, 256.5, 287, 317.5, 348, 378.5, 409.5, 440, 470.5, 501, 531.5]
     ).reshape(12, 1, 1)
-    noleap_month_clim_time = xr.cftime_range(
-        '2020-01-01', '2021-01-01', freq='MS', calendar='noleap'
+    noleap_month_clim_time = xr.date_range(
+        '2020-01-01', '2021-01-01', freq='MS', calendar='noleap', use_cftime=True
     )
     noleap_month_clim_time = xr.DataArray(
         np.vstack((noleap_month_clim_time[:-1], noleap_month_clim_time[1:])).T,
@@ -877,8 +897,8 @@ class Test_Climatology_Average:
     all_leap_month_clim = np.array(
         [198, 228, 258, 288.5, 319, 349.5, 380, 411, 441.5, 472, 502.5, 533]
     ).reshape(12, 1, 1)
-    all_leap_month_clim_time = xr.cftime_range(
-        '2020-01-01', '2021-01-01', freq='MS', calendar='all_leap'
+    all_leap_month_clim_time = xr.date_range(
+        '2020-01-01', '2021-01-01', freq='MS', calendar='all_leap', use_cftime=True
     )
     all_leap_month_clim_time = xr.DataArray(
         np.vstack((all_leap_month_clim_time[:-1], all_leap_month_clim_time[1:])).T,
@@ -890,8 +910,8 @@ class Test_Climatology_Average:
     )
     # Daily -> Monthly Climatologies for 360 Day Calendar
     day_360_leap_month_clim = np.arange(194.5, 554.5, 30).reshape(12, 1, 1)
-    day_360_leap_month_clim_time = xr.cftime_range(
-        '2020-01-01', '2021-01-01', freq='MS', calendar='360_day'
+    day_360_leap_month_clim_time = xr.date_range(
+        '2020-01-01', '2021-01-01', freq='MS', calendar='360_day', use_cftime=True
     )
     day_360_leap_month_clim_time = xr.DataArray(
         np.vstack(
@@ -997,6 +1017,16 @@ class Test_Climatology_Average:
         array = self.daily['data']
         array_expected = self.day_2_month_clim['data']
 
+        result = climatology_average(array, freq='month')
+        xr.testing.assert_allclose(result, array_expected)
+
+    def test_datetime_climatology_average(self) -> None:
+        array = self.daily['data']
+        if Version(xarray_version) < Version('2025.01.2'):
+            array['time'] = array.time.to_index().to_datetimeindex()
+        else:
+            array['time'] = array.time.to_index().to_datetimeindex(time_unit='ns')
+        array_expected = self.day_2_month_clim['data']
         result = climatology_average(array, freq='month')
         xr.testing.assert_allclose(result, array_expected)
 

@@ -17,6 +17,11 @@ Documentation
 * Remove reference to NCAR/geocat repo from support page by `Katelyn FitzGerald`_ in (:pr:`709`)
 * Add additional relative humidity documentation by `Cora Schneck`_ in (:pr:`710`)
 
+Bug Fixes
+^^^^^^^^^
+* Updates internal climatology function to ensure compatibility with both CFTime and Datetime
+indices by `Katelyn FitzGerald`_ in (:pr:`717`)
+
 Internal Changes
 ^^^^^^^^^^^^^^^^
 * Updates Github Actions workflows per new guidance by `Cora Schneck`_ in (:pr:`716`)

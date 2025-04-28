@@ -90,7 +90,16 @@ def _calculate_center_of_time_bounds(
     See `xarray.cftime_range <https://docs.xarray.dev/en/stable/generated/xarray.cftime_range.html>`__ for accepted values for `freq` and `calendar`.
     """
 
-    time_bounds = xr.cftime_range(start, end, freq=freq, calendar=calendar)
+    if isinstance(start, cftime.datetime):
+        time_bounds = xr.date_range(
+            start=start, end=end, freq=freq, calendar=calendar, use_cftime=True
+        )
+    elif isinstance(start, str):
+        time_bounds = xr.date_range(
+            start=start, end=end, freq=freq, calendar=calendar, use_cftime=True
+        )
+    else:
+        time_bounds = xr.date_range(start=start, end=end, freq=freq, calendar=calendar)
     time_bounds = time_bounds.append(time_bounds[-1:].shift(1, freq=freq))
     time = xr.DataArray(
         np.vstack((time_bounds[:-1], time_bounds[1:])).T, dims=[time_dim, 'nbd']
