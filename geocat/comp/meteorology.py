@@ -1852,7 +1852,9 @@ def saturation_vapor_pressure_slope(
 
 def _delta_pressure1D(pressure_lev, surface_pressure):
     """Helper function for `delta_pressure`. Calculates the pressure layer
-    thickness (delta pressure) of a one-dimensional pressure level array.
+    thickness, i.e. the change in pressure (delta pressure), for each layer
+    in a one-dimensional pressure level array taking into account a
+    specified surface pressure.
 
     Returns an array of length matching `pressure_lev`.
 
@@ -1924,8 +1926,9 @@ def _delta_pressure1D(pressure_lev, surface_pressure):
 
 
 def delta_pressure(pressure_lev, surface_pressure):
-    """Calculates the pressure layer thickness (delta pressure) of a constant
-    pressure level coordinate system.
+    """Calculates the pressure layer thickness, i.e. the change in pressure
+    (delta pressure), for each layer in a specified constant pressure level
+    coordinate system and accounting for specified surface pressure(s).
 
     Returns an array of shape matching (``surface_pressure``, ``pressure_lev``).
 
