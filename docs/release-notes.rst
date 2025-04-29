@@ -26,6 +26,7 @@ indices by `Katelyn FitzGerald`_ in (:pr:`717`)
 Internal Changes
 ^^^^^^^^^^^^^^^^
 * Updates Github Actions workflows per new guidance by `Cora Schneck`_ in (:pr:`716`)
+* Adds `blackdoc` to linter for rst and markdown by `Cora Schneck`_ in (:pr:`720`)
 
 v2025.03.0 (March 25, 2025)
 ---------------------------
