@@ -30,3 +30,11 @@ repos:
     - id: trailing-whitespace      # Checks for any tabs or spaces after the last non-whitespace character on the line.
     - id: check-docstring-first    # Checks that code comes after the docstrings.
     - id: check-yaml               # Check valid yml file
+
+-   repo: https://github.com/keewis/blackdoc
+    rev: v0.3.9
+    hooks:
+    - id: blackdoc
+      additional_dependencies: [ "black==25.1.0" ]
+      args: ["--skip-string-normalization"]  # ignore normalizing quotes to double quotes
+      types_or: [rst, markdown]
