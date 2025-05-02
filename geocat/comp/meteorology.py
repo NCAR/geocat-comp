@@ -1559,7 +1559,7 @@ def psychrometric_constant(
 
     "Crop evapotranspiration - Guidelines for computing crop water
     requirement"
-    
+
     Specifically, see equation 8 of Chapter 3 or equation 3-10 in
     Annex 3.
 
