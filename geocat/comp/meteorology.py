@@ -1557,8 +1557,10 @@ def psychrometric_constant(
     """Compute psychrometric constant [kPa / C] as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
 
-    Crop evapotranspiration - Guidelines for computing crop water
-    requirement. Specifically, see equation 7 of Chapter 3 or equation 3-2 in
+    "Crop evapotranspiration - Guidelines for computing crop water
+    requirement"
+
+    Specifically, see equation 8 of Chapter 3 or equation 3-10 in
     Annex 3.
 
     From FAO 56:

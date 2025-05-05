@@ -17,6 +17,7 @@ Documentation
 * Remove reference to NCAR/geocat repo from support page by `Katelyn FitzGerald`_ in (:pr:`709`)
 * Add additional relative humidity documentation by `Cora Schneck`_ in (:pr:`710`)
 * Clarify definition of ``delta_pressure`` by `Katelyn FitzGerald`_ in (:pr:`718`)
+* Correct ``psychrometric_constant`` equation references in documentation by `Cora Schneck`_ in (:pr:`723`)
 
 Bug Fixes
 ^^^^^^^^^
