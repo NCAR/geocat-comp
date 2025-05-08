@@ -1900,8 +1900,8 @@ def _delta_pressure1D(pressure_lev, surface_pressure):
     delta_pressure = np.full_like(pressure_lev, np.nan, dtype=float)
 
     # Determine which layers to calculate thickness for based upon midpoints
-    midpoints = (pressure_lev + np.roll(pressure_lev, shift=1)) / 2
-    midpoints[0] = 0
+    midpoints = np.array((pressure_lev + np.roll(pressure_lev, shift=1)) / 2.0)
+    midpoints[0] = 0.0
     [indices] = np.nonzero(midpoints < surface_pressure)
 
     start_level = min(indices)
