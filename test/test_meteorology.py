@@ -686,6 +686,7 @@ class Test_Delta_Pressure:
         surface_pressure_adjusted = 50.0
         delta_p = delta_pressure(pressure_lev, surface_pressure_adjusted)
         assert np.nansum(delta_p) == (surface_pressure_adjusted - min(pressure_lev))
+        assert np.sum(np.isnan(delta_p)) == 2
 
     def test_negative_pressure_error(self) -> None:
         pressure_lev_negative = self.pressure_lev.copy()
