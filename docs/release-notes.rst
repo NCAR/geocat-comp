@@ -21,6 +21,7 @@ Documentation
 
 Bug Fixes
 ^^^^^^^^^
+* Update near surface pressure thickness calculations in ``delta_pressure`` for consistency with NCL by `Katelyn FitzGerald`_ in (:pr:`726`)
 * Updates internal climatology function to ensure compatibility with both CFTime and Datetime
 indices by `Katelyn FitzGerald`_ in (:pr:`717`)
 
