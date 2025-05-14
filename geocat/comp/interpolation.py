@@ -366,6 +366,15 @@ def interp_hybrid_to_pressure(
 
     Notes
     -----
+    Atmosphere hybrid-sigma pressure coordinates are commonly defined in two different
+    ways as described below and in CF Conventions. This particular function expects the
+    first formulation. However, with some minor adjustments on the user side it can
+    support datasets leveraging the second formulation as well.  In this case, you can
+    set the input parameters p0=1 and hyam=ap to adapt the function to meet your needs.
+
+    Formulation 1: p(n,k,j,i) = a(k)*p0 + b(k)*ps(n,j,i)
+    Formulation 2: p(n,k,j,i) = ap(k) + b(k)*ps(n,j,i)
+
     ACKNOWLEDGEMENT: We'd like to thank to `Brian Medeiros <https://github.com/brianpm>`__,
     `Matthew Long <https://github.com/matt-long>`__, and `Deepak Cherian <https://github.com/dcherian>`__
     at NSF NCAR for their great contributions since the code implemented here is mostly
