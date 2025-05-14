@@ -18,6 +18,7 @@ Documentation
 * Add additional relative humidity documentation by `Cora Schneck`_ in (:pr:`710`)
 * Clarify definition of ``delta_pressure`` by `Katelyn FitzGerald`_ in (:pr:`718`)
 * Correct ``psychrometric_constant`` equation references in documentation by `Cora Schneck`_ in (:pr:`723`)
+* Add note about alternate hybrid-sigma pressure formulation to ``interp_hybrid_to_pressure`` docs by `Katelyn FitzGerald`_ in (:pr:`727`)
 
 Bug Fixes
 ^^^^^^^^^
