@@ -8,9 +8,11 @@
 Release Notes
 =============
 
-vYYYY.MM.## (unreleased)
+v2025.05.0 (May 20, 2025)
 ------------------------
-This release...
+This release includes documentation improvements, fixes a delta_pressure
+thickness bug, and adds improved CFTime and Datetime object compatibility to
+climatology functionality.
 
 Documentation
 ^^^^^^^^^^^^^
@@ -23,8 +25,7 @@ Documentation
 Bug Fixes
 ^^^^^^^^^
 * Update near surface pressure thickness calculations in ``delta_pressure`` for consistency with NCL by `Katelyn FitzGerald`_ in (:pr:`726`)
-* Updates internal climatology function to ensure compatibility with both CFTime and Datetime
-indices by `Katelyn FitzGerald`_ in (:pr:`717`)
+* Updates internal climatology function to ensure compatibility with both CFTime and Datetime indices by `Katelyn FitzGerald`_ in (:pr:`717`)
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
