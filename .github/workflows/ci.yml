@@ -14,9 +14,7 @@ concurrency:
 
 jobs:
   test:
-    # if: |
-    #   github.repository == 'NCAR/geocat-comp'
-    name: CI Python ${{ matrix.python-version }} ${{ matrix.os }} ${{ matrix.env }}
+    name: ${{ matrix.os }} python ${{ matrix.python-version }} ${{ matrix.env }}
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -108,7 +106,7 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
-          file: ./coverage.xml
+          files: ./coverage.xml
           env_vars: OS,PYTHON
           name: codecov-umbrella
           fail_ci_if_error: false
