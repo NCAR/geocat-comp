@@ -10,7 +10,7 @@ concurrency:
 
 jobs:
   upstream-dev:
-    name:  upstream-dev-py311
+    name:  upstream-dev
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -18,13 +18,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.11"]
+        python-version: ["3.12"]
 
     steps:
       - name: checkout
         uses: actions/checkout@v4
-        with:
-          token: ${{ github.token }}
 
       - name: set up environment
         id: env-setup
