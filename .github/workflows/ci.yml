@@ -16,7 +16,7 @@ jobs:
   test:
     # if: |
     #   github.repository == 'NCAR/geocat-comp'
-    name: Python ${{ matrix.python-version }} ${{ matrix.os }} ${{ matrix.env }}
+    name: CI Python ${{ matrix.python-version }} ${{ matrix.os }} ${{ matrix.env }}
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -35,6 +35,7 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
+
       - name: set environment variables
         run: |
           echo "TODAY=$(date +%Y-%m-%d)" >> $GITHUB_ENV
