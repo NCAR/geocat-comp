@@ -29,9 +29,10 @@ Bug Fixes
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
-* Updates Github Actions workflows per new guidance by `Cora Schneck`_ in (:pr:`716`)
+* Updates GitHub Actions workflows per new guidance by `Cora Schneck`_ in (:pr:`716`)
 * Adds `blackdoc` to linter for rst and markdown by `Cora Schneck`_ in (:pr:`720`)
 * Unpins ``asv`` and adds Python 3.13 to benchmarking matrix by `Anissa Zacharias`_ in (:pr:`722`)
+* Updates to GitHub Actions workflows by `Katelyn FitzGerald`_ in (:pr:`733`)
 
 v2025.03.0 (March 25, 2025)
 ---------------------------
