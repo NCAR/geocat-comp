@@ -87,7 +87,7 @@ def _calculate_center_of_time_bounds(
 
     Notes
     -----
-    See `xarray.cftime_range <https://docs.xarray.dev/en/stable/generated/xarray.cftime_range.html>`__ for accepted values for `freq` and `calendar`.
+    See `xarray.date_range <https://docs.xarray.dev/en/stable/generated/xarray.date_range.html>`__ for accepted values for `freq` and `calendar`.
     """
 
     if isinstance(start, cftime.datetime):
