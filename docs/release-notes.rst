@@ -16,6 +16,10 @@ Bug Fixes
 ^^^^^^^^^
 * Change ``interp_hybrid_to_pressure`` to use ``t_bot`` directly for temperature extrapolation rather than the temperature from the (sometimes incorrectly) presumed lowest level by `Katelyn FitzGerald`_ in (:pr:`737`)
 
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Replace deprecated ``xarray.cftime_range`` with ``xarray.date_range`` by `Katelyn FitzGerald`_ in (:pr:`739`)
+
 v2025.05.0 (May 20, 2025)
 ------------------------
 This release includes documentation improvements, fixes a delta_pressure
