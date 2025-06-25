@@ -166,7 +166,7 @@ class Test_interp_hybrid_to_pressure_extrapolate:
             method="linear",
             extrapolate=True,
             variable='temperature',
-            t_bot=t_bot,
+            t_bot=temp_in.isel(lev=-1, drop=True),
             phi_sfc=phis,
         )
         result = result.transpose('time', 'plev', 'lat', 'lon')
