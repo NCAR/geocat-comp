@@ -499,7 +499,7 @@ class Test_eof_ts(BaseEOFTestClass):
 
 class Test_pearson_r:
     # Coordinates
-    times = xr.cftime_range(start='2022-08-01', end='2022-08-05', freq='D')
+    times = xr.date_range(start='2022-08-01', end='2022-08-05', freq='D', use_cftime=True)
     lats = np.linspace(start=-45, stop=45, num=3, dtype='float32')
     lons = np.linspace(start=-180, stop=180, num=4, dtype='float32')
 
