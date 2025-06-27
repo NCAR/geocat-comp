@@ -1,6 +1,7 @@
 name: asv-bench
 channels:
   - conda-forge
+  - nodefaults
 dependencies:
   - python=3.10
   - asv
@@ -11,7 +12,6 @@ dependencies:
   - metpy
   - netcdf4
   - numpy
-  - pint
   - pip
   - scipy
   - setuptools
