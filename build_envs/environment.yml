@@ -13,7 +13,7 @@ dependencies:
   - numpy
   - pandas
   - xarray
-  - xskillscore
+  - xskillscore>=0.0.17
 # Packages listed below are for testing
   - geocat-datafiles
   - netcdf4

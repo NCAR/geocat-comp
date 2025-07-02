@@ -16,5 +16,5 @@ dependencies:
     - sphinx-design
     - myst-nb
     - nbsphinx
-    - xskillscore
+    - xskillscore>=0.0.17
     - nc-time-axis

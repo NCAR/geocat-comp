@@ -27,7 +27,7 @@ dependencies = [
   "packaging",
   "scipy",
   "xarray",
-  "xskillscore"
+  "xskillscore>=0.0.17"
 ]
 
 [dependency-groups]

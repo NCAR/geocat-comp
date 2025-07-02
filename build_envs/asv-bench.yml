@@ -17,6 +17,6 @@ dependencies:
   - setuptools
   - setuptools_scm
   - xarray
-  - xskillscore
+  - xskillscore>=0.0.17
   - pip:
       - -e ../
