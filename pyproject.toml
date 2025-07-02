@@ -1,4 +1,5 @@
 [project]
+name = "geocat.comp"
 authors = [{ name = "GeoCAT Team", email = "geocat@ucar.edu" }]
 classifiers = [
   "Operating System :: OS Independent",
@@ -14,10 +15,8 @@ classifiers = [
 description = "GeoCAT-comp is computational component of the GeoCAT project and provides implementations of computational functions for analysis of geosciences data"
 dynamic = ["version"]
 license = "Apache-2.0"
-name = "geocat.comp"
 readme = "README.md"
 requires-python = ">=3.10"
-
 dependencies = [
   "cf_xarray>=0.3.1",
   "cftime",
@@ -30,9 +29,6 @@ dependencies = [
   "xarray",
   "xskillscore"
 ]
-
-[project.optional-dependencies]
-
 
 [dependency-groups]
 dev = [
@@ -52,8 +48,8 @@ source-code = "https://github.com/NCAR/geocat-comp"
 [build-system]
 build-backend = "setuptools.build_meta"
 requires = [
-  "setuptools>=42",
-  "setuptools-scm>=7",
+  "setuptools>=64",
+  "setuptools-scm>=8",
 ]
 
 [tool.setuptools.packages.find]
