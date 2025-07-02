@@ -1,0 +1,8 @@
+prune .git*
+prune benchmarks*
+prune build_envs*
+prune ci*
+prune docs*
+prune test*
+prune .pre-commit-config.yaml
+prune .readthedocs.yml
