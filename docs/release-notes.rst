@@ -22,7 +22,7 @@ Internal Changes
 
 Maintenance
 ^^^^^^^^^^^
-* Streamline packaging and depedencies by `Katelyn FitzGerald`_ in (:pr:`740`)
+* Streamline packaging and dependencies by `Katelyn FitzGerald`_ in (:pr:`740`)
 
 
 v2025.05.0 (May 20, 2025)
