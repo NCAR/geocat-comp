@@ -20,6 +20,11 @@ Internal Changes
 ^^^^^^^^^^^^^^^^
 * Replace deprecated ``xarray.cftime_range`` with ``xarray.date_range`` by `Katelyn FitzGerald`_ in (:pr:`739`)
 
+Maintenance
+^^^^^^^^^^^
+* Streamline packaging and dependencies by `Katelyn FitzGerald`_ in (:pr:`740`)
+
+
 v2025.05.0 (May 20, 2025)
 ------------------------
 This release includes documentation improvements, fixes a delta_pressure
