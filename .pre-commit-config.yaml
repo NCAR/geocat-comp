@@ -4,7 +4,7 @@ ci:
 
 repos:
 -   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.11.8
+    rev: v0.12.2
     hooks:
      # Run the linter.
      - id: ruff
@@ -32,7 +32,7 @@ repos:
     - id: check-yaml               # Check valid yml file
 
 -   repo: https://github.com/keewis/blackdoc
-    rev: v0.3.9
+    rev: v0.4.1
     hooks:
     - id: blackdoc
       additional_dependencies: [ "black==25.1.0" ]
