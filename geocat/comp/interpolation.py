@@ -536,15 +536,10 @@ def interp_hybrid_to_pressure(
 
     from xarray import map_blocks
 
-    # make symbolic array of levels from pressure in the shape of pressure
-    symbolic_levels = np.broadcast_to(pressure.lev, pressure.squeeze().shape)
-
-    # drop time dimension from pressure
-
     output = map_blocks(
         _func_interpolate_mb,
-        pressure,
-        args=(new_levels, pressure.lev.data, interp_axis),
+        data,
+        args=(pressure, new_levels, interp_axis),
     )
 
     # data_output = map_blocks(
