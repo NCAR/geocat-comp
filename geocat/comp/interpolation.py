@@ -51,6 +51,20 @@ def _func_interpolate(method='linear'):
     return func_interpolate
 
 
+def _func_interpolate_mb(data, curr_levels, new_levels, axis, method='linear'):
+    """Define interpolation function."""
+    if method == 'linear':
+        ext_func = metpy.interpolate.interpolate_1d
+    elif method == 'log':
+        ext_func = metpy.interpolate.log_interpolate_1d
+    else:
+        raise ValueError(
+            f'Unknown interpolation method: {method}. '
+            f'Supported methods are: "log" and "linear".'
+        )
+    return ext_func(new_levels, curr_levels, data, axis=axis)
+
+
 def _pressure_from_hybrid(psfc, hya, hyb, p0=100000.0):
     """Calculate pressure at the hybrid levels."""
 
@@ -507,33 +521,56 @@ def interp_hybrid_to_pressure(
     # )
 
     # If an unchunked Xarray input is given, chunk it just with its dims
-    if data.chunks is None:
-        data_chunk = dict([(k, v) for (k, v) in zip(list(data.dims), list(data.shape))])
-        data = data.chunk(data_chunk)
-
-    # Chunk pressure equal to data's chunks
-    pressure = pressure.chunk(data.chunksizes)
-
-    # Output data structure elements
-    out_chunks = list(data.chunks)
-    out_chunks[interp_axis] = (new_levels.size,)
-    out_chunks = tuple(out_chunks)
+    # if data.chunks is None:
+    #     data_chunk = dict([(k, v) for (k, v) in zip(list(data.dims), list(data.shape))])
+    #     data = data.chunk(data_chunk)
+    #
+    # # Chunk pressure equal to data's chunks
+    # pressure = pressure.chunk(data.chunksizes)
+    #
+    # # Output data structure elements
+    # out_chunks = list(data.chunks)
+    # out_chunks[interp_axis] = (new_levels.size,)
+    # out_chunks = tuple(out_chunks)
     # ''' end of boilerplate
 
-    from dask.array.core import map_blocks
+    from xarray import map_blocks
+
+    # make symbolic array of levels from pressure in the shape of pressure
+    symbolic_levels = np.broadcast_to(pressure.lev, pressure.squeeze().shape)
+
+    # drop time dimension from pressure
 
     output = map_blocks(
-        _vertical_remap,
-        func_interpolate,
-        new_levels,
-        pressure.data,
-        data.data,
-        interp_axis,
-        chunks=out_chunks,
-        dtype=data.dtype,
-        drop_axis=[interp_axis],
-        new_axis=[interp_axis],
+        _func_interpolate_mb,
+        pressure,
+        args=(new_levels, pressure.lev.data, interp_axis),
     )
+
+    # data_output = map_blocks(
+    #     func_interpolate,
+    #     new_levels,
+    #     data.data,
+    #     interp_axis
+    # )
+
+    # output = xr.apply_ufunc(
+    #     func_interpolate,
+    #     new_levels,
+    #     pressure,
+    #     data,
+    #     # kwargs={"axis": interp_axis},
+    #     exclude_dims={lev_dim},  # Set dimensions allowed to change size
+    #     input_core_dims=[["plev"], [lev_dim], [lev_dim]],  # Set core dimensions
+    #     output_core_dims=[["lev"]],  # Specify output dimensions
+    #     vectorize=True,  # loop over non-core dims
+    #     dask="parallelized",  # Dask parallelization
+    #     output_dtypes=[data.dtype],
+    #     dask_gufunc_kwargs={
+    #         "allow_rechunk": True,
+    #         "output_sizes": {"lev": len(new_levels)},
+    #     },
+    # )
 
     # End of Workaround
     ###############################################################################
