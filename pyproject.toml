@@ -1,12 +1,62 @@
+[project]
+name = "geocat.comp"
+authors = [{ name = "GeoCAT Team", email = "geocat@ucar.edu" }]
+classifiers = [
+  "Operating System :: OS Independent",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering"
+]
+description = "GeoCAT-comp is the computational component of the GeoCAT project and provides implementations of computational functions for analysis of geosciences data"
+dynamic = ["version"]
+license = "Apache-2.0"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "cf_xarray>=0.3.1",
+  "cftime",
+  "dask[array]",
+  "eofs",
+  "metpy",
+  "numpy",
+  "packaging",
+  "scipy",
+  "xarray",
+  "xskillscore>=0.0.17"
+]
+
+[dependency-groups]
+dev = [
+  "dask[complete]",
+  "geocat-datafiles",
+  "matplotlib-base",
+  "netcdf4",
+  "pre-commit",
+  "pytest",
+]
+
+[project.urls]
+documentation = "https://geocat-comp.readthedocs.io"
+issue-tracker = "https://github.com/NCAR/geocat-comp/issues"
+source-code = "https://github.com/NCAR/geocat-comp"
+
 [build-system]
 build-backend = "setuptools.build_meta"
 requires = [
-  "setuptools>=42",
-  "setuptools-scm>=7",
+  "setuptools>=64",
+  "setuptools-scm>=8",
 ]
 
+[tool.setuptools.packages.find]
+include = ["geocat.*"]
+
 [tool.setuptools_scm]
-fallback_version = "999"
+fallback_version = "9999"
 
 [tool.codespell]
 ignore-words-list = "alph, ond,"

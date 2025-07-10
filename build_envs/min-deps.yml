@@ -16,7 +16,7 @@ dependencies:
   - pandas=2.0
   - scipy=1.11
   - xarray
-  - xskillscore
+  - xskillscore>=0.0.17
   - pip
   - parameterized
   - pre-commit

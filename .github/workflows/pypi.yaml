@@ -15,11 +15,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install build twine check-manifest
+          python -m pip install build twine
       - name: Build tarball and wheels
         run: |
           python -m build
-          python -m pip wheel . -w dist --no-deps
       - name: Test the artifacts
         run: |
           python -m twine check dist/*
@@ -39,11 +38,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install build twine check-manifest
+          python -m pip install build twine
       - name: Build tarball and wheels
         run: |
           python -m build
-          python -m pip wheel . -w dist --no-deps
       - name: Test the artifacts
         run: |
           python -m twine check dist/*
