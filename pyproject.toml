@@ -12,7 +12,7 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
   "Topic :: Scientific/Engineering"
 ]
-description = "GeoCAT-comp is computational component of the GeoCAT project and provides implementations of computational functions for analysis of geosciences data"
+description = "GeoCAT-comp is the computational component of the GeoCAT project and provides implementations of computational functions for analysis of geosciences data"
 dynamic = ["version"]
 license = "Apache-2.0"
 readme = "README.md"
