@@ -452,7 +452,7 @@ def interp_hybrid_to_pressure(
 
     # check input types
     in_types = []
-    in_pint = False  # noqa
+    in_pint = False
     in_dask = False  # noqa
     for i in [data, ps, hyam, hybm, new_levels]:
         it = type(i)
@@ -462,7 +462,7 @@ def interp_hybrid_to_pressure(
             if i.__module__ == 'pint':
                 in_pint = True
             if i.__module__ == 'dask.array.core':
-                in_dask = True # noqa
+                in_dask = True  # noqa
 
     # Check inputs
     if extrapolate and (variable is None):
@@ -512,6 +512,11 @@ def interp_hybrid_to_pressure(
 
     output = xr.DataArray(output, name=data.name, attrs=data.attrs)
 
+    # Check if we've gotten a pint array back from metpy w/o pint in args
+    if hasattr(output.data, '__module__'):
+        if output.data.__module__ == 'pint' and not in_pint:
+            output.data = output.data.to_base_units().magnitude
+
     # Set output dims and coords
     dims = [data.dims[i] if i != interp_axis else "plev" for i in range(data.ndim)]
 
@@ -533,13 +538,10 @@ def interp_hybrid_to_pressure(
             new_levels, lev_dim, data, output, pressure, ps, variable, t_bot, phi_sfc
         )
 
-    # Check if we've gotten a pint array back from metpy w/o pint in args
-    if (
-        output.data.__module__ == 'pint'
-        and type(output.data).__name__ == 'Quantity'
-        and not in_pint
-    ):
-        output.data = output.data.to_base_units().magnitude
+        # Check again if we got pint back
+        if hasattr(output.data, '__module__'):
+            if output.data.__module__ == 'pint' and not in_pint:
+                output.data = output.data.to_base_units().magnitude
 
     return output
 
