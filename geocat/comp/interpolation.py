@@ -452,8 +452,8 @@ def interp_hybrid_to_pressure(
 
     # check input types
     in_types = []
-    in_pint = False
-    in_dask = False
+    in_pint = False # noqa
+    in_dask = False # noqa
     for i in [data, ps, hyam, hybm, new_levels]:
         it = type(i)
         in_types.append(it)
