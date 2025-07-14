@@ -539,7 +539,7 @@ def interp_hybrid_to_pressure(
     output = map_blocks(
         _func_interpolate_mb,
         data,
-        args=(pressure, new_levels, interp_axis),
+        args=(pressure, new_levels, interp_axis, method),
     )
 
     # data_output = map_blocks(
