@@ -450,6 +450,21 @@ def interp_hybrid_to_pressure(
     `vinth2p_ecmwf <https://www.ncl.ucar.edu/Document/Functions/Built-in/vinth2p_ecmwf.shtml>`__
     """
 
+    # check input types
+    in_types = []
+    in_pint = False
+    in_dask = False
+    for i in [data, ps, hyam, hybm, new_levels]:
+        it = type(i)
+        in_types.append(it)
+
+        if isinstance(i, xr.DataArray):
+            if i.__module__ == 'pint':
+                in_pint = True
+            if i.__module__ == 'dask.array.core':
+                in_dask = True
+
+
     # Check inputs
     if extrapolate and (variable is None):
         raise ValueError("If `extrapolate` is True, `variable` must be provided.")
@@ -518,6 +533,10 @@ def interp_hybrid_to_pressure(
         output = _vertical_remap_extrap(
             new_levels, lev_dim, data, output, pressure, ps, variable, t_bot, phi_sfc
         )
+
+    # Check if we've gotten a pint array back from metpy w/o pint in args
+    if output.data.__module__ == 'pint' and type(output.data).__name__ == 'Quantity' and not in_pint:
+        output.data = output.data.to_base_units().magnitude
 
     return output
 
