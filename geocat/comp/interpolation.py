@@ -452,8 +452,8 @@ def interp_hybrid_to_pressure(
 
     # check input types
     in_types = []
-    in_pint = False # noqa
-    in_dask = False # noqa
+    in_pint = False  # noqa
+    in_dask = False  # noqa
     for i in [data, ps, hyam, hybm, new_levels]:
         it = type(i)
         in_types.append(it)
@@ -462,8 +462,7 @@ def interp_hybrid_to_pressure(
             if i.__module__ == 'pint':
                 in_pint = True
             if i.__module__ == 'dask.array.core':
-                in_dask = True
-
+                in_dask = True # noqa
 
     # Check inputs
     if extrapolate and (variable is None):
@@ -535,7 +534,11 @@ def interp_hybrid_to_pressure(
         )
 
     # Check if we've gotten a pint array back from metpy w/o pint in args
-    if output.data.__module__ == 'pint' and type(output.data).__name__ == 'Quantity' and not in_pint:
+    if (
+        output.data.__module__ == 'pint'
+        and type(output.data).__name__ == 'Quantity'
+        and not in_pint
+    ):
         output.data = output.data.to_base_units().magnitude
 
     return output
