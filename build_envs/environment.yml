@@ -9,17 +9,14 @@ dependencies:
   - distributed
   - eofs
   - metpy
-  - numba
   - scipy
   - numpy
   - pandas
-  - pint
   - xarray
-  - xskillscore
+  - xskillscore>=0.0.17
 # Packages listed below are for testing
   - geocat-datafiles
   - netcdf4
-  - parameterized
   - pytest
   - pytest-cov
 # The package below is for formatting standards
