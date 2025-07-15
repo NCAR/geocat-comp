@@ -375,7 +375,7 @@ class TestDaskCompat:
         except FileNotFoundError:
             ds_out = xr.open_dataset("test/vinth2p_output.nc")
 
-        data = ds_atmos.U[0, :, :, :].chunk({'lev': 1})
+        data = ds_atmos.U[0, :, :, :].chunk({'lev': 5})
         ps = ds_atmos.PS[0, :, :]
 
         out = interp_hybrid_to_pressure(
