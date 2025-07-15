@@ -453,16 +453,17 @@ def interp_hybrid_to_pressure(
     # check input types
     in_types = []
     in_pint = False
-    in_dask = False  # noqa
+    in_dask = False
     for i in [data, ps, hyam, hybm, new_levels]:
         it = type(i)
         in_types.append(it)
 
         if isinstance(i, xr.DataArray):
-            if i.__module__ == 'pint':
-                in_pint = True
-            if i.__module__ == 'dask.array.core':
-                in_dask = True  # noqa
+            if hasattr(i.data, '__module__'):
+                if i.data.__module__ == 'pint':
+                    in_pint = True
+                if i.data.__module__ == 'dask.array.core':
+                    in_dask = True
 
     # Check inputs
     if extrapolate and (variable is None):
@@ -504,11 +505,35 @@ def interp_hybrid_to_pressure(
     # Make pressure shape same as data shape
     pressure = pressure.transpose(*data.dims)
 
-    output = xr.map_blocks(
-        _func_interpolate_mb,
-        data,
-        args=(pressure, new_levels, interp_axis, method),
-    )
+    # choose how to call function based on input types
+    output = None
+    # try xr.map_blocks first if chunked input
+    if isinstance(data, xr.DataArray) and len(data.chunksizes) > 0:
+        # check for no chunking along lev_dim
+        if len(data.chunksizes[lev_dim]) == 1:
+            output = xr.map_blocks(
+                _func_interpolate_mb,
+                data,
+                args=(pressure, new_levels, interp_axis, method),
+            )
+    # if xr.map_blocks won't work, but there's a dask input, use dask mao_blocks
+    if in_dask and output is None:
+        from dask.array.core import map_blocks
+
+        output = map_blocks(
+            _vertical_remap,
+            func_interpolate,
+            new_levels,
+            pressure.data,
+            data.data,
+            interp_axis,
+            dtype=data.dtype,
+            drop_axis=[interp_axis],
+            new_axis=[interp_axis],
+        )
+    # if no chunked/dask inputs, just call the function directly
+    else:
+        output = func_interpolate(new_levels, pressure, data.data, axis=interp_axis)
 
     output = xr.DataArray(output, name=data.name, attrs=data.attrs)
 
