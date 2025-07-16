@@ -516,9 +516,20 @@ def interp_hybrid_to_pressure(
                 data,
                 args=(pressure, new_levels, interp_axis, method),
             )
-    # if xr.map_blocks won't work, but there's a dask input, use dask mao_blocks
+        else:
+            # TODO: warn user
+            pass
+    # if xr.map_blocks won't work, but there's a dask input, use dask map_blocks
     if in_dask and output is None:
         from dask.array.core import map_blocks
+
+        # Chunk pressure equal to data's chunks
+        pressure = pressure.chunk(data.chunksizes)
+
+        # Output data structure elements
+        out_chunks = list(data.chunks)
+        out_chunks[interp_axis] = (new_levels.size,)
+        out_chunks = tuple(out_chunks)
 
         output = map_blocks(
             _vertical_remap,
@@ -527,6 +538,7 @@ def interp_hybrid_to_pressure(
             pressure.data,
             data.data,
             interp_axis,
+            chunks=out_chunks,
             dtype=data.dtype,
             drop_axis=[interp_axis],
             new_axis=[interp_axis],
