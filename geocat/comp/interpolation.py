@@ -508,14 +508,16 @@ def interp_hybrid_to_pressure(
     # choose how to call function based on input types
     output = None
     # try xr.map_blocks first if chunked input
-    if isinstance(data, xr.DataArray) and len(data.chunksizes) > 0:
-        # check for no chunking along lev_dim
-        if len(data.chunksizes[lev_dim]) == 1:
-            output = xr.map_blocks(
-                _func_interpolate_mb,
-                data,
-                args=(pressure, new_levels, interp_axis, method),
-            )
+    if isinstance(data, xr.DataArray):
+        # check for chunking along lev_dim in chunksizes
+        if lev_dim in data.chunksizes:
+            # check chunks along lev_dim
+            if len(data.chunksizes[lev_dim]) == 1:
+                output = xr.map_blocks(
+                    _func_interpolate_mb,
+                    data,
+                    args=(pressure, new_levels, interp_axis, method),
+                )
         else:
             # TODO: warn user
             pass
