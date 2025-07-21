@@ -518,9 +518,12 @@ def interp_hybrid_to_pressure(
                     data,
                     args=(pressure, new_levels, interp_axis, method),
                 )
-        else:
-            # TODO: warn user
-            pass
+            else:
+                # warn user about chunking in lev_dim
+                warnings.warn(
+                    f"WARNING: Chunking along {lev_dim} is not recommended for performance reasons."
+                )
+
     # if xr.map_blocks won't work, but there's a dask input, use dask map_blocks
     if in_dask and output is None:
         from dask.array.core import map_blocks
