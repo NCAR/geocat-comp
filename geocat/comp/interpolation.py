@@ -51,8 +51,8 @@ def _func_interpolate(method='linear'):
     return func_interpolate
 
 
-def _func_interpolate_mb(data, curr_levels, new_levels, axis, method='linear'):
-    """Define interpolation function."""
+def _interpolate_mb(data, curr_levels, new_levels, axis, method='linear'):
+    """Wrapper to call interpolation function for xarray map_blocks call."""
     if method == 'linear':
         ext_func = metpy.interpolate.interpolate_1d
     elif method == 'log':
@@ -514,7 +514,7 @@ def interp_hybrid_to_pressure(
             # check chunks along lev_dim
             if len(data.chunksizes[lev_dim]) == 1:
                 output = xr.map_blocks(
-                    _func_interpolate_mb,
+                    _interpolate_mb,
                     data,
                     args=(pressure, new_levels, interp_axis, method),
                 )
