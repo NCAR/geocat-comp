@@ -8,9 +8,10 @@
 Release Notes
 =============
 
-vYYYY.MM.## (unreleased)
-------------------------
-This release...
+v2025.07.0 (July 15, 2025)
+---------------------------
+This release updates packaging, replaces deprecated xarray functionality, and
+addresses a bug in ``interp_hybrid_to_pressure``.
 
 Bug Fixes
 ^^^^^^^^^
@@ -19,6 +20,11 @@ Bug Fixes
 Internal Changes
 ^^^^^^^^^^^^^^^^
 * Replace deprecated ``xarray.cftime_range`` with ``xarray.date_range`` by `Katelyn FitzGerald`_ in (:pr:`739`)
+
+Maintenance
+^^^^^^^^^^^
+* Streamline packaging and dependencies by `Katelyn FitzGerald`_ in (:pr:`740`)
+
 
 v2025.05.0 (May 20, 2025)
 ------------------------
