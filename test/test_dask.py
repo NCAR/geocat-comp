@@ -391,6 +391,32 @@ class TestDaskCompat:
         assert isinstance(out.data, dask.array.Array)
         assert np.allclose(out.mean(dim='lon'), ds_out.uzon, atol=5e-6, equal_nan=True)
 
+    def test_interp_hybrid_to_pressure_dask_chunk_length_1(self):
+        pres3d = np.asarray([1000, 950, 800, 700, 600, 500, 400, 300, 200]) * 100
+
+        # Open the netCDF data file "atmos.nc" and read in common variables
+        try:
+            ds_atmos = xr.open_dataset(
+                gdf.get("netcdf_files/atmos.nc"), decode_times=False
+            )
+        except FileNotFoundError:
+            ds_atmos = xr.open_dataset("test/atmos.nc", decode_times=False)
+
+        data = ds_atmos.U[0, :, :, :].chunk({'lev': 1})
+        ps = ds_atmos.PS[0, :, :]
+
+        pytest.warns(
+            UserWarning,
+            interp_hybrid_to_pressure,
+            data,
+            ps,
+            ds_atmos.hyam,
+            ds_atmos.hybm,
+            p0=1000 * 100,
+            new_levels=pres3d,
+            method='log',
+        )
+
     def test_interp_sigma_to_hybrid_dask(self):
         try:
             ds_ps = xr.open_dataset(
