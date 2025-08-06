@@ -513,20 +513,17 @@ def interp_hybrid_to_pressure(
         if lev_dim in data.chunksizes:
             # check chunks along lev_dim
             if len(data.chunksizes[lev_dim]) == 1:
-                # map_blocks will put the lev_dim as the last coord
-                outshape = list(data.shape)
-                outshape = outshape + [outshape.pop(interp_axis)]
-                outdims = list(data.dims)
-                outdims = outdims + [outdims.pop(interp_axis)]
-                template = xr.DataArray(np.empty(tuple(outshape)), dims=outdims)
-                template = template.chunk(data.chunksizes)
-
-                output = xr.map_blocks(
-                    _interpolate_mb,
-                    data,
-                    args=(pressure, new_levels, interp_axis, method),
-                    template=template,
-                )
+                # if there's not chunking in the lev dim, try to proceed with xr.map_blocks
+                try:
+                    output = xr.map_blocks(
+                        _interpolate_mb,
+                        data,
+                        args=(pressure, new_levels, interp_axis, method),
+                    )
+                # The base Exception is included here because xarray can raise it specifically here
+                except (NotImplementedError, ValueError, Exception):
+                    # make sure output is None to trigger dask run
+                    output = None
             else:
                 # warn user about chunking in lev_dim
                 warnings.warn(
