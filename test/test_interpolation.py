@@ -3,6 +3,7 @@ import numpy as np
 import numpy.testing as nt
 import xarray as xr
 import pytest
+import pint
 
 from geocat.comp import (
     interp_multidim,
@@ -54,6 +55,23 @@ class Test_interp_hybrid_to_pressure:
 
         uzon = u_int.mean(dim='lon')
 
+        nt.assert_array_almost_equal(ds_out.uzon, uzon, 5)
+
+    def test_interp_hybrid_to_pressure_atmos_pint(self, ds_out) -> None:
+        unit = pint.UnitRegistry()
+        u_int = interp_hybrid_to_pressure(
+            self.data * unit.meter / unit.second,
+            self.ps[0, :, :] * unit.pascal,
+            _hyam,
+            _hybm,
+            p0=_p0 * unit.pascal,
+            new_levels=self.pres3d * unit.pascal,
+            method="log",
+        )
+
+        uzon = u_int.mean(dim='lon')
+
+        assert isinstance(uzon.data, pint.Quantity)
         nt.assert_array_almost_equal(ds_out.uzon, uzon, 5)
 
     def test_interp_hybrid_to_pressure_atmos_4d(self, ds_out) -> None:
