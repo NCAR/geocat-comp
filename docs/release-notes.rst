@@ -8,6 +8,26 @@
 Release Notes
 =============
 
+vYYYY.MM.## (unreleased)
+------------------------
+This release...
+
+New Features
+^^^^^^^^^^^^
+
+Breaking Changes
+^^^^^^^^^^^^^^^^
+
+Bug Fixes
+^^^^^^^^^
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Update ``interp_hybrid_to_pressure`` to remove forced dask usage by `Anissa Zacharias`_ in (:pr:`748`)
+
+Documentation
+^^^^^^^^^^^^^
+
 v2025.07.0 (July 15, 2025)
 ---------------------------
 This release updates packaging, replaces deprecated xarray functionality, and
