@@ -513,10 +513,19 @@ def interp_hybrid_to_pressure(
         if lev_dim in data.chunksizes:
             # check chunks along lev_dim
             if len(data.chunksizes[lev_dim]) == 1:
+                # map_blocks will put the lev_dim as the last coord
+                outshape = list(data.shape)
+                outshape = outshape + [outshape.pop(interp_axis)]
+                outdims = list(data.dims)
+                outdims = outdims + [outdims.pop(interp_axis)]
+                template = xr.DataArray(np.empty(tuple(outshape)), dims=outdims)
+                template = template.chunk(data.chunksizes)
+
                 output = xr.map_blocks(
                     _interpolate_mb,
                     data,
                     args=(pressure, new_levels, interp_axis, method),
+                    template=template,
                 )
             else:
                 # warn user about chunking in lev_dim
