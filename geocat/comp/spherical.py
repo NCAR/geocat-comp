@@ -205,7 +205,6 @@ def recomposition(
 def scale_voronoi(
     theta: SupportedTypes,
     phi: SupportedTypes,
-    chunk_size: int = 'auto',
 ) -> SupportedTypes:
     """Calculate the area weighting for dataset.
 
@@ -217,12 +216,6 @@ def scale_voronoi(
     phi : ndarray, :class:`xarray.DataArray`
         2-dimensional array containing the theta (latitude in radians) values for each datapoint in data.
         ``Phi`` is zero at the top of the sphere and ``pi`` at the bottom, ``phi = (lat_degrees-90)*(-1)*pi/180``
-
-    chunk_size: int, optional
-        The size of each edge of the dask chunks if using xarray.DataArray inputs.
-        Some arrays will be 2d, and others 1d, and the final calculation operates on a 3d array.
-        thus the chunks used in the largest calculation scale at ``chunk_size^3``
-        A chunk size of 256 is recommended. Defaults to 'auto'
 
     Returns
     -------
@@ -251,6 +244,6 @@ def scale_voronoi(
     ).reshape(theta.shape)
 
     if type(theta) is xr.DataArray:
-        scale = xr.DataArray(scale, dims=theta.dims).chunk(chunk_size)
+        scale = xr.DataArray(scale, dims=theta.dims)
 
     return scale
