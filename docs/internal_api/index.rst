@@ -57,12 +57,8 @@ Internal Functionality Helpers
 
    geocat.comp.meteorology._nws_eqn
 
-   geocat.comp.meteorology._relhum
-
    geocat.comp.meteorology._relhum_ice
 
    geocat.comp.meteorology._relhum_water
 
    geocat.comp.meteorology._xheat_index
-
-   geocat.comp.meteorology._xrelhum
