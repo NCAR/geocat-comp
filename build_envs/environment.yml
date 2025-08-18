@@ -17,6 +17,7 @@ dependencies:
 # Packages listed below are for testing
   - geocat-datafiles
   - netcdf4
+  - pint
   - pytest
   - pytest-cov
 # The package below is for formatting standards

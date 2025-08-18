@@ -36,6 +36,7 @@ dev = [
   "geocat-datafiles",
   "matplotlib-base",
   "netcdf4",
+  "pint",
   "pre-commit",
   "pytest",
 ]
