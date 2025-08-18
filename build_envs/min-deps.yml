@@ -6,6 +6,8 @@ dependencies:
   - python=3.10
   - cf_xarray
   - cftime
+  - dask-core
+  - distributed
   - eofs
   - metpy
   - netcdf4
