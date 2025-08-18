@@ -563,7 +563,7 @@ def interp_hybrid_to_pressure(
     # Check if we've gotten a pint array back from metpy w/o pint in args
     if hasattr(output.data, '__module__'):
         if output.data.__module__ == 'pint' and not in_pint:
-            output.data = output.data.to_base_units().magnitude
+            output.data = output.data.to('pascal').magnitude
 
     # Set output dims and coords
     dims = [data.dims[i] if i != interp_axis else "plev" for i in range(data.ndim)]
