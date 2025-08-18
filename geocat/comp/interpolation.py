@@ -589,7 +589,7 @@ def interp_hybrid_to_pressure(
         # Check again if we got pint back
         if hasattr(output.data, '__module__'):
             if output.data.__module__ == 'pint' and not in_pint:
-                output.data = output.data.to_base_units().magnitude
+                output.data = output.data.to('pascal').magnitude
 
     return output
 
