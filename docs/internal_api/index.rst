@@ -35,6 +35,8 @@ Internal Functionality Helpers
 
    geocat.comp.interpolation._geo_height_extrapolate
 
+   geocat.comp.interpolation._interpolate_mb
+
    geocat.comp.interpolation._pressure_from_hybrid
 
    geocat.comp.interpolation._sigma_from_hybrid

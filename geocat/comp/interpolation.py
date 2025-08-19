@@ -51,6 +51,20 @@ def _func_interpolate(method='linear'):
     return func_interpolate
 
 
+def _interpolate_mb(data, curr_levels, new_levels, axis, method='linear'):
+    """Wrapper to call interpolation function for xarray map_blocks call."""
+    if method == 'linear':
+        ext_func = metpy.interpolate.interpolate_1d
+    elif method == 'log':
+        ext_func = metpy.interpolate.log_interpolate_1d
+    else:
+        raise ValueError(
+            f'Unknown interpolation method: {method}. '
+            f'Supported methods are: "log" and "linear".'
+        )
+    return ext_func(new_levels, curr_levels, data, axis=axis)
+
+
 def _pressure_from_hybrid(psfc, hya, hyb, p0=100000.0):
     """Calculate pressure at the hybrid levels."""
 
@@ -436,6 +450,21 @@ def interp_hybrid_to_pressure(
     `vinth2p_ecmwf <https://www.ncl.ucar.edu/Document/Functions/Built-in/vinth2p_ecmwf.shtml>`__
     """
 
+    # check input types
+    in_types = []
+    in_pint = False
+    in_dask = False
+    for i in [data, ps, hyam, hybm, new_levels]:
+        it = type(i)
+        in_types.append(it)
+
+        if isinstance(i, xr.DataArray):
+            if hasattr(i.data, '__module__'):
+                if i.data.__module__ == 'pint':
+                    in_pint = True
+                if i.data.__module__ == 'dask.array.core':
+                    in_dask = True
+
     # Check inputs
     if extrapolate and (variable is None):
         raise ValueError("If `extrapolate` is True, `variable` must be provided.")
@@ -476,69 +505,65 @@ def interp_hybrid_to_pressure(
     # Make pressure shape same as data shape
     pressure = pressure.transpose(*data.dims)
 
-    ###############################################################################
-    # Workaround
-    #
-    # For the issue with metpy's xarray interface:
-    #
-    # `metpy.interpolate.interpolate_1d` had "no implementation found for
-    # 'numpy.apply_along_axis'" issue for cases where the input is
-    # xarray.Dataarray and has more than 3 dimensions (e.g. 4th dim of `time`).
+    # choose how to call function based on input types
+    output = None
+    # try xr.map_blocks first if chunked input
+    if isinstance(data, xr.DataArray):
+        # check for chunking along lev_dim in chunksizes
+        if lev_dim in data.chunksizes:
+            # check chunks along lev_dim
+            if len(data.chunksizes[lev_dim]) == 1:
+                # if there's not chunking in the lev dim, try to proceed with xr.map_blocks
+                try:
+                    output = xr.map_blocks(
+                        _interpolate_mb,
+                        data,
+                        args=(pressure, new_levels, interp_axis, method),
+                    )
+                # The base Exception is included here because xarray can raise it specifically here
+                except (NotImplementedError, ValueError, Exception):
+                    # make sure output is None to trigger dask run
+                    output = None
+            else:
+                # warn user about chunking in lev_dim
+                warnings.warn(
+                    f"WARNING: Chunking along {lev_dim} is not recommended for performance reasons."
+                )
 
-    # Use dask.array.core.map_blocks instead of xarray.apply_ufunc and
-    # auto-chunk input arrays to ensure using only Numpy interface of
-    # `metpy.interpolate.interpolate_1d`.
+    # if xr.map_blocks won't work, but there's a dask input, use dask map_blocks
+    if in_dask and output is None:
+        from dask.array.core import map_blocks
 
-    # # Apply vertical interpolation
-    # # Apply Dask parallelization with xarray.apply_ufunc
-    # output = xr.apply_ufunc(
-    #     _vertical_remap,
-    #     data,
-    #     pressure,
-    #     exclude_dims=set((lev_dim,)),  # Set dimensions allowed to change size
-    #     input_core_dims=[[lev_dim], [lev_dim]],  # Set core dimensions
-    #     output_core_dims=[["plev"]],  # Specify output dimensions
-    #     vectorize=True,  # loop over non-core dims
-    #     dask="parallelized",  # Dask parallelization
-    #     output_dtypes=[data.dtype],
-    #     dask_gufunc_kwargs={"output_sizes": {
-    #         "plev": len(new_levels)
-    #     }},
-    # )
+        # Chunk pressure equal to data's chunks
+        pressure = pressure.chunk(data.chunksizes)
 
-    # If an unchunked Xarray input is given, chunk it just with its dims
-    if data.chunks is None:
-        data_chunk = dict([(k, v) for (k, v) in zip(list(data.dims), list(data.shape))])
-        data = data.chunk(data_chunk)
+        # Output data structure elements
+        out_chunks = list(data.chunks)
+        out_chunks[interp_axis] = (new_levels.size,)
+        out_chunks = tuple(out_chunks)
 
-    # Chunk pressure equal to data's chunks
-    pressure = pressure.chunk(data.chunksizes)
-
-    # Output data structure elements
-    out_chunks = list(data.chunks)
-    out_chunks[interp_axis] = (new_levels.size,)
-    out_chunks = tuple(out_chunks)
-    # ''' end of boilerplate
-
-    from dask.array.core import map_blocks
-
-    output = map_blocks(
-        _vertical_remap,
-        func_interpolate,
-        new_levels,
-        pressure.data,
-        data.data,
-        interp_axis,
-        chunks=out_chunks,
-        dtype=data.dtype,
-        drop_axis=[interp_axis],
-        new_axis=[interp_axis],
-    )
-
-    # End of Workaround
-    ###############################################################################
+        output = map_blocks(
+            _vertical_remap,
+            func_interpolate,
+            new_levels,
+            pressure.data,
+            data.data,
+            interp_axis,
+            chunks=out_chunks,
+            dtype=data.dtype,
+            drop_axis=[interp_axis],
+            new_axis=[interp_axis],
+        )
+    # if no chunked/dask inputs, just call the function directly
+    else:
+        output = func_interpolate(new_levels, pressure, data.data, axis=interp_axis)
 
     output = xr.DataArray(output, name=data.name, attrs=data.attrs)
+
+    # Check if we've gotten a pint array back from metpy w/o pint in args
+    if hasattr(output.data, '__module__'):
+        if output.data.__module__ == 'pint' and not in_pint:
+            output.data = output.data.to('pascal').magnitude
 
     # Set output dims and coords
     dims = [data.dims[i] if i != interp_axis else "plev" for i in range(data.ndim)]
@@ -560,6 +585,11 @@ def interp_hybrid_to_pressure(
         output = _vertical_remap_extrap(
             new_levels, lev_dim, data, output, pressure, ps, variable, t_bot, phi_sfc
         )
+
+        # Check again if we got pint back
+        if hasattr(output.data, '__module__'):
+            if output.data.__module__ == 'pint' and not in_pint:
+                output.data = output.data.to('pascal').magnitude
 
     return output
 
