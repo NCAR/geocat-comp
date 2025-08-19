@@ -8,6 +8,28 @@
 Release Notes
 =============
 
+vYYYY.MM.## (unreleased)
+------------------------
+This release...
+
+New Features
+^^^^^^^^^^^^
+
+Breaking Changes
+^^^^^^^^^^^^^^^^
+* `scale_voronoi` no longer accepts `chunk_size` as an optional argument and will not automatically chunk xarray inputs from `Anissa Zacharias`_ in (:pr:`749`)
+
+Bug Fixes
+^^^^^^^^^
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Update ``interp_hybrid_to_pressure`` to remove forced dask usage by `Anissa Zacharias`_ in (:pr:`748`)
+* Remove dask as an explicit dependency and forced dask internal usage by `Anissa Zacharias`_ in (:pr:`749`)
+
+Documentation
+^^^^^^^^^^^^^
+
 v2025.07.0 (July 15, 2025)
 ---------------------------
 This release updates packaging, replaces deprecated xarray functionality, and

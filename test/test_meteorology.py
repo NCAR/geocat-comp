@@ -378,9 +378,22 @@ class Test_relhum:
         with pytest.raises(ValueError):
             relhum(self.t_def[:10], self.q_def[:10], self.p_def[:9])
 
-    def test_xarray_type_error(self) -> None:
-        with pytest.raises(TypeError):
-            relhum(self.t_def, xr.DataArray(self.q_def), self.p_def)
+    def test_mixed_input_types(self) -> None:
+        assert np.allclose(
+            relhum(np.asarray(self.t_def), xr.DataArray(self.q_def), self.p_def),
+            self.rh_gt_2,
+            atol=0.1,
+        )
+        assert np.allclose(
+            relhum(self.t_def, xr.DataArray(self.q_def), self.p_def),
+            self.rh_gt_2,
+            atol=0.1,
+        )
+        assert np.allclose(
+            relhum(self.t_def, self.q_def, np.asarray(self.p_def)),
+            self.rh_gt_2,
+            atol=0.1,
+        )
 
 
 class Test_relhum_water:
