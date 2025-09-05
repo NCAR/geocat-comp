@@ -20,7 +20,6 @@ requires-python = ">=3.10"
 dependencies = [
   "cf_xarray>=0.3.1",
   "cftime",
-  "dask[array]",
   "eofs",
   "metpy",
   "numpy",
@@ -36,6 +35,7 @@ dev = [
   "geocat-datafiles",
   "matplotlib-base",
   "netcdf4",
+  "pint",
   "pre-commit",
   "pytest",
 ]
