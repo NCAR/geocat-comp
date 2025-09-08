@@ -789,7 +789,7 @@ def interp_multidim(
     --------
     Related External Functions:
     `xarray.DataArray.interp <https://docs.xarray.dev/en/stable/generated/xarray.DataArray.interp.html>`__,
-    `cartopy.util.add_cyclic_point <https://scitools.org.uk/cartopy/docs/latest/reference/generated/cartopy.util.add_cyclic_point.html>`__
+    `cartopy.util.add_cyclic_point <https://cartopy.readthedocs.io/stable/reference/generated/cartopy.util.add_cyclic_point.html#cartopy.util.add_cyclic_point>`__
 
     Related NCL Function:
     `NCL linint2 <https://www.ncl.ucar.edu/Document/Functions/Built-in/linint2.shtml>`__
