@@ -8,19 +8,13 @@
 Release Notes
 =============
 
-vYYYY.MM.## (unreleased)
-------------------------
-This release...
-
-New Features
-^^^^^^^^^^^^
+v2025.09.0 (September 9, 2025)
+------------------------------
+This release removes dask as a mandatory dependency and reworks some internal dask usage.
 
 Breaking Changes
 ^^^^^^^^^^^^^^^^
-* `scale_voronoi` no longer accepts `chunk_size` as an optional argument and will not automatically chunk xarray inputs from `Anissa Zacharias`_ in (:pr:`749`)
-
-Bug Fixes
-^^^^^^^^^
+* ``scale_voronoi`` no longer accepts ``chunk_size`` as an optional argument and will not automatically chunk xarray inputs from `Anissa Zacharias`_ in (:pr:`749`)
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
