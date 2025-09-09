@@ -29,6 +29,7 @@ Internal Changes
 
 Documentation
 ^^^^^^^^^^^^^
+* Update links to cartopy docs by `Katelyn FitzGerald`_ in (:pr:`757`)
 
 v2025.07.0 (July 15, 2025)
 ---------------------------
