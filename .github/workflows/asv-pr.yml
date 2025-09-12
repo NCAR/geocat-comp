@@ -49,7 +49,7 @@ jobs:
         uses: peter-evans/find-comment@v3
         id: fc
         with:
-          issue-number: '$${{ github.event.number }}'
+          issue-number: '${{ github.event.number }}'
           comment-author: 'github-actions[bot]'
           body-includes: '${{ env.comment_message }}'
 
