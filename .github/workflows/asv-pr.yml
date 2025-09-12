@@ -26,6 +26,10 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: fetch repo name
+        id: repo-name
+        run: echo "value=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_OUTPUT  # just the repo name, not owner
+
       - name: Setup Miniforge
         uses: conda-incubator/setup-miniconda@835234971496cad1653abb28a638a281cf32541f # v3
         with:
@@ -36,6 +40,33 @@ jobs:
         id: get-date
         run: echo "today=$(/bin/date -u '+%Y%m%d')" >> $GITHUB_OUTPUT
         shell: bash
+
+      - name: set message
+        run: |
+          echo "comment_message=Meowdy! Here's your benchmark comparison:" >> $GITHUB_ENV
+
+      - name: Find preview comment
+        uses: peter-evans/find-comment@v3
+        id: fc
+        with:
+          issue-number: '$${{ github.event.number }}'
+          comment-author: 'github-actions[bot]'
+          body-includes: '${{ env.comment_message }}'
+
+      - name: Create preview comment
+        if: steps.fc.outputs.comment-id == ''
+        id: create-comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: '$${{ github.event.number }}'
+          body: |
+            ${{ env.comment_message }}
+            🔍 Git commit SHA: ${{ github.sha }}
+            ✅ Benchmark Comparison: In Progress
+
+      - name: Debug
+        run: |
+          echo "${{ steps.fc.outputs.comment-id }}"
 
       - name: Cache environment
         uses: actions/cache@v4
@@ -79,6 +110,18 @@ jobs:
           path: |
             ${{ env.ASV_DIR }}/results
             ${{ env.ASV_DIR }}/asv_compare_results.txt
+
+      - name: Update preview comment
+        if: |
+          steps.fc.outputs.comment-id != ''
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          edit-mode: replace
+          body: |
+            ${{ env.comment_message }}
+            Baseline:  ${{ github.event.pull_request.base.sha }} (${{ github.event.pull_request.base.label }})
+            Contender: ${GITHUB_SHA} ($PR_HEAD_LABEL)
 
       - name: Post or update result comment
         id: comment
