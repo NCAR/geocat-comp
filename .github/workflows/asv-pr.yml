@@ -64,9 +64,19 @@ jobs:
             🔍 Git commit SHA: ${{ github.sha }}
             ✅ Benchmark Comparison: In Progress
 
-      - name: Debug
+      - name: Consolidate comment id
         run: |
-          echo "${{ steps.fc.outputs.comment-id }}"
+          if [ "${{ steps.fc.outputs.comment-id }}" != "" ]
+            then
+              echo "COMMENT_ID=${{ steps.fc.outputs.comment-id }}" >> $GITHUB_ENV
+            else
+              echo "COMMENT_ID=${{ steps.create-comment.outputs.comment-id }}" >> $GITHUB_ENV
+          fi
+
+
+      - name: debug
+        run: |
+          echo ${{env.COMMENT_ID}}
 
       - name: Cache environment
         uses: actions/cache@v4
@@ -100,7 +110,11 @@ jobs:
           ASV_OPTIONS="--split --show-stderr"
           asv continuous $ASV_OPTIONS ${{ github.event.pull_request.base.sha }} ${GITHUB_SHA}
           # Save compare results
-          asv compare --split ${{ github.event.pull_request.base.sha }} ${GITHUB_SHA} > asv_compare_results.txt
+          echo "${{ env.comment_message }}" > asv_compare_results.txt
+          echo "Baseline:  ${{ github.event.pull_request.base.sha }} (${{ github.event.pull_request.base.label }})" >> asv_compare_results.txt
+          echo "Contender: ${GITHUB_SHA} ($PR_HEAD_LABEL)" >> asv_compare_results.txt
+          asv compare --split ${{ github.event.pull_request.base.sha }} ${GITHUB_SHA} >> asv_compare_results.txt
+
         working-directory: ${{ env.ASV_DIR }}
 
       - uses: actions/upload-artifact@v4
@@ -112,63 +126,8 @@ jobs:
             ${{ env.ASV_DIR }}/asv_compare_results.txt
 
       - name: Update preview comment
-        if: |
-          steps.fc.outputs.comment-id != ''
         uses: peter-evans/create-or-update-comment@v4
         with:
-          comment-id: ${{ steps.fc.outputs.comment-id }}
+          comment-id: ${{ env.COMMENT_ID }}
           edit-mode: replace
-          body: |
-            ${{ env.comment_message }}
-            Baseline:  ${{ github.event.pull_request.base.sha }} (${{ github.event.pull_request.base.label }})
-            Contender: ${GITHUB_SHA} ($PR_HEAD_LABEL)
-
-      - name: Post or update result comment
-        id: comment
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const fs = require('fs');
-            const compareResults = fs.readFileSync('${{ env.ASV_DIR }}/asv_compare_results.txt', 'utf8');
-            const { owner, repo } = context.repo;
-            const issue_number = context.issue.number;
-
-            // Customize the comment content with your action results
-            const newComment = `
-            ## ASV Benchmarking
-
-            <details>
-              <summary>Benchmark Comparison Results</summary>
-
-              ${compareResults}
-            </details>
-            `;
-
-            // Fetch existing comments on the PR
-            const { data: comments } = await github.rest.issues.listComments({
-              owner,
-              repo,
-              issue_number,
-            });
-
-            // Find if there is an existing comment by this action
-            const botComment = comments.find(comment => comment.user.login === 'github-actions[bot]');
-
-            if (botComment) {
-              // Update the existing comment
-              await github.rest.issues.updateComment({
-                owner,
-                repo,
-                comment_id: botComment.id,
-                body: newComment,
-              });
-            } else {
-              // Create a new comment
-              await github.rest.issues.createComment({
-                owner,
-                repo,
-                issue_number,
-                body: newComment,
-              });
-            }
+          body-path: ${{ env.ASV_DIR }}/asv_compare_results.txt
