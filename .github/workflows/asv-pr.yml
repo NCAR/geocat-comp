@@ -58,7 +58,7 @@ jobs:
         id: create-comment
         uses: peter-evans/create-or-update-comment@v4
         with:
-          issue-number: '$${{ github.event.number }}'
+          issue-number: '${{ github.event.number }}'
           body: |
             ${{ env.comment_message }}
             🔍 Git commit SHA: ${{ github.sha }}
