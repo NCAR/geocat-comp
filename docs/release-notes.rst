@@ -21,6 +21,10 @@ Internal Changes
 * Update ``interp_hybrid_to_pressure`` to remove forced dask usage by `Anissa Zacharias`_ in (:pr:`748`)
 * Remove dask as an explicit dependency and forced dask internal usage by `Anissa Zacharias`_ in (:pr:`749`)
 
+Developer Features
+^^^^^^^^^^^^^^^^^^
+* Add option to enable asv comparison runs on PR branches by `Anissa Zacharias`_ in (:pr:`753`)
+
 Documentation
 ^^^^^^^^^^^^^
 * Update links to cartopy docs by `Katelyn FitzGerald`_ in (:pr:`757`)
