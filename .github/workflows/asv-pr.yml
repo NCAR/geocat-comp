@@ -22,7 +22,7 @@ jobs:
       CONDA_ENV_FILE: ci/environment.yml
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 #v4.3.0
         with:
           fetch-depth: 0
 
@@ -46,7 +46,7 @@ jobs:
           echo "comment_message=Meowdy! Here's your benchmark comparison:" >> $GITHUB_ENV
 
       - name: Find preview comment
-        uses: peter-evans/find-comment@v3
+        uses: peter-evans/find-comment@3eae4d37986fb5a8592848f6a574fdf654e61f9e #v3.1.0
         id: fc
         with:
           issue-number: '${{ github.event.number }}'
@@ -56,7 +56,7 @@ jobs:
       - name: Create preview comment
         if: steps.fc.outputs.comment-id == ''
         id: create-comment
-        uses: peter-evans/create-or-update-comment@v4
+        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 #v4
         with:
           issue-number: '${{ github.event.number }}'
           body: |
@@ -79,7 +79,7 @@ jobs:
           echo ${{env.COMMENT_ID}}
 
       - name: Cache environment
-        uses: actions/cache@v4
+        uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809  #v4.2.4
         with:
           path: ${{ env.CONDA }}/envs
           key:
@@ -117,7 +117,7 @@ jobs:
 
         working-directory: ${{ env.ASV_DIR }}
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  #v4.6.2
         if: always()
         with:
           name: asv-benchmark-results-${{ runner.os }}
@@ -126,7 +126,7 @@ jobs:
             ${{ env.ASV_DIR }}/asv_compare_results.txt
 
       - name: Update preview comment
-        uses: peter-evans/create-or-update-comment@v4
+        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 #v4
         with:
           comment-id: ${{ env.COMMENT_ID }}
           edit-mode: replace
