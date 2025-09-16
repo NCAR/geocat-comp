@@ -23,7 +23,7 @@ Bug Fixes
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
-* Group Dependabot updates by `Katelyn FitzGerald`_ in (:pr:`763`)
+* Group Dependabot updates by `Katelyn FitzGerald`_ in (:pr:`764`)
 
 Documentation
 ^^^^^^^^^^^^^
