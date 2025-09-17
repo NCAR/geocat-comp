@@ -8,6 +8,26 @@
 Release Notes
 =============
 
+vYYYY.MM.## (unreleased)
+------------------------
+This release...
+
+New Features
+^^^^^^^^^^^^
+
+Breaking Changes
+^^^^^^^^^^^^^^^^
+
+Bug Fixes
+^^^^^^^^^
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Group Dependabot updates by `Katelyn FitzGerald`_ in (:pr:`764`)
+
+Documentation
+^^^^^^^^^^^^^
+
 v2025.09.0 (September 9, 2025)
 ------------------------------
 This release removes dask as a mandatory dependency and reworks some internal dask usage.
