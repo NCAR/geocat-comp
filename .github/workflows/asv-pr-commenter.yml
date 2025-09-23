@@ -1,0 +1,107 @@
+name: ASV PR Comment
+
+# read-only repo token
+# no access to secrets
+on:
+  workflow_run:
+    workflows: ["ASV PR Comparison"]
+    types:
+      - completed
+
+jobs:
+  make_comment:
+    runs-on: ubuntu-latest
+    if: >
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success'
+
+    steps:
+
+      - name: 'Download artifact'
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd  #v8.0.0
+        with:
+          script: |
+            var artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               run_id: ${{github.event.workflow_run.id }},
+            });
+            var matchArtifactPR = artifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == "pr"
+            })[0];
+            var matchArtifactResults =  artifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == "benchmark-results"
+            })[0];
+            var download_results = await github.rest.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: matchArtifactResults.id,
+               archive_format: 'zip',
+            });
+            var download_pr = await github.rest.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: matchArtifactPR.id,
+               archive_format: 'zip',
+            });
+            var fs = require('fs');
+            fs.writeFileSync('${{github.workspace}}/pr.zip', Buffer.from(download_pr.data));
+            fs.writeFileSync('${{github.workspace}}/benchmark-results.zip', Buffer.from(download_results.data));
+      - run: unzip pr.zip; unzip benchmark-results.zip
+
+      - name: Read PR number
+        run: |
+          tree .
+          cat ./NR
+          echo "pr_number=$(cat ./NR)" >> $GITHUB_ENV
+
+      - name: fetch repo name
+        id: repo-name
+        run: echo "value=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_OUTPUT  # just the repo name, not owner
+
+      - name: Get date
+        id: get-date
+        run: echo "today=$(/bin/date -u '+%Y%m%d')" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: set message
+        run: |
+          echo "comment_message=Meowdy! Here's your benchmark comparison:" >> $GITHUB_ENV
+
+      - name: Find preview comment
+        uses: peter-evans/find-comment@3eae4d37986fb5a8592848f6a574fdf654e61f9e #v3.1.0
+        id: fc
+        with:
+          issue-number: '${{ env.pr_number }}'
+          comment-author: 'github-actions[bot]'
+          body-includes: '${{ env.comment_message }}'
+
+      - name: Create preview comment
+        if: steps.fc.outputs.comment-id == ''
+        id: create-comment
+        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 #v4
+        with:
+          issue-number: '${{ env.pr_number }}'
+          body: |
+            ${{ env.comment_message }}
+            ✅ Benchmark Comparison: In Progress
+
+      - name: Consolidate comment id
+        run: |
+          if [ "${{ steps.fc.outputs.comment-id }}" != "" ]
+            then
+              echo "COMMENT_ID=${{ steps.fc.outputs.comment-id }}" >> $GITHUB_ENV
+            else
+              echo "COMMENT_ID=${{ steps.create-comment.outputs.comment-id }}" >> $GITHUB_ENV
+          fi
+
+      - name: debug
+        run: |
+          echo ${{env.COMMENT_ID}}
+
+      - name: Update preview comment
+        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 #v4
+        with:
+          comment-id: ${{ env.COMMENT_ID }}
+          edit-mode: replace
+          body-path: ./asv_compare_results.txt
