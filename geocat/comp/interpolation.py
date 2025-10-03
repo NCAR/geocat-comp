@@ -65,15 +65,6 @@ def _interpolate_mb(data, curr_levels, new_levels, axis, method='linear'):
     return ext_func(new_levels, curr_levels, data, axis=axis)
 
 
-def _pressure_from_hybrid(psfc, hya, hyb, p0=100000.0):
-    """Calculate pressure at the hybrid levels."""
-
-    # p(k) = hya(k) * p0 + hyb(k) * psfc
-
-    # This will be in Pa
-    return hya * p0 + hyb * psfc
-
-
 def _pre_interp_multidim(
     data_in: xr.DataArray,
     cyclic: bool,
@@ -357,6 +348,43 @@ def _vertical_remap_extrap(
     return output
 
 
+def pressure_at_hybrid_levels(psfc, hya, hyb, p0=100000.0):
+    """Pressure at the hybrid levels.
+
+    .. math::
+
+        p(k) = hya(k) * p0 + hyb(k) * psfc
+
+    Parameters
+    ----------
+    psfc: :class:`xarray.DataArray`
+        A multi-dimensional array of surface pressures (Pa)
+
+    hya: :class:`xarray.DataArray`
+        An array of hybrid pressures (Pa)
+
+    hyb: :class:`xarray.DataArray`
+        An array of hybrid pressures (Pa)
+
+    p0 : float, optional
+        Scalar numeric value equal to surface reference pressure (Pa). Defaults to 100000 Pa.
+
+    Returns
+    -------
+    output : :class:`xarray.DataArray`
+        Computed pressure at the provided hybrid levels (Pa)
+
+    See Also
+    --------
+    Related NCL Functions:
+    `pres_hybrid_ccm <https://www.ncl.ucar.edu/Document/Functions/Built-in/pres_hybrid_ccm.shtml>`__
+    """
+
+    # Results in Pa
+    # p(k) = hya(k) * p0 + hyb(k) * psfc
+    return hya * p0 + hyb * psfc
+
+
 def interp_hybrid_to_pressure(
     data: xr.DataArray,
     ps: xr.DataArray,
@@ -500,7 +528,7 @@ def interp_hybrid_to_pressure(
     interp_axis = data.dims.index(lev_dim)
 
     # Calculate pressure levels at the hybrid levels
-    pressure = _pressure_from_hybrid(ps, hyam, hybm, p0)  # Pa
+    pressure = pressure_at_hybrid_levels(ps, hyam, hybm, p0)  # Pa
 
     # Make pressure shape same as data shape
     pressure = pressure.transpose(*data.dims)
