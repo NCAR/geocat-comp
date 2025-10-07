@@ -8,25 +8,13 @@
 Release Notes
 =============
 
-vYYYY.MM.## (unreleased)
+v2025.10.01 (Ocotber 7, 2025)
 ------------------------
-This release...
-
-New Features
-^^^^^^^^^^^^
-
-Breaking Changes
-^^^^^^^^^^^^^^^^
-
-Bug Fixes
-^^^^^^^^^
+This release updates to dependabot and optional PR ASV runs
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
 * Group Dependabot updates by `Katelyn FitzGerald`_ in (:pr:`764`)
-
-Documentation
-^^^^^^^^^^^^^
 
 v2025.09.0 (September 9, 2025)
 ------------------------------
