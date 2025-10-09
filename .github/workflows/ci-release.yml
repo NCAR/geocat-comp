@@ -20,15 +20,15 @@ jobs:
       fail-fast: false
       matrix:
         os: [ "ubuntu-latest", "macos-latest", "windows-latest" ]
-        python-version: ["3.10", "3.11", "3.12"]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5.0.0
 
       - name: environment set up
         id: env-setup
         continue-on-error: true
-        uses: mamba-org/setup-micromamba@v2
+        uses: mamba-org/setup-micromamba@0dea6379afdaffa5d528b3d1dabc45da37f443fc # v2
         with:
           environment-name: import_test
           create-args: >-
@@ -38,7 +38,7 @@ jobs:
 
       - name: retry environment setup if failed
         if: steps.env-setup.outcome == 'failure'
-        uses: mamba-org/setup-micromamba@v2
+        uses: mamba-org/setup-micromamba@0dea6379afdaffa5d528b3d1dabc45da37f443fc # v2
         with:
           download-micromamba: false
           environment-name: import_test
@@ -73,7 +73,7 @@ jobs:
       - name: environment set up
         id: env-setup
         continue-on-error: true
-        uses: mamba-org/setup-micromamba@v2
+        uses: mamba-org/setup-micromamba@0dea6379afdaffa5d528b3d1dabc45da37f443fc # v2
         with:
           environment-name: import_test
           create-args: >-

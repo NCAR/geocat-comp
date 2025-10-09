@@ -18,12 +18,12 @@ jobs:
 
     steps:
       - name: Checkout geocat-comp
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5.0.0
         with:
           repository: NCAR/geocat-comp
           fetch-depth: 0
       - name: Checkout geocat-comp-asv
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5.0.0
         with:
           repository: NCAR/geocat-comp-asv
           persist-credentials: false
@@ -32,7 +32,7 @@ jobs:
           path: geocat-comp-asv
 
       - name: Setup Miniforge
-        uses: conda-incubator/setup-miniconda@v3
+        uses: conda-incubator/setup-miniconda@835234971496cad1653abb28a638a281cf32541f # v3
         with:
           miniforge-version: "24.1.2-0"
           activate-environment: asv-bench
@@ -77,7 +77,7 @@ jobs:
         run: |
           cd benchmarks
           asv machine --machine GH-Actions --os ubuntu-latest --arch x64 --cpu "2-core unknown" --ram 7GB
-          asv run v2023.02.0..main --skip-existing --parallel || true
+          asv run v2024.04.0..main --skip-existing --parallel || true
 
       - name: Commit and push benchmark results
         run: |
@@ -93,7 +93,7 @@ jobs:
 
       - name: Push to geocat-comp-asv
         if: github.ref == 'refs/heads/main' && github.repository == 'NCAR/geocat-comp'
-        uses: ad-m/github-push-action@master
+        uses: ad-m/github-push-action@77c5b412c50b723d2a4fbc6d71fb5723bcd439aa # master
         with:
           github_token: ${{ secrets.COMP_ASV_PAT }}
           branch: main

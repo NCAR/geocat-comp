@@ -10,7 +10,7 @@ concurrency:
 
 jobs:
   upstream-dev:
-    name:  upstream-dev-py311
+    name:  upstream-dev
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -18,18 +18,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.11"]
+        python-version: ["3.12"]
 
     steps:
       - name: checkout
-        uses: actions/checkout@v4
-        with:
-          token: ${{ github.token }}
+        uses: actions/checkout@v5.0.0
 
       - name: set up environment
         id: env-setup
         continue-on-error: true
-        uses: mamba-org/setup-micromamba@v2
+        uses: mamba-org/setup-micromamba@0dea6379afdaffa5d528b3d1dabc45da37f443fc # v2
         with:
           environment-file: build_envs/environment.yml
           create-args: >-
@@ -37,7 +35,7 @@ jobs:
 
       - name: retry environment set up if failed
         if: steps.env-setup.outcome == 'failure'
-        uses: mamba-org/setup-micromamba@v2
+        uses: mamba-org/setup-micromamba@0dea6379afdaffa5d528b3d1dabc45da37f443fc # v2
         with:
           download-micromamba: false
           environment-file: build_envs/environment.yml
@@ -61,7 +59,7 @@ jobs:
           conda list
 
       - name: Run Tests
-        uses: nick-fields/retry@v3
+        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3
         with:
           timeout_minutes: 60
           max_attempts: 3

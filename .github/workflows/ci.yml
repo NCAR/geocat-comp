@@ -14,9 +14,7 @@ concurrency:
 
 jobs:
   test:
-    # if: |
-    #   github.repository == 'NCAR/geocat-comp'
-    name: Python (${{ matrix.python-version }}, ${{ matrix.os }})
+    name: ${{ matrix.os }} python ${{ matrix.python-version }} ${{ matrix.env }}
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -25,21 +23,33 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ "ubuntu-latest", "macos-latest", "windows-latest" ]
-        python-version: ["3.10", "3.11", "3.12"]
+        os: ["ubuntu-latest", "macos-latest", "windows-latest"]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+        env: [""]
+        include:
+          - env: "min-deps"
+            python-version: "3.10"
+            os: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5.0.0
+
       - name: set environment variables
         run: |
           echo "TODAY=$(date +%Y-%m-%d)" >> $GITHUB_ENV
 
+          if [[ "${{ matrix.env }}" == "min-deps" ]]; then
+             echo "CONDA_ENV_FILE=build_envs/min-deps.yml" >> $GITHUB_ENV
+          else
+             echo "CONDA_ENV_FILE=build_envs/environment.yml" >> $GITHUB_ENV
+          fi
+
       - name: environment setup
         id: env-setup
         continue-on-error: true
-        uses: mamba-org/setup-micromamba@v2
+        uses: mamba-org/setup-micromamba@0dea6379afdaffa5d528b3d1dabc45da37f443fc # v2
         with:
-          environment-file: build_envs/environment.yml
+          environment-file: ${{ env.CONDA_ENV_FILE }}
           cache-environment: true
           cache-environment-key: "CI ${{runner.os}}-${{runner.arch}}-py${{matrix.python-version}}-${{env.TODAY}}"
           create-args: >-
@@ -47,10 +57,10 @@ jobs:
 
       - name: retry environment set up if failed
         if: steps.env-setup.outcome == 'failure'
-        uses: mamba-org/setup-micromamba@v2
+        uses: mamba-org/setup-micromamba@0dea6379afdaffa5d528b3d1dabc45da37f443fc # v2
         with:
           download-micromamba: false
-          environment-file: build_envs/environment.yml
+          environment-file: ${{ env.CONDA_ENV_FILE }}
           cache-environment: true
           cache-environment-key: "CI ${{runner.os}}-${{runner.arch}}-py${{matrix.python-version}}-${{env.TODAY}}"
           create-args: >-
@@ -62,7 +72,7 @@ jobs:
 
       - name: Run Tests (non-windows)
         if: matrix.os != 'windows-latest'
-        uses: nick-fields/retry@v3
+        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3
         with:
           timeout_minutes: 60
           max_attempts: 3
@@ -74,7 +84,7 @@ jobs:
 
       - name: Run Tests (windows)
         if: matrix.os == 'windows-latest'
-        uses: nick-fields/retry@v3
+        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3
         with:
           timeout_minutes: 60
           max_attempts: 3
@@ -87,16 +97,16 @@ jobs:
       - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
-          name: Test results for ${{ runner.os }}-${{ matrix.python-version }}
+          name: Test results for ${{ runner.os }}-${{ matrix.python-version }} ${{ matrix.env }}
           path: pytest.xml
 
       - name: Upload code coverage to Codecov
         if: github.repository == 'NCAR/geocat-comp'
-        uses: codecov/codecov-action@v5.3.1
+        uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5.5.1
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
-          file: ./coverage.xml
+          files: ./coverage.xml
           env_vars: OS,PYTHON
           name: codecov-umbrella
           fail_ci_if_error: false
@@ -108,12 +118,12 @@ jobs:
         shell: bash -l {0}
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5.0.0
 
       - name: environment setup
         id: link-env-setup
         continue-on-error: true
-        uses: mamba-org/setup-micromamba@v2
+        uses: mamba-org/setup-micromamba@0dea6379afdaffa5d528b3d1dabc45da37f443fc # v2
         with:
           environment-file: build_envs/docs.yml
           cache-environment: true
@@ -123,7 +133,7 @@ jobs:
 
       - name: retry environment set up if failed
         if: steps.link-env-setup.outcome == 'failure'
-        uses: mamba-org/setup-micromamba@v2
+        uses: mamba-org/setup-micromamba@0dea6379afdaffa5d528b3d1dabc45da37f443fc # v2
         with:
           download-micromamba: false
           environment-file: build_envs/docs.yml
@@ -139,7 +149,7 @@ jobs:
         run: |
           conda list
       - name: Make docs with linkcheck
-        uses: nick-fields/retry@v3
+        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3
         with:
           timeout_minutes: 60
           max_attempts: 3

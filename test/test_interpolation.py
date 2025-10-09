@@ -3,25 +3,28 @@ import numpy as np
 import numpy.testing as nt
 import xarray as xr
 import pytest
+import pint
 
-from geocat.comp import interp_multidim, interp_hybrid_to_pressure, interp_sigma_to_hybrid
+from geocat.comp import (
+    interp_multidim,
+    interp_hybrid_to_pressure,
+    interp_sigma_to_hybrid,
+)
 
 # Global input data
 
 # Open the netCDF data file "atmos.nc" and read in common variables
 try:
-    ds_atmos = xr.open_dataset(gdf.get("netcdf_files/atmos.nc"),
-                               decode_times=False)
+    ds_atmos = xr.open_dataset(gdf.get("netcdf_files/atmos.nc"), decode_times=False)
 except Exception:
     ds_atmos = xr.open_dataset("test/atmos.nc", decode_times=False)
 
 _hyam = ds_atmos.hyam
 _hybm = ds_atmos.hybm
-_p0 = 1000. * 100  # Pa
+_p0 = 1000.0 * 100  # Pa
 
 
 class Test_interp_hybrid_to_pressure:
-
     # Expected output from above sample input
     @pytest.fixture(scope="class")
     def ds_out(self):
@@ -40,28 +43,43 @@ class Test_interp_hybrid_to_pressure:
     pres3d = pres3d * 100  # mb to Pa
 
     def test_interp_hybrid_to_pressure_atmos(self, ds_out) -> None:
-        u_int = interp_hybrid_to_pressure(self.data,
-                                          self.ps[0, :, :],
-                                          _hyam,
-                                          _hybm,
-                                          p0=_p0,
-                                          new_levels=self.pres3d,
-                                          method="log")
+        u_int = interp_hybrid_to_pressure(
+            self.data,
+            self.ps[0, :, :],
+            _hyam,
+            _hybm,
+            p0=_p0,
+            new_levels=self.pres3d,
+            method="log",
+        )
 
         uzon = u_int.mean(dim='lon')
 
         nt.assert_array_almost_equal(ds_out.uzon, uzon, 5)
 
+    def test_interp_hybrid_to_pressure_atmos_pint(self, ds_out) -> None:
+        unit = pint.UnitRegistry()
+        u_int = interp_hybrid_to_pressure(
+            self.data * unit.meter / unit.second,
+            self.ps[0, :, :] * unit.pascal,
+            _hyam,
+            _hybm,
+            p0=_p0 * unit.pascal,
+            new_levels=self.pres3d * unit.pascal,
+            method="log",
+        )
+
+        uzon = u_int.mean(dim='lon')
+
+        assert isinstance(uzon.data, pint.Quantity)
+        nt.assert_array_almost_equal(ds_out.uzon, uzon, 5)
+
     def test_interp_hybrid_to_pressure_atmos_4d(self, ds_out) -> None:
         data_t = self.data.expand_dims("time")
 
-        u_int = interp_hybrid_to_pressure(data_t,
-                                          self.ps,
-                                          _hyam,
-                                          _hybm,
-                                          p0=_p0,
-                                          new_levels=self.pres3d,
-                                          method="log")
+        u_int = interp_hybrid_to_pressure(
+            data_t, self.ps, _hyam, _hybm, p0=_p0, new_levels=self.pres3d, method="log"
+        )
 
         uzon = u_int.mean(dim='lon')
 
@@ -70,37 +88,35 @@ class Test_interp_hybrid_to_pressure:
 
     def test_interp_hybrid_to_pressure_atmos_wrong_method(self) -> None:
         with pytest.raises(ValueError):
-            interp_hybrid_to_pressure(self.data,
-                                      self.ps[0, :, :],
-                                      _hyam,
-                                      _hybm,
-                                      p0=_p0,
-                                      new_levels=self.pres3d,
-                                      method="wrong_method")
+            interp_hybrid_to_pressure(
+                self.data,
+                self.ps[0, :, :],
+                _hyam,
+                _hybm,
+                p0=_p0,
+                new_levels=self.pres3d,
+                method="wrong_method",
+            )
 
 
 class Test_interp_hybrid_to_pressure_extrapolate:
-
     @pytest.fixture(scope="class")
     def ds_ccsm(self):
         # Open the netCDF data file with the input data
         try:
             return xr.open_dataset(
-                gdf.get("netcdf_files/ccsm35.h0.0021-01.demo.nc"),
-                decode_times=False)
+                gdf.get("netcdf_files/ccsm35.h0.0021-01.demo.nc"), decode_times=False
+            )
         except Exception:
-            return xr.open_dataset("test/ccsm35.h0.0021-01.demo.nc",
-                                   decode_times=False)
+            return xr.open_dataset("test/ccsm35.h0.0021-01.demo.nc", decode_times=False)
 
     @pytest.fixture(scope="class")
     def ds_out(self):
         # Open the netCDF file with the output data from running vinth2p_ecmwf.ncl
         try:
-            return xr.open_dataset("test/vinth2p_ecmwf_output.nc",
-                                   decode_times=False)
+            return xr.open_dataset("test/vinth2p_ecmwf_output.nc", decode_times=False)
         except Exception:
-            return xr.open_dataset("vinth2p_ecmwf_output.nc",
-                                   decode_times=False)
+            return xr.open_dataset("vinth2p_ecmwf_output.nc", decode_times=False)
 
     @pytest.fixture(scope="class")
     def _hyam(self, ds_ccsm):
@@ -138,127 +154,141 @@ class Test_interp_hybrid_to_pressure_extrapolate:
     new_levels *= 100  # new levels in Pa
     _p0 = 1000 * 100  # reference pressure in Pa
 
-    def test_interp_hybrid_to_pressure_interp_temp(self, temp_in, press_in,
-                                                   _hyam, _hybm,
-                                                   ds_out) -> None:
-        result = interp_hybrid_to_pressure(temp_in,
-                                           press_in,
-                                           _hyam,
-                                           _hybm,
-                                           p0=self._p0,
-                                           new_levels=self.new_levels,
-                                           method="linear")
+    def test_interp_hybrid_to_pressure_interp_temp(
+        self, temp_in, press_in, _hyam, _hybm, ds_out
+    ) -> None:
+        result = interp_hybrid_to_pressure(
+            temp_in,
+            press_in,
+            _hyam,
+            _hybm,
+            p0=self._p0,
+            new_levels=self.new_levels,
+            method="linear",
+        )
         result = result.transpose('time', 'plev', 'lat', 'lon')
         result = result.assign_coords(dict(plev=self.new_levels / 100))
         temp_interp_expected = ds_out.Tp.rename(lev_p='plev')
         xr.testing.assert_allclose(temp_interp_expected, result)
 
-    def test_interp_hybrid_to_pressure_extrap_temp(self, temp_in, press_in,
-                                                   _hyam, _hybm, t_bot, phis,
-                                                   ds_out) -> None:
-        result = interp_hybrid_to_pressure(temp_in,
-                                           press_in,
-                                           _hyam,
-                                           _hybm,
-                                           p0=self._p0,
-                                           new_levels=self.new_levels,
-                                           method="linear",
-                                           extrapolate=True,
-                                           variable='temperature',
-                                           t_bot=t_bot,
-                                           phi_sfc=phis)
+    def test_interp_hybrid_to_pressure_extrap_temp(
+        self, temp_in, press_in, _hyam, _hybm, t_bot, phis, ds_out
+    ) -> None:
+        result = interp_hybrid_to_pressure(
+            temp_in,
+            press_in,
+            _hyam,
+            _hybm,
+            p0=self._p0,
+            new_levels=self.new_levels,
+            method="linear",
+            extrapolate=True,
+            variable='temperature',
+            t_bot=temp_in.isel(lev=-1, drop=True),
+            phi_sfc=phis,
+        )
         result = result.transpose('time', 'plev', 'lat', 'lon')
         result = result.assign_coords(dict(plev=self.new_levels / 100))
         temp_extrap_expected = ds_out.Tpx.rename(lev_p='plev')
         xr.testing.assert_allclose(temp_extrap_expected, result)
 
     def test_interp_hybrid_to_pressure_extrap_geopotential(
-            self, geopotential_in, press_in, _hyam, _hybm, t_bot, phis,
-            ds_out) -> None:
-        result = interp_hybrid_to_pressure(geopotential_in,
-                                           press_in,
-                                           _hyam,
-                                           _hybm,
-                                           p0=self._p0,
-                                           new_levels=self.new_levels,
-                                           method="linear",
-                                           extrapolate=True,
-                                           variable='geopotential',
-                                           t_bot=t_bot,
-                                           phi_sfc=phis)
+        self, geopotential_in, press_in, _hyam, _hybm, t_bot, phis, ds_out
+    ) -> None:
+        result = interp_hybrid_to_pressure(
+            geopotential_in,
+            press_in,
+            _hyam,
+            _hybm,
+            p0=self._p0,
+            new_levels=self.new_levels,
+            method="linear",
+            extrapolate=True,
+            variable='geopotential',
+            t_bot=t_bot,
+            phi_sfc=phis,
+        )
         result = result.transpose('time', 'plev', 'lat', 'lon')
         result = result.assign_coords(dict(plev=self.new_levels / 100))
         geopotential_extrap_expected = ds_out.Zpx.rename(lev_p='plev')
         xr.testing.assert_allclose(geopotential_extrap_expected, result)
 
-    def test_interp_hybrid_to_pressure_extrap_other(self, humidity_in, press_in,
-                                                    _hyam, _hybm, t_bot, phis,
-                                                    ds_out) -> None:
-        result = interp_hybrid_to_pressure(humidity_in,
-                                           press_in,
-                                           _hyam,
-                                           _hybm,
-                                           p0=self._p0,
-                                           new_levels=self.new_levels,
-                                           method="linear",
-                                           extrapolate=True,
-                                           variable='other',
-                                           t_bot=t_bot,
-                                           phi_sfc=phis)
+    def test_interp_hybrid_to_pressure_extrap_other(
+        self, humidity_in, press_in, _hyam, _hybm, t_bot, phis, ds_out
+    ) -> None:
+        result = interp_hybrid_to_pressure(
+            humidity_in,
+            press_in,
+            _hyam,
+            _hybm,
+            p0=self._p0,
+            new_levels=self.new_levels,
+            method="linear",
+            extrapolate=True,
+            variable='other',
+            t_bot=t_bot,
+            phi_sfc=phis,
+        )
         result = result.transpose('time', 'plev', 'lat', 'lon')
         result = result.assign_coords(dict(plev=self.new_levels / 100))
         humidity_extrap_expected = ds_out.Qpx.rename(lev_p='plev')
         xr.testing.assert_allclose(humidity_extrap_expected, result)
 
-    def test_interp_hybrid_to_pressure_extrap_kwargs(self, humidity_in,
-                                                     press_in, _hyam,
-                                                     _hybm) -> None:
+    def test_interp_hybrid_to_pressure_extrap_kwargs(
+        self, humidity_in, press_in, _hyam, _hybm
+    ) -> None:
         with pytest.raises(ValueError):
-            interp_hybrid_to_pressure(humidity_in,
-                                      press_in,
-                                      _hyam,
-                                      _hybm,
-                                      p0=self._p0,
-                                      new_levels=self.new_levels,
-                                      method="linear",
-                                      extrapolate=True)
+            interp_hybrid_to_pressure(
+                humidity_in,
+                press_in,
+                _hyam,
+                _hybm,
+                p0=self._p0,
+                new_levels=self.new_levels,
+                method="linear",
+                extrapolate=True,
+            )
 
     def test_interp_hybrid_to_pressure_extrap_invalid_var(
-            self, humidity_in, press_in, _hyam, _hybm, t_bot, phis) -> None:
+        self, humidity_in, press_in, _hyam, _hybm, t_bot, phis
+    ) -> None:
         with pytest.raises(ValueError):
-            interp_hybrid_to_pressure(humidity_in,
-                                      press_in,
-                                      _hyam,
-                                      _hybm,
-                                      p0=self._p0,
-                                      new_levels=self.new_levels,
-                                      method="linear",
-                                      extrapolate=True,
-                                      variable=' ',
-                                      t_bot=t_bot,
-                                      phi_sfc=phis)
+            interp_hybrid_to_pressure(
+                humidity_in,
+                press_in,
+                _hyam,
+                _hybm,
+                p0=self._p0,
+                new_levels=self.new_levels,
+                method="linear",
+                extrapolate=True,
+                variable=' ',
+                t_bot=t_bot,
+                phi_sfc=phis,
+            )
 
 
 class Test_interp_sigma_to_hybrid:
-
     @pytest.fixture(scope="class")
     def ds_u(self):
         # Open the netCDF data file "u.89335.1.nc" and read in input data
         try:
             return xr.open_dataset(
-                gdf.get("netcdf_files/u.89335.1_subset_time361.nc"),
-                decode_times=False)
+                gdf.get("netcdf_files/u.89335.1_subset_time361.nc"), decode_times=False
+            )
         except Exception:
-            return xr.open_dataset("test/u.89335.1_subset_time361.nc",
-                                   decode_times=False)
+            return xr.open_dataset(
+                "test/u.89335.1_subset_time361.nc", decode_times=False
+            )
 
     @pytest.fixture(scope="class")
     def ds_ps(self):
         # Open the netCDF data file "ps.89335.1.nc" and read in additional input
         # data
         try:
-            return xr.open_dataset(gdf.get("netcdf_files/ps.89335.1.nc"),
-                                   decode_times=False)
+            return xr.open_dataset(
+                gdf.get("netcdf_files/ps.89335.1.nc"), decode_times=False
+            )
         except Exception:
             return xr.open_dataset("test/ps.89335.1.nc", decode_times=False)
 
@@ -292,85 +322,82 @@ class Test_interp_sigma_to_hybrid:
         return ds_out.xh.transpose("ncl3", "ncl1", "ncl2")  # Expected output
 
     def test_interp_sigma_to_hybrid_1d(self, u, sigma, ps, xh_expected) -> None:
-        xh = interp_sigma_to_hybrid(u[:, 0, 0],
-                                    sigma,
-                                    ps[0, 0],
-                                    self.hyam,
-                                    self.hybm,
-                                    p0=_p0,
-                                    method="linear")
+        xh = interp_sigma_to_hybrid(
+            u[:, 0, 0], sigma, ps[0, 0], self.hyam, self.hybm, p0=_p0, method="linear"
+        )
         nt.assert_array_almost_equal(xh_expected[:, 0, 0], xh, 5)
 
     def test_interp_sigma_to_hybrid_3d(self, u, sigma, ps, xh_expected) -> None:
-        xh = interp_sigma_to_hybrid(u,
-                                    sigma,
-                                    ps,
-                                    self.hyam,
-                                    self.hybm,
-                                    p0=_p0,
-                                    method="linear")
+        xh = interp_sigma_to_hybrid(
+            u, sigma, ps, self.hyam, self.hybm, p0=_p0, method="linear"
+        )
         nt.assert_array_almost_equal(xh_expected, xh, 5)
 
-    def test_interp_sigma_to_hybrid_3d_transposed(self, u, sigma, ps,
-                                                  xh_expected) -> None:
-        xh = interp_sigma_to_hybrid(u.transpose('ycoord', 'sigma', 'xcoord'),
-                                    sigma,
-                                    ps.transpose('ycoord', 'xcoord'),
-                                    self.hyam,
-                                    self.hybm,
-                                    p0=_p0,
-                                    method="linear")
+    def test_interp_sigma_to_hybrid_3d_transposed(
+        self, u, sigma, ps, xh_expected
+    ) -> None:
+        xh = interp_sigma_to_hybrid(
+            u.transpose('ycoord', 'sigma', 'xcoord'),
+            sigma,
+            ps.transpose('ycoord', 'xcoord'),
+            self.hyam,
+            self.hybm,
+            p0=_p0,
+            method="linear",
+        )
         nt.assert_array_almost_equal(
-            xh_expected.transpose('ncl2', 'ncl3', 'ncl1'), xh, 5)
+            xh_expected.transpose('ncl2', 'ncl3', 'ncl1'), xh, 5
+        )
 
     def test_interp_sigma_to_hybrid_wrong_method(self, u, sigma, ps) -> None:
         with pytest.raises(ValueError):
-            interp_sigma_to_hybrid(u,
-                                   sigma,
-                                   ps,
-                                   self.hyam,
-                                   self.hybm,
-                                   p0=_p0,
-                                   method="wrong_method")
+            interp_sigma_to_hybrid(
+                u, sigma, ps, self.hyam, self.hybm, p0=_p0, method="wrong_method"
+            )
 
 
 class Test_interp_manually_calc:
-
     @pytest.fixture(scope="class")
     def test_input(self):
-        return xr.load_dataset(
-            gdf.get("netcdf_files/interpolation_test_input_data.nc"))
+        return xr.load_dataset(gdf.get("netcdf_files/interpolation_test_input_data.nc"))
 
     @pytest.fixture(scope="class")
     def test_output(self):
         return xr.load_dataset(
-            gdf.get("netcdf_files/interpolation_test_output_data.nc"))
+            gdf.get("netcdf_files/interpolation_test_output_data.nc")
+        )
 
     def test_float32(self, test_input, test_output) -> None:
         np.testing.assert_almost_equal(
             test_output['normal'].values.astype(np.float32),
-            interp_multidim(xr.DataArray(
-                test_input['normal'].values.astype(np.float32),
-                dims=['lat', 'lon'],
-                coords={
-                    'lat': test_input['normal']['lat'].values,
-                    'lon': test_input['normal']['lon'].values,
-                }),
-                            test_output['normal']['lat'].values,
-                            test_output['normal']['lon'].values,
-                            cyclic=True).values,
-            decimal=7)
+            interp_multidim(
+                xr.DataArray(
+                    test_input['normal'].values.astype(np.float32),
+                    dims=['lat', 'lon'],
+                    coords={
+                        'lat': test_input['normal']['lat'].values,
+                        'lon': test_input['normal']['lon'].values,
+                    },
+                ),
+                test_output['normal']['lat'].values,
+                test_output['normal']['lon'].values,
+                cyclic=True,
+            ).values,
+            decimal=7,
+        )
 
     def test_float64(self, test_input, test_output) -> None:
         np.testing.assert_almost_equal(
             test_output['normal'].values.astype(np.float64),
             interp_multidim(
-                xr.DataArray(test_input['normal'].values.astype(np.float64),
-                             dims=['lat', 'lon'],
-                             coords={
-                                 'lat': test_input['normal']['lat'].values,
-                                 'lon': test_input['normal']['lon'].values,
-                             }),
+                xr.DataArray(
+                    test_input['normal'].values.astype(np.float64),
+                    dims=['lat', 'lon'],
+                    coords={
+                        'lat': test_input['normal']['lat'].values,
+                        'lon': test_input['normal']['lon'].values,
+                    },
+                ),
                 test_output['normal']['lat'].values,
                 test_output['normal']['lon'].values,
                 cyclic=True,
@@ -437,35 +464,40 @@ class Test_interp_manually_calc:
                 lon_in=test_input['normal']['lon'].values,
                 cyclic=True,
             ),
-            decimal=8)
+            decimal=8,
+        )
 
     def test_extrapolate(self, test_input, test_output) -> None:
-        np.testing.assert_almost_equal(test_output['normal'].values,
-                                       interp_multidim(
-                                           test_input['normal'],
-                                           test_output['normal']['lat'].values,
-                                           test_output['normal']['lon'].values,
-                                           cyclic=True,
-                                           fill_value='extrapolate',
-                                       ),
-                                       decimal=8)
+        np.testing.assert_almost_equal(
+            test_output['normal'].values,
+            interp_multidim(
+                test_input['normal'],
+                test_output['normal']['lat'].values,
+                test_output['normal']['lon'].values,
+                cyclic=True,
+                fill_value='extrapolate',
+            ),
+            decimal=8,
+        )
 
 
 class Test_interp_larger_dataset:
-
     @pytest.fixture(scope="class")
     def test_input(self):
-        return xr.load_dataset(
-            gdf.get("netcdf_files/spherical_noise_input.nc"))['spherical_noise']
+        return xr.load_dataset(gdf.get("netcdf_files/spherical_noise_input.nc"))[
+            'spherical_noise'
+        ]
 
     @pytest.fixture(scope="class")
     def test_output(self):
-        return xr.load_dataset(gdf.get(
-            "netcdf_files/spherical_noise_output.nc"))['spherical_noise']
+        return xr.load_dataset(gdf.get("netcdf_files/spherical_noise_output.nc"))[
+            'spherical_noise'
+        ]
 
     def test_10x(self, test_input, test_output) -> None:
-        data_xr = interp_multidim(test_input, test_output.coords['lat'],
-                                  test_output.coords['lon'])
+        data_xr = interp_multidim(
+            test_input, test_output.coords['lat'], test_output.coords['lon']
+        )
         np.testing.assert_almost_equal(
             test_output,
             data_xr.values,
@@ -473,8 +505,8 @@ class Test_interp_larger_dataset:
         )
 
     def test_chunked(self, test_input, test_output) -> None:
-        data_xr = interp_multidim(test_input.chunk(2),
-                                  test_output.coords['lat'],
-                                  test_output.coords['lon'])
+        data_xr = interp_multidim(
+            test_input.chunk(2), test_output.coords['lat'], test_output.coords['lon']
+        )
 
         np.testing.assert_almost_equal(test_output, data_xr.values, decimal=8)
