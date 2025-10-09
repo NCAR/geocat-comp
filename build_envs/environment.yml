@@ -14,6 +14,7 @@ dependencies:
   - pandas
   - xarray
   - xskillscore>=0.0.17
+  - uxarray
 # Packages listed below are for testing
   - geocat-datafiles
   - netcdf4
