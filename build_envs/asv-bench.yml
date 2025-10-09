@@ -9,6 +9,7 @@ dependencies:
   - cftime
   - cython
   - eofs
+  - geocat-datafiles
   - metpy
   - netcdf4
   - numpy
