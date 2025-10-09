@@ -37,7 +37,7 @@ jobs:
       - name: environment setup
         id: env-setup
         continue-on-error: true
-        uses: mamba-org/setup-micromamba@v1
+        uses: mamba-org/setup-micromamba@v2
         with:
           environment-file: build_envs/environment.yml
           cache-environment: true
@@ -47,7 +47,7 @@ jobs:
 
       - name: retry environment set up if failed
         if: steps.env-setup.outcome == 'failure'
-        uses: mamba-org/setup-micromamba@v1
+        uses: mamba-org/setup-micromamba@v2
         with:
           download-micromamba: false
           environment-file: build_envs/environment.yml
@@ -92,7 +92,7 @@ jobs:
 
       - name: Upload code coverage to Codecov
         if: github.repository == 'NCAR/geocat-comp'
-        uses: codecov/codecov-action@v4.5.0
+        uses: codecov/codecov-action@v5.3.1
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
@@ -113,7 +113,7 @@ jobs:
       - name: environment setup
         id: link-env-setup
         continue-on-error: true
-        uses: mamba-org/setup-micromamba@v1
+        uses: mamba-org/setup-micromamba@v2
         with:
           environment-file: build_envs/docs.yml
           cache-environment: true
@@ -123,7 +123,7 @@ jobs:
 
       - name: retry environment set up if failed
         if: steps.link-env-setup.outcome == 'failure'
-        uses: mamba-org/setup-micromamba@v1
+        uses: mamba-org/setup-micromamba@v2
         with:
           download-micromamba: false
           environment-file: build_envs/docs.yml

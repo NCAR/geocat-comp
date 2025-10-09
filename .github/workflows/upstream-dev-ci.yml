@@ -29,7 +29,7 @@ jobs:
       - name: set up environment
         id: env-setup
         continue-on-error: true
-        uses: mamba-org/setup-micromamba@v1
+        uses: mamba-org/setup-micromamba@v2
         with:
           environment-file: build_envs/environment.yml
           create-args: >-
@@ -37,7 +37,7 @@ jobs:
 
       - name: retry environment set up if failed
         if: steps.env-setup.outcome == 'failure'
-        uses: mamba-org/setup-micromamba@v1
+        uses: mamba-org/setup-micromamba@v2
         with:
           download-micromamba: false
           environment-file: build_envs/environment.yml

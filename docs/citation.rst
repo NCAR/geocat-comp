@@ -15,32 +15,24 @@ users to access older releases. This ensures that users are not only able to cit
 software version through DOIs but are also able to download & use the corresponding release for
 reproducibility purposes.
 
-Please find DOIs for all the GeoCAT-comp versions `here
-<https://zenodo.org/search?page=1&size=20&q=conceptrecid:%226607205%22&sort=-version&all_versions=True>`__.
+DOIs for all GeoCAT-comp versions can be found `here on Zenodo
+<https://zenodo.org/search?q=parent.id%3A6607205&f=allversions%3Atrue&l=list&p=1&s=10&sort=version>`__.
 
-If you would like to cite GeoCAT-comp as a whole (without referring to a specific version), use
-the following text:
+Example citations
+^^^^^^^^^^^^^^^^^
 
-    **Visualization & Analysis Systems Technologies. (2019).
-    Geoscience Community Analysis Toolkit: GeoCAT-comp [Software].
-    Boulder, CO: NSF NCAR Computational and Information System Lab. doi:10.5281/zenodo.6607205.**
-
-Instead, if you would like to cite a specific version of GeoCAT-comp, use the following text:
-
-    **Visualization & Analysis Systems Technologies. (\<Year\>).
-    Geoscience Community Analysis Toolkit: GeoCAT-comp (v\<version\>) [Software].
-    Boulder, CO, USA: NSF NCAR Computational and Information System Lab. doi:\<DOI\>.**
-
-In the above citation text, update the year, GeoCAT-comp version, and DOI as appropriate. For
-example:
+Citing a specific version of GeoCAT-comp:
 
     **Visualization & Analysis Systems Technologies. (2022).
     Geoscience Community Analysis Toolkit: GeoCAT-comp (v2022.04.0) [Software].
     Boulder, CO, USA: NSF NCAR Computational and Information System Lab. doi:10.5281/zenodo.6607349.**
 
-Please note: The DOI minting service, Zenodo, might be suggesting their own citation text (as
-they are the publisher of such DOIs) in their website. We prefer the text we recommend here to be used;
-however, either way is acceptable.
+.. attention::
 
-For further information, please refer to
-`GeoCAT homepage - Citation <https://geocat.ucar.edu/pages/citation.html>`_.
+   Requires updating the year, GeoCAT-comp version, and DOI
+
+Citing GeoCAT-comp without referring to a specific version:
+
+    **Visualization & Analysis Systems Technologies. (2019).
+    Geoscience Community Analysis Toolkit: GeoCAT-comp [Software].
+    Boulder, CO: NSF NCAR Computational and Information System Lab. doi:10.5281/zenodo.6607205.**

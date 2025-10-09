@@ -10,10 +10,29 @@ Release Notes
 
 vYYYY.MM.## (unreleased)
 ------------------------
-This release...
+
+Maintenance
+^^^^^^^^^^^
+* Remove NumPy version pin by `Katelyn FitzGerald`_ in (:pr:`686`)
+
+v2025.01.0 (January 28, 2025)
+-----------------------------
+v2025.01.0 releases a collection of small changes and pins ``scipy`` to <1.15
+while we finalize removing the deprecating ``sph_harm`` in favor of
+``sph_harm_y``.
+
+Documentation
+^^^^^^^^^^^^^
+* Fix to documentation theme configuration by `Katelyn FitzGerald`_ in (:pr:`657`)
+* Update links to eofs documentation by `Katelyn FitzGerald`_ in (:pr:`661`)
+* Update citation documentation removing reference to old GeoCAT website by `Katelyn FitzGerald`_ in (:pr:`666`)
+* Fix link to ``satvpr_slope_fao56`` in ``saturation_vapor_pressure_slope`` documentation by `Cora Schneck`_ in (:pr:`671`)
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
+* Pin SciPy version <1.15 by `Katelyn FitzGerald`_ in (:pr:`674`)
+* Temporarily remove docformatter from pre-commit by `Katelyn FitzGerald`_ in (:pr:`653`)
+* Pre-commit hook to check for valid yml by `Cora Schneck`_ in (:pr:`625`)
 * CI to run on macos-latest instead of macos-14 by `Cora Schneck`_ in (:pr:`617`)
 * Update and setup autoupdate for pre-commit hooks by `Cora Schneck`_ in (:pr:`604`)
 * Removed ``pre-commit.yaml`` action in favor of pre-commit.ci by `Cora Schneck`_ in (:pr:`608`)
@@ -21,6 +40,8 @@ Internal Changes
 * Updates to issue and PR templates by `Anissa Zacharias`_ in (:pr:`612`)
 * Re-pin ASV and list env info by `Katelyn FitzGerald`_ in (:pr:`613`)
 * Refactor ``pre-commit.ci`` by `Anissa Zacharias`_ in (:pr:`628`)
+* Temporarily pin micromamba for CI by `Anissa Zacharias`_ in (:pr:`645`)
+* Remove micromamba pin for CI by `Katelyn FitzGerald`_ in (:pr:`650`)
 
 v2024.04.0 (April 23, 2024)
 ---------------------------

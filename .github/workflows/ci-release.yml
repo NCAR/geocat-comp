@@ -28,7 +28,7 @@ jobs:
       - name: environment set up
         id: env-setup
         continue-on-error: true
-        uses: mamba-org/setup-micromamba@v1
+        uses: mamba-org/setup-micromamba@v2
         with:
           environment-name: import_test
           create-args: >-
@@ -38,7 +38,7 @@ jobs:
 
       - name: retry environment setup if failed
         if: steps.env-setup.outcome == 'failure'
-        uses: mamba-org/setup-micromamba@v1
+        uses: mamba-org/setup-micromamba@v2
         with:
           download-micromamba: false
           environment-name: import_test
@@ -73,7 +73,7 @@ jobs:
       - name: environment set up
         id: env-setup
         continue-on-error: true
-        uses: mamba-org/setup-micromamba@v1
+        uses: mamba-org/setup-micromamba@v2
         with:
           environment-name: import_test
           create-args: >-
@@ -83,7 +83,7 @@ jobs:
 
       - name: retry environment setup if failed
         if: steps.env-setup.outcome == 'failure'
-        uses: mamba-org/setup-micromamba@v1
+        uses: mamba-org/setup-micromamba@v2
         with:
           download-micromamba: false
           environment-name: import_test

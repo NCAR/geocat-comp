@@ -7,8 +7,8 @@ cftime
 dask[array]
 eofs
 metpy
-numpy<2.0
-scipy
+numpy
+scipy<1.15
 xarray
 xskillscore
 packaging

@@ -1341,7 +1341,7 @@ def saturation_vapor_pressure_slope(
     :func:`saturation_vapor_pressure_slope`
 
     Related NCL Functions:
-    `satvpr_temp_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_temp_fao56.shtml>`__
+    `satvpr_slope_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/satvpr_slope_fao56.shtml>`__
     """
     in_type = type(temperature)
 
