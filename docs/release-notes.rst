@@ -12,15 +12,6 @@ vYYYY.MM.## (unreleased)
 ------------------------
 This release...
 
-New Features
-^^^^^^^^^^^^
-
-Breaking Changes
-^^^^^^^^^^^^^^^^
-
-Bug Fixes
-^^^^^^^^^
-
 Internal Changes
 ^^^^^^^^^^^^^^^^
 
@@ -32,7 +23,7 @@ Documentation
 ^^^^^^^^^^^^^
 
 v2025.10.01 (October 7, 2025)
-------------------------
+-----------------------------
 This release updates to dependabot and optional PR ASV runs
 
 Internal Changes
