@@ -20,7 +20,7 @@ jobs:
       - name: Checkout geocat-comp
         uses: actions/checkout@v5.0.0
         with:
-          repository: NCAR/geocat-comp
+          repository: anissa111/geocat-comp
           fetch-depth: 0
       - name: Checkout geocat-comp-asv
         uses: actions/checkout@v5.0.0
@@ -77,7 +77,7 @@ jobs:
         run: |
           cd benchmarks
           asv machine --machine GH-Actions --os ubuntu-latest --arch x64 --cpu "2-core unknown" --ram 7GB
-          asv run v2025.10.1..main --skip-existing --parallel || true
+          asv run v2025.10.01..main --skip-existing --parallel || true
 
       - name: Commit and push benchmark results
         run: |
