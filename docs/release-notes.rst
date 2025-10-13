@@ -8,8 +8,22 @@
 Release Notes
 =============
 
-v2025.10.01 (Ocotber 7, 2025)
+vYYYY.MM.## (unreleased)
 ------------------------
+This release...
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+
+Developer Features
+^^^^^^^^^^^^^^^^^^
+* Create initial benchmarking suite by `Anissa Zacharias`_ in (:pr:`772`)
+
+Documentation
+^^^^^^^^^^^^^
+
+v2025.10.01 (October 7, 2025)
+-----------------------------
 This release updates to dependabot and optional PR ASV runs
 
 Internal Changes
