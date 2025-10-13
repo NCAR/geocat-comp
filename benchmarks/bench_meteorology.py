@@ -17,7 +17,7 @@ from geocat.comp.meteorology import (
 class Bench_dewtemp:
     def setup(self):
         # fmt: off
-        self. rh_def = [75.0, 60.0, 61.1, 76.7, 90.5, 89.8, 78.3, 76.5, 46.0, 55.0, 63.8, 53.2, 42.9, 41.7, 51.0, 70.6, 50.0, 50.0]
+        self.rh_def = [75.0, 60.0, 61.1, 76.7, 90.5, 89.8, 78.3, 76.5, 46.0, 55.0, 63.8, 53.2, 42.9, 41.7, 51.0, 70.6, 50.0, 50.0]
         # fmt: on
 
     def time_dewtemp(self):
