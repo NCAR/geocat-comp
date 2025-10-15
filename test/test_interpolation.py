@@ -55,7 +55,7 @@ class Test_interp_hybrid_to_pressure:
     def test_pressure_at_hybrid_levels(self, p_out, ds_out):
         pm = pressure_at_hybrid_levels(self.ps[0, :7, :7], p_out.hyam, p_out.hybm)
 
-        nt.assert_array_almost_equal(p_out.pm, pm, 5)
+        nt.assert_allclose(pm, p_out.pm, rtol=1e-6)
 
     def test_interp_hybrid_to_pressure_atmos(self, ds_out) -> None:
         u_int = interp_hybrid_to_pressure(
