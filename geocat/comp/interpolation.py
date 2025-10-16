@@ -361,10 +361,10 @@ def pressure_at_hybrid_levels(psfc, hya, hyb, p0=100000.0):
         A multi-dimensional array of surface pressures (Pa)
 
     hya: :class:`xarray.DataArray`
-        An array of hybrid pressures (Pa)
+        A one-dimensional array of the hybrid A coefficients (unitless)
 
     hyb: :class:`xarray.DataArray`
-        An array of hybrid pressures (Pa)
+        A one-dimensional array of the hybrid B coefficients (unitless)
 
     p0 : float, optional
         Scalar numeric value equal to surface reference pressure (Pa). Defaults to 100000 Pa.
