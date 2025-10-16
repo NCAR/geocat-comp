@@ -2,8 +2,10 @@ import numpy as np
 import typing
 import warnings
 import xarray as xr
+import uxarray as ux
 
 from .gc_util import _generate_wrapper_docstring
+from .interpolation import interp_hybrid_to_pressure
 
 
 def _dewtemp(
@@ -1503,3 +1505,193 @@ def dpres_plev(pressure_lev, surface_pressure):
 
 
 _generate_wrapper_docstring(dpres_plev, delta_pressure)
+
+
+def zonal_mpsi(uxds, hybrid_pressure: bool = True):
+    """
+    Calculate the zonally averaged meridional mass streamfunction (mpsi) from a UXarray Dataset.
+
+    Parameters
+    ----------
+    uxds : uxarray.UxDataset
+        Input dataset containing the following required fields:
+            - V : Meridional wind component (on hybrid sigma-pressure levels)
+            - PS : Surface pressure
+            - hyam : Hybrid A coefficients (optional)
+            - hybm : Hybrid B coefficients (optional)
+            - uxgrid : Grid information for uxarray
+
+    hybird_pressure : bool, optional
+        If True, indicates that the wind data is provided on hybrid sigma-pressure levels
+        and requires conversion to pressure levels. Default is True.
+
+    Returns
+    -------
+    ux_mpsi : uxarray.UxDataArray
+        Zonal mean meridional mass streamfunction, scaled by Earth's geometry and gravity.
+        Dimensions: ["time", "latitudes", "plev"]
+
+    Notes
+    -----
+    - Optionally converts wind data from hybrid sigma-pressure levels to pressure levels.
+    - Computes zonal means and pressure integration deltas.
+    - Integrates over pressure levels, handling orientation.
+    - Applies scaling factor based on Earth's radius and gravity.
+    - Currently only supports UXarray Datasets with specified structure.
+    """
+
+    # constants
+    a = 6.371e6  # Earth radius (m)
+    g = 9.80665  # gravity (m/s^2)
+
+    # Basic input validation
+    if not hasattr(uxds, "V") or not hasattr(uxds, "PS"):
+        raise AttributeError(
+            "zonal_mpsi: input uxds must contain 'V' and 'PS' variables"
+        )
+
+    if not hasattr(uxds, "uxgrid"):
+        raise AttributeError(
+            "zonal_mpsi: input uxds missing required 'uxgrid' metadata (uxarray)"
+        )
+
+    # If data are provided in hybrid sigma coords
+    if hybrid_pressure:
+        # hyam/hybm required
+        if not hasattr(uxds, "hyam") or not hasattr(uxds, "hybm"):
+            raise AttributeError(
+                "zonal_mpsi: input uxds missing 'hyam' and/or 'hybm' required for hybrid data"
+            )
+
+        # convert from sigma hybrid to pressure levels
+        try:
+            da_ipress = interp_hybrid_to_pressure(uxds.V, uxds.PS, uxds.hyam, uxds.hybm)
+        except Exception as e:
+            raise RuntimeError(
+                f"zonal_mpsi: failed to convert hybrid levels to pressure levels: {e}"
+            )
+
+        # Ensure we have an xarray DataArray
+        if not isinstance(da_ipress, xr.DataArray):
+            da_ipress = xr.DataArray(da_ipress)
+
+        # convert back to uxarray, preserve uxgrid
+        ux_ipress = ux.UxDataArray(da_ipress, uxgrid=getattr(uxds, "uxgrid", None))
+
+    # If data already on pressure levels
+    else:
+        # require a pressure-level coordinate
+        plev_candidates = ("plev", "lev", "level")
+        if not any(
+            (
+                name in getattr(uxds.V, 'coords', {})
+                or name in getattr(uxds.V, 'dims', ())
+            )
+            for name in plev_candidates
+        ):
+            raise AttributeError(
+                "zonal_mpsi: when data_is_hybrid=False the wind DataArray must have a pressure-level coordinate (e.g. 'plev')"
+            )
+
+        if isinstance(uxds.V, ux.UxDataArray):
+            ux_ipress = uxds.V
+        else:
+            # convert to UxDataArray if possible
+            da = uxds.V if isinstance(uxds.V, xr.DataArray) else xr.DataArray(uxds.V)
+            ux_ipress = ux.UxDataArray(da, uxgrid=getattr(uxds, "uxgrid", None))
+
+    # Discover pressure-level coordinate name
+    plev_candidates = ("plev", "lev", "level")
+    plev_dim = None
+    for name in plev_candidates:
+        if name in ux_ipress.coords or name in ux_ipress.dims:
+            plev_dim = name
+            break
+    if plev_dim is None:
+        raise ValueError(
+            "zonal_mpsi: could not find pressure-level coordinate (try 'plev','lev' or 'level') in converted data"
+        )
+
+    ux_v_zonal = ux_ipress.zonal_mean()
+
+    # Ensure the pressure coordinate is present on the zonal mean
+    if plev_dim not in ux_v_zonal.coords:
+        ux_v_zonal = ux_v_zonal.assign_coords({plev_dim: ux_ipress.coords[plev_dim]})
+
+    # Zonal mean of surface pressure
+    if hasattr(uxds.PS, "zonal_mean"):
+        ux_PS_zonal = uxds.PS.zonal_mean()
+    else:
+        # infer a longitude dim name
+        lon_dim = None
+        for d in uxds.PS.dims:
+            if "lon" in d or "long" in d:
+                lon_dim = d
+                break
+        if lon_dim is None:
+            raise ValueError(
+                "zonal_mpsi: cannot compute zonal mean of PS; no longitude dimension found"
+            )
+        ux_PS_zonal = uxds.PS.mean(dim=lon_dim)
+
+    # integration deltas
+    plev_coord = ux_v_zonal.coords[plev_dim]
+    dp = delta_pressure(plev_coord, ux_PS_zonal)
+
+    # Convert delta_pressure result to an xarray DataArray
+    if isinstance(dp, xr.DataArray):
+        da_dp_zonal = dp
+    else:
+        # infer dims and coords from ux_v_zonal
+        dims = ux_v_zonal.dims
+        coords = {d: ux_v_zonal.coords[d] for d in dims if d in ux_v_zonal.coords}
+        coords[plev_dim] = plev_coord
+        da_dp_zonal = xr.DataArray(dp, dims=dims, coords=coords, name="delta_pressure")
+
+    ux_dp_zonal = ux.UxDataArray(da_dp_zonal, uxgrid=uxds.uxgrid)
+
+    # scaling factor
+    if "latitudes" not in ux_v_zonal.coords:
+        lat_candidates = ("lat", "latitude", "latitudes")
+        lat_name = next((n for n in lat_candidates if n in ux_v_zonal.coords), None)
+        if lat_name is None:
+            raise ValueError(
+                "zonal_mpsi: could not find latitude coordinate on zonal data"
+            )
+    else:
+        lat_name = "latitudes"
+
+    da_scaling_factor = xr.DataArray(
+        2 * np.pi * a * np.cos(ux_v_zonal.coords[lat_name]) / g,
+        coords={lat_name: ux_v_zonal.coords[lat_name]},
+        dims=(lat_name,),
+    )
+
+    # check orientation and integrate along pressure dim
+    plev_values = ux_v_zonal.coords[plev_dim].values
+    increasing = plev_values[0] < plev_values[-1]
+
+    if increasing:
+        integrand = ux_v_zonal * ux_dp_zonal
+        ux_mpsi = integrand.cumsum(dim=plev_dim)
+    else:
+        integrand = (ux_v_zonal * ux_dp_zonal).isel({plev_dim: slice(None, None, -1)})
+        ux_mpsi = integrand.cumsum(dim=plev_dim).isel({plev_dim: slice(None, None, -1)})
+
+    # apply scaling factor
+    ux_mpsi = ux_mpsi * da_scaling_factor
+
+    # metadata
+    try:
+        ux_mpsi.attrs.update(
+            {
+                "long_name": "zonal mean meridional mass streamfunction",
+                "units": "kg/s",
+                "info": "zonal_mpsi: integrated meridional mass streamfunction",
+            }
+        )
+    except Exception:
+        pass
+
+    # ensure return is a UxDataArray
+    return ux.UxDataArray(ux_mpsi, uxgrid=uxds.uxgrid)

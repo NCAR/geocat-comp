@@ -68,6 +68,7 @@ Meteorology
    relhum_water
    saturation_vapor_pressure
    saturation_vapor_pressure_slope
+   zonal_mpsi
 
 Spherical Harmonics
 ^^^^^^^^^^^^^^^^^^^
