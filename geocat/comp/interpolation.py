@@ -380,14 +380,10 @@ def pressure_at_hybrid_levels(psfc, hya, hyb, p0=100000.0):
     `pres_hybrid_ccm <https://www.ncl.ucar.edu/Document/Functions/Built-in/pres_hybrid_ccm.shtml>`__
     """
 
-    # to store overwritten dims if necessary
-    out_dims = None
-
     # make sure hya and hyb dims align
     if isinstance(hya, xr.DataArray) and isinstance(hyb, xr.DataArray):
         # if not, assign hya dim to hyb
         if hya.dims != hyb.dims:
-            out_dims = hyb.dims
             hyb = hyb.rename({hyb.dims[0]: hya.dims[0]})
     else:
         # convert to numpy for rest of checks and calculation
@@ -403,13 +399,7 @@ def pressure_at_hybrid_levels(psfc, hya, hyb, p0=100000.0):
 
     # Results in Pa
     # p(k) = hya(k) * p0 + hyb(k) * psfc
-    pk = hya * p0 + hyb * psfc
-
-    # if out_dims was used
-    if out_dims:
-        hyb = hyb.rename({hyb.dims[0]: out_dims[0]})
-
-    return pk
+    return hya * p0 + hyb * psfc
 
 
 def interp_hybrid_to_pressure(
