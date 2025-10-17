@@ -53,6 +53,12 @@ class Test_interp_hybrid_to_pressure:
     pres3d = pres3d * 100  # mb to Pa
 
     def test_pressure_at_hybrid_levels(self, p_out, ds_out):
+        # run not officially supported input types w/ hyam and hybm as lists
+        _ = pressure_at_hybrid_levels(
+            self.ps[0, :7, :7], p_out.hyam.values.tolist(), p_out.hybm.values.tolist()
+        )
+
+        # test w/ mismatched dim names
         pm = pressure_at_hybrid_levels(self.ps[0, :7, :7], p_out.hyam, p_out.hybm)
 
         nt.assert_allclose(pm, p_out.pm, rtol=1e-6)
