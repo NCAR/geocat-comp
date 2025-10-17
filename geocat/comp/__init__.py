@@ -17,6 +17,7 @@ from .interpolation import (
     interp_hybrid_to_pressure,
     interp_sigma_to_hybrid,
     interp_multidim,
+    pressure_at_hybrid_levels,
 )
 from .meteorology import (
     dewtemp,
