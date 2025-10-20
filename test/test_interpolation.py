@@ -82,9 +82,11 @@ class Test_interp_hybrid_to_pressure:
         pm = pressure_at_hybrid_levels(self.ps[0, :7, :7], p_out.hyam, p_out.hybm)
         nt.assert_allclose(pm, p_out.pm, rtol=1e-6)
 
-    def test_pressure_at_hybrid_levels_with_dims(self, ds_ccsm, p_out) -> None:
+    def test_pressure_at_hybrid_levels_with_dims(self, ds_ccsm) -> None:
         # test with dataset that uses lev as a coordinate and named dimension
-        _ = pressure_at_hybrid_levels(ds_ccsm.PS, ds_ccsm.hyam, ds_ccsm.hybm)
+        _ = pressure_at_hybrid_levels(
+            ds_ccsm.PS, ds_ccsm.hyam, ds_ccsm.hybm.values.tolist()
+        )
 
     def test_interp_hybrid_to_pressure_atmos(self, ds_out) -> None:
         u_int = interp_hybrid_to_pressure(

@@ -380,13 +380,19 @@ def pressure_at_hybrid_levels(psfc, hya, hyb, p0=100000.0):
     `pres_hybrid_ccm <https://www.ncl.ucar.edu/Document/Functions/Built-in/pres_hybrid_ccm.shtml>`__
     """
 
-    # make sure hya and hyb dims align
+    # make sure hya and hyb dims align and are both DataArrays
     if isinstance(hya, xr.DataArray) and isinstance(hyb, xr.DataArray):
         # if not, assign hya dim to hyb
         if hya.dims != hyb.dims:
             hyb = hyb.rename({hyb.dims[0]: hya.dims[0]})
+    # check if only one is a DataArray, convert the other
+    elif isinstance(hya, xr.DataArray) and not isinstance(hyb, xr.DataArray):
+        hyb = xr.DataArray(hyb, dims=hya.dims)
+    elif not isinstance(hya, xr.DataArray) and isinstance(hyb, xr.DataArray):
+        hya = xr.DataArray(hyb, dims=hyb.dims)
+    # if both not DataArrays, convert both w/ dim 'lev'
     else:
-        # convert to numpy for rest of checks and calculation
+        # convert to xarray for rest of checks and calculation
         hya = xr.DataArray(hya, dims={'lev'})
         hyb = xr.DataArray(hyb, dims={'lev'})
 
