@@ -389,7 +389,7 @@ def pressure_at_hybrid_levels(psfc, hya, hyb, p0=100000.0):
     elif isinstance(hya, xr.DataArray) and not isinstance(hyb, xr.DataArray):
         hyb = xr.DataArray(hyb, dims=hya.dims)
     elif not isinstance(hya, xr.DataArray) and isinstance(hyb, xr.DataArray):
-        hya = xr.DataArray(hyb, dims=hyb.dims)
+        hya = xr.DataArray(hya, dims=hyb.dims)
     # if both not DataArrays, convert both w/ dim 'lev'
     else:
         # convert to xarray for rest of checks and calculation
