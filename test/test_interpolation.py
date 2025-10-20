@@ -25,6 +25,17 @@ _hybm = ds_atmos.hybm
 _p0 = 1000.0 * 100  # Pa
 
 
+@pytest.fixture(scope="module")
+def ds_ccsm():
+    # Open the netCDF data file with the input data
+    try:
+        return xr.open_dataset(
+            gdf.get("netcdf_files/ccsm35.h0.0021-01.demo.nc"), decode_times=False
+        )
+    except Exception:
+        return xr.open_dataset("test/ccsm35.h0.0021-01.demo.nc", decode_times=False)
+
+
 class Test_interp_hybrid_to_pressure:
     # Expected output from above sample input
     @pytest.fixture(scope="class")
@@ -52,7 +63,7 @@ class Test_interp_hybrid_to_pressure:
     pres3d = np.asarray([1000, 950, 800, 700, 600, 500, 400, 300, 200])  # mb
     pres3d = pres3d * 100  # mb to Pa
 
-    def test_pressure_at_hybrid_levels(self, p_out, ds_out):
+    def test_pressure_at_hybrid_levels(self, p_out, ds_out) -> None:
         # run not officially supported input types w/ hyam and hybm as lists and mixed
         pm = pressure_at_hybrid_levels(
             self.ps[0, :7, :7], p_out.hyam.values.tolist(), p_out.hybm.values.tolist()
@@ -70,6 +81,10 @@ class Test_interp_hybrid_to_pressure:
         # mismatched dim names
         pm = pressure_at_hybrid_levels(self.ps[0, :7, :7], p_out.hyam, p_out.hybm)
         nt.assert_allclose(pm, p_out.pm, rtol=1e-6)
+
+    def test_pressure_at_hybrid_levels_with_dims(self, ds_ccsm, p_out) -> None:
+        # test with dataset that uses lev as a coordinate and named dimension
+        _ = pressure_at_hybrid_levels(ds_ccsm.PS, ds_ccsm.hyam, ds_ccsm.hybm)
 
     def test_interp_hybrid_to_pressure_atmos(self, ds_out) -> None:
         u_int = interp_hybrid_to_pressure(
@@ -129,16 +144,6 @@ class Test_interp_hybrid_to_pressure:
 
 
 class Test_interp_hybrid_to_pressure_extrapolate:
-    @pytest.fixture(scope="class")
-    def ds_ccsm(self):
-        # Open the netCDF data file with the input data
-        try:
-            return xr.open_dataset(
-                gdf.get("netcdf_files/ccsm35.h0.0021-01.demo.nc"), decode_times=False
-            )
-        except Exception:
-            return xr.open_dataset("test/ccsm35.h0.0021-01.demo.nc", decode_times=False)
-
     @pytest.fixture(scope="class")
     def ds_out(self):
         # Open the netCDF file with the output data from running vinth2p_ecmwf.ncl
