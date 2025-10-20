@@ -387,8 +387,8 @@ def pressure_at_hybrid_levels(psfc, hya, hyb, p0=100000.0):
             hyb = hyb.rename({hyb.dims[0]: hya.dims[0]})
     else:
         # convert to numpy for rest of checks and calculation
-        hya = xr.DataArray(hya, dims={'levels'})
-        hyb = xr.DataArray(hyb, dims={'levels'})
+        hya = xr.DataArray(hya, dims={'lev'})
+        hyb = xr.DataArray(hyb, dims={'lev'})
 
     # check shape
     if hya.shape != hyb.shape:
