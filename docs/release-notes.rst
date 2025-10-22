@@ -12,6 +12,10 @@ vYYYY.MM.## (unreleased)
 ------------------------
 This release...
 
+New Features
+^^^^^^^^^^^^
+* Move ``_pressure_from_hybrid`` to public API as ``pressure_at_hybrid_levels`` by `Anissa Zacharias`_ in (:pr:`776`)
+
 Internal Changes
 ^^^^^^^^^^^^^^^^
 
