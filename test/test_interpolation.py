@@ -4,12 +4,14 @@ import numpy.testing as nt
 import xarray as xr
 import pytest
 import pint
+from matplotlib import pyplot as plt
 
 from geocat.comp import (
     interp_multidim,
     interp_hybrid_to_pressure,
     interp_sigma_to_hybrid,
     pressure_at_hybrid_levels,
+    delta_pressure_hybrid,
 )
 
 # Global input data
@@ -34,6 +36,27 @@ def ds_ccsm():
         )
     except Exception:
         return xr.open_dataset("test/ccsm35.h0.0021-01.demo.nc", decode_times=False)
+
+
+class Test_delta_pressure_hybrid:
+    @pytest.fixture(scope="class")
+    def dph_out(self):
+        # output from test_dpres_hybrid_ccm.ncl from atmos.nc
+        try:
+            return xr.open_dataset("dpres_hybrid_ccm_output.nc")
+        except Exception:
+            return xr.open_dataset("test/dpres_hybrid_ccm_output.nc")
+
+    def test_delta_pressure(self, dph_out):
+        ps = ds_atmos.PS[0, :, :].drop('time')
+        dph = delta_pressure_hybrid(ps, _hyam, _hybm, _p0)
+
+        # diff = abs(dph - dph_out.dph).where(abs(dph - dph_out.dph) > 1e-4)
+
+        # p = pressure_at_hybrid_levels(ps, _hyam, _hybm, _p0)
+        # dp = abs(p.values[:-1, :, :] - p.values[1:, :, :])
+
+        nt.assert_allclose(dph, dph_out.dph, rtol=1e-6)
 
 
 class Test_interp_hybrid_to_pressure:

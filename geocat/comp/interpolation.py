@@ -408,6 +408,16 @@ def pressure_at_hybrid_levels(psfc, hya, hyb, p0=100000.0):
     return hya * p0 + hyb * psfc
 
 
+def delta_pressure_hybrid(ps, hyam, hybm, p0=100000.0):
+    """Calculates pressure layer thickness of a hybrid coordinate system"""
+    pa = p0 * hyam[:-1] + hybm[:-1] * ps
+    pb = p0 * hyam[1:] + hybm[1:] * ps
+
+    dph = abs(pb.drop('lev') - pa.drop('lev'))
+
+    return dph
+
+
 def interp_hybrid_to_pressure(
     data: xr.DataArray,
     ps: xr.DataArray,
