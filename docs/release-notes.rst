@@ -52,7 +52,7 @@ Internal Changes
 
 New Features
 ^^^^^^^^^^^^
-* Zonal Meridional Stream Function for unstructured grid datafiles using 
+* Zonal Meridional Stream Function for unstructured grid datafiles using
 UXarray in ``meteorology.zonal_mpsi`` by `Julia Kent`_ in (:pr:`773`)
 
 Maintenance
