@@ -795,7 +795,7 @@ def test_zonal_mpsi_pressure_levels() -> None:
     uxgrid = types.SimpleNamespace(name="testgrid")
     uxds = types.SimpleNamespace(V=v, PS=ps, uxgrid=uxgrid)
 
-    out = zonal_mpsi(uxds, hybrid_pressure=False)
+    out = zonal_mpsi(uxds)
 
     # returned object should behave like an xarray DataArray
     assert hasattr(out, "dims")
@@ -828,8 +828,8 @@ def test_zonal_mpsi_hybrid_calls_interp() -> None:
     # Create V on hybrid levels: shape (time, latitudes, hlev)
     v_hybrid = xr.DataArray(
         np.array([[[1.0, 2.0], [1.5, 2.5]]]),
-        dims=("time", "latitudes", "hlev"),
-        coords={"time": time, "latitudes": lats, "hlev": np.array([0, 1])},
+        dims=("time", "latitudes", "lev"),
+        coords={"time": time, "latitudes": lats, "lev": np.array([0, 1])},
     )
 
     # Surface pressure that varies a little with latitude
