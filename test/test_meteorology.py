@@ -816,9 +816,6 @@ def test_zonal_mpsi_hybrid_calls_interp() -> None:
     """
     import types
 
-    # Define target pressure levels that interp_hybrid_to_pressure will use
-    plev_out = np.array([100000.0, 85000.0, 70000.0])
-
     # Minimal grid dims
     time = [0]
     lats = [10.0, 20.0]
