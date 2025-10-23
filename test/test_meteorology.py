@@ -15,6 +15,7 @@ from geocat.comp.meteorology import (
     saturation_vapor_pressure,
     saturation_vapor_pressure_slope,
     delta_pressure,
+    zonal_mpsi,
 )
 
 
@@ -762,3 +763,92 @@ class Test_Delta_Pressure:
             self.pressure_lev_da, self.surface_pressure_3D
         )
         assert isinstance(delta_pressure_np, np.ndarray)
+
+
+# ---- Tests for zonal_mpsi ----
+def test_zonal_mpsi_pressure_levels() -> None:
+    """Test zonal_mpsi when wind data are already on pressure levels.
+
+    Construct a minimal ux-like object (SimpleNamespace) with DataArray fields
+    and call zonal_mpsi with hybrid_pressure=False. Ensure output has expected
+    dims and contains finite values.
+    """
+    import types
+
+    plev = np.array([70000.0, 85000.0, 100000.0])
+    time = [0]
+    lats = [10.0, 20.0]
+
+    data = np.ones((1, 2, 3))
+    v = xr.DataArray(
+        data,
+        dims=("time", "latitudes", "plev"),
+        coords={"time": time, "latitudes": lats, "plev": plev},
+    )
+
+    ps = xr.DataArray(
+        np.full((1, 2), 101325.0),
+        dims=("time", "latitudes"),
+        coords={"time": time, "latitudes": lats},
+    )
+
+    uxgrid = types.SimpleNamespace(name="testgrid")
+    uxds = types.SimpleNamespace(V=v, PS=ps, uxgrid=uxgrid)
+
+    out = zonal_mpsi(uxds, hybrid_pressure=False)
+
+    # returned object should behave like an xarray DataArray
+    assert hasattr(out, "dims")
+    # should be 3-dimensional and contain a pressure-level coordinate
+    assert out.ndim == 3
+    assert "plev" in out.coords
+    # uxgrid passed in must be preserved on the returned object
+    assert getattr(out, "uxgrid", None) is uxds.uxgrid
+    assert np.isfinite(out.values).all()
+
+
+def test_zonal_mpsi_hybrid_calls_interp() -> None:
+    """Test zonal_mpsi hybrid path by constructing minimal hybrid inputs.
+
+    Construct small, realistic hybrid-coefficient arrays (hyam/hybm), a
+    V DataArray with a hybrid vertical dimension, and PS. This exercises the
+    real ``interp_hybrid_to_pressure`` code path rather than stubbing.
+    """
+    import types
+
+    # Define target pressure levels that interp_hybrid_to_pressure will use
+    plev_out = np.array([100000.0, 85000.0, 70000.0])
+
+    # Minimal grid dims
+    time = [0]
+    lats = [10.0, 20.0]
+
+    # Create a tiny hybrid vertical with two model levels (k=2)
+    # hyam/hybm length should match the vertical dim of V
+    hyam = np.array([0.0, 0.0])
+    hybm = np.array([1.0, 0.5])
+
+    # Create V on hybrid levels: shape (time, latitudes, hlev)
+    v_hybrid = xr.DataArray(
+        np.array([[[1.0, 2.0], [1.5, 2.5]]]),
+        dims=("time", "latitudes", "hlev"),
+        coords={"time": time, "latitudes": lats, "hlev": np.array([0, 1])},
+    )
+
+    # Surface pressure that varies a little with latitude
+    ps = xr.DataArray(
+        np.array([[101325.0, 100000.0]]),
+        dims=("time", "latitudes"),
+        coords={"time": time, "latitudes": lats},
+    )
+
+    uxgrid = types.SimpleNamespace(name="testgrid_hybrid_real")
+    uxds = types.SimpleNamespace(V=v_hybrid, PS=ps, hyam=hyam, hybm=hybm, uxgrid=uxgrid)
+
+    out = zonal_mpsi(uxds)
+
+    assert hasattr(out, "dims")
+    assert out.ndim == 3
+    assert "plev" in out.coords
+    assert getattr(out, "uxgrid", None) is uxds.uxgrid
+    assert np.isfinite(out.values).all()
