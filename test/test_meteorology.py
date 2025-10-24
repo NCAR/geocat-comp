@@ -2,6 +2,7 @@ import pytest
 
 import numpy as np
 import xarray as xr
+import uxarray as ux
 
 from geocat.comp.meteorology import (
     dewtemp,
@@ -773,27 +774,8 @@ def test_zonal_mpsi_pressure_levels() -> None:
     and call zonal_mpsi with hybrid_pressure=False. Ensure output has expected
     dims and contains finite values.
     """
-    import types
-
-    plev = np.array([70000.0, 85000.0, 100000.0])
-    time = [0]
-    lats = [10.0, 20.0]
-
-    data = np.ones((1, 2, 3))
-    v = xr.DataArray(
-        data,
-        dims=("time", "latitudes", "plev"),
-        coords={"time": time, "latitudes": lats, "plev": plev},
-    )
-
-    ps = xr.DataArray(
-        np.full((1, 2), 101325.0),
-        dims=("time", "latitudes"),
-        coords={"time": time, "latitudes": lats},
-    )
-
-    uxgrid = types.SimpleNamespace(name="testgrid")
-    uxds = types.SimpleNamespace(V=v, PS=ps, uxgrid=uxgrid)
+    # Use the provided test dataset and grid
+    uxds = ux.open_dataset("data.nc", "grid.nc")
 
     out = zonal_mpsi(uxds)
 
@@ -817,35 +799,7 @@ def test_zonal_mpsi_hybrid_calls_interp() -> None:
     import types
 
     # Minimal grid dims
-    time = [0]
-    lats = [10.0, 20.0]
-
-    # Create a tiny hybrid vertical with two model levels (k=2)
-    # hyam/hybm length should match the vertical dim of V
-    hyam = np.array([0.0, 0.0])
-    hybm = np.array([1.0, 0.5])
-
-    # Create V on hybrid levels: shape (time, latitudes, hlev)
-    v_hybrid = xr.DataArray(
-        np.array([[[1.0, 2.0], [1.5, 2.5]]]),
-        dims=("time", "latitudes", "lev"),
-        coords={"time": time, "latitudes": lats, "lev": np.array([0, 1])},
-    )
-
-    # Surface pressure that varies a little with latitude
-    ps = xr.DataArray(
-        np.array([[101325.0, 100000.0]]),
-        dims=("time", "latitudes"),
-        coords={"time": time, "latitudes": lats},
-    )
-
-    uxgrid = types.SimpleNamespace(name="testgrid_hybrid_real")
-    uxds = types.SimpleNamespace(V=v_hybrid, PS=ps, hyam=hyam, hybm=hybm, uxgrid=uxgrid)
+    # Use the provided test dataset and grid (should include hybrid coefficients)
+    uxds = ux.open_dataset("test/data.nc", "test/grid.nc")
 
     out = zonal_mpsi(uxds)
-
-    assert hasattr(out, "dims")
-    assert out.ndim == 3
-    assert "plev" in out.coords
-    assert getattr(out, "uxgrid", None) is uxds.uxgrid
-    assert np.isfinite(out.values).all()

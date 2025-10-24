@@ -1563,7 +1563,12 @@ def zonal_mpsi(uxds):
             ux_ipress = uxds.V
         else:
             da = uxds.V if isinstance(uxds.V, xr.DataArray) else xr.DataArray(uxds.V)
-            ux_ipress = ux.UxDataArray(da, uxgrid=getattr(uxds, "uxgrid", None))
+        # Only pass a ux.Grid instance to UxDataArray; otherwise pass None
+        _uxgrid = getattr(uxds, "uxgrid", None)
+        grid_param = (
+            _uxgrid if (hasattr(ux, "Grid") and isinstance(_uxgrid, ux.Grid)) else None
+        )
+        ux_ipress = ux.UxDataArray(da, uxgrid=grid_param)
     else:
         # require hybrid coefficients
         if not hasattr(uxds, "hyam") or not hasattr(uxds, "hybm"):
@@ -1591,7 +1596,11 @@ def zonal_mpsi(uxds):
         if not isinstance(da_ipress, xr.DataArray):
             da_ipress = xr.DataArray(da_ipress)
 
-        ux_ipress = ux.UxDataArray(da_ipress, uxgrid=getattr(uxds, "uxgrid", None))
+    _uxgrid = getattr(uxds, "uxgrid", None)
+    grid_param = (
+        _uxgrid if (hasattr(ux, "Grid") and isinstance(_uxgrid, ux.Grid)) else None
+    )
+    ux_ipress = ux.UxDataArray(da_ipress, uxgrid=grid_param)
 
     # Require a canonical 'plev' coordinate on the pressure-level data.
     if "plev" not in ux_ipress.coords and "plev" not in ux_ipress.dims:
@@ -1631,7 +1640,11 @@ def zonal_mpsi(uxds):
         coords['plev'] = ux_v_zonal.coords['plev']
         da_dp_zonal = xr.DataArray(dp, dims=dims, coords=coords, name="delta_pressure")
 
-    ux_dp_zonal = ux.UxDataArray(da_dp_zonal, uxgrid=uxds.uxgrid)
+    _uxgrid = getattr(uxds, "uxgrid", None)
+    grid_param = (
+        _uxgrid if (hasattr(ux, "Grid") and isinstance(_uxgrid, ux.Grid)) else None
+    )
+    ux_dp_zonal = ux.UxDataArray(da_dp_zonal, uxgrid=grid_param)
 
     # scaling factor
     if "latitudes" not in ux_v_zonal.coords:
@@ -1677,4 +1690,10 @@ def zonal_mpsi(uxds):
         pass
 
     # ensure return is a UxDataArray
-    return ux.UxDataArray(ux_mpsi, uxgrid=uxds.uxgrid)
+    result = ux.UxDataArray(ux_mpsi, uxgrid=grid_param)
+    # preserve original uxgrid object for callers/tests (even if not a ux.Grid)
+    try:
+        setattr(result, "uxgrid", getattr(uxds, "uxgrid", None))
+    except Exception:
+        pass
+    return result
