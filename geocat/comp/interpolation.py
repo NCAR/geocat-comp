@@ -607,7 +607,9 @@ def interp_hybrid_to_pressure(
         )
     # if no chunked/dask inputs, just call the function directly
     else:
-        output = func_interpolate(new_levels, pressure.data, data.data, axis=interp_axis)
+        output = func_interpolate(
+            new_levels, pressure.data, data.data, axis=interp_axis
+        )
 
     output = xr.DataArray(output, name=data.name, attrs=data.attrs)
 
