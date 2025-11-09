@@ -12,6 +12,10 @@ vYYYY.MM.## (unreleased)
 ------------------------
 This release...
 
+Bug Fixes
+^^^^^^^^^
+* Revert back to passing only `pressure.data` rather than the full DataArray to avoid unit handling issues in ``interp_hybrid_to_pressure`` by `Katelyn FitzGerald`_ in (:pr:`782`)
+
 New Features
 ^^^^^^^^^^^^
 * Move ``_pressure_from_hybrid`` to public API as ``pressure_at_hybrid_levels`` by `Anissa Zacharias`_ in (:pr:`776`)
