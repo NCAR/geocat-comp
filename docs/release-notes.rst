@@ -14,7 +14,7 @@ This release...
 
 Bug Fixes
 ^^^^^^^^^
-* Revert back to passing only `pressure.data` rather than the full DataArray to avoid unit handling issues in ``interp_hybrid_to_pressure`` by `Katelyn FitzGerald`_ in (:pr:`782`)
+* Revert back to passing only `pressure.data` rather than the full DataArray to avoid unit handling issues in ``interp_hybrid_to_pressure`` by `Katelyn FitzGerald`_ in (:pr:`781`)
 
 New Features
 ^^^^^^^^^^^^
