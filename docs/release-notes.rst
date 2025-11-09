@@ -12,6 +12,10 @@ vYYYY.MM.## (unreleased)
 ------------------------
 This release...
 
+Bug Fixes
+^^^^^^^^^
+* Modify ``climate_anomaly`` to ensure consistent behavior for the ``keep_attrs`` option by `Katelyn FitzGerald`_ in (:pr:`783`)
+
 New Features
 ^^^^^^^^^^^^
 * Move ``_pressure_from_hybrid`` to public API as ``pressure_at_hybrid_levels`` by `Anissa Zacharias`_ in (:pr:`776`)
