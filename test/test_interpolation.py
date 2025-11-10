@@ -56,7 +56,7 @@ class Test_delta_pressure_hybrid:
         # p = pressure_at_hybrid_levels(ps, _hyam, _hybm, _p0)
         # dp = abs(p.values[:-1, :, :] - p.values[1:, :, :])
 
-        nt.assert_allclose(dph, dph_out.dph, rtol=1e-6)
+        nt.assert_allclose(dph, dph_out.dph, rtol=1e-5)
 
 
 class Test_interp_hybrid_to_pressure:

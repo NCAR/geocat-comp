@@ -409,7 +409,37 @@ def pressure_at_hybrid_levels(psfc, hya, hyb, p0=100000.0):
 
 
 def delta_pressure_hybrid(ps, hyam, hybm, p0=100000.0):
-    """Calculates pressure layer thickness of a hybrid coordinate system"""
+    """Calculates pressure layer thickness of a hybrid coordinate system
+
+    .. math::
+
+       \Delta p =
+
+    Parameters
+    ----------
+    psfc: :class:`xarray.DataArray`
+        A multi-dimensional array of surface pressures (Pa)
+
+    hya: :class:`xarray.DataArray`
+        A one-dimensional array of the hybrid A coefficients (unitless)
+
+    hyb: :class:`xarray.DataArray`
+        A one-dimensional array of the hybrid B coefficients (unitless)
+
+    p0 : float, optional
+        Scalar numeric value equal to surface reference pressure (Pa). Defaults to 100000 Pa.
+
+    Returns
+    -------
+    output : :class:`xarray.DataArray`
+        Computed pressure layer thicknesses (Pa)
+
+    See Also
+    --------
+    Related NCL Functions:
+    `dpres_hybrid_ccm <https://www.ncl.ucar.edu/Document/Functions/Built-in/dpres_hybrid_ccm.shtml>`__
+    """
+
     pa = p0 * hyam[:-1] + hybm[:-1] * ps
     pb = p0 * hyam[1:] + hybm[1:] * ps
 
