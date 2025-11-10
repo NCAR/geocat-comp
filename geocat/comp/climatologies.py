@@ -209,13 +209,13 @@ def climate_anomaly(
         )
     if freq == 'season':
         anom = dset.groupby(f"{time_dim}.season") - clim
-        return anom.assign_attrs(attrs)
+        return anom.drop_attrs().assign_attrs(attrs)
     else:
         anom = (
             dset.groupby(dset[time_dim].dt.strftime(format))
             - clim.groupby(clim[time_dim].dt.strftime(format)).sum()
         )
-        return anom.drop_vars('strftime').assign_attrs(attrs)
+        return anom.drop_vars('strftime').drop_attrs().assign_attrs(attrs)
 
 
 def month_to_season(
