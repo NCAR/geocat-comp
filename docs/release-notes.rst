@@ -16,6 +16,7 @@ Bug Fixes
 ^^^^^^^^^
 * Modify ``climate_anomaly`` to ensure consistent behavior for the ``keep_attrs`` option by `Katelyn FitzGerald`_ in (:pr:`783`)
 * Revert back to passing only `pressure.data` rather than the full DataArray to avoid unit handling issues in ``interp_hybrid_to_pressure`` by `Katelyn FitzGerald`_ in (:pr:`781`)
+* Fix latitude/longitude axis labels for ``vimfc`` by `Cora Schneck`_ in (:pr:`784`)
 
 New Features
 ^^^^^^^^^^^^
