@@ -7,6 +7,76 @@ import xarray as xr
 import warnings
 
 
+def nmse(observed, modeled):
+    r"""Calculate the normalized mean squared error metric of Williamson
+    (1995)as described in section 3 of *"An Evaluation of the Large-Scale
+    Atmospheric Circulation and Its Variability in CESM2 and Other CMIP
+    Models"* (`Simpson et al., 2020 <https://doi.org/10.1029/2020JD032835>`__).
+
+    .. math::
+        NMSE(X_m) = \frac{\overline{(X_m - X_o)^2}}{\overline{(X'_o)^2}}
+
+    where :math:`X_m` is the modeled field, :math:`X_o` is the observed field,
+    :math:`X'_o` is the weighted deviation of the observed field
+    (:math:`X'_o = X_o - X_{wo}`) and the overbar indicates a weighted
+    spatial average.
+
+    This implementation is based on Isla Simpson's implementation in
+    `CASanalysis <https://github.com/islasimpson/CASanalysis>`__.
+
+    Parameters
+    ----------
+    observed : :class:`xarray.DataArray`
+        The observed field. Must have 'lat' and 'lon' coordinates.
+
+    modeled : :class:`xarray.DataArray`
+        The modeled field. Must have 'lat' and 'lon' coordinates and must have
+        the same dimensions as `observed`.
+
+    Returns
+    -------
+    nmse : :class:`xarray.DataArray`
+        The normalized mean squared error between the modeled and observed fields.
+
+    """
+
+    # Validate Inputs
+    ins = [observed, modeled]
+    for i in ins:
+        # type check
+        if not isinstance(i, xr.DataArray):
+            raise TypeError("Inputs must be xarray DataArrays.")
+        # check coords
+        if not {'lat', 'lon'}.issubset(i.coords):
+            raise ValueError("Inputs must have 'lat' and 'lon' coordinates.")
+
+    # check dimensions
+    if observed.dims != modeled.dims:
+        raise ValueError("Inputs must have the same dimensions.")
+
+    # calculate weights
+    weights = np.cos(np.deg2rad(observed.lat))
+    weights = weights.expand_dims({"lon": observed.lon}, axis=1)
+
+    # weight by zero if modeled or observed is nan
+    weights = weights.where(not (np.isnan(observed) or np.isnan(modeled)), 0)
+    observed = observed.where(weights != 0, 0)
+    modeled = modeled.where(weights != 0, 0)
+
+    # calculate weighted observed
+    observed_w = observed.weighted(weights).mean(dim=['lon', 'lat'])
+
+    # calculate numerator, overbar((X_m - X_a)^2)
+    num = (modeled - observed) ** 2
+    num = num.weighted(weights).mean(dim=['lon', 'lat'])
+
+    # calculate denominator, overbar((X_a')^2)
+    denom = (observed - observed_w) ** 2
+    denom = denom.weighted(weights).mean(dim=['lon', 'lat'])
+
+    return num / denom
+
+
 def pearson_r(a, b, dim=None, weights=None, skipna=False, keep_attrs=False, axis=None):
     """This function wraps the function of the same name from `xskillscore <htt
     ps://xskillscore.readthedocs.io/en/stable/api/xskillscore.pearson_r.html#xs
