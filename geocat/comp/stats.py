@@ -26,16 +26,16 @@ def nmse(observed, modeled):
 
     Parameters
     ----------
-    observed : :class:`xarray.DataArray`
+    observed : :class:`xarray.DataArray` or :class:`xarray.Dataset`
         The observed field. Must have 'lat' and 'lon' coordinates.
 
-    modeled : :class:`xarray.DataArray`
+    modeled : :class:`xarray.DataArray` or :class:`xarray.Dataset`
         The modeled field. Must have 'lat' and 'lon' coordinates and must have
         the same dimensions as `observed`.
 
     Returns
     -------
-    nmse : :class:`xarray.DataArray`
+    nmse : :class:`xarray.DataArray` or :class:`xarray.Dataset`
         The normalized mean squared error between the modeled and observed fields.
 
     """
@@ -44,33 +44,45 @@ def nmse(observed, modeled):
     ins = [observed, modeled]
     for i in ins:
         # type check
-        if not isinstance(i, xr.DataArray):
-            raise TypeError("Inputs must be xarray DataArrays.")
+        if not isinstance(i, xr.DataArray) and not isinstance(i, xr.Dataset):
+            raise TypeError("Inputs must be xarray DataArrays or Datasets")
         # check coords
         if not {'lat', 'lon'}.issubset(i.coords):
-            raise ValueError("Inputs must have 'lat' and 'lon' coordinates.")
+            raise ValueError("Inputs must have 'lat' and 'lon' coordinates")
+
+    # check both datasets or both dataarrays
+    if type(observed) is not type(modeled):
+        raise TypeError(
+            "Both inputs must be of the same type, either DataArray or Dataset"
+        )
 
     # check dimensions
     if observed.dims != modeled.dims:
-        raise ValueError("Inputs must have the same dimensions.")
+        raise ValueError("Inputs must have the same dimensions")
 
     # calculate weights
     weights = np.cos(np.deg2rad(observed.lat))
     weights = weights.expand_dims({"lon": observed.lon}, axis=1)
 
     # weight by zero if modeled or observed is nan
-    weights = weights.where(not (np.isnan(observed) or np.isnan(modeled)), 0)
+    weights = weights.where(np.logical_not(np.isnan(observed) | np.isnan(modeled)), 0)
     observed = observed.where(weights != 0, 0)
     modeled = modeled.where(weights != 0, 0)
+
+    # make sure weights are a DataArray
+    if isinstance(weights, xr.Dataset):
+        weights = weights.to_dataarray()
+    if not isinstance(weights, xr.DataArray):
+        weights = xr.DataArray(weights)
 
     # calculate weighted observed
     observed_w = observed.weighted(weights).mean(dim=['lon', 'lat'])
 
-    # calculate numerator, overbar((X_m - X_a)^2)
+    # calculate numerator, overbar((X_m - X_o)^2)
     num = (modeled - observed) ** 2
     num = num.weighted(weights).mean(dim=['lon', 'lat'])
 
-    # calculate denominator, overbar((X_a')^2)
+    # calculate denominator, overbar((X_o')^2)
     denom = (observed - observed_w) ** 2
     denom = denom.weighted(weights).mean(dim=['lon', 'lat'])
 
