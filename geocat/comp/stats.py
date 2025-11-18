@@ -56,10 +56,6 @@ def nmse(observed, modeled):
             "Both inputs must be of the same type, either DataArray or Dataset"
         )
 
-    # check dimensions
-    if observed.dims != modeled.dims:
-        raise ValueError("Inputs must have the same dimensions")
-
     # calculate weights
     weights = np.cos(np.deg2rad(observed.lat))
     weights = weights.expand_dims({"lon": observed.lon}, axis=1)
