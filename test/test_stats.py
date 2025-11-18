@@ -13,6 +13,11 @@ from geocat.comp.stats import (
     nmse,
 )
 
+if hasattr(xr, "AlignmentError"):
+    AlignmentError = xr.AlignmentError
+else:
+    AlignmentError = ValueError
+
 
 def cupid_nmse(obs, mod):
     """Isla Simpson's NMSE calculation from CUPID toolbox
@@ -93,10 +98,10 @@ class Test_nmse:
             nmse(o.drop('t'), m)
 
         # try mismatched dims
-        with pytest.raises(xr.AlignmentError):
+        with pytest.raises((AlignmentError, ValueError)):
             # raises clear error from xarray
             nmse(o.drop_isel({'lat': 0}), m.drop_isel({'lat': 1}))
-        with pytest.raises(xr.AlignmentError):
+        with pytest.raises(AlignmentError):
             # raises clear error from xarray
             nmse(o.drop_isel({'lon': 0}), m)
 
