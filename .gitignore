@@ -3,6 +3,8 @@
 # Dask
 geocat/comp/dask-worker-space/
 
+# Jupyter Notebook
+.ipynb_checkpoints
 
 # Created by https://www.gitignore.io/api/python,intellij,intellij+all,intellij+iml
 # Edit at https://www.gitignore.io/?templates=python,intellij,intellij+all,intellij+iml
