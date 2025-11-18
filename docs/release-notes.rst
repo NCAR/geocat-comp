@@ -20,6 +20,7 @@ Bug Fixes
 New Features
 ^^^^^^^^^^^^
 * Move ``_pressure_from_hybrid`` to public API as ``pressure_at_hybrid_levels`` by `Anissa Zacharias`_ in (:pr:`776`)
+* Add normalized mean square error (NMSE) metric function, ``nmse`` by `Anissa Zacharias`_ in (:pr:`787`)
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
