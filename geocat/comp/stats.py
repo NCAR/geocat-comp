@@ -9,7 +9,7 @@ import warnings
 
 def nmse(observed, modeled):
     r"""Calculate the normalized mean squared error metric of Williamson
-    (1995)as described in section 3 of *"An Evaluation of the Large-Scale
+    (1995) as described in section 3 of *"An Evaluation of the Large-Scale
     Atmospheric Circulation and Its Variability in CESM2 and Other CMIP
     Models"* (`Simpson et al., 2020 <https://doi.org/10.1029/2020JD032835>`__).
 
@@ -22,7 +22,8 @@ def nmse(observed, modeled):
     spatial average.
 
     This implementation is based on Isla Simpson's implementation in
-    `CASanalysis <https://github.com/islasimpson/CASanalysis>`__.
+    `CASanalysis <https://github.com/islasimpson/CASanalysis>`__ and
+    `CUPID <https://github.com/NCAR/CUPiD/blob/b6a32b5dd7b88369689dbc3746c3df21af8ce40a/nblibrary/atm/nmse_utils.py>`__.
 
     Parameters
     ----------
