@@ -3,7 +3,102 @@ import numpy as np
 import xarray as xr
 import pytest
 
-from geocat.comp.stats import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts, pearson_r
+from .util import make_toy_temp_dataset
+from geocat.comp.stats import (
+    eofunc,
+    eofunc_eofs,
+    eofunc_pcs,
+    eofunc_ts,
+    pearson_r,
+    nmse,
+)
+
+
+def cupid_nmse(obs, mod):
+    """Isla Simpson's NMSE calculation from CUPID toolbox
+    https://github.com/NCAR/CUPiD/blob/b6a32b5dd7b88369689dbc3746c3df21af8ce40a/nblibrary/atm/nmse_utils.py
+    """
+    # get the weights and weight by zero if the model or obs is nan
+    w = np.cos(np.deg2rad(obs.lat))
+    w = w.expand_dims({"lon": obs.lon}, axis=1)
+    w = w.where(~(np.isnan(obs) | np.isnan(mod)), 0)
+    obs = obs.where(w != 0, 0)
+    mod = mod.where(w != 0, 0)
+
+    # edit: make sure weights dataarray
+    if isinstance(w, xr.Dataset):
+        w = w.to_dataarray()
+    if not isinstance(w, xr.DataArray):
+        w = xr.DataArray(w)
+
+    # numerator
+    num = (mod - obs) ** 2.0
+    numw = num.weighted(w)
+    numwm = numw.mean(["lon", "lat"])
+
+    # denominator
+    obsw = obs.weighted(w)
+    obswm = obsw.mean(["lon", "lat"])
+    obsprime = obs - obswm
+    obsprime2 = obsprime**2.0
+    obsprime2w = obsprime2.weighted(w)
+    obsprime2wm = obsprime2w.mean(["lon", "lat"])
+
+    nmse = numwm / obsprime2wm
+
+    return nmse
+
+
+class Test_nmse:
+    def test_nmse(self):
+        nlat = 10
+        nlon = 10
+        nt = 2
+
+        m = make_toy_temp_dataset(nlat=nlat, nlon=nlon, nt=nt, nans=True)
+        o = make_toy_temp_dataset(nlat=nlat, nlon=nlon, nt=nt, nans=True)
+
+        # test on full datasets
+        xr.testing.assert_allclose(cupid_nmse(o, m), nmse(o, m))
+
+        # test on dataarrays
+        xr.testing.assert_allclose(cupid_nmse(o.t, m.t), nmse(o.t, m.t))
+
+    def test_nmse_validation(self):
+        nlat = 10
+        nlon = 10
+        nt = 2
+
+        m = make_toy_temp_dataset(nlat=nlat, nlon=nlon, nt=nt, nans=True)
+        o = make_toy_temp_dataset(nlat=nlat, nlon=nlon, nt=nt, nans=True)
+
+        # try non-xarray
+        with pytest.raises(TypeError):
+            nmse(o.t.values, m)
+
+        # try mixed DataArray and Dataset
+        with pytest.raises(TypeError):
+            nmse(o.t, m.drop('t2'))
+
+        # try without 'lat' and 'lon' coordinates
+        with pytest.raises(ValueError):
+            nmse(
+                o.rename({'lat': 'lt', 'lon': 'ln'}),
+                m.rename({'lat': 'lt', 'lon': 'ln'}),
+            )
+
+        # try mismatched dataset vars
+        with pytest.raises(ValueError):
+            # raises clear error from xarray
+            nmse(o.drop('t'), m)
+
+        # try mismatched dims
+        with pytest.raises(xr.AlignmentError):
+            # raises clear error from xarray
+            nmse(o.drop_isel({'lat': 0}), m.drop_isel({'lat': 1}))
+        with pytest.raises(xr.AlignmentError):
+            # raises clear error from xarray
+            nmse(o.drop_isel({'lon': 0}), m)
 
 
 class BaseEOFTestClass(metaclass=ABCMeta):
