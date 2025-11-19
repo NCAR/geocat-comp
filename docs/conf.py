@@ -375,7 +375,10 @@ nb_execution_mode = "off"
 # nitpicky = True
 
 # add links to ignore during link checking
-linkcheck_ignore = [r'https://stackoverflow.com/help/*']
+linkcheck_ignore = [
+    r'https://stackoverflow.com/help/*',
+    r'https://agupubs.onlinelibrary.wiley.com/*',
+]
 
 # ignore doi redirect warnings
 linkcheck_allowed_redirects = {
