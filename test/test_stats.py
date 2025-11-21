@@ -1,4 +1,5 @@
 from abc import ABCMeta
+from cf_xarray.datasets import popds as pop
 import numpy as np
 import xarray as xr
 import pytest
@@ -140,6 +141,40 @@ class Test_nmse:
             cupid_nmse(o_cf.cf.guess_coord_axis(), m),
             nmse(o.cf.guess_coord_axis(), m_cf),
         )
+
+    def test_nmse_grids(self):
+        nlat = 10
+        nlon = 15
+        nt = 2
+
+        m = make_toy_temp_dataset(nlat=nlat, nlon=nlon, nt=nt, nans=True)
+        o = make_toy_temp_dataset(nlat=nlat, nlon=nlon, nt=nt, nans=True)
+
+        # make meshgrids
+        x, y = np.meshgrid(m.lat, m.lon)
+        m_mesh = xr.DataArray(
+            data=m.t.values,
+            dims=["time", "x", "y"],
+            coords=dict(
+                lat=(["y", "x"], x),
+                lon=(["y", "x"], y),
+                time=m.time,
+            ),
+        )
+        o_mesh = xr.DataArray(
+            data=o.t.values,
+            dims=["time", "x", "y"],
+            coords=dict(
+                lat=(["y", "x"], x),
+                lon=(["y", "x"], y),
+                time=o.time,
+            ),
+        )
+
+        with pytest.raises(ValueError):
+            nmse(pop, pop)
+
+        nmse(o_mesh, m_mesh)
 
 
 class BaseEOFTestClass(metaclass=ABCMeta):

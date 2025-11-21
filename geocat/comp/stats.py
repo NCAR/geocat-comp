@@ -73,12 +73,20 @@ def nmse(
         )
 
     # get lat and lon names
-    lat_name = observed.cf.coordinates['latitude'][0]
-    lon_name = observed.cf.coordinates['longitude'][0]
+    lat_name = observed.cf.coordinates['latitude']
+    lon_name = observed.cf.coordinates['longitude']
+
+    # if more than one latitude found, error out
+    if len(lat_name) > 1 or len(lon_name) > 1:
+        raise ValueError(
+            f"Multiple latitude/longitude coordinates not supported. Found lat: {lat_name} and lon: {lon_name} "
+        )
+
+    lat_name = lat_name[0]
+    lon_name = lon_name[0]
 
     # calculate weights
     weights = np.cos(np.deg2rad(observed.cf["latitude"]))
-    weights = weights.expand_dims({lon_name: observed.cf['longitude']}, axis=1)
 
     # weight by zero if modeled or observed is nan
     weights = weights.where(np.logical_not(np.isnan(observed) | np.isnan(modeled)), 0)
