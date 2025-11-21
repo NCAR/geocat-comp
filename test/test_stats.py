@@ -54,15 +54,6 @@ def cupid_nmse(obs, mod):
     # edit: match attrs for testing comparison
     # clear out existing metadata on return object
     nmse = nmse.drop_attrs()
-    # for datasets, get name of nmse var, currently 'variable' by default and rename it nmse
-    if isinstance(nmse, xr.Dataset):
-        nmse = nmse.rename(
-            {
-                list(set(nmse.coords) - (set(obs.coords).union(set(mod.coords))))[
-                    0
-                ]: 'nmse'
-            }
-        )
     nmse.attrs['description'] = (
         "Normalized Mean Squared Error (NMSE) between modeled and observed fields"
     )
@@ -87,7 +78,7 @@ class Test_nmse:
 
         # test dataset var is same as dataarray calc, np to avoid metadata + dataset coord differences
         np.testing.assert_allclose(
-            nmse(o, m).t.sel({"nmse": "t"}).values, nmse(o.t, m.t).values
+            nmse(o, m).t.sel({"variable": "t"}).values, nmse(o.t, m.t).values
         )
 
     def test_nmse_validation(self):

@@ -106,16 +106,6 @@ def nmse(
 
     # clear out existing metadata on return object
     metric = metric.drop_attrs()
-    # for datasets, get name of nmse var, currently 'variable' by default and rename it nmse
-    if isinstance(metric, xr.Dataset):
-        metric = metric.rename(
-            {
-                list(
-                    set(metric.coords)
-                    - (set(observed.coords).union(set(modeled.coords)))
-                )[0]: 'nmse'
-            }
-        )
     metric.attrs['description'] = (
         "Normalized Mean Squared Error (NMSE) between modeled and observed fields"
     )
