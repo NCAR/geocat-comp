@@ -1,10 +1,124 @@
+import cf_xarray
 from eofs.xarray import Eof
 import numpy as np
-from typing import Iterable
+from typing import Iterable, Union
 import xskillscore as xs
 import xskillscore.core.np_deterministic as xs_internal
 import xarray as xr
 import warnings
+
+
+def nmse(
+    observed: Union[xr.Dataset, xr.DataArray], modeled: Union[xr.Dataset, xr.DataArray]
+) -> Union[xr.Dataset, xr.DataArray]:
+    r"""Calculate the normalized mean squared error metric of Williamson
+    (1995) as described in section 3 of *"An Evaluation of the Large-Scale
+    Atmospheric Circulation and Its Variability in CESM2 and Other CMIP
+    Models"* (`Simpson et al., 2020 <https://doi.org/10.1029/2020JD032835>`__).
+
+    .. math::
+        NMSE(X_m) = \frac{\overline{(X_m - X_o)^2}}{\overline{(X'_o)^2}}
+
+    where :math:`X_m` is the modeled field, :math:`X_o` is the observed field,
+    :math:`X'_o` is the weighted deviation of the observed field
+    (:math:`X'_o = X_o - X_{wo}`) and the overbar indicates a weighted
+    spatial average.
+
+    This implementation is based on Isla Simpson's implementation in
+    `CASanalysis <https://github.com/islasimpson/CASanalysis>`__ and
+    `CUPID <https://github.com/NCAR/CUPiD/blob/b6a32b5dd7b88369689dbc3746c3df21af8ce40a/nblibrary/atm/nmse_utils.py>`__.
+
+    Parameters
+    ----------
+    observed : :class:`xarray.DataArray` or :class:`xarray.Dataset`
+        The observed field. Must have 'lat' and 'lon' coordinates.
+
+    modeled : :class:`xarray.DataArray` or :class:`xarray.Dataset`
+        The modeled field. Must have 'lat' and 'lon' coordinates and must have
+        the same dimensions as `observed`.
+
+    Returns
+    -------
+    nmse : :class:`xarray.DataArray` or :class:`xarray.Dataset`
+        The normalized mean squared error between the modeled and observed fields.
+
+    """
+
+    # Validate Inputs
+    # type check
+    if not {type(observed), type(modeled)}.issubset({xr.DataArray, xr.Dataset}):
+        raise TypeError("Inputs must be xarray DataArrays or Datasets")
+
+    # check both datasets or both dataarrays
+    if type(observed) is not type(modeled):
+        raise TypeError(
+            "Both inputs must be of the same type, either DataArray or Dataset"
+        )
+
+    # check if coord names match
+    if not list(observed.coords) == list(modeled.coords):
+        raise KeyError(
+            f"Warning: coordinate names do not match. observed: {list(observed.coords)} modeled: {list(modeled.coords)}"
+        )
+
+    # try to find lat and lon
+    observed = observed.cf.guess_coord_axis()
+    modeled = modeled.cf.guess_coord_axis()
+
+    if (not {'latitude', 'longitude'}.issubset(observed.cf.keys())) or (
+        not {'latitude', 'longitude'}.issubset(modeled.cf.keys())
+    ):
+        raise ValueError(
+            "Unable to determine latitude and longitude from inputs. Try making inputs CF compliant"
+        )
+
+    # get lat and lon names
+    lat_name = observed.cf.coordinates['latitude']
+    lon_name = observed.cf.coordinates['longitude']
+
+    # if more than one latitude found, error out
+    if len(lat_name) > 1 or len(lon_name) > 1:
+        raise ValueError(
+            f"Multiple latitude/longitude coordinates not supported. Found lat: {lat_name} and lon: {lon_name} "
+        )
+
+    lat_name = lat_name[0]
+    lon_name = lon_name[0]
+
+    # calculate weights
+    weights = np.cos(np.deg2rad(observed.cf["latitude"]))
+
+    # weight by zero if modeled or observed is nan
+    weights = weights.where(np.logical_not(np.isnan(observed) | np.isnan(modeled)), 0)
+    observed = observed.where(weights != 0, 0)
+    modeled = modeled.where(weights != 0, 0)
+
+    # make sure weights are a DataArray
+    if isinstance(weights, xr.Dataset):
+        weights = weights.to_dataarray()
+    if not isinstance(weights, xr.DataArray):
+        weights = xr.DataArray(weights)
+
+    # calculate weighted observed
+    observed_w = observed.weighted(weights).mean(dim=[lon_name, lat_name])
+
+    # calculate numerator, overbar((X_m - X_o)^2)
+    num = (modeled - observed) ** 2
+    num = num.weighted(weights).mean(dim=[lon_name, lat_name])
+
+    # calculate denominator, overbar((X_o')^2)
+    denom = (observed - observed_w) ** 2
+    denom = denom.weighted(weights).mean(dim=[lon_name, lat_name])
+
+    metric = num / denom
+
+    # clear out existing metadata on return object
+    metric = metric.drop_attrs()
+    metric.attrs['description'] = (
+        "Normalized Mean Squared Error (NMSE) between modeled and observed fields"
+    )
+
+    return metric
 
 
 def pearson_r(a, b, dim=None, weights=None, skipna=False, keep_attrs=False, axis=None):
