@@ -51,6 +51,22 @@ def cupid_nmse(obs, mod):
 
     nmse = numwm / obsprime2wm
 
+    # edit: match attrs for testing comparison
+    # clear out existing metadata on return object
+    nmse = nmse.drop_attrs()
+    # for datasets, get name of nmse var, currently 'variable' by default and rename it nmse
+    if isinstance(nmse, xr.Dataset):
+        nmse = nmse.rename(
+            {
+                list(set(nmse.coords) - (set(obs.coords).union(set(mod.coords))))[
+                    0
+                ]: 'nmse'
+            }
+        )
+    nmse.attrs['description'] = (
+        "Normalized Mean Squared Error (NMSE) between modeled and observed fields"
+    )
+
     return nmse
 
 
@@ -69,13 +85,18 @@ class Test_nmse:
         # test on dataarrays
         xr.testing.assert_allclose(cupid_nmse(o.t, m.t), nmse(o.t, m.t))
 
+        # test dataset var is same as dataarray calc, np to avoid metadata + dataset coord differences
+        np.testing.assert_allclose(
+            nmse(o, m).t.sel({"nmse": "t"}).values, nmse(o.t, m.t).values
+        )
+
     def test_nmse_validation(self):
         nlat = 10
         nlon = 10
         nt = 2
 
-        m = make_toy_temp_dataset(nlat=nlat, nlon=nlon, nt=nt, nans=True)
-        o = make_toy_temp_dataset(nlat=nlat, nlon=nlon, nt=nt, nans=True)
+        m = make_toy_temp_dataset(nlat=nlat, nlon=nlon, nt=nt, nans=True, cf=False)
+        o = make_toy_temp_dataset(nlat=nlat, nlon=nlon, nt=nt, nans=True, cf=False)
 
         # try non-xarray
         with pytest.raises(TypeError):
@@ -83,19 +104,16 @@ class Test_nmse:
 
         # try mixed DataArray and Dataset
         with pytest.raises(TypeError):
-            nmse(o.t, m.drop('t2'))
+            nmse(o.t, m.drop_vars('t2'))
 
-        # try without 'lat' and 'lon' coordinates
-        with pytest.raises(ValueError):
-            nmse(
-                o.rename({'lat': 'lt', 'lon': 'ln'}),
-                m.rename({'lat': 'lt', 'lon': 'ln'}),
-            )
+        # try with mismatched lat and lon coordinate names
+        with pytest.raises(KeyError):
+            nmse(o.rename({'lat': 'latitude', 'lon': 'longitude'}), m)
 
         # try mismatched dataset vars
         with pytest.raises(ValueError):
             # raises clear error from xarray
-            nmse(o.drop('t'), m)
+            nmse(o.drop_vars('t'), m)
 
         # try mismatched dims
         with pytest.raises((AlignmentError, ValueError)):
@@ -104,6 +122,33 @@ class Test_nmse:
         with pytest.raises(AlignmentError):
             # raises clear error from xarray
             nmse(o.drop_isel({'lon': 0}), m)
+
+    def test_nmse_cf(self):
+        nlat = 10
+        nlon = 10
+        nt = 2
+
+        m = make_toy_temp_dataset(nlat=nlat, nlon=nlon, nt=nt, nans=True, cf=False)
+        o = make_toy_temp_dataset(nlat=nlat, nlon=nlon, nt=nt, nans=True, cf=False)
+
+        m_cf = m.copy()
+        o_cf = o.copy()
+
+        m_cf.lat.attrs["standard_name"] = "latitude"
+        m_cf.lon.attrs["standard_name"] = "longitude"
+        m_cf.time.attrs["standard_name"] = "time"
+        o_cf.lat.attrs["standard_name"] = "latitude"
+        o_cf.lon.attrs["standard_name"] = "longitude"
+        o_cf.time.attrs["standard_name"] = "time"
+
+        # test mixed cf
+        xr.testing.assert_allclose(cupid_nmse(o_cf, m), nmse(o, m_cf))
+
+        # test pre-cf coordinated
+        xr.testing.assert_allclose(
+            cupid_nmse(o_cf.cf.guess_coord_axis(), m),
+            nmse(o.cf.guess_coord_axis(), m_cf),
+        )
 
 
 class BaseEOFTestClass(metaclass=ABCMeta):

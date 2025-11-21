@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 
 
-def make_toy_temp_dataset(nlat=10, nlon=30, nt=3, nans=False):
+def make_toy_temp_dataset(nlat=10, nlon=30, nt=3, nans=False, cf=True):
     """Makes a toy xarray dataset with two temperature variables, 't' and 't2'.
 
     Parameters
@@ -56,5 +56,10 @@ def make_toy_temp_dataset(nlat=10, nlon=30, nt=3, nans=False):
             n = int(0.1 * ds[var].size) if int(0.1 * ds[var].size) > 0 else 1
             index = np.random.choice(ds[var].size, n, replace=False)
             ds[var].values.ravel()[index] = np.nan
+
+    if cf:
+        ds.lat.attrs["standard_name"] = "latitude"
+        ds.lon.attrs["standard_name"] = "longitude"
+        ds.time.attrs["standard_name"] = "time"
 
     return ds
