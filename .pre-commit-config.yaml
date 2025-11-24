@@ -32,7 +32,7 @@ repos:
     - id: check-yaml               # Check valid yml file
 
 -   repo: https://github.com/keewis/blackdoc
-    rev: v0.4.5
+    rev: v0.4.6
     hooks:
     - id: blackdoc
       additional_dependencies: [ "black==25.11.0" ]
