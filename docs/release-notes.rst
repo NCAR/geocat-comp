@@ -8,22 +8,19 @@
 Release Notes
 =============
 
-vYYYY.MM.## (unreleased)
+v2025.11.0 (November 24, 2025)
 ------------------------
-This release...
+This release adds an initial benchmarking suite, exposes a new ``pressure_at_hybrid_levels`` function,
+and addresses several attribute related issues following upstream changes in Xarray.
 
 Bug Fixes
 ^^^^^^^^^
-* Modify ``climate_anomaly`` to ensure consistent behavior for the ``keep_attrs`` option by `Katelyn FitzGerald`_ in (:pr:`783`)
+* Update ``climate_anomaly`` to ensure consistent behavior for the ``keep_attrs`` option by `Katelyn FitzGerald`_ in (:pr:`783`)
 * Revert back to passing only `pressure.data` rather than the full DataArray to avoid unit handling issues in ``interp_hybrid_to_pressure`` by `Katelyn FitzGerald`_ in (:pr:`781`)
-* Fix latitude/longitude axis labels for ``vimfc`` by `Cora Schneck`_ in (:pr:`784`)
 
 New Features
 ^^^^^^^^^^^^
 * Move ``_pressure_from_hybrid`` to public API as ``pressure_at_hybrid_levels`` by `Anissa Zacharias`_ in (:pr:`776`)
-
-Internal Changes
-^^^^^^^^^^^^^^^^
 
 Developer Features
 ^^^^^^^^^^^^^^^^^^
@@ -31,6 +28,8 @@ Developer Features
 
 Documentation
 ^^^^^^^^^^^^^
+* Add latitude/longitude axis labels in ``vimfc`` example plot by `Cora Schneck`_ in (:pr:`784`)
+
 
 v2025.10.01 (October 7, 2025)
 -----------------------------
