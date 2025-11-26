@@ -29,6 +29,9 @@ def make_toy_temp_dataset(
         optional, if True, randomly insert nans into the data. will always
         insert at least one nan (default False)
 
+    cf : bool
+        optional, adds standard_name to attrs for latitude, longitude, and time dimensions
+
     Returns
     -------
     xr.Dataset
