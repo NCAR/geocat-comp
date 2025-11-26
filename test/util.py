@@ -3,16 +3,24 @@ import numpy as np
 import pandas as pd
 
 
-def make_toy_temp_dataset(nlat=10, nlon=30, nt=3, nans=False, cf=True):
+def make_toy_temp_dataset(
+    nlat=10, nlon=30, lat=None, lon=None, nt=3, nans=False, cf=True
+):
     """Makes a toy xarray dataset with two temperature variables, 't' and 't2'.
 
     Parameters
     ----------
     nlat : int
-        optional, number of latitude points (default 20)
+        optional, number of latitude points (default 20 unless lat specified)
 
     nlon : int
-        optional, number of longitude points (default 30)
+        optional, number of longitude points (default 30 unless lon specified)
+
+    lat : list
+        optional, list of latitude points. Cannot be specified with nlat. (default None)
+
+    lon : list
+        optional, list of longitude points. Cannot be specified with nlon. (default None)
 
     nt : int
         optional, number of time points (default 5)
@@ -26,8 +34,15 @@ def make_toy_temp_dataset(nlat=10, nlon=30, nt=3, nans=False, cf=True):
     xr.Dataset
     """
     time = pd.date_range('2023-01-01', periods=nt)
-    lat = np.linspace(-90, 90, nlat)
-    lon = np.linspace(-180, 180, nlon)
+    if lat is None:
+        lat = np.linspace(-90, 90, nlat)
+    else:
+        nlat = len(lat)
+
+    if lon is None:
+        lon = np.linspace(-180, 180, nlon)
+    else:
+        nlon = len(lon)
 
     # Create some random temperature data
     t = 15 + 8 * np.random.randn(nt, nlat, nlon)

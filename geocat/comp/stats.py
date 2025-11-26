@@ -11,8 +11,9 @@ import warnings
 def nmse(
     observed: Union[xr.Dataset, xr.DataArray], modeled: Union[xr.Dataset, xr.DataArray]
 ) -> Union[xr.Dataset, xr.DataArray]:
-    r"""Calculate the normalized mean squared error metric of Williamson
-    (1995) as described in section 3 of *"An Evaluation of the Large-Scale
+    r"""Calculate the normalized mean squared error metric of
+    `Williamson, 1995 <https://library.wmo.int/records/item/37026-proceedings-of-the-first-international-amip-scientific-conference>`__
+    as described in section 3 of *"An Evaluation of the Large-Scale
     Atmospheric Circulation and Its Variability in CESM2 and Other CMIP
     Models"* (`Simpson et al., 2020 <https://doi.org/10.1029/2020JD032835>`__).
 
@@ -24,6 +25,13 @@ def nmse(
     (:math:`X'_o = X_o - X_{wo}`) and the overbar indicates a weighted
     spatial average.
 
+    The weights are calculated by:
+
+    .. math::
+        weights = \cos(lat)
+
+    and assumes regular spacing.
+
     This implementation is based on Isla Simpson's implementation in
     `CASanalysis <https://github.com/islasimpson/CASanalysis>`__ and
     `CUPID <https://github.com/NCAR/CUPiD/blob/b6a32b5dd7b88369689dbc3746c3df21af8ce40a/nblibrary/atm/nmse_utils.py>`__.
@@ -31,11 +39,10 @@ def nmse(
     Parameters
     ----------
     observed : :class:`xarray.DataArray` or :class:`xarray.Dataset`
-        The observed field. Must have 'lat' and 'lon' coordinates.
+        The observed field.
 
     modeled : :class:`xarray.DataArray` or :class:`xarray.Dataset`
-        The modeled field. Must have 'lat' and 'lon' coordinates and must have
-        the same dimensions as `observed`.
+        The modeled field. Must have the same dimensions as `observed`.
 
     Returns
     -------
@@ -72,6 +79,24 @@ def nmse(
             "Unable to determine latitude and longitude from inputs. Try making inputs CF compliant"
         )
 
+    # check for even lon/lat spacing
+    lat_diff = np.diff(observed.cf["latitude"], axis=0)
+    lat_diff = (
+        lat_diff
+        if not all(lat_diff.ravel() == 0)
+        else np.diff(observed.cf["latitude"], axis=1)
+    )
+    lon_diff = np.diff(observed.cf["longitude"], axis=0)
+    lon_diff = (
+        lon_diff
+        if not all(lon_diff.ravel() == 0)
+        else np.diff(observed.cf["longitude"], axis=1)
+    )
+    if not np.allclose(lat_diff, lat_diff[0]) or not np.allclose(lon_diff, lon_diff[0]):
+        raise ValueError(
+            "Uneven latitude or longitude spacing, weighting calculation will not work"
+        )
+
     # get lat and lon names
     lat_name = observed.cf.coordinates['latitude']
     lon_name = observed.cf.coordinates['longitude']
@@ -84,6 +109,11 @@ def nmse(
 
     lat_name = lat_name[0]
     lon_name = lon_name[0]
+
+    # get lat lon name dimensions, eg ['lat', 'lon'] or ['x', 'y']
+    spatial_dims = set(observed.cf["latitude"].dims).union(
+        set(observed.cf["longitude"].dims)
+    )
 
     # calculate weights
     weights = np.cos(np.deg2rad(observed.cf["latitude"]))
@@ -100,15 +130,15 @@ def nmse(
         weights = xr.DataArray(weights)
 
     # calculate weighted observed
-    observed_w = observed.weighted(weights).mean(dim=[lon_name, lat_name])
+    observed_w = observed.weighted(weights).mean(dim=spatial_dims)
 
     # calculate numerator, overbar((X_m - X_o)^2)
     num = (modeled - observed) ** 2
-    num = num.weighted(weights).mean(dim=[lon_name, lat_name])
+    num = num.weighted(weights).mean(dim=spatial_dims)
 
     # calculate denominator, overbar((X_o')^2)
     denom = (observed - observed_w) ** 2
-    denom = denom.weighted(weights).mean(dim=[lon_name, lat_name])
+    denom = denom.weighted(weights).mean(dim=spatial_dims)
 
     metric = num / denom
 

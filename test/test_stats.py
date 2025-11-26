@@ -152,7 +152,7 @@ class Test_nmse:
 
         # make meshgrids
         x, y = np.meshgrid(m.lat, m.lon)
-        m_mesh = xr.DataArray(
+        m_t_mesh = xr.DataArray(
             data=m.t.values,
             dims=["time", "x", "y"],
             coords=dict(
@@ -161,7 +161,7 @@ class Test_nmse:
                 time=m.time,
             ),
         )
-        o_mesh = xr.DataArray(
+        o_t_mesh = xr.DataArray(
             data=o.t.values,
             dims=["time", "x", "y"],
             coords=dict(
@@ -171,10 +171,22 @@ class Test_nmse:
             ),
         )
 
-        with pytest.raises(ValueError):
+        # test evenly spaced mesh grid against 1d lat/lon
+        xr.testing.assert_allclose(nmse(o.t, m.t), nmse(o_t_mesh, m_t_mesh))
+
+        with pytest.raises(KeyError):
             nmse(pop, pop)
 
-        nmse(o_mesh, m_mesh)
+        # gauss lats (from https://www.ncl.ucar.edu/Document/Functions/Built-in/gaus_lobat_wgt.shtml)
+        # fmt: off
+        glat = [-90., -78.45661, -53.25302, -18.83693, 18.83693, 53.25302, 78.45661, 90.]
+        # fmt: on
+
+        mg = make_toy_temp_dataset(lat=glat)
+        og = make_toy_temp_dataset(lat=glat)
+
+        with pytest.raises(ValueError):
+            nmse(mg, og)
 
 
 class BaseEOFTestClass(metaclass=ABCMeta):
