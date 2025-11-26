@@ -1,9 +1,192 @@
 from abc import ABCMeta
+from cf_xarray.datasets import popds as pop
 import numpy as np
 import xarray as xr
 import pytest
 
-from geocat.comp.stats import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts, pearson_r
+from .util import make_toy_temp_dataset
+from geocat.comp.stats import (
+    eofunc,
+    eofunc_eofs,
+    eofunc_pcs,
+    eofunc_ts,
+    pearson_r,
+    nmse,
+)
+
+if hasattr(xr, "AlignmentError"):
+    AlignmentError = xr.AlignmentError
+else:
+    AlignmentError = ValueError
+
+
+def cupid_nmse(obs, mod):
+    """Isla Simpson's NMSE calculation from CUPID toolbox
+    https://github.com/NCAR/CUPiD/blob/b6a32b5dd7b88369689dbc3746c3df21af8ce40a/nblibrary/atm/nmse_utils.py
+    """
+    # get the weights and weight by zero if the model or obs is nan
+    w = np.cos(np.deg2rad(obs.lat))
+    w = w.expand_dims({"lon": obs.lon}, axis=1)
+    w = w.where(~(np.isnan(obs) | np.isnan(mod)), 0)
+    obs = obs.where(w != 0, 0)
+    mod = mod.where(w != 0, 0)
+
+    # edit: make sure weights dataarray
+    if isinstance(w, xr.Dataset):
+        w = w.to_dataarray()
+    if not isinstance(w, xr.DataArray):
+        w = xr.DataArray(w)
+
+    # numerator
+    num = (mod - obs) ** 2.0
+    numw = num.weighted(w)
+    numwm = numw.mean(["lon", "lat"])
+
+    # denominator
+    obsw = obs.weighted(w)
+    obswm = obsw.mean(["lon", "lat"])
+    obsprime = obs - obswm
+    obsprime2 = obsprime**2.0
+    obsprime2w = obsprime2.weighted(w)
+    obsprime2wm = obsprime2w.mean(["lon", "lat"])
+
+    nmse = numwm / obsprime2wm
+
+    # edit: match attrs for testing comparison
+    # clear out existing metadata on return object
+    nmse = nmse.drop_attrs()
+    nmse.attrs['description'] = (
+        "Normalized Mean Squared Error (NMSE) between modeled and observed fields"
+    )
+
+    return nmse
+
+
+class Test_nmse:
+    def test_nmse(self):
+        nlat = 10
+        nlon = 10
+        nt = 2
+
+        m = make_toy_temp_dataset(nlat=nlat, nlon=nlon, nt=nt, nans=True)
+        o = make_toy_temp_dataset(nlat=nlat, nlon=nlon, nt=nt, nans=True)
+
+        # test on full datasets
+        xr.testing.assert_allclose(cupid_nmse(o, m), nmse(o, m))
+
+        # test on dataarrays
+        xr.testing.assert_allclose(cupid_nmse(o.t, m.t), nmse(o.t, m.t))
+
+        # test dataset var is same as dataarray calc, np to avoid metadata + dataset coord differences
+        np.testing.assert_allclose(
+            nmse(o, m).t.sel({"variable": "t"}).values, nmse(o.t, m.t).values
+        )
+
+    def test_nmse_validation(self):
+        nlat = 10
+        nlon = 10
+        nt = 2
+
+        m = make_toy_temp_dataset(nlat=nlat, nlon=nlon, nt=nt, nans=True, cf=False)
+        o = make_toy_temp_dataset(nlat=nlat, nlon=nlon, nt=nt, nans=True, cf=False)
+
+        # try non-xarray
+        with pytest.raises(TypeError):
+            nmse(o.t.values, m)
+
+        # try mixed DataArray and Dataset
+        with pytest.raises(TypeError):
+            nmse(o.t, m.drop_vars('t2'))
+
+        # try with mismatched lat and lon coordinate names
+        with pytest.raises(KeyError):
+            nmse(o.rename({'lat': 'latitude', 'lon': 'longitude'}), m)
+
+        # try mismatched dataset vars
+        with pytest.raises(ValueError):
+            # raises clear error from xarray
+            nmse(o.drop_vars('t'), m)
+
+        # try mismatched dims
+        with pytest.raises((AlignmentError, ValueError)):
+            # raises clear error from xarray
+            nmse(o.drop_isel({'lat': 0}), m.drop_isel({'lat': 1}))
+        with pytest.raises(AlignmentError):
+            # raises clear error from xarray
+            nmse(o.drop_isel({'lon': 0}), m)
+
+    def test_nmse_cf(self):
+        nlat = 10
+        nlon = 10
+        nt = 2
+
+        m = make_toy_temp_dataset(nlat=nlat, nlon=nlon, nt=nt, nans=True, cf=False)
+        o = make_toy_temp_dataset(nlat=nlat, nlon=nlon, nt=nt, nans=True, cf=False)
+
+        m_cf = m.copy()
+        o_cf = o.copy()
+
+        m_cf.lat.attrs["standard_name"] = "latitude"
+        m_cf.lon.attrs["standard_name"] = "longitude"
+        m_cf.time.attrs["standard_name"] = "time"
+        o_cf.lat.attrs["standard_name"] = "latitude"
+        o_cf.lon.attrs["standard_name"] = "longitude"
+        o_cf.time.attrs["standard_name"] = "time"
+
+        # test mixed cf
+        xr.testing.assert_allclose(cupid_nmse(o_cf, m), nmse(o, m_cf))
+
+        # test pre-cf coordinated
+        xr.testing.assert_allclose(
+            cupid_nmse(o_cf.cf.guess_coord_axis(), m),
+            nmse(o.cf.guess_coord_axis(), m_cf),
+        )
+
+    def test_nmse_grids(self):
+        nlat = 10
+        nlon = 15
+        nt = 2
+
+        m = make_toy_temp_dataset(nlat=nlat, nlon=nlon, nt=nt, nans=True)
+        o = make_toy_temp_dataset(nlat=nlat, nlon=nlon, nt=nt, nans=True)
+
+        # make meshgrids
+        x, y = np.meshgrid(m.lat, m.lon)
+        m_t_mesh = xr.DataArray(
+            data=m.t.values,
+            dims=["time", "x", "y"],
+            coords=dict(
+                lat=(["y", "x"], x),
+                lon=(["y", "x"], y),
+                time=m.time,
+            ),
+        )
+        o_t_mesh = xr.DataArray(
+            data=o.t.values,
+            dims=["time", "x", "y"],
+            coords=dict(
+                lat=(["y", "x"], x),
+                lon=(["y", "x"], y),
+                time=o.time,
+            ),
+        )
+
+        # test evenly spaced mesh grid against 1d lat/lon
+        xr.testing.assert_allclose(nmse(o.t, m.t), nmse(o_t_mesh, m_t_mesh))
+
+        with pytest.raises(KeyError):
+            nmse(pop, pop)
+
+        # gauss lats (from https://www.ncl.ucar.edu/Document/Functions/Built-in/gaus_lobat_wgt.shtml)
+        # fmt: off
+        glat = [-90., -78.45661, -53.25302, -18.83693, 18.83693, 53.25302, 78.45661, 90.]
+        # fmt: on
+
+        mg = make_toy_temp_dataset(lat=glat)
+        og = make_toy_temp_dataset(lat=glat)
+
+        with pytest.raises(ValueError):
+            nmse(mg, og)
 
 
 class BaseEOFTestClass(metaclass=ABCMeta):
