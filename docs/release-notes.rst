@@ -8,8 +8,16 @@
 Release Notes
 =============
 
+v2025.12.0 (December 2, 2025)
+-----------------------------
+This release adds a normalized mean squared error metric function.
+
+New Features
+^^^^^^^^^^^^
+* Add normalized mean square error (NMSE) metric function, ``nmse`` by `Anissa Zacharias`_ in (:pr:`787`)
+
 v2025.11.0 (November 24, 2025)
-------------------------
+------------------------------
 This release adds an initial benchmarking suite, exposes a new ``pressure_at_hybrid_levels`` function,
 and addresses several attribute related issues following upstream changes in Xarray.
 
@@ -21,7 +29,7 @@ Bug Fixes
 New Features
 ^^^^^^^^^^^^
 * Move ``_pressure_from_hybrid`` to public API as ``pressure_at_hybrid_levels`` by `Anissa Zacharias`_ in (:pr:`776`)
-* Add normalized mean square error (NMSE) metric function, ``nmse`` by `Anissa Zacharias`_ in (:pr:`787`)
+
 
 Developer Features
 ^^^^^^^^^^^^^^^^^^
