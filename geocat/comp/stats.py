@@ -12,7 +12,7 @@ def nmse(
     observed: Union[xr.Dataset, xr.DataArray], modeled: Union[xr.Dataset, xr.DataArray]
 ) -> Union[xr.Dataset, xr.DataArray]:
     r"""Calculate the normalized mean squared error metric of
-    `Williamson, 1995 <https://library.wmo.int/records/item/37026-proceedings-of-the-first-international-amip-scientific-conference>`__
+    `Williamson, 1995 <https://library.wmo.int/idurl/4/37026>`__
     as described in section 3 of *"An Evaluation of the Large-Scale
     Atmospheric Circulation and Its Variability in CESM2 and Other CMIP
     Models"* (`Simpson et al., 2020 <https://doi.org/10.1029/2020JD032835>`__).
