@@ -63,9 +63,9 @@ def nmse(
         )
 
     # check if coord names match
-    if not list(observed.coords) == list(modeled.coords):
+    if not set(observed.coords) == set(modeled.coords):
         raise KeyError(
-            f"Warning: coordinate names do not match. observed: {list(observed.coords)} modeled: {list(modeled.coords)}"
+            f"Warning: coordinate names do not match. observed: {set(observed.coords)} modeled: {set(modeled.coords)}"
         )
 
     # try to find lat and lon
