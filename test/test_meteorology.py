@@ -776,6 +776,11 @@ def test_zonal_mpsi_pressure_levels() -> None:
     """
     # Use the provided test dataset and grid
     uxds = ux.open_dataset("data.nc", "grid.nc")
+    uxds = ux.open_dataset("../test/grid.nc", "../test/data.nc")
+    uxds = uxds.rename({'t2m': 'V'})
+    uxds['V'] = uxds['V'].expand_dims({'plev': [1000]})
+    uxds = uxds.assign_coords(plev=('plev', [1000]))
+    uxds['PS'] = uxds['V'] * 0.001 + 10000
 
     out = zonal_mpsi(uxds)
 
@@ -798,8 +803,11 @@ def test_zonal_mpsi_hybrid_calls_interp() -> None:
     """
     import types
 
-    # Minimal grid dims
-    # Use the provided test dataset and grid (should include hybrid coefficients)
-    uxds = ux.open_dataset("test/data.nc", "test/grid.nc")
+    uxds = ux.open_dataset("../test/grid.nc", "../test/data.nc")
+    uxds = uxds.rename({'t2m': 'V'})
+    uxds = uxds.assign_coords(plev=('plev', [1000]))
+    uxds['PS'] = uxds['V'] * 0.001 + 10000
+    uxds['hyai'] = uxds['V'] * 0.001 + 10000
+    uxds['hybi'] = uxds['V'] * 0.001 + 10001
 
     out = zonal_mpsi(uxds)

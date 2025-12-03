@@ -1560,7 +1560,7 @@ def zonal_mpsi(uxds):
     if is_on_plev:
         # accept UxDataArray or DataArray inputs
         if isinstance(uxds.V, ux.UxDataArray):
-            ux_ipress = uxds.V
+            da_ipress = uxds.V
         else:
             da = uxds.V if isinstance(uxds.V, xr.DataArray) else xr.DataArray(uxds.V)
         # Only pass a ux.Grid instance to UxDataArray; otherwise pass None
@@ -1608,7 +1608,8 @@ def zonal_mpsi(uxds):
             "zonal_mpsi: could not find pressure-level coordinate 'plev' in converted data; provide 'plev' or hybrid coefficients"
         )
 
-    ux_v_zonal = ux_ipress.zonal_mean()
+    # Keep UX types up through the zonal_mean step, Xarray after
+    da_v_zonal = ux_ipress.zonal_mean()
 
     # Zonal mean of surface pressure
     if hasattr(uxds.PS, "zonal_mean"):
@@ -1625,31 +1626,24 @@ def zonal_mpsi(uxds):
                 "zonal_mpsi: cannot compute zonal mean of PS; no longitude dimension found"
             )
         ux_PS_zonal = uxds.PS.mean(dim=lon_dim)
-
     # integration deltas
-    plev_coord = ux_v_zonal.coords['plev']
+    plev_coord = da_v_zonal.coords['plev']
     dp = delta_pressure(plev_coord, ux_PS_zonal)
 
     # Convert delta_pressure result to an xarray DataArray
     if isinstance(dp, xr.DataArray):
         da_dp_zonal = dp
     else:
-        # infer dims and coords from ux_v_zonal
-        dims = ux_v_zonal.dims
-        coords = {d: ux_v_zonal.coords[d] for d in dims if d in ux_v_zonal.coords}
-        coords['plev'] = ux_v_zonal.coords['plev']
+        # infer dims and coords from da_v_zonal
+        dims = da_v_zonal.dims
+        coords = {d: da_v_zonal.coords[d] for d in dims if d in da_v_zonal.coords}
+        coords['plev'] = da_v_zonal.coords['plev']
         da_dp_zonal = xr.DataArray(dp, dims=dims, coords=coords, name="delta_pressure")
 
-    _uxgrid = getattr(uxds, "uxgrid", None)
-    grid_param = (
-        _uxgrid if (hasattr(ux, "Grid") and isinstance(_uxgrid, ux.Grid)) else None
-    )
-    ux_dp_zonal = ux.UxDataArray(da_dp_zonal, uxgrid=grid_param)
-
     # scaling factor
-    if "latitudes" not in ux_v_zonal.coords:
+    if "latitudes" not in da_v_zonal.coords:
         lat_candidates = ("lat", "latitude", "latitudes")
-        lat_name = next((n for n in lat_candidates if n in ux_v_zonal.coords), None)
+        lat_name = next((n for n in lat_candidates if n in da_v_zonal.coords), None)
         if lat_name is None:
             raise ValueError(
                 "zonal_mpsi: could not find latitude coordinate on zonal data"
@@ -1658,28 +1652,28 @@ def zonal_mpsi(uxds):
         lat_name = "latitudes"
 
     da_scaling_factor = xr.DataArray(
-        2 * np.pi * a * np.cos(ux_v_zonal.coords[lat_name]) / g,
-        coords={lat_name: ux_v_zonal.coords[lat_name]},
+        2 * np.pi * a * np.cos(da_v_zonal.coords[lat_name]) / g,
+        coords={lat_name: da_v_zonal.coords[lat_name]},
         dims=(lat_name,),
     )
 
     # check orientation and integrate along pressure dim
-    plev_values = ux_v_zonal.coords["plev"].values
+    plev_values = da_v_zonal.coords["plev"].values
     increasing = plev_values[0] < plev_values[-1]
 
     if increasing:
-        integrand = ux_v_zonal * ux_dp_zonal
-        ux_mpsi = integrand.cumsum(dim="plev")
+        integrand = da_v_zonal * da_dp_zonal
+        da_mpsi = integrand.cumsum(dim="plev")
     else:
-        integrand = (ux_v_zonal * ux_dp_zonal).isel({"plev": slice(None, None, -1)})
-        ux_mpsi = integrand.cumsum(dim="plev").isel({"plev": slice(None, None, -1)})
+        integrand = (da_v_zonal * da_dp_zonal).isel({"plev": slice(None, None, -1)})
+        da_mpsi = integrand.cumsum(dim="plev").isel({"plev": slice(None, None, -1)})
 
     # apply scaling factor
-    ux_mpsi = ux_mpsi * da_scaling_factor
+    da_mpsi = da_mpsi * da_scaling_factor
 
     # metadata
     try:
-        ux_mpsi.attrs.update(
+        da_mpsi.attrs.update(
             {
                 "long_name": "zonal mean meridional mass streamfunction",
                 "units": "kg/s",
@@ -1689,11 +1683,4 @@ def zonal_mpsi(uxds):
     except Exception:
         pass
 
-    # ensure return is a UxDataArray
-    result = ux.UxDataArray(ux_mpsi, uxgrid=grid_param)
-    # preserve original uxgrid object for callers/tests (even if not a ux.Grid)
-    try:
-        setattr(result, "uxgrid", getattr(uxds, "uxgrid", None))
-    except Exception:
-        pass
-    return result
+    return da_mpsi
