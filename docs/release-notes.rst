@@ -8,6 +8,26 @@
 Release Notes
 =============
 
+vYYYY.MM.## (unreleased)
+------------------------
+This release...
+
+New Features
+^^^^^^^^^^^^
+
+Breaking Changes
+^^^^^^^^^^^^^^^^
+
+Bug Fixes
+^^^^^^^^^
+* Fix ``nmse`` coordinate matching issue `Anissa Zacharias`_ in (:pr:`796`)
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+
+Documentation
+^^^^^^^^^^^^^
+
 v2025.12.0 (December 2, 2025)
 -----------------------------
 This release adds a normalized mean squared error metric function.
