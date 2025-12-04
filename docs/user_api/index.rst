@@ -91,6 +91,7 @@ Statistics
 
    eofunc_eofs
    eofunc_pcs
+   nmse
    pearson_r
 
 NCL Function Name Wrappers

@@ -35,7 +35,7 @@ from .meteorology import (
     dpres_plev,
 )
 from .spherical import decomposition, recomposition, scale_voronoi
-from .stats import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts, pearson_r
+from .stats import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts, pearson_r, nmse
 from .deprecated import (
     grid_to_triple,
     linint1,
