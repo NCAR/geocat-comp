@@ -18,3 +18,4 @@ dependencies:
     - nbsphinx
     - xskillscore>=0.0.17
     - nc-time-axis
+    - uxarray
