@@ -408,7 +408,7 @@ def pressure_at_hybrid_levels(psfc, hya, hyb, p0=100000.0):
     return hya * p0 + hyb * psfc
 
 
-def delta_pressure_hybrid(ps, hyam, hybm, p0=100000.0):
+def delta_pressure_hybrid(ps, hya, hyb, p0=100000.0):
     """Calculates pressure layer thickness of a hybrid coordinate system
 
     .. math::
@@ -417,7 +417,7 @@ def delta_pressure_hybrid(ps, hyam, hybm, p0=100000.0):
 
     Parameters
     ----------
-    psfc: :class:`xarray.DataArray`
+    ps: :class:`xarray.DataArray`
         A multi-dimensional array of surface pressures (Pa)
 
     hya: :class:`xarray.DataArray`
@@ -440,10 +440,36 @@ def delta_pressure_hybrid(ps, hyam, hybm, p0=100000.0):
     `dpres_hybrid_ccm <https://www.ncl.ucar.edu/Document/Functions/Built-in/dpres_hybrid_ccm.shtml>`__
     """
 
-    pa = p0 * hyam[:-1] + hybm[:-1] * ps
-    pb = p0 * hyam[1:] + hybm[1:] * ps
+    # Validate inputs
+    # type check
+    if not {type(ps), type(hya), type(hyb)}.issubset({xr.DataArray, xr.Dataset}):
+        raise TypeError("Inputs must be xarray DataArrays or Datasets")
 
-    dph = abs(pb.drop('lev') - pa.drop('lev'))
+    # # check both datasets or both dataarrays
+    # if type(observed) is not type(modeled):
+    #     raise TypeError(
+    #         "Both inputs must be of the same type, either DataArray or Dataset"
+    #     )
+
+    pa = p0 * hya[:-1].drop('lev') + hyb[:-1].drop('lev') * ps
+    pb = p0 * hya[1:].drop('lev') + hyb[1:].drop('lev') * ps
+
+    dph = abs(pa - pb)
+
+    # dph_2 = np.zeros_like(dph_1)
+    ps = ps.values
+    hya = hya.values
+    hyb = hyb.values
+    #
+    # for i in range(ps.shape[0]):
+    #     for j in range(ps.shape[1]):
+    #         for k in range(hya.shape[0]-1):
+    #             pa = p0 * hya[k] + hyb[k] * ps[i, j]
+    #             pb = p0 * hyb[k+1] + hyb[k+1] * ps[i, j]
+    #
+    #             dph_2[k, i, j] = abs(pa - pb)
+    #
+    # dph_np = abs((np.expand_dims(p0 * hya[:-1], axis=(1, 2)) + np.expand_dims(hyb[:-1], axis=(1, 2)) * ps) - (np.expand_dims(p0 * hya[1:], axis=(1, 2)) + np.expand_dims(hyb[1:], axis=(1, 2)) * ps))
 
     return dph
 
