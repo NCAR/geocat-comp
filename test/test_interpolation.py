@@ -57,20 +57,38 @@ class Test_delta_pressure_hybrid:
         except Exception:
             return xr.open_dataarray("test/dpres_hybrid_ccm_output.nc")
 
-    def test_delta_pressure(self, dph_out):
+    def test_delta_pressure_correctness(self, dph_out):
         ps = ds_atmos.PS[0, :, :].drop('time')
         dph = delta_pressure_hybrid(ps, _hyam, _hybm, _p0)
+        dph_np = delta_pressure_hybrid(ps.values, _hyam.values, _hybm.values, _p0)
 
-        # diff = abs(dph - dph_out.dph).where(abs(dph - dph_out.dph) > 1e-4)
+        xr.testing.assert_allclose(dph, dph_out, rtol=1e-5)
+        nt.assert_allclose(dph.values, dph_np)
 
-        # p = pressure_at_hybrid_levels(ps, _hyam, _hybm, _p0)
-        # dp = abs(p.values[:-1, :, :] - p.values[1:, :, :])
+    def test_delta_pressure_hybrid_input_types(self):
+        ps = ds_atmos.PS[0, :, :].drop('time')
 
-        nt.assert_allclose(dph, dph_out.dph, rtol=1e-5)
+        with pytest.raises(TypeError):
+            delta_pressure_hybrid(ps.to_dataset(), _hyam, _hybm, _p0)
+
+        with pytest.raises(TypeError):
+            delta_pressure_hybrid(ps, _hyam, _hybm, [_p0, _p0])
+
+        with pytest.raises(TypeError):
+            delta_pressure_hybrid(ps, _hyam, _hybm.values, _p0)
+
+        psnp = delta_pressure_hybrid(ps.values, _hyam, _hybm, _p0)
+        assert isinstance(psnp, np.ndarray)
+
+        psxr = delta_pressure_hybrid(ps, _hyam.values, _hybm.values, _p0)
+        assert isinstance(psxr, xr.DataArray)
+        assert psxr.attrs["long_name"] == "pressure layer thickness"
 
     def test_delta_pressure_bad_dims(self, p_out) -> None:
-        delta_pressure_hybrid(p_out.ps, p_out.hyam, p_out.hybm)
+        dph = delta_pressure_hybrid(p_out.ps, p_out.hyam, p_out.hybm)
 
+        # check to make sure the dimensions are what we expect
+        assert list(dph.shape) == [len(p_out.hyam) - 1] + list(p_out.ps.shape)
 
     def test_delta_pressure_time_dim(self):
         ps = (
