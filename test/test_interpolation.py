@@ -37,6 +37,7 @@ def ds_ccsm():
     except Exception:
         return xr.open_dataset("test/ccsm35.h0.0021-01.demo.nc", decode_times=False)
 
+
 @pytest.fixture(scope="module")
 def p_out():
     try:
@@ -58,7 +59,7 @@ class Test_delta_pressure_hybrid:
 
     def test_delta_pressure(self, dph_out):
         ps = ds_atmos.PS[0, :, :].drop('time')
-        dph= delta_pressure_hybrid(ps, _hyam, _hybm, _p0)
+        dph = delta_pressure_hybrid(ps, _hyam, _hybm, _p0)
 
         # diff = abs(dph - dph_out.dph).where(abs(dph - dph_out.dph) > 1e-4)
 
@@ -68,22 +69,13 @@ class Test_delta_pressure_hybrid:
         nt.assert_allclose(dph, dph_out.dph, rtol=1e-5)
 
     def test_delta_pressure_bad_dims(self, p_out) -> None:
-
         delta_pressure_hybrid(p_out.ps, p_out.hyam, p_out.hybm)
 
-    def test_delta_pressure_hybrid_small(self, dph_out):
-        ps = ds_atmos.PS[0, :, :].drop('time').isel(lat=slice(20,23), lon=slice(60, 63))
-        hya = _hyam.isel(lev=slice(20,25))
-        hyb = _hybm.isel(lev=slice(20,25))
-
-        d = dph_out.isel(lev=slice(20,24), lat=slice(20,23), lon=slice(60,63))
-
-        d1 = delta_pressure_hybrid(ps, hya, hyb)
-
-        pass
 
     def test_delta_pressure_time_dim(self):
-        ps = ds_atmos.PS[0, :, :].drop('time').isel(lat=slice(20, 23), lon=slice(60, 63))
+        ps = (
+            ds_atmos.PS[0, :, :].drop('time').isel(lat=slice(20, 23), lon=slice(60, 63))
+        )
         t = [1, 2]
         ps = ps.expand_dims({'time': t})
 
@@ -93,7 +85,7 @@ class Test_delta_pressure_hybrid:
         dph = delta_pressure_hybrid(ps, hya, hyb)
 
         # check to make sure the dimensions are what we expect
-        assert list(dph.shape) == [len(hya)-1] + list(ps.shape)
+        assert list(dph.shape) == [len(hya) - 1] + list(ps.shape)
 
 
 class Test_interp_hybrid_to_pressure:

@@ -444,6 +444,9 @@ def delta_pressure_hybrid(ps, hya, hyb, p0=100000.0):
     # type check
     if not {type(ps), type(hya), type(hyb)}.issubset({xr.DataArray, xr.Dataset}):
         raise TypeError("Inputs must be xarray DataArrays or Datasets")
+    if not type(p0) in {float, int}:
+        raise TypeError(f"p0 must be a scalar numeric value, recieved {type(p0)}")
+
 
     # # check both datasets or both dataarrays
     # if type(observed) is not type(modeled):
@@ -455,21 +458,6 @@ def delta_pressure_hybrid(ps, hya, hyb, p0=100000.0):
     pb = p0 * hya[1:].drop('lev') + hyb[1:].drop('lev') * ps
 
     dph = abs(pa - pb)
-
-    # dph_2 = np.zeros_like(dph_1)
-    ps = ps.values
-    hya = hya.values
-    hyb = hyb.values
-    #
-    # for i in range(ps.shape[0]):
-    #     for j in range(ps.shape[1]):
-    #         for k in range(hya.shape[0]-1):
-    #             pa = p0 * hya[k] + hyb[k] * ps[i, j]
-    #             pb = p0 * hyb[k+1] + hyb[k+1] * ps[i, j]
-    #
-    #             dph_2[k, i, j] = abs(pa - pb)
-    #
-    # dph_np = abs((np.expand_dims(p0 * hya[:-1], axis=(1, 2)) + np.expand_dims(hyb[:-1], axis=(1, 2)) * ps) - (np.expand_dims(p0 * hya[1:], axis=(1, 2)) + np.expand_dims(hyb[1:], axis=(1, 2)) * ps))
 
     return dph
 
