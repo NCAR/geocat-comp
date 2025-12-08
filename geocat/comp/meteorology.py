@@ -1333,7 +1333,7 @@ def saturation_vapor_pressure_slope(
     return svp_slope
 
 
-def _delta_pressure1D(pressure_lev, surface_pressure):
+def _delta_pressure1D(pressure_lev, surface_pressure, ptop):
     """Helper function for `delta_pressure`. Calculates the pressure layer
     thickness, i.e. the change in pressure (delta pressure), for each layer
     in a one-dimensional pressure level array taking into account a
@@ -1351,6 +1351,10 @@ def _delta_pressure1D(pressure_lev, surface_pressure):
         The scalar surface pressure. Must have the same units as
         `pressure_lev`.
 
+    ptop : :class:`float`
+        A scalar specifying the top of the column. Should be <= min(pressure_lev)
+        and have the same  units as ``pressure_lev``.
+
     Returns
     -------
     delta_pressure : :class:`numpy.ndarray`
@@ -1358,16 +1362,13 @@ def _delta_pressure1D(pressure_lev, surface_pressure):
         `pressure_lev`.
     """
 
-    # Leaving this here to lay groundwork for including it as a separate argument
-    pressure_top = min(pressure_lev)
-
     # Safety checks
-    if pressure_top < 0:
+    if ptop < 0:
         raise ValueError(
             "`pressure_lev` values must all be greater than or equal to 0."
         )
 
-    if pressure_top > surface_pressure:
+    if ptop > surface_pressure:
         raise ValueError(
             "`surface_pressure` must be greater than minimum `pressure_lev` value."
         )
@@ -1390,7 +1391,7 @@ def _delta_pressure1D(pressure_lev, surface_pressure):
 
     delta_pressure[start_level] = (
         pressure_lev[start_level] + pressure_lev[start_level + 1]
-    ) / 2 - pressure_top  # top level
+    ) / 2 - ptop  # top level
 
     delta_pressure[start_level + 1 : end_level] = [
         (a - b) / 2
@@ -1411,7 +1412,7 @@ def _delta_pressure1D(pressure_lev, surface_pressure):
     return delta_pressure
 
 
-def delta_pressure(pressure_lev, surface_pressure):
+def delta_pressure(pressure_lev, surface_pressure, ptop=None):
     """Calculates the pressure layer thickness, i.e. the change in pressure
     (delta pressure), for each layer in a specified constant pressure level
     coordinate system and accounting for specified surface pressure(s).
@@ -1427,6 +1428,11 @@ def delta_pressure(pressure_lev, surface_pressure):
     surface_pressure : :class:`int`, :class:`float`, :class:`numpy.ndarray`, :class:`xarray.DataArray`
         The scalar or N-dimensional surface pressure array. Must have the same
         units as ``pressure_lev``.
+
+    ptop : :class:`float`, optional
+        A scalar specifying the top of the column. Should be <= min(pressure_lev)
+        and have the same  units as ``pressure_lev``. If left as None,
+        `min(pressure_lev)` will be used.
 
     Returns
     -------
@@ -1448,6 +1454,12 @@ def delta_pressure(pressure_lev, surface_pressure):
     )  # save type for delta_pressure to same type as surface_pressure at end
     type_pressure_level = type(pressure_lev)
 
+    # cast pressure_lev to np if not xr or np input for .min() later
+    if not isinstance(pressure_lev, xr.DataArray) and not isinstance(
+        pressure_lev, np.ndarray
+    ):
+        pressure_lev = np.asarray(pressure_lev)
+
     # Preserve attributes for Xarray
     if type_surface_pressure == xr.DataArray:
         da_coords = dict(surface_pressure.coords)
@@ -1458,9 +1470,16 @@ def delta_pressure(pressure_lev, surface_pressure):
             pressure_lev.attrs
         )  # Overwrite attributes to match pressure_lev
 
+    # get or calculate ptop
+    if ptop is None:
+        ptop = pressure_lev.min()
+    else:
+        if ptop > pressure_lev.min():
+            raise ValueError("ptop must be <= min(pressure_lev)")
+
     # Calculate delta pressure
     if np.isscalar(surface_pressure):  # scalar case
-        delta_pressure = _delta_pressure1D(pressure_lev, surface_pressure)
+        delta_pressure = _delta_pressure1D(pressure_lev, surface_pressure, ptop)
     else:  # multi-dimensional cases
         shape = surface_pressure.shape
         delta_pressure_shape = shape + (
@@ -1471,7 +1490,7 @@ def delta_pressure(pressure_lev, surface_pressure):
             surface_pressure
         )  # flatten to avoid nested for loops
         delta_pressure = [
-            _delta_pressure1D(pressure_lev, e) for e in surface_pressure_flattened
+            _delta_pressure1D(pressure_lev, e, ptop) for e in surface_pressure_flattened
         ]
 
         delta_pressure = np.array(delta_pressure).reshape(delta_pressure_shape)
@@ -1498,8 +1517,8 @@ def delta_pressure(pressure_lev, surface_pressure):
 
 
 # NCL NAME WRAPPER FUNCTIONS BELOW
-def dpres_plev(pressure_lev, surface_pressure):
-    return delta_pressure(pressure_lev, surface_pressure)
+def dpres_plev(pressure_lev, surface_pressure, ptop=None):
+    return delta_pressure(pressure_lev, surface_pressure, ptop)
 
 
 _generate_wrapper_docstring(dpres_plev, delta_pressure)

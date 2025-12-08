@@ -14,6 +14,7 @@ This release...
 
 New Features
 ^^^^^^^^^^^^
+* Add a ``ptop`` argument to ``delta_pressure`` by Anissa Zacharias`_ in (:pr:`798`)
 
 Breaking Changes
 ^^^^^^^^^^^^^^^^

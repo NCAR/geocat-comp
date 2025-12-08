@@ -1,6 +1,6 @@
-import pytest
-
 import numpy as np
+import pytest
+from random import uniform
 import xarray as xr
 
 from geocat.comp.meteorology import (
@@ -762,3 +762,41 @@ class Test_Delta_Pressure:
             self.pressure_lev_da, self.surface_pressure_3D
         )
         assert isinstance(delta_pressure_np, np.ndarray)
+
+    def test_ptop_specified(self) -> None:
+        # ptop <= min(pressure_lev)
+        # 0 < ptop <= 1
+        ptop = round(uniform(0.1, 0.99), 2)
+
+        # test scalar
+        delta_p = delta_pressure(self.pressure_lev, self.surface_pressure_scalar)
+        delta_p_top = delta_pressure(
+            self.pressure_lev, self.surface_pressure_scalar, ptop=ptop
+        )
+        assert delta_p_top[0] == delta_p[0] + min(self.pressure_lev) - ptop
+
+        # test multi-dimensional
+        delta_p = delta_pressure(self.pressure_lev, self.surface_pressure_3D)
+        delta_p_top = delta_pressure(
+            self.pressure_lev, self.surface_pressure_3D, ptop=ptop
+        )
+        np.testing.assert_equal(
+            delta_p_top[:, :, :, 0], delta_p[:, :, :, 0] + min(self.pressure_lev) - ptop
+        )
+
+        # test multidim xarray
+        delta_p_da = delta_pressure(self.pressure_lev_da, self.surface_pressure_3D_da)
+        delta_p_da_top = delta_pressure(
+            self.pressure_lev_da, self.surface_pressure_3D_da, ptop=ptop
+        )
+        np.testing.assert_allclose(delta_p_top, delta_p_da_top.values)
+        xr.testing.assert_equal(
+            delta_p_da_top[:, :, :, 0],
+            delta_p_da[:, :, :, 0] + min(self.pressure_lev_da) - ptop,
+        )
+
+        # test list input for pressure_lev for .min() usage w/ ptop
+        delta_pressure(self.pressure_lev.tolist(), self.surface_pressure_scalar)
+        delta_pressure(
+            self.pressure_lev.tolist(), self.surface_pressure_scalar, ptop=ptop
+        )
