@@ -14,6 +14,7 @@ This release...
 
 New Features
 ^^^^^^^^^^^^
+* Adds ``delta_pressure_hybrid`` function by `Anissa Zacharias`_ in (:pr:`797`)
 
 Breaking Changes
 ^^^^^^^^^^^^^^^^
