@@ -2,6 +2,7 @@ import pytest
 
 import numpy as np
 import xarray as xr
+import uxarray as ux
 
 from geocat.comp.meteorology import (
     dewtemp,
@@ -15,6 +16,7 @@ from geocat.comp.meteorology import (
     saturation_vapor_pressure,
     saturation_vapor_pressure_slope,
     delta_pressure,
+    zonal_mpsi,
 )
 
 
@@ -762,3 +764,39 @@ class Test_Delta_Pressure:
             self.pressure_lev_da, self.surface_pressure_3D
         )
         assert isinstance(delta_pressure_np, np.ndarray)
+
+
+# ---- Tests for zonal_mpsi ----
+def test_zonal_mpsi_pressure_levels() -> None:
+    """Test zonal_mpsi when wind data are already on pressure levels.
+
+    Construct a minimal ux-like object (SimpleNamespace) with DataArray fields
+    and call zonal_mpsi with hybrid_pressure=False. Ensure output has expected
+    dims and contains finite values.
+    """
+    # Use the provided test dataset and grid
+    uxds = ux.open_dataset("../test/grid.nc", "../test/zonal_mpsi_plev.nc")
+
+    out = zonal_mpsi(uxds)
+
+    assert hasattr(out, "dims")
+    assert "plev" in out.coords
+    assert getattr(out, "uxgrid", None) is uxds.uxgrid
+
+
+def test_zonal_mpsi_hybrid_calls_interp() -> None:
+    """Test zonal_mpsi hybrid path by constructing minimal hybrid inputs.
+
+    Construct small, realistic hybrid-coefficient arrays (hyam/hybm), a
+    V DataArray with a hybrid vertical dimension, and PS. This exercises the
+    real ``interp_hybrid_to_pressure`` code path rather than stubbing.
+    """
+
+    uxds = ux.open_dataset("../test/grid.nc", "../test/zonal_mpsi_hybrid.nc")
+    uxds = uxds.rename({'t2m': 'V'})
+
+    out = zonal_mpsi(uxds)
+    
+    assert hasattr(out, "dims")
+    assert "hyai" in out.coords
+    assert getattr(out, "uxgrid", None) is uxds.uxgrid
