@@ -1470,12 +1470,12 @@ def delta_pressure(pressure_lev, surface_pressure, pressure_top=None):
             pressure_lev.attrs
         )  # Overwrite attributes to match pressure_lev
 
-    # get or calculate ptop
+    # get or calculate pressure_top
     if pressure_top is None:
         pressure_top = pressure_lev.min()
     else:
         if pressure_top > pressure_lev.min():
-            raise ValueError("ptop must be <= min(pressure_lev)")
+            raise ValueError("pressure_top must be <= min(pressure_lev)")
 
     # Calculate delta pressure
     if np.isscalar(surface_pressure):  # scalar case
