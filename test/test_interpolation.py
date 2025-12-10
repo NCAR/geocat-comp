@@ -64,17 +64,28 @@ class Test_delta_pressure_hybrid:
         xr.testing.assert_allclose(dph, dph_out, rtol=1e-5)
         nt.assert_allclose(dph.values, dph_np)
 
-    def test_delta_pressure_hybrid_input_types(self):
+    def test_delta_pressure_hybrid_input_validation(self):
         ps = ds_atmos.PS[0, :, :].drop('time')
 
+        # non dataarray or np ndarray input
         with pytest.raises(TypeError):
             delta_pressure_hybrid(ps.to_dataset(), _hyam, _hybm, _p0)
 
+        # non scalar p0
         with pytest.raises(TypeError):
             delta_pressure_hybrid(ps, _hyam, _hybm, [_p0, _p0])
 
+        # type(hya) != type(hyb)
         with pytest.raises(TypeError):
             delta_pressure_hybrid(ps, _hyam, _hybm.values, _p0)
+
+        # hya.shape != hyb.shape
+        with pytest.raises(ValueError):
+            delta_pressure_hybrid(ps, _hyam[:-1], _hybm, _p0)
+
+        # hya not 1D
+        with pytest.raises(ValueError):
+            delta_pressure_hybrid(ps, np.array([_hyam, _hyam]), _hybm.values, _p0)
 
         psnp = delta_pressure_hybrid(ps.values, _hyam, _hybm, _p0)
         assert isinstance(psnp, np.ndarray)

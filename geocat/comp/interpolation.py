@@ -457,11 +457,12 @@ def delta_pressure_hybrid(
             f"hya and hyb must be the same type. hya: {type(hya)} hyb: {type(hyb)}"
         )
 
-    # check dimensions
-    if not hya.shape == hyb.shape and len(hya.shape) == 1:
-        raise ValueError(
-            f"hya and hyb must be 1-dimensional: hya: {hya.shape}, hyb: {hyb.shape}"
-        )
+    # check shape
+    if hya.shape != hyb.shape:
+        raise ValueError(f'dimension mismatch: hya: {hya.shape} hyb: {hyb.shape}')
+    # check 1D
+    if len(hya.shape) > 1:
+        raise ValueError(f'hya and hyb must be 1-dimensional: {hya.shape}')
 
     # make sure working w/ all np or all xr
     if isinstance(ps, np.ndarray) and not isinstance(
