@@ -4,7 +4,6 @@ import numpy.testing as nt
 import xarray as xr
 import pytest
 import pint
-from matplotlib import pyplot as plt
 
 from geocat.comp import (
     interp_multidim,
