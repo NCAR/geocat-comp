@@ -27,6 +27,7 @@ Internal Changes
 
 Documentation
 ^^^^^^^^^^^^^
+* Add ``delta_pressure`` calculation reference by `Anissa Zacharias`_ in (:pr:`800`)
 
 v2025.12.0 (December 2, 2025)
 -----------------------------
