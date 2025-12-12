@@ -1398,7 +1398,7 @@ def _delta_pressure1D(pressure_lev, surface_pressure):
             pressure_lev[start_level + 2 : end_level + 1],
             pressure_lev[start_level:end_level],
         )
-    ]
+    ]  # delta p_k = p_{k+1/2} - p_{k-1/2}
 
     delta_pressure[end_level] = (
         surface_pressure - (pressure_lev[end_level] + pressure_lev[end_level - 1]) / 2
@@ -1415,6 +1415,11 @@ def delta_pressure(pressure_lev, surface_pressure):
     """Calculates the pressure layer thickness, i.e. the change in pressure
     (delta pressure), for each layer in a specified constant pressure level
     coordinate system and accounting for specified surface pressure(s).
+
+    Calculated as described by `Simmons & Burridge (1981) <https://doi.org/10.1175/1520-0493(1981)109%3C0758:AEAAMC%3E2.0.CO;2>`__:
+
+      .. math::
+           \Delta p = p_{k+1/2} - p_{k-1/2}
 
     Returns an array of shape matching (``surface_pressure``, ``pressure_lev``).
 
