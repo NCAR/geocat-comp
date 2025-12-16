@@ -1416,7 +1416,8 @@ def delta_pressure(pressure_lev, surface_pressure):
     (delta pressure), for each layer in a specified constant pressure level
     coordinate system and accounting for specified surface pressure(s).
 
-    Calculated as described by `Simmons & Burridge (1981) <https://doi.org/10.1175/1520-0493(1981)109%3C0758:AEAAMC%3E2.0.CO;2>`__:
+    Calculated as described by `Simmons & Burridge (1981) <https://doi.org/10.1175/1520-0493(1981)109%3C0758:AEAAMC%3E2.0.CO;2>`__
+    in equation (3.1):
 
       .. math::
            \Delta p = p_{k+1/2} - p_{k-1/2}
