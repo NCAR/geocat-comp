@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing
 import warnings
 
@@ -406,6 +408,102 @@ def pressure_at_hybrid_levels(psfc, hya, hyb, p0=100000.0):
     # Results in Pa
     # p(k) = hya(k) * p0 + hyb(k) * psfc
     return hya * p0 + hyb * psfc
+
+
+def delta_pressure_hybrid(
+    ps: xr.DataArray | np.ndarray,
+    hya: xr.DataArray | np.ndarray,
+    hyb: xr.DataArray | np.ndarray,
+    p0: float = 100000.0,
+) -> xr.DataArray | np.ndarray:
+    """Calculates pressure layer thickness of a hybrid coordinate system
+
+    Parameters
+    ----------
+    ps: :class:`xarray.DataArray`, :class:`numpy.ndarray`
+        A multi-dimensional array of surface pressures (Pa)
+
+    hya: :class:`xarray.DataArray`, :class:`numpy.ndarray`
+        A one-dimensional array of the hybrid A coefficients (unitless)
+
+    hyb: :class:`xarray.DataArray`, :class:`numpy.ndarray`
+        A one-dimensional array of the hybrid B coefficients. Must be same type and length as ``hya`` (unitless)
+
+    p0 : float, optional
+        Scalar numeric value equal to surface reference pressure (Pa). Defaults to 100000 Pa.
+
+    Returns
+    -------
+    output : :class:`xarray.DataArray`, :class:`numpy.ndarray`
+        Computed pressure layer thicknesses. Will be same type as ``ps`` (Pa)
+
+    See Also
+    --------
+    Related NCL Functions:
+    `dpres_hybrid_ccm <https://www.ncl.ucar.edu/Document/Functions/Built-in/dpres_hybrid_ccm.shtml>`__
+    """
+
+    # save type of ps to use as output type later
+    out_type = type(ps)
+
+    # Validate inputs
+    # type check
+    if not {type(ps), type(hya), type(hyb)}.issubset({xr.DataArray, np.ndarray}):
+        raise TypeError("Inputs must be xarray DataArrays or numpy arrays")
+    if type(p0) not in {float, int}:
+        raise TypeError(f"p0 must be a scalar numeric value, received {type(p0)}")
+    if type(hya) is not type(hyb):
+        raise TypeError(
+            f"hya and hyb must be the same type. hya: {type(hya)} hyb: {type(hyb)}"
+        )
+
+    # check shape
+    if hya.shape != hyb.shape:
+        raise ValueError(f'dimension mismatch: hya: {hya.shape} hyb: {hyb.shape}')
+    # check 1D
+    if len(hya.shape) > 1:
+        raise ValueError(f'hya and hyb must be 1-dimensional: {hya.shape}')
+
+    # make sure working w/ all np or all xr
+    if isinstance(ps, np.ndarray) and not isinstance(
+        hya, np.ndarray
+    ):  # not sure anybody would do this, but checking anyway
+        hya = hya.values
+        hyb = hyb.values
+    elif isinstance(ps, xr.DataArray) and not isinstance(hya, xr.DataArray):
+        hya = xr.DataArray(hya)
+        hyb = xr.DataArray(hyb)
+
+    # broadcast any np inputs or drop xarray lev dims
+    if isinstance(hya, np.ndarray):  # hya and hyb already validated to be same type
+        hya = np.expand_dims(hya, axis=(1, 2))
+        hyb = np.expand_dims(hyb, axis=(1, 2))
+    elif isinstance(hya, xr.DataArray):
+        # drop lev coords for delta calculation, or xr will try to align
+        if len(hya.coords) > 0:
+            hya = hya.drop(list(hya.coords)[0])
+        if len(hyb.coords) > 0:
+            hyb = hyb.drop(list(hyb.coords)[0])
+        # make sure hya and hyb dims align, favor hya dim name
+        if set(hya.dims) != set(hyb.dims):
+            hyb = hyb.rename({hyb.dims[0]: hya.dims[0]})
+
+    pa = p0 * hya[:-1] + hyb[:-1] * ps
+    pb = p0 * hya[1:] + hyb[1:] * ps
+
+    dph = abs(pa - pb)
+
+    # if output is xarray, set attributes
+    if out_type == xr.DataArray and not isinstance(dph, xr.DataArray):
+        # shouldn't happen, but convert to dataarray just in case
+        dph = xr.DataArray(dph)
+    if out_type == xr.DataArray:
+        dph = dph.drop_attrs()
+        dph.name = "dph"
+        dph.attrs['long_name'] = "pressure layer thickness"
+        dph.attrs['units'] = 'Pa'
+
+    return dph
 
 
 def interp_hybrid_to_pressure(

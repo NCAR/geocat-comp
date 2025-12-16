@@ -18,12 +18,12 @@ jobs:
 
     steps:
       - name: Checkout geocat-comp
-        uses: actions/checkout@v6.0.0
+        uses: actions/checkout@v6.0.1
         with:
           repository: NCAR/geocat-comp
           fetch-depth: 0
       - name: Checkout geocat-comp-asv
-        uses: actions/checkout@v6.0.0
+        uses: actions/checkout@v6.0.1
         with:
           repository: NCAR/geocat-comp-asv
           persist-credentials: false
@@ -43,7 +43,7 @@ jobs:
         shell: bash
 
       - name: Cache environment
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ env.CONDA }}/envs
           key:

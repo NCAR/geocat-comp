@@ -32,7 +32,7 @@ jobs:
             os: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v6.0.0
+        uses: actions/checkout@v6.0.1
 
       - name: set environment variables
         run: |
@@ -95,14 +95,14 @@ jobs:
             python -m pytest test -v --cov=./geocat/comp --cov-report=xml --junitxml=pytest.xml
 
       - name: Upload test results
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: Test results for ${{ runner.os }}-${{ matrix.python-version }} ${{ matrix.env }}
           path: pytest.xml
 
       - name: Upload code coverage to Codecov
         if: github.repository == 'NCAR/geocat-comp'
-        uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5.5.1
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
@@ -118,7 +118,7 @@ jobs:
         shell: bash -l {0}
     steps:
       - name: checkout
-        uses: actions/checkout@v6.0.0
+        uses: actions/checkout@v6.0.1
 
       - name: environment setup
         id: link-env-setup
