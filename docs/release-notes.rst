@@ -8,24 +8,18 @@
 Release Notes
 =============
 
-vYYYY.MM.## (unreleased)
-------------------------
-This release...
+v2025.12.1 (December 17, 2025)
+------------------------------
+This release fixes a bug in ``nmse`` and adds a new function, ``delta_pressure_hybrid``.
 
 New Features
 ^^^^^^^^^^^^
 * Adds ``delta_pressure_hybrid`` function by `Anissa Zacharias`_ in (:pr:`797`)
 * Add a ``pressure_top`` argument to ``delta_pressure`` by Anissa Zacharias`_ in (:pr:`798`)
 
-Breaking Changes
-^^^^^^^^^^^^^^^^
-
 Bug Fixes
 ^^^^^^^^^
 * Fix ``nmse`` coordinate matching issue `Anissa Zacharias`_ in (:pr:`796`)
-
-Internal Changes
-^^^^^^^^^^^^^^^^
 
 Documentation
 ^^^^^^^^^^^^^
