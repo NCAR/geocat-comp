@@ -752,6 +752,21 @@ class Test_Calendar_Average:
         with pytest.raises(ValueError):
             calendar_average(non_uniform, freq='day')
 
+    def test_missing_month_calendar_average(self) -> None:
+        time = pd.to_datetime(['2020-01-01', '2020-02-01', '2020-04-01'])
+        missing_month = xr.Dataset(
+            data_vars={'data': (('time'), np.arange(3))}, coords={'time': time}
+        )
+        with pytest.raises(ValueError):
+            calendar_average(missing_month, freq='year')
+
+    def test_uneven_months_calendar_average(self) -> None:
+        time = pd.to_datetime(['2020-01-15', '2020-02-14', '2020-03-16'])
+        uneven_months = xr.Dataset(
+            data_vars={'data': (('time'), np.arange(3))}, coords={'time': time}
+        )
+        calendar_average(uneven_months, freq='year')
+
     @pytest.mark.parametrize(
         "name, dset, expected",
         [
@@ -1042,6 +1057,21 @@ class Test_Climatology_Average:
         )
         with pytest.raises(ValueError):
             climatology_average(non_uniform, freq='day')
+
+    def test_missing_month_climatology_average(self) -> None:
+        time = pd.to_datetime(['2020-01-01', '2020-02-01', '2020-04-01'])
+        missing_month = xr.Dataset(
+            data_vars={'data': (('time'), np.arange(3))}, coords={'time': time}
+        )
+        with pytest.raises(ValueError):
+            climatology_average(missing_month, freq='month')
+
+    def test_uneven_months_climatology_average(self) -> None:
+        time = pd.to_datetime(['2020-01-15', '2020-02-14', '2020-03-16'])
+        uneven_months = xr.Dataset(
+            data_vars={'data': (('time'), np.arange(3))}, coords={'time': time}
+        )
+        climatology_average(uneven_months, freq='month')
 
     @pytest.mark.parametrize(
         "name, dset, expected",
