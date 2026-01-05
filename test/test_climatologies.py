@@ -765,7 +765,7 @@ class Test_Calendar_Average:
         even_months = xr.Dataset(
             data_vars={'data': (('time'), np.arange(3))}, coords={'time': time}
         )
-        even_result = calendar_average(even_months, freq='year') 
+        even_result = calendar_average(even_months, freq='year')
         time = pd.to_datetime(['2020-01-15', '2020-02-14', '2020-03-16'])
         uneven_months = xr.Dataset(
             data_vars={'data': (('time'), np.arange(3))}, coords={'time': time}
