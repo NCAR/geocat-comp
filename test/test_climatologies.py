@@ -761,11 +761,17 @@ class Test_Calendar_Average:
             calendar_average(missing_month, freq='year')
 
     def test_uneven_months_calendar_average(self) -> None:
+        time = pd.to_datetime(['2020-01-1', '2020-02-1', '2020-03-1'])
+        even_months = xr.Dataset(
+            data_vars={'data': (('time'), np.arange(3))}, coords={'time': time}
+        )
+        even_result = calendar_average(even_months, freq='year') 
         time = pd.to_datetime(['2020-01-15', '2020-02-14', '2020-03-16'])
         uneven_months = xr.Dataset(
             data_vars={'data': (('time'), np.arange(3))}, coords={'time': time}
         )
-        calendar_average(uneven_months, freq='year')
+        uneven_result = calendar_average(uneven_months, freq='year')
+        xr.testing.assert_equal(even_result, uneven_result)
 
     @pytest.mark.parametrize(
         "name, dset, expected",
@@ -1067,11 +1073,13 @@ class Test_Climatology_Average:
             climatology_average(missing_month, freq='month')
 
     def test_uneven_months_climatology_average(self) -> None:
-        time = pd.to_datetime(['2020-01-15', '2020-02-14', '2020-03-16'])
-        uneven_months = xr.Dataset(
-            data_vars={'data': (('time'), np.arange(3))}, coords={'time': time}
-        )
-        climatology_average(uneven_months, freq='month')
+        array_expected = self.day_2_month_clim['data']
+        input_array = array_expected.copy()
+        time = input_array.indexes['time'].values
+        time[1] = time[1] + pd.Timedelta(hours=24)
+        input_array['time'] = time
+        result = climatology_average(input_array, freq='month')
+        xr.testing.assert_allclose(result, array_expected)
 
     @pytest.mark.parametrize(
         "name, dset, expected",
