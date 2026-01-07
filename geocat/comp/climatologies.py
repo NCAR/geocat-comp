@@ -593,7 +593,7 @@ def climatology_average(
 
     # Check if data is uniformly spaced
     if xr.infer_freq(dset[time_dim]) is None:
-		# if spacing cannot be inferred, allow spacings of 1/month
+        # if spacing cannot be inferred, allow spacings of 1/month
         if not (dset[time_dim].resample({time_dim: 'MS'}).count() == 1).all():
             raise ValueError(
                 f"Data needs to be uniformly spaced in the {time_dim!r} dimension."
