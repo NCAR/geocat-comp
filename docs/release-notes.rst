@@ -8,6 +8,14 @@
 Release Notes
 =============
 
+vYYYY.MM.## (unreleased)
+------------------------
+This release...
+
+New Features
+^^^^^^^^^^^^
+* Update ``calendar_average`` and ``climate_anomaly`` to allow for monthly data with non-uniform spacing by `Katelyn FitzGerald`_ in (:pr:`805`)
+
 v2025.12.1 (December 17, 2025)
 ------------------------------
 This release fixes a bug in ``nmse`` and adds a new function, ``delta_pressure_hybrid``.
