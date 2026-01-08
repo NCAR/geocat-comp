@@ -15,6 +15,7 @@ from geocat.comp.meteorology import (
     saturation_vapor_pressure,
     saturation_vapor_pressure_slope,
     delta_pressure,
+    new_heat_index,
 )
 
 
@@ -217,6 +218,13 @@ class Test_heat_index:
     def test_dims_error(self) -> None:
         with pytest.raises(ValueError):
             heat_index(self.t1[:10], self.rh1[:8])
+
+    def test_new_heat_index(self) -> None:
+        t = xr.DataArray(self.t1.reshape(3, 3))
+        rh = xr.DataArray(self.rh1.reshape(3, 3))
+
+        out = new_heat_index(t, rh)
+        pass
 
 
 class Test_relhum:

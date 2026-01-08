@@ -2,8 +2,72 @@ import numpy as np
 import typing
 import warnings
 import xarray as xr
+from itertools import chain
+from math import sqrt
 
 from .gc_util import _generate_wrapper_docstring
+
+
+def new_heat_index(temperature, relative_humidity):
+    intype = type(temperature)
+
+    # Default coefficients for (t>=80F) and (40<rh<100)
+    coeffs = [
+        -42.379,
+        2.04901523,
+        10.14333127,
+        -0.22475541,
+        -0.00683783,
+        -0.05481717,
+        0.00122874,
+        0.00085282,
+        -0.00000199,
+    ]
+
+    # calculate simple formula first, average of Steadman and temperature
+    steadman = 61 + ((temperature - 68) * 1.2) + relative_humidity * 0.094
+    rothfusz = _nws_eqn(coeffs, temperature, relative_humidity)
+    heatindex = (steadman + temperature) / 2
+
+    # where t<40F, heatindex=t
+    # https://pmc.ncbi.nlm.nih.gov/articles/PMC3801457/
+    heatindex = xr.where(temperature < 40, temperature, heatindex)
+
+    # the NWS javascript implementation actually uses Rothfusz for > 79.0,
+    # but the equation page says "80 degrees F or higher", we're going to
+    # use Rothfusz for > 79 F to match the published table here
+    # https://www.weather.gov/safety/heat-tools
+    # https://www.weather.gov/images/safety/heatindexchart-650.jpg
+    heatindex = xr.where(heatindex >= 79, rothfusz, heatindex)
+
+    # select flattening method depending on input type
+    flatten_func = None
+    if isinstance(temperature, xr.DataArray):
+        flatten_func = chain.from_iterable
+    elif isinstance(temperature, np.ndarray):
+        flatten_func = lambda x: x.flatten()
+
+    # adjustment for rh < 13, 80F <= t <= 112F
+    a1 = [
+        ((13 - rh) / 4) * sqrt((17 - abs(t - 95)) / 17)
+        if rh < 13 and 80 <= t <= 112
+        else 0
+        for rh, t in zip(flatten_func(relative_humidity), flatten_func(temperature))
+    ]
+
+    # adjustment for rh > 85 and 80F <= t < 87F
+    a2 = [
+        ((rh - 85) / 10) * ((87 - t) / 5) if rh > 85 and 80 <= t < 87 else 0
+        for rh, t in zip(flatten_func(relative_humidity), flatten_func(temperature))
+    ]
+
+    heatindex = (
+        heatindex
+        + np.asarray(a1).reshape(temperature.shape)
+        + np.asarray(a2).reshape(temperature.shape)
+    )
+
+    return heatindex
 
 
 def _dewtemp(
@@ -126,7 +190,7 @@ def _heat_index(
         + temperature
     ) * 0.5
 
-    # http://ehp.niehs.nih.gov/1206273/
+    # https://pmc.ncbi.nlm.nih.gov/articles/PMC3801457/
     heatindex = xr.where(temperature < 40, temperature, heatindex)
 
     # if all t values less than critical, return hi
@@ -146,7 +210,7 @@ def _heat_index(
             ),
             heatindex
             - ((13 - relative_humidity) / 4)
-            * np.sqrt((17 - abs(temperature - 95)) / 17),
+            * np.sqrt(abs((17 - abs(temperature - 95))) / 17),
             heatindex,
         )
 
@@ -472,7 +536,7 @@ def _xheat_index(
             ),
             heatindex
             - ((13 - relative_humidity) / 4)
-            * np.sqrt((17 - abs(temperature - 95)) / 17),
+            * np.sqrt(abs((17 - abs(temperature - 95))) / 17),
             heatindex,
         )
 
