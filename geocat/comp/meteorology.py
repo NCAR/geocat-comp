@@ -8,8 +8,24 @@ from math import sqrt
 from .gc_util import _generate_wrapper_docstring
 
 
-def new_heat_index(temperature, relative_humidity):
-    intype = type(temperature)
+def new_heat_index(temperature, relative_humidity, alternate_coeffs=False):
+
+    inputs = [temperature, relative_humidity]
+
+    # ensure all inputs same size
+    if not (np.shape(x) == np.shape(inputs[0]) for x in inputs):
+        raise ValueError("heat_index: dimensions of inputs are not the same")
+
+    # Get input types
+    in_types = [type(item) for item in inputs]
+
+    # check relative humidity within valid range 0 to 100
+    if relative_humidity.min() < 0 or relative_humidity.max() > 100:
+        raise ValueError('heat_index: invalid values for relative humidity, expected all between 0 and 100')
+
+    # check if relative humidity fractional
+    if relative_humidity.max() <= 1:
+        warnings.warn("WARNING: rh must be %, not fractional; All rh are <= 1")
 
     # Default coefficients for (t>=80F) and (40<rh<100)
     coeffs = [
@@ -23,6 +39,23 @@ def new_heat_index(temperature, relative_humidity):
         0.00085282,
         -0.00000199,
     ]
+    crit = 79
+
+    # optional flag coefficients for (70F<t<115F) and (0<gh<80)
+    # within 3F of default coeffs
+    if alternate_coeffs:
+        coeffs = [
+            0.363445176,
+            0.988622465,
+            4.777114035,
+            -0.114037667,
+            -0.000850208,
+            -0.020716198,
+            0.000687678,
+            0.000274954,
+            0.0,
+        ]
+        crit = 70
 
     # calculate simple formula first, average of Steadman and temperature
     steadman = 61 + ((temperature - 68) * 1.2) + relative_humidity * 0.094
@@ -35,36 +68,31 @@ def new_heat_index(temperature, relative_humidity):
 
     # the NWS javascript implementation actually uses Rothfusz for > 79.0,
     # but the equation page says "80 degrees F or higher", we're going to
-    # use Rothfusz for > 79 F to match the published table here
+    # use Rothfusz for > 79 F for default coeffs to match the published table
     # https://www.weather.gov/safety/heat-tools
     # https://www.weather.gov/images/safety/heatindexchart-650.jpg
-    heatindex = xr.where(heatindex >= 79, rothfusz, heatindex)
+    heatindex = xr.where(heatindex >= crit, rothfusz, heatindex)
 
-    # select flattening method depending on input type
-    flatten_func = None
-    if isinstance(temperature, xr.DataArray):
-        flatten_func = chain.from_iterable
-    elif isinstance(temperature, np.ndarray):
-        flatten_func = lambda x: x.flatten()
-
-    # adjustment for rh < 13, 80F <= t <= 112F
-    a1 = [
-        ((13 - rh) / 4) * sqrt((17 - abs(t - 95)) / 17)
-        if rh < 13 and 80 <= t <= 112
-        else 0
-        for rh, t in zip(flatten_func(relative_humidity), flatten_func(temperature))
-    ]
-
-    # adjustment for rh > 85 and 80F <= t < 87F
-    a2 = [
-        ((rh - 85) / 10) * ((87 - t) / 5) if rh > 85 and 80 <= t < 87 else 0
-        for rh, t in zip(flatten_func(relative_humidity), flatten_func(temperature))
-    ]
-
-    heatindex = (
+    # adjustment for rh <= 13, 80F <= t <= 112F
+    heatindex = xr.where(
+        np.logical_and(
+            relative_humidity <= 13,
+            np.logical_and(temperature >= 80, temperature <= 112),
+        ),
         heatindex
-        + np.asarray(a1).reshape(temperature.shape)
-        + np.asarray(a2).reshape(temperature.shape)
+        - ((13 - relative_humidity) / 4)
+        * np.sqrt(abs((17 - abs(temperature - 95))) / 17),
+        heatindex,
+    )
+    # adjustment for rh > 85 and 80F <= t <= 87F
+    heatindex = xr.where(
+        np.logical_and(
+            relative_humidity > 85,
+            np.logical_and(temperature >= 80, temperature <= 87),
+        ),
+        heatindex
+        + ((relative_humidity - 85.0) / 10.0) * ((87.0 - temperature) / 5.0),
+        heatindex,
     )
 
     return heatindex

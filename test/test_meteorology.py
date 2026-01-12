@@ -15,7 +15,6 @@ from geocat.comp.meteorology import (
     saturation_vapor_pressure,
     saturation_vapor_pressure_slope,
     delta_pressure,
-    new_heat_index,
 )
 
 
