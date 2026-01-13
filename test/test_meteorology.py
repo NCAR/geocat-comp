@@ -141,7 +141,10 @@ class Test_heat_index:
     # used javascript to query NWS form
     @pytest.fixture(scope="class")
     def hi_nws(self):
-        return np.genfromtxt("heat-index.csv", delimiter=",").T
+        try:
+            return np.genfromtxt("heat-index.csv", delimiter=",").T
+        except Exception:
+            return np.genfromtxt("test/heat-index.csv", delimiter=",").T
 
     def test_numpy_input(self, hi_nws) -> None:
         hi = heat_index(self.t_nws, self.rh_nws, False)
