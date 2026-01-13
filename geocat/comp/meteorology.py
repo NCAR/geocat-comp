@@ -2,21 +2,97 @@ import numpy as np
 import typing
 import warnings
 import xarray as xr
-from itertools import chain
-from math import sqrt
 
 from .gc_util import _generate_wrapper_docstring
 
 
-def heat_index(temperature, relative_humidity, alternate_coeffs=False):
+def heat_index(
+    temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
+    relative_humidity: typing.Union[np.ndarray, xr.DataArray, list, float],
+    alternate_coeffs: bool = False,
+) -> typing.Union[np.ndarray, xr.DataArray]:
+    """Compute the 'heat index' as calculated by the National Weather Service.
+
+    The heat index calculation in this function is described at:
+    https://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml
+
+    The 'Heat Index' is a measure of how hot weather "feels" to the body. The combination of temperature and humidity
+    produce an "apparent temperature" or the temperature the body "feels". The returned values are for shady
+    locations only. Exposure to full sunshine can increase heat index values by up to 15°F. Also, strong winds,
+    particularly with very hot, dry air, can be extremely hazardous as the wind adds heat to the body
+
+    The computation of the heat index is a refinement of a result obtained by multiple regression analysis carried
+    out by Lans P. Rothfusz and described in a 1990 National Weather Service (NWS) Technical Attachment (SR 90-23).
+
+    In practice, the Steadman formula is computed first and the result averaged with the temperature. If this heat
+    index value is 80 degrees F or higher, the full regression equation along with any adjustment as described above
+    is applied. If the ambient temperature is less the 40F (4.4C/277.65K), the heat index is set to the ambient
+    temperature.
+
+    Parameters
+    ----------
+    temperature : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
+        temperature(s) in Fahrenheit
+
+    relative_humidity : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
+        relative humidity as a percentage. Must be the same shape as
+        ``temperature``
+
+    alternate_coeffs : bool, optional
+        flag to use alternate set of coefficients appropriate for
+        temperatures from 70F to 115F and humidities between 0% and 80%
+
+    Returns
+    -------
+    heatindex : ndarray, :class:`xarray.DataArray`
+        Calculated heat index. Same shape as ``temperature``
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import geocat.comp
+    >>> t = np.array([104, 100, 92])
+    >>> rh = np.array([55, 65, 60])
+    >>> hi = heat_index(t,rh)
+    >>> hi
+    array([137.36135724, 135.8679973 , 104.68441864])
+
+
+    See Also
+    --------
+    Related GeoCAT Functions:
+    :func:`_heat_index`
+    :func:`_xheat_index`
+
+    Related NCL Functions:
+    `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__
+    """
     inputs = [temperature, relative_humidity]
 
-    # ensure all inputs same size
-    if not (np.shape(x) == np.shape(inputs[0]) for x in inputs):
-        raise ValueError("heat_index: dimensions of inputs are not the same")
-
-    # Get input types
+    # get input types
     in_types = [type(item) for item in inputs]
+
+    # ensure all same input type
+    if len(set(in_types)) != 1:
+        raise TypeError(
+            f"heat_index: input types are not the same, received {in_types}"
+        )
+
+    # if inputs not xarray or numpy (float, int, list), elevate to np
+    if not isinstance(temperature, xr.DataArray) and not isinstance(
+        temperature, np.ndarray
+    ):
+        try:
+            temperature = np.asarray(temperature)
+            relative_humidity = np.asarray(relative_humidity)
+        except [ValueError, TypeError] as e:
+            raise TypeError(f"heat_index: cannot convert input to numpy array, {e}")
+
+    # ensure all inputs same size
+    if not temperature.shape == relative_humidity.shape:
+        raise ValueError(
+            f"heat_index: dimensions of inputs are not the same, received {temperature.shape}, {relative_humidity.shape}"
+        )
 
     # check relative humidity within valid range 0 to 100
     if relative_humidity.min() < 0 or relative_humidity.max() > 100:
@@ -95,6 +171,20 @@ def heat_index(temperature, relative_humidity, alternate_coeffs=False):
         heatindex,
     )
 
+    # if elevated to np array, return to original type
+    if in_types[0] in {list, float, int} and isinstance(heatindex, np.ndarray):
+        heatindex = heatindex.tolist()
+
+    # if xarray, set attributes
+    if in_types[0] == xr.DataArray:
+        heatindex.attrs['long_name'] = "heat index: NWS"
+        heatindex.attrs['units'] = "F"
+        heatindex.attrs['www'] = (
+            "https://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml"
+        )
+        heatindex.attrs['info'] = "appropriate for shady locations with no wind"
+        heatindex.attrs['tag'] = "heat_index: (Steadman+t)*0.5 and Rothfusz"
+
     return heatindex
 
 
@@ -136,123 +226,6 @@ def _dewtemp(
     tdk = tk * lhv / (lhv - tk * np.log(rh * 0.01))
 
     return tdk
-
-
-def _heat_index(
-    temperature: np.ndarray,
-    relative_humidity: typing.Union[np.ndarray, xr.DataArray, list, float],
-    alternate_coeffs: bool = False,
-) -> np.ndarray:
-    """Compute the 'heat index' as calculated by the National Weather Service.
-
-    Internal function for heat_index
-
-    Parameters
-    ----------
-    temperature : ndarray
-        temperature(s) in Fahrenheit
-
-    relative_humidity : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
-        relative humidity as a percentage. Must be the same shape as
-        ``temperature``
-
-    alternate_coeffs : bool, optional
-        flag to use alternate set of coefficients appropriate for
-        temperatures from 70F to 115F and humidities between 0% and 80%
-
-    Returns
-    -------
-    heatindex : ndarray
-        Calculated heat index. Same shape as ``temperature``
-
-
-    See Also
-    --------
-    Related GeoCAT Functions:
-    :func:`heat_index`,
-    :func:`_xheat_index`
-
-    Related NCL Functions:
-    `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__
-    """
-    # Default coefficients for (t>=80F) and (40<gh<100)
-    coeffs = [
-        -42.379,
-        2.04901523,
-        10.14333127,
-        -0.22475541,
-        -0.00683783,
-        -0.05481717,
-        0.00122874,
-        0.00085282,
-        -0.00000199,
-    ]
-    crit = [80, 40, 100]  # [T_low [F], RH_low, RH_high]
-
-    # optional flag coefficients for (70F<t<115F) and (0<gh<80)
-    # within 3F of default coeffs
-    if alternate_coeffs:
-        coeffs = [
-            0.363445176,
-            0.988622465,
-            4.777114035,
-            -0.114037667,
-            -0.000850208,
-            -0.020716198,
-            0.000687678,
-            0.000274954,
-            0.0,
-        ]
-        crit = [70, 0, 80]  # [T_low [F], RH_low, RH_high]
-
-    # NWS practice
-    # average Steadman and t
-    heatindex = (
-        0.5
-        * (
-            temperature
-            + 61.0
-            + ((temperature - 68.0) * 1.2)
-            + (relative_humidity * 0.094)
-        )
-        + temperature
-    ) * 0.5
-
-    # https://pmc.ncbi.nlm.nih.gov/articles/PMC3801457/
-    heatindex = xr.where(temperature < 40, temperature, heatindex)
-
-    # if all t values less than critical, return hi
-    # otherwise perform calculation
-    if not all(temperature.ravel() < crit[0]):
-        heatindex = xr.where(
-            heatindex > crit[0],
-            _nws_eqn(coeffs, temperature, relative_humidity),
-            heatindex,
-        )
-
-        # adjustments
-        heatindex = xr.where(
-            np.logical_and(
-                relative_humidity < 13,
-                np.logical_and(temperature > 80, temperature < 112),
-            ),
-            heatindex
-            - ((13 - relative_humidity) / 4)
-            * np.sqrt(abs((17 - abs(temperature - 95))) / 17),
-            heatindex,
-        )
-
-        heatindex = xr.where(
-            np.logical_and(
-                relative_humidity > 85,
-                np.logical_and(temperature > 80, temperature < 87),
-            ),
-            heatindex
-            + ((relative_humidity - 85.0) / 10.0) * ((87.0 - temperature) / 5.0),
-            heatindex,
-        )
-
-    return heatindex
 
 
 def _nws_eqn(coeffs, temp, rel_hum):
@@ -459,128 +432,6 @@ def _relhum_water(
     return rh
 
 
-def _xheat_index(
-    temperature: xr.DataArray,
-    relative_humidity: xr.DataArray,
-    alternate_coeffs: bool = False,
-) -> tuple([xr.DataArray, int]):
-    """Compute the 'heat index' as calculated by the National Weather Service.
-
-    Internal function for heat_index for dask
-
-    Parameters
-    ----------
-    temperature : :class:`xarray.DataArray`
-        temperature(s) in Fahrenheit
-
-    relative_humidity : :class:`xarray.DataArray`
-        relative humidity as a percentage. Must be the same shape as
-        ``temperature``
-
-    alternate_coeffs : bool, optional
-        flag to use alternate set of coefficients appropriate for
-        temperatures from 70F to 115F and humidities between 0% and 80%
-
-    Returns
-    -------
-    heatindex : :class:`xarray.DataArray`
-        Calculated heat index. Same shape as ``temperature``
-
-    eqtype : :class:`int`
-        version of equations used, for xarray attrs output
-
-    See Also
-    --------
-    Related GeoCAT Functions:
-    :func:`heat_index`
-    :func:`_heat_index`
-
-    Related NCL Functions:
-    `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__,
-    """
-    # Default coefficients for (t>=80F) and (40<gh<100)
-    coeffs = [
-        -42.379,
-        2.04901523,
-        10.14333127,
-        -0.22475541,
-        -0.00683783,
-        -0.05481717,
-        0.00122874,
-        0.00085282,
-        -0.00000199,
-    ]
-    crit = [80, 40, 100]  # [T_low [F], RH_low, RH_high]
-
-    # optional flag coefficients for (70F<t<115F) and (0<gh<80)
-    # within 3F of default coeffs
-    if alternate_coeffs:
-        coeffs = [
-            0.363445176,
-            0.988622465,
-            4.777114035,
-            -0.114037667,
-            -0.000850208,
-            -0.020716198,
-            0.000687678,
-            0.000274954,
-            0.0,
-        ]
-        crit = [70, 0, 80]  # [T_low [F], RH_low, RH_high]
-
-    # NWS practice
-    # average Steadman and t
-    heatindex = (
-        0.5
-        * (
-            temperature
-            + 61.0
-            + ((temperature - 68.0) * 1.2)
-            + (relative_humidity * 0.094)
-        )
-        + temperature
-    ) * 0.5
-
-    # http://ehp.niehs.nih.gov/1206273/
-    heatindex = xr.where(temperature < 40, temperature, heatindex)
-
-    # if all t values less than critical, return hi
-    # otherwise perform calculation
-    eqtype = 0
-    if not all(temperature.data.ravel() < crit[0]):
-        eqtype = 1
-
-        heatindex = xr.where(
-            heatindex > crit[0],
-            _nws_eqn(coeffs, temperature, relative_humidity),
-            heatindex,
-        )
-
-        # adjustments
-        heatindex = xr.where(
-            np.logical_and(
-                relative_humidity < 13,
-                np.logical_and(temperature > 80, temperature < 112),
-            ),
-            heatindex
-            - ((13 - relative_humidity) / 4)
-            * np.sqrt(abs((17 - abs(temperature - 95))) / 17),
-            heatindex,
-        )
-
-        heatindex = xr.where(
-            np.logical_and(
-                relative_humidity > 85,
-                np.logical_and(temperature > 80, temperature < 87),
-            ),
-            heatindex
-            + ((relative_humidity - 85.0) / 10.0) * ((87.0 - temperature) / 5.0),
-            heatindex,
-        )
-
-    return heatindex, eqtype
-
-
 def dewtemp(
     temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
     relative_humidity: typing.Union[np.ndarray, xr.DataArray, list, float],
@@ -642,133 +493,6 @@ def dewtemp(
         dew_pnt_temp = _dewtemp(temperature, relative_humidity)
 
     return dew_pnt_temp
-
-
-def old_eat_index(
-    temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
-    relative_humidity: typing.Union[np.ndarray, xr.DataArray, list, float],
-    alternate_coeffs: bool = False,
-) -> typing.Union[np.ndarray, xr.DataArray]:
-    """Compute the 'heat index' as calculated by the National Weather Service.
-
-    The heat index calculation in this function is described at:
-    https://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml
-
-    The 'Heat Index' is a measure of how hot weather "feels" to the body. The combination of temperature and humidity
-    produce an "apparent temperature" or the temperature the body "feels". The returned values are for shady
-    locations only. Exposure to full sunshine can increase heat index values by up to 15°F. Also, strong winds,
-    particularly with very hot, dry air, can be extremely hazardous as the wind adds heat to the body
-
-    The computation of the heat index is a refinement of a result obtained by multiple regression analysis carried
-    out by Lans P. Rothfusz and described in a 1990 National Weather Service (NWS) Technical Attachment (SR 90-23).
-    All values less that 40F/4.4C/277.65K are set to the ambient temperature.
-
-    In practice, the Steadman formula is computed first and the result averaged with the temperature. If this heat
-    index value is 80 degrees F or higher, the full regression equation along with any adjustment as described above
-    is applied. If the ambient temperature is less the 40F (4.4C/277.65K), the heat index is set to the ambient
-    temperature.
-
-    Parameters
-    ----------
-    temperature : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
-        temperature(s) in Fahrenheit
-
-    relative_humidity : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
-        relative humidity as a percentage. Must be the same shape as
-        ``temperature``
-
-    alternate_coeffs : bool, optional
-        flag to use alternate set of coefficients appropriate for
-        temperatures from 70F to 115F and humidities between 0% and 80%
-
-    Returns
-    -------
-    heatindex : ndarray, :class:`xarray.DataArray`
-        Calculated heat index. Same shape as ``temperature``
-
-    Examples
-    --------
-    >>> import numpy as np
-    >>> import geocat.comp
-    >>> t = np.array([104, 100, 92])
-    >>> rh = np.array([55, 65, 60])
-    >>> hi = heat_index(t,rh)
-    >>> hi
-    array([137.36135724, 135.8679973 , 104.68441864])
-
-
-    See Also
-    --------
-    Related GeoCAT Functions:
-    :func:`_heat_index`
-    :func:`_xheat_index`
-
-    Related NCL Functions:
-    `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__
-    """
-
-    inputs = [temperature, relative_humidity]
-
-    # ensure all inputs same size
-    if not (np.shape(x) == np.shape(inputs[0]) for x in inputs):
-        raise ValueError("heat_index: dimensions of inputs are not the same")
-
-    # Get input types
-    in_types = [type(item) for item in inputs]
-
-    # run dask compatible version if input is xarray
-    if xr.DataArray in in_types:
-        # check all inputs are xarray.DataArray
-        if not all(x == xr.DataArray for x in in_types):
-            raise TypeError("heat_index: if using xarray, all inputs must be xarray")
-
-        # input validation on relative humidity
-        if any(relative_humidity.data.ravel() < 0) or any(
-            relative_humidity.data.ravel() > 100
-        ):
-            raise ValueError('heat_index: invalid values for relative humidity')
-
-        # Check if relative humidity fractional
-        if all(relative_humidity.data.ravel() < 1):
-            warnings.warn("WARNING: rh must be %, not fractional; All rh are < 1")
-
-        # call internal computation function
-        heatindex, eqtype = _xheat_index(
-            temperature, relative_humidity, alternate_coeffs
-        )
-
-        # set xarray attributes
-        heatindex.attrs['long_name'] = "heat index: NWS"
-        heatindex.attrs['units'] = "F"
-        heatindex.attrs['www'] = (
-            "https://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml"
-        )
-        heatindex.attrs['info'] = "appropriate for shady locations with no wind"
-
-        if eqtype == 1:
-            heatindex.attrs['tag'] = (
-                "NCL: heat_index_nws; (Steadman+t)*0.5 and Rothfusz"
-            )
-        else:
-            heatindex.attrs['tag'] = "NCL: heat_index_nws; (Steadman+t)*0.5"
-
-    else:
-        # ensure in numpy array for function call
-        temperature = np.atleast_1d(temperature)
-        relative_humidity = np.atleast_1d(relative_humidity)
-
-        # input validation on relative humidity
-        if any(relative_humidity.ravel() < 0) or any(relative_humidity.ravel() > 100):
-            raise ValueError('heat_index: invalid values for relative humidity')
-
-        # Check if relative humidity fractional
-        if all(relative_humidity.ravel() < 1):
-            warnings.warn("WARNING: rh must be %, not fractional; All rh are < 1")
-
-        # function call for non-dask/xarray
-        heatindex = _heat_index(temperature, relative_humidity, alternate_coeffs)
-
-    return heatindex
 
 
 def relhum(

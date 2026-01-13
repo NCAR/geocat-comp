@@ -134,72 +134,23 @@ class Test_heat_index:
     t_alt = np.array([75, 80, 85, 90, 95, 100, 105, 110, 115])
     rh_alt = np.array([75, 15, 80, 65, 25, 30, 40, 50, 5])
 
-    # use published NWS table for default coeffs
-    # https://www.weather.gov/images/safety/heatindexchart-650.jpg
-    # fmt: off
-    t_nws  = np.asarray([80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100, 102, 104, 106, 108, 110,
-              80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100, 102, 104, 106, 108,
-              80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100, 102, 104, 106,
-              80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100, 102, 104,
-              80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100, 102,
-              80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100,
-              80, 82, 84, 86, 88, 90, 92, 94, 96, 98,
-              80, 82, 84, 86, 88, 90, 92, 94, 96,
-              80, 82, 84, 86, 88, 90, 92, 94,
-              80, 82, 84, 86, 88, 90, 92, 94,
-              80, 82, 84, 86, 88, 90, 92,
-              80, 82, 84, 86, 88, 90,
-              80, 82, 84, 86, 88, 90])
+    t_nws = [80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100, 102, 104, 106, 108, 110]
+    rh_nws = [40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]
+    t_nws, rh_nws = np.meshgrid(t_nws, rh_nws)
 
-    rh_nws = np.asarray([40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40,
-              45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45,
-              50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-              55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55,
-              60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60,
-              65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65,
-              70, 70, 70, 70, 70, 70, 70, 70, 70, 70,
-              75, 75, 75, 75, 75, 75, 75, 75, 75,
-              80, 80, 80, 80, 80, 80, 80, 80,
-              85, 85, 85, 85, 85, 85, 85, 85,
-              90, 90, 90, 90, 90, 90, 90,
-              95, 95, 95, 95, 95, 95,
-              100, 100, 100, 100, 100, 100])
+    # used javascript to query NWS form
+    @pytest.fixture(scope="class")
+    def hi_nws(self):
+        return np.genfromtxt("heat-index.csv", delimiter=",").T
 
-    hi_nws = np.asarray([80, 81, 83, 85, 88, 91, 94, 97, 101, 105, 109, 114, 119, 124, 130, 136,
-              80, 82, 84, 87, 89, 93, 96, 100, 104, 109, 114, 119, 124, 130, 137,
-              81, 83, 85, 88, 91, 95, 99, 103, 108, 113, 118, 124, 131, 137,
-              81, 84, 86, 89, 93, 97, 101, 106, 112, 117, 124, 130, 137,
-              82, 84, 88, 91, 95, 100, 105, 110, 116, 123, 129, 137,
-              82, 85, 89, 93, 98, 103, 108, 114, 121, 128, 136,
-              83, 86, 90, 95, 100, 105, 112, 119, 126, 134,
-              84, 88, 92, 97, 103, 109, 116, 124, 132,
-              84, 89, 94, 100, 106, 113, 121, 129,
-              85, 90, 96, 102, 110, 117, 126, 135,
-              86, 91, 98, 105, 113, 122, 131,
-              86, 93, 100, 108, 117, 127,
-              87, 95, 103, 112, 121, 132])
-    # fmt: on
-
-    def test_numpy_input(self) -> None:
-        matching = (
-            heat_index(np.asarray(self.t_nws), np.asarray(self.rh_nws)).round()
-            == self.hi_nws
-        )
-        notmatch = np.logical_not(matching)
+    def test_numpy_input(self, hi_nws) -> None:
         hi = heat_index(self.t_nws, self.rh_nws, False)
-        for a, b, c, d in zip(
-            self.t_nws[notmatch],
-            self.rh_nws[notmatch],
-            self.hi_nws[notmatch],
-            hi[notmatch],
-        ):
-            print(f"{a}, {b} = {d} ({c})")
-        assert np.allclose(hi, self.hi_nws, atol=0.005)
+        assert np.allclose(hi.round(1), hi_nws)
 
     def test_multi_dimensional_input(self) -> None:
         assert np.allclose(
-            heat_index(self.t_alt.reshape(2, 5), self.rh_alt.reshape(2, 5), True),
-            np.asarray(self.hi_ncl_alt).reshape(2, 5),
+            heat_index(self.t_alt.reshape(3, 3), self.rh_alt.reshape(3, 3), True),
+            np.asarray(self.hi_ncl_alt).reshape(3, 3),
             atol=0.005,
         )
 
@@ -215,29 +166,22 @@ class Test_heat_index:
     def test_float_input(self) -> None:
         assert np.allclose(heat_index(80, 75), 83.5751, atol=0.005)
 
-    def test_list_input(self) -> None:
-        assert np.allclose(
-            heat_index(self.t1.tolist(), self.rh1.tolist()), self.ncl_gt_1, atol=0.005
-        )
+    def test_list_input(self, hi_nws) -> None:
+        hi = heat_index(self.t_nws.tolist(), self.rh_nws.tolist())
+        hi = [[round(x, 1) for x in r] for r in hi]
+        assert np.allclose(hi, hi_nws)
 
-    def test_xarray_input(self) -> None:
-        t = xr.DataArray(self.t1)
-        rh = xr.DataArray(self.rh1)
+    def test_xarray_input(self, hi_nws) -> None:
+        t = xr.DataArray(self.t_nws)
+        rh = xr.DataArray(self.rh_nws)
 
-        assert np.allclose(heat_index(t, rh), self.ncl_gt_1, atol=0.005)
-
-    def test_alternate_xarray_tag(self) -> None:
-        t = xr.DataArray([15, 20])
-        rh = xr.DataArray([15, 20])
-
-        out = heat_index(t, rh)
-        assert out.tag == "NCL: heat_index_nws; (Steadman+t)*0.5"
+        assert np.allclose(heat_index(t, rh).round(1), hi_nws)
 
     def test_rh_warning(self) -> None:
         with pytest.warns(UserWarning):
             heat_index([50, 80, 90], [0.1, 0.2, 0.5])
 
-    def test_rh_valid(self) -> None:
+    def test_rh_invalid(self) -> None:
         with pytest.raises(ValueError):
             heat_index([50, 80, 90], [-1, 101, 50])
 
@@ -251,11 +195,15 @@ class Test_heat_index:
 
     def test_xarray_type_error(self) -> None:
         with pytest.raises(TypeError):
-            heat_index(self.t1, xr.DataArray(self.rh1))
+            heat_index(self.t_nws, xr.DataArray(self.rh_nws))
 
     def test_dims_error(self) -> None:
         with pytest.raises(ValueError):
-            heat_index(self.t1[:10], self.rh1[:8])
+            heat_index(self.t_nws[:10], self.rh_nws[:8])
+
+    def test_bad_list_input(self):
+        with pytest.raises(ValueError):
+            heat_index(np.asarray([[85, 85], [85]]), np.asarray([[60, 60], [60]]))
 
 
 class Test_relhum:
