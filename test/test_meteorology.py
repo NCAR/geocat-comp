@@ -119,19 +119,8 @@ class Test_dewtemp:
 
 class Test_heat_index:
     # set up ground truths
-    ncl_gt_1 = [
-        137.36142,
-        135.86795,
-        104.684456,
-        131.25621,
-        105.39449,
-        79.78999,
-        83.57511,
-        59.965,
-        30.0,
-    ]
-    ncl_gt_2 = [
-        68.585,
+    # use ncl for alt coefficient testing within unchanged ranges
+    hi_ncl_alt = [
         76.13114,
         75.12854,
         99.43573,
@@ -142,36 +131,86 @@ class Test_heat_index:
         150.34001,
         106.87023,
     ]
+    t_alt = np.array([75, 80, 85, 90, 95, 100, 105, 110, 115])
+    rh_alt = np.array([75, 15, 80, 65, 25, 30, 40, 50, 5])
 
-    t1 = np.array([104, 100, 92, 92, 86, 80, 80, 60, 30])
-    rh1 = np.array([55, 65, 60, 90, 90, 40, 75, 90, 50])
+    # use published NWS table for default coeffs
+    # https://www.weather.gov/images/safety/heatindexchart-650.jpg
+    # fmt: off
+    t_nws  = np.asarray([80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100, 102, 104, 106, 108, 110,
+              80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100, 102, 104, 106, 108,
+              80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100, 102, 104, 106,
+              80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100, 102, 104,
+              80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100, 102,
+              80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100,
+              80, 82, 84, 86, 88, 90, 92, 94, 96, 98,
+              80, 82, 84, 86, 88, 90, 92, 94, 96,
+              80, 82, 84, 86, 88, 90, 92, 94,
+              80, 82, 84, 86, 88, 90, 92, 94,
+              80, 82, 84, 86, 88, 90, 92,
+              80, 82, 84, 86, 88, 90,
+              80, 82, 84, 86, 88, 90])
 
-    t2 = np.array([70, 75, 80, 85, 90, 95, 100, 105, 110, 115])
-    rh2 = np.array([10, 75, 15, 80, 65, 25, 30, 40, 50, 5])
+    rh_nws = np.asarray([40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40,
+              45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45,
+              50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
+              55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55,
+              60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60,
+              65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65,
+              70, 70, 70, 70, 70, 70, 70, 70, 70, 70,
+              75, 75, 75, 75, 75, 75, 75, 75, 75,
+              80, 80, 80, 80, 80, 80, 80, 80,
+              85, 85, 85, 85, 85, 85, 85, 85,
+              90, 90, 90, 90, 90, 90, 90,
+              95, 95, 95, 95, 95, 95,
+              100, 100, 100, 100, 100, 100])
+
+    hi_nws = np.asarray([80, 81, 83, 85, 88, 91, 94, 97, 101, 105, 109, 114, 119, 124, 130, 136,
+              80, 82, 84, 87, 89, 93, 96, 100, 104, 109, 114, 119, 124, 130, 137,
+              81, 83, 85, 88, 91, 95, 99, 103, 108, 113, 118, 124, 131, 137,
+              81, 84, 86, 89, 93, 97, 101, 106, 112, 117, 124, 130, 137,
+              82, 84, 88, 91, 95, 100, 105, 110, 116, 123, 129, 137,
+              82, 85, 89, 93, 98, 103, 108, 114, 121, 128, 136,
+              83, 86, 90, 95, 100, 105, 112, 119, 126, 134,
+              84, 88, 92, 97, 103, 109, 116, 124, 132,
+              84, 89, 94, 100, 106, 113, 121, 129,
+              85, 90, 96, 102, 110, 117, 126, 135,
+              86, 91, 98, 105, 113, 122, 131,
+              86, 93, 100, 108, 117, 127,
+              87, 95, 103, 112, 121, 132])
+    # fmt: on
 
     def test_numpy_input(self) -> None:
-        assert np.allclose(
-            heat_index(self.t1, self.rh1, False), self.ncl_gt_1, atol=0.005
+        matching = (
+            heat_index(np.asarray(self.t_nws), np.asarray(self.rh_nws)).round()
+            == self.hi_nws
         )
+        notmatch = np.logical_not(matching)
+        hi = heat_index(self.t_nws, self.rh_nws, False)
+        for a, b, c, d in zip(
+            self.t_nws[notmatch],
+            self.rh_nws[notmatch],
+            self.hi_nws[notmatch],
+            hi[notmatch],
+        ):
+            print(f"{a}, {b} = {d} ({c})")
+        assert np.allclose(hi, self.hi_nws, atol=0.005)
 
     def test_multi_dimensional_input(self) -> None:
         assert np.allclose(
-            heat_index(self.t2.reshape(2, 5), self.rh2.reshape(2, 5), True),
-            np.asarray(self.ncl_gt_2).reshape(2, 5),
+            heat_index(self.t_alt.reshape(2, 5), self.rh_alt.reshape(2, 5), True),
+            np.asarray(self.hi_ncl_alt).reshape(2, 5),
             atol=0.005,
         )
 
     def test_alt_coef(self) -> None:
         assert np.allclose(
-            heat_index(self.t2, self.rh2, True), self.ncl_gt_2, atol=0.005
+            heat_index(self.t_alt, self.rh_alt, True), self.hi_ncl_alt, atol=0.005
         )
 
     def test_xarray_alt_coef(self) -> None:
-        assert np.allclose(
-            heat_index(xr.DataArray(self.t2), xr.DataArray(self.rh2), True),
-            self.ncl_gt_2,
-            atol=0.005,
-        )
+        hi_alt = heat_index(xr.DataArray(self.t_alt), xr.DataArray(self.rh_alt), True)
+        assert np.allclose(hi_alt, self.hi_ncl_alt, atol=0.005)
 
     def test_float_input(self) -> None:
         assert np.allclose(heat_index(80, 75), 83.5751, atol=0.005)
@@ -217,13 +256,6 @@ class Test_heat_index:
     def test_dims_error(self) -> None:
         with pytest.raises(ValueError):
             heat_index(self.t1[:10], self.rh1[:8])
-
-    def test_new_heat_index(self) -> None:
-        t = xr.DataArray(self.t1.reshape(3, 3))
-        rh = xr.DataArray(self.rh1.reshape(3, 3))
-
-        out = new_heat_index(t, rh)
-        pass
 
 
 class Test_relhum:

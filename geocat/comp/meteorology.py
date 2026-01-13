@@ -8,8 +8,7 @@ from math import sqrt
 from .gc_util import _generate_wrapper_docstring
 
 
-def new_heat_index(temperature, relative_humidity, alternate_coeffs=False):
-
+def heat_index(temperature, relative_humidity, alternate_coeffs=False):
     inputs = [temperature, relative_humidity]
 
     # ensure all inputs same size
@@ -21,7 +20,9 @@ def new_heat_index(temperature, relative_humidity, alternate_coeffs=False):
 
     # check relative humidity within valid range 0 to 100
     if relative_humidity.min() < 0 or relative_humidity.max() > 100:
-        raise ValueError('heat_index: invalid values for relative humidity, expected all between 0 and 100')
+        raise ValueError(
+            'heat_index: invalid values for relative humidity, expected all between 0 and 100'
+        )
 
     # check if relative humidity fractional
     if relative_humidity.max() <= 1:
@@ -90,8 +91,7 @@ def new_heat_index(temperature, relative_humidity, alternate_coeffs=False):
             relative_humidity > 85,
             np.logical_and(temperature >= 80, temperature <= 87),
         ),
-        heatindex
-        + ((relative_humidity - 85.0) / 10.0) * ((87.0 - temperature) / 5.0),
+        heatindex + ((relative_humidity - 85.0) / 10.0) * ((87.0 - temperature) / 5.0),
         heatindex,
     )
 
@@ -644,7 +644,7 @@ def dewtemp(
     return dew_pnt_temp
 
 
-def heat_index(
+def old_eat_index(
     temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
     relative_humidity: typing.Union[np.ndarray, xr.DataArray, list, float],
     alternate_coeffs: bool = False,
