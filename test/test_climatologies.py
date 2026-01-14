@@ -1,4 +1,5 @@
 import cftime
+import datetime
 import numpy as np
 from packaging.version import Version
 import pandas as pd
@@ -1075,9 +1076,9 @@ class Test_Climatology_Average:
     def test_uneven_months_climatology_average(self) -> None:
         array_expected = self.day_2_month_clim['data']
         input_array = array_expected.copy()
-        time = input_array.indexes['time'].values
-        time[1] = time[1] + pd.Timedelta(hours=24)
-        input_array['time'] = time
+        new_time_index = list(input_array.indexes['time'])
+        new_time_index[1] = new_time_index[1] + datetime.timedelta(hours=24)
+        input_array['time'] = new_time_index
         result = climatology_average(input_array, freq='month')
         xr.testing.assert_allclose(result, array_expected)
 
