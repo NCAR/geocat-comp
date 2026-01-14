@@ -14,7 +14,7 @@ This release...
 
 New Features
 ^^^^^^^^^^^^
-* Update ``calendar_average`` and ``climate_anomaly`` to allow for monthly data with non-uniform spacing by `Katelyn FitzGerald`_ in (:pr:`805`)
+* Update ``calendar_average`` and ``climate_anomaly`` to allow for monthly data with non-uniform spacing by `Katelyn FitzGerald`_ in (:pr:`805`, :pr:`809`)
 
 v2025.12.1 (December 17, 2025)
 ------------------------------
