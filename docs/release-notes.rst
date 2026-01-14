@@ -18,7 +18,7 @@ New Features
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
-* Rewrite``heat_index`` so that the calculation is be more in line with the NWS implementation and removes internal functions ``_xheat_index`` and ``_heat_index`` by `Anissa Zacharias`_ in (:pr:`807`)
+* Rewrite ``heat_index`` so that the calculation is be more in line with the NWS implementation and removes internal functions ``_xheat_index`` and ``_heat_index`` by `Anissa Zacharias`_ in (:pr:`807`)
 
 v2025.12.1 (December 17, 2025)
 ------------------------------

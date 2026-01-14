@@ -72,8 +72,7 @@ def _nws_eqn(coeffs, temp, rel_hum):
     See Also
     --------
     Related GeoCAT Functions:
-    :func:`heat_index`,
-    :func:`_heat_index`
+    :func:`heat_index`
 
     Related NCL Functions:
     `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__,
@@ -367,10 +366,6 @@ def heat_index(
 
     See Also
     --------
-    Related GeoCAT Functions:
-    :func:`_heat_index`
-    :func:`_xheat_index`
-
     Related NCL Functions:
     `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__
     """
