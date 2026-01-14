@@ -7,7 +7,7 @@ import numpy as np
 import geocat.datafiles as gdf
 
 # import everything for dask compatibility and performance tests
-from geocat.comp import (
+from geocat.comp.meteorology import (
     dewtemp,
     heat_index,
     relhum,
@@ -16,7 +16,13 @@ from geocat.comp import (
     saturation_vapor_pressure_slope,
     max_daylight,
     psychrometric_constant,
+)
+
+from geocat.comp.gradient import (
     gradient,
+)
+
+from geocat.comp.interpolation import (
     interp_hybrid_to_pressure,
     interp_sigma_to_hybrid,
 )
