@@ -102,27 +102,26 @@ class TestDaskCompat:
         assert np.allclose(out - 273.15, dt_2, atol=0.1)
 
     def test_heat_index_dask(self):
-        ncl_gt_1 = [
-            137.36142,
-            135.86795,
-            104.684456,
-            131.25621,
-            105.39449,
-            79.78999,
-            83.57511,
-            59.965,
-            30.0,
+        hi_ncl_alt = [
+            76.13114,
+            75.12854,
+            99.43573,
+            104.93261,
+            93.73293,
+            104.328705,
+            123.23398,
+            150.34001,
+            106.87023,
         ]
-
-        t1 = np.array([104, 100, 92, 92, 86, 80, 80, 60, 30])
-        rh1 = np.array([55, 65, 60, 90, 90, 40, 75, 90, 50])
+        t1 = np.array([75, 80, 85, 90, 95, 100, 105, 110, 115])
+        rh1 = np.array([75, 15, 80, 65, 25, 30, 40, 50, 5])
 
         t = xr.DataArray(t1).chunk(3)
         rh = xr.DataArray(rh1).chunk(3)
 
-        out = heat_index(t, rh)
+        out = heat_index(t, rh, alternate_coeffs=True)
         assert isinstance(out.data, dask.array.Array)
-        assert np.allclose(out, ncl_gt_1, atol=0.005)
+        assert np.allclose(out, hi_ncl_alt, atol=0.005)
 
     def test_relhum_dask(self):
         p_def = [
