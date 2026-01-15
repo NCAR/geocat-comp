@@ -12,6 +12,7 @@ from geocat.comp.meteorology import (
     heat_index,
     relhum,
     relhum_ice,
+    relhum_water,
     actual_saturation_vapor_pressure,
     saturation_vapor_pressure,
     saturation_vapor_pressure_slope,
@@ -104,7 +105,7 @@ class TestDaskCompat:
         assert isinstance(out.data, dask.array.Array)
         assert np.allclose(relhum(t, q, p), rh_gt_2, atol=0.1)
 
-    def test_relhum_ice(self):
+    def test_relhum_ice_dask(self):
         rhi_gt = 147.8802
         tc = -5.0
         tk = tc + 273.15
@@ -119,6 +120,21 @@ class TestDaskCompat:
 
         assert isinstance(out.data, dask.array.Array)
         assert np.allclose(out, np.full((9, 9), rhi_gt), atol=0.1)
+
+    def test_relhum_water_dask(self):
+        rhw_gt = 46.357
+        p = 1000.0 * 100
+        t = 18.0 + 273.15
+        q = 6.0 / 1000.0
+
+        p = xr.DataArray(np.full((9, 9), p)).chunk((1, 9))
+        t = xr.DataArray(np.full((9, 9), t)).chunk((1, 9))
+        q = xr.DataArray(np.full((9, 9), q)).chunk((1, 9))
+
+        out = relhum_water(t, q, p)
+
+        assert isinstance(out.data, dask.array.Array)
+        assert np.allclose(out, np.full((9, 9), rhw_gt), atol=0.1)
 
     def test_actual_saturation_vapor_pressure_dask(self):
         tempf = xr.DataArray(np.arange(1, 101, 1)).chunk(10)
