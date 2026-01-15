@@ -799,18 +799,18 @@ def relhum_ice(
 
     Parameters
     ----------
-    temperature : ndarray, :obj:`list`, or :obj:`float`
+    temperature : :class:`xarray.DataArray`, ndarray, :obj:`list`, or :obj:`float`
         Temperature in Kelvin
 
-    mixing_ratio : ndarray, :obj:`list`, or :obj:`float`
-        Mixing ratio in kg/kg. Must have the same dimensions as ``temperature``
+    mixing_ratio : :class:`xarray.DataArray`, ndarray, :obj:`list`, or :obj:`float`
+        Mixing ratio in kg/kg. Must be same type and have the same dimensions as ``temperature``
 
-    pressure : ndarray, :obj:`list`, or :obj:`float`
-        Pressure in Pa. Must have the same dimensions as ``temperature``
+    pressure : :class:`xarray.DataArray`, ndarray, :obj:`list`, or :obj:`float`
+        Pressure in Pa. Must be same type and have the same dimensions as ``temperature``
 
     Returns
     -------
-    relative_humidity : ndarray
+    relative_humidity : :class:`xarray.DataArray`, ndarray, :obj:`list`, or :obj:`float`
         Relative humidity. Will have the same dimensions as ``temperature``
 
     See Also
@@ -828,18 +828,34 @@ def relhum_ice(
     `relhum_water <https://www.ncl.ucar.edu/Document/Functions/Built-in/relhum_water.shtml>`__
     """
 
+    inputs = [temperature, mixing_ratio, pressure]
+
+    # get input types
+    in_types = [type(item) for item in inputs]
+
+    # ensure all same input type
+    if len(set(in_types)) != 1:
+        raise TypeError(
+            f"relhum_ice: input types are not the same, received {in_types}"
+        )
+
+    # if inputs not xarray or numpy (float, int, list), elevate to np
+    if not isinstance(temperature, xr.DataArray) and not isinstance(
+        temperature, np.ndarray
+    ):
+        try:
+            temperature = np.asarray(temperature)
+            mixing_ratio = np.asarray(mixing_ratio)
+            pressure = np.asarray(pressure)
+        except [ValueError, TypeError] as e:
+            raise TypeError(f"relhum_ice: cannot convert input to numpy array, {e}")
+
     # If xarray input, pull data and store metadata
     x_out = False
     if isinstance(temperature, xr.DataArray):
         x_out = True
         save_dims = temperature.dims
         save_coords = temperature.coords
-        save_attrs = temperature.attrs
-
-    # ensure in numpy array for function call
-    temperature = np.asarray(temperature)
-    mixing_ratio = np.asarray(mixing_ratio)
-    pressure = np.asarray(pressure)
 
     # ensure all inputs same size
     if np.shape(temperature) != np.shape(mixing_ratio) or np.shape(
@@ -852,8 +868,12 @@ def relhum_ice(
     # output as xarray if input as xarray
     if x_out:
         relative_humidity = xr.DataArray(
-            data=relative_humidity, coords=save_coords, dims=save_dims, attrs=save_attrs
+            data=relative_humidity, coords=save_coords, dims=save_dims
         )
+
+    # if elevated to np array, return to original type
+    if in_types[0] in {list, float, int} and isinstance(relative_humidity, np.ndarray):
+        relative_humidity = relative_humidity.tolist()
 
     return relative_humidity
 
