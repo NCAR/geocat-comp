@@ -211,10 +211,10 @@ def _nws_eqn(coeffs, temp, rel_hum):
 
 
 def _relhum_ice(
-    t: typing.Union[np.ndarray, list, float],
-    w: typing.Union[np.ndarray, list, float],
-    p: typing.Union[np.ndarray, list, float],
-) -> np.ndarray:
+    t: typing.Union[xr.DataArray, np.ndarray],
+    w: typing.Union[xr.DataArray, np.ndarray],
+    p: typing.Union[xr.DataArray, np.ndarray],
+) -> typing.Union[xr.DataArray, np.ndarray]:
     """Calculates relative humidity with respect to ice, given temperature,
     mixing ratio, and pressure.
 
@@ -228,18 +228,18 @@ def _relhum_ice(
 
     Parameters
     ----------
-    t : ndarray, :obj:`list`, :obj:`float`
+    t : :class:`xarray.DataArray`, ndarray
         Temperature in Kelvin
 
-    w : ndarray, :obj:`list`, :obj:`float`
+    w : :class:`xarray.DataArray`, ndarray
         Mixing ratio in kg/kg. Must have the same dimensions as ``temperature``
 
-    p : ndarray, :obj:`list`, :obj:`float`
+    p : :class:`xarray.DataArray`, ndarray
         Pressure in Pa. Must have the same dimensions as ``temperature``
 
     Returns
     -------
-    rh : ndarray
+    rh : :class:`xarray.DataArray`, ndarray
         Relative humidity. Will have the same dimensions as ``temperature``
 
 
@@ -786,10 +786,10 @@ def relhum(
 
 
 def relhum_ice(
-    temperature: typing.Union[np.ndarray, list, float],
-    mixing_ratio: typing.Union[np.ndarray, list, float],
-    pressure: typing.Union[np.ndarray, list, float],
-) -> np.ndarray:
+    temperature: typing.Union[xr.DataArray, np.ndarray, list, float],
+    mixing_ratio: typing.Union[xr.DataArray, np.ndarray, list, float],
+    pressure: typing.Union[xr.DataArray, np.ndarray, list, float],
+) -> typing.Union[xr.DataArray, np.ndarray, list, float]:
     """Calculates relative humidity with respect to ice, given temperature,
     mixing ratio, and pressure.
 
