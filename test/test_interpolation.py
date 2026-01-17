@@ -135,29 +135,39 @@ class Test_interp_hybrid_to_pressure:
     pres3d = pres3d * 100  # mb to Pa
 
     def test_pressure_at_hybrid_levels(self, p_out, ds_out) -> None:
-        # run not officially supported input types w/ hyam and hybm as lists and mixed
+        # np input
         pm = pressure_at_hybrid_levels(
-            self.ps[0, :7, :7], p_out.hyam.values.tolist(), p_out.hybm.values.tolist()
+            self.ps[0, :7, :7].values, p_out.hyam.values, p_out.hybm.values
         )
-        nt.assert_allclose(pm, p_out.pm, rtol=1e-6)
-        pm = pressure_at_hybrid_levels(
-            self.ps[0, :7, :7], p_out.hyam.values.tolist(), p_out.hybm
-        )
-        nt.assert_allclose(pm, p_out.pm, rtol=1e-6)
-        pm = pressure_at_hybrid_levels(
-            self.ps[0, :7, :7], p_out.hyam, p_out.hybm.values.tolist()
-        )
-        nt.assert_allclose(pm, p_out.pm, rtol=1e-6)
+        nt.assert_allclose(pm, p_out.pm.values, rtol=1e-6)
 
-        # mismatched dim names
+        # xr input
         pm = pressure_at_hybrid_levels(self.ps[0, :7, :7], p_out.hyam, p_out.hybm)
         nt.assert_allclose(pm, p_out.pm, rtol=1e-6)
 
-    def test_pressure_at_hybrid_levels_with_dims(self, ds_ccsm) -> None:
-        # test with dataset that uses lev as a coordinate and named dimension
-        _ = pressure_at_hybrid_levels(
-            ds_ccsm.PS, ds_ccsm.hyam, ds_ccsm.hybm.values.tolist()
-        )
+    def test_pressure_at_hybrid_levels_validation(self, p_out) -> None:
+        # mismatched input types
+        with pytest.raises(TypeError):
+            pressure_at_hybrid_levels(self.ps[0, :7, :7].values, p_out.hyam, p_out.hybm)
+
+        # mismatched dim names
+        hya = p_out.hyam.rename({p_out.hyam.dims[0]: '1234'})  # explicit dim rename
+        with pytest.warns(UserWarning):
+            pm_mismatch = pressure_at_hybrid_levels(self.ps[0, :7, :7], hya, p_out.hybm)
+        nt.assert_allclose(pm_mismatch, p_out.pm, rtol=1e-6)
+
+    def test_pressure_at_hybrid_levels_2d(self, p_out) -> None:
+        # xr w/ time dim on hya/hyb w/ badly named vert dim
+        nt = 2
+        hya_t = p_out.hyam.expand_dims(dim={"time": nt})
+        hyb_t = p_out.hybm.expand_dims(dim={"time": nt})
+        ps_t = self.ps[0, :7, :7].drop_vars('time').expand_dims(dim={"time": nt})
+        out = pressure_at_hybrid_levels(ps_t, hya_t, hyb_t)
+        assert out.shape == (nt, len(p_out.hyam), len(ps_t.lat), len(ps_t.lon))
+
+        # numpy version of above, require xr inputs for > 1D hya/hyb
+        with pytest.raises(ValueError):
+            pressure_at_hybrid_levels(ps_t.values, hya_t.values, hyb_t.values)
 
     def test_interp_hybrid_to_pressure_atmos(self, ds_out) -> None:
         u_int = interp_hybrid_to_pressure(
@@ -173,6 +183,22 @@ class Test_interp_hybrid_to_pressure:
         uzon = u_int.mean(dim='lon')
 
         nt.assert_array_almost_equal(ds_out.uzon, uzon, 5)
+
+    def test_interp_hybrid_to_pressure_multidim(self, ds_out) -> None:
+        nt = 2
+        data = self.data.drop_vars('time').expand_dims(dim={"time": nt})
+        ps = self.ps[0, :, :].drop_vars('time').expand_dims(dim={"time": nt})
+        hya = _hyam.expand_dims(dim={"time": nt})
+        hyb = _hybm.expand_dims(dim={"time": nt})
+        out = interp_hybrid_to_pressure(
+            data, ps, hya, hyb, p0=_p0, new_levels=self.pres3d, method="log"
+        )
+        assert out.shape == (
+            nt,
+            len(self.pres3d),
+            len(self.data.lat),
+            len(self.data.lon),
+        )
 
     def test_interp_hybrid_to_pressure_atmos_pint(self, ds_out) -> None:
         unit = pint.UnitRegistry()
