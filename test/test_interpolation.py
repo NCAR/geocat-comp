@@ -134,30 +134,51 @@ class Test_interp_hybrid_to_pressure:
     pres3d = np.asarray([1000, 950, 800, 700, 600, 500, 400, 300, 200])  # mb
     pres3d = pres3d * 100  # mb to Pa
 
-    def test_pressure_at_hybrid_levels(self, p_out, ds_out) -> None:
-        # run not officially supported input types w/ hyam and hybm as lists and mixed
-        pm = pressure_at_hybrid_levels(
-            self.ps[0, :7, :7], p_out.hyam.values.tolist(), p_out.hybm.values.tolist()
-        )
-        nt.assert_allclose(pm, p_out.pm, rtol=1e-6)
-        pm = pressure_at_hybrid_levels(
-            self.ps[0, :7, :7], p_out.hyam.values.tolist(), p_out.hybm
-        )
-        nt.assert_allclose(pm, p_out.pm, rtol=1e-6)
-        pm = pressure_at_hybrid_levels(
-            self.ps[0, :7, :7], p_out.hyam, p_out.hybm.values.tolist()
-        )
-        nt.assert_allclose(pm, p_out.pm, rtol=1e-6)
+    def test_interp_hybrid_to_pressure_cupid(self):
+        ds = xr.open_mfdataset('/Volumes/Data_Processing/casper/*')
 
-        # mismatched dim names
+        vplev = interp_hybrid_to_pressure(
+            ds['U'],
+            ds['PS'],
+            ds['hyam'],
+            ds['hybm'],
+            new_levels=np.array([100.0 * 300.0]),
+            lev_dim='lev',
+        )
+
+    def test_pressure_at_hybrid_levels(self, p_out, ds_out) -> None:
+        # np input
+        pm = pressure_at_hybrid_levels(
+            self.ps[0, :7, :7].values, p_out.hyam.values, p_out.hybm.values
+        )
+        nt.assert_allclose(pm, p_out.pm.values, rtol=1e-6)
+
+        # xr input
         pm = pressure_at_hybrid_levels(self.ps[0, :7, :7], p_out.hyam, p_out.hybm)
         nt.assert_allclose(pm, p_out.pm, rtol=1e-6)
 
-    def test_pressure_at_hybrid_levels_with_dims(self, ds_ccsm) -> None:
-        # test with dataset that uses lev as a coordinate and named dimension
-        _ = pressure_at_hybrid_levels(
-            ds_ccsm.PS, ds_ccsm.hyam, ds_ccsm.hybm.values.tolist()
-        )
+    def test_pressure_at_hybrid_levels_validation(self, p_out) -> None:
+        # mismatched input types
+        with pytest.raises(TypeError):
+            pressure_at_hybrid_levels(self.ps[0, :7, :7].values, p_out.hyam, p_out.hybm)
+
+        # mismatched dim names
+        hya = p_out.hyam.rename({p_out.hyam.dims[0]: '1234'})  # explicit dim rename
+        with pytest.warns(UserWarning):
+            pm_mismatch = pressure_at_hybrid_levels(self.ps[0, :7, :7], hya, p_out.hybm)
+        nt.assert_allclose(pm_mismatch, p_out.pm, rtol=1e-6)
+
+    def test_pressure_at_hybrid_levels_2d(self, p_out) -> None:
+        # xr w/ time dim on hya/hyb w/ badly named vert dim
+        hya_t = p_out.hyam.expand_dims(dim={"time": 2})
+        hyb_t = p_out.hybm.expand_dims(dim={"time": 2})
+        ps_t = self.ps[0, :7, :7].drop(labels='time').expand_dims(dim={"time": 2})
+        out = pressure_at_hybrid_levels(ps_t, hya_t, hyb_t)
+        assert out.shape == (7, 7)
+
+        # numpy version of above, require xr inputs for > 1D hya/hyb
+        with pytest.raises(ValueError):
+            pressure_at_hybrid_levels(ps_t.values, hya_t.values, hyb_t.values)
 
     def test_interp_hybrid_to_pressure_atmos(self, ds_out) -> None:
         u_int = interp_hybrid_to_pressure(
