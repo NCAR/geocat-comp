@@ -158,11 +158,12 @@ class Test_interp_hybrid_to_pressure:
 
     def test_pressure_at_hybrid_levels_2d(self, p_out) -> None:
         # xr w/ time dim on hya/hyb w/ badly named vert dim
-        hya_t = p_out.hyam.expand_dims(dim={"time": 2})
-        hyb_t = p_out.hybm.expand_dims(dim={"time": 2})
-        ps_t = self.ps[0, :7, :7].drop(labels='time').expand_dims(dim={"time": 2})
+        nt = 2
+        hya_t = p_out.hyam.expand_dims(dim={"time": nt})
+        hyb_t = p_out.hybm.expand_dims(dim={"time": nt})
+        ps_t = self.ps[0, :7, :7].drop_vars('time').expand_dims(dim={"time": nt})
         out = pressure_at_hybrid_levels(ps_t, hya_t, hyb_t)
-        assert out.shape == (7, 7)
+        assert out.shape == (nt, len(p_out.hyam), len(ps_t.lat), len(ps_t.lon))
 
         # numpy version of above, require xr inputs for > 1D hya/hyb
         with pytest.raises(ValueError):
@@ -185,8 +186,8 @@ class Test_interp_hybrid_to_pressure:
 
     def test_interp_hybrid_to_pressure_multidim(self, ds_out) -> None:
         nt = 2
-        data = self.data.drop(labels='time').expand_dims(dim={"time": nt})
-        ps = self.ps[0, :, :].drop(labels='time').expand_dims(dim={"time": nt})
+        data = self.data.drop_vars('time').expand_dims(dim={"time": nt})
+        ps = self.ps[0, :, :].drop_vars('time').expand_dims(dim={"time": nt})
         hya = _hyam.expand_dims(dim={"time": nt})
         hyb = _hybm.expand_dims(dim={"time": nt})
         out = interp_hybrid_to_pressure(
