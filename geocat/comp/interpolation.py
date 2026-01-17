@@ -429,10 +429,10 @@ def delta_pressure_hybrid(
         A multi-dimensional array of surface pressures (Pa)
 
     hya: :class:`xarray.DataArray`, :class:`numpy.ndarray`
-        An array of the hybrid A coefficients. Must be 1D if type :class:`numpy.ndarray` (unitless).
+        A one-dimensional array of the hybrid A coefficients (unitless)
 
     hyb: :class:`xarray.DataArray`, :class:`numpy.ndarray`
-        An array of the hybrid B coefficients. Must be same type and length as ``hya`` and be 1D if type :class:`numpy.ndarray`  (unitless)
+        A one-dimensional array of the hybrid B coefficients. Must be same type and length as ``hya`` (unitless)
 
     p0 : float, optional
         Scalar numeric value equal to surface reference pressure (Pa). Defaults to 100000 Pa.
