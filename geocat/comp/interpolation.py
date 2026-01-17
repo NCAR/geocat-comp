@@ -6,7 +6,6 @@ import warnings
 import metpy.interpolate
 import numpy as np
 import xarray as xr
-from exceptiongroup import catch
 
 supported_types = typing.Union[xr.DataArray, np.ndarray]
 
