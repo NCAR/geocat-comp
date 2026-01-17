@@ -183,6 +183,22 @@ class Test_interp_hybrid_to_pressure:
 
         nt.assert_array_almost_equal(ds_out.uzon, uzon, 5)
 
+    def test_interp_hybrid_to_pressure_multidim(self, ds_out) -> None:
+        nt = 2
+        data = self.data.drop(labels='time').expand_dims(dim={"time": nt})
+        ps = self.ps[0, :, :].drop(labels='time').expand_dims(dim={"time": nt})
+        hya = _hyam.expand_dims(dim={"time": nt})
+        hyb = _hybm.expand_dims(dim={"time": nt})
+        out = interp_hybrid_to_pressure(
+            data, ps, hya, hyb, p0=_p0, new_levels=self.pres3d, method="log"
+        )
+        assert out.shape == (
+            nt,
+            len(self.pres3d),
+            len(self.data.lat),
+            len(self.data.lon),
+        )
+
     def test_interp_hybrid_to_pressure_atmos_pint(self, ds_out) -> None:
         unit = pint.UnitRegistry()
         u_int = interp_hybrid_to_pressure(
