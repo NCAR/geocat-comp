@@ -134,18 +134,6 @@ class Test_interp_hybrid_to_pressure:
     pres3d = np.asarray([1000, 950, 800, 700, 600, 500, 400, 300, 200])  # mb
     pres3d = pres3d * 100  # mb to Pa
 
-    def test_interp_hybrid_to_pressure_cupid(self):
-        ds = xr.open_mfdataset('/Volumes/Data_Processing/casper/*')
-
-        vplev = interp_hybrid_to_pressure(
-            ds['U'],
-            ds['PS'],
-            ds['hyam'],
-            ds['hybm'],
-            new_levels=np.array([100.0 * 300.0]),
-            lev_dim='lev',
-        )
-
     def test_pressure_at_hybrid_levels(self, p_out, ds_out) -> None:
         # np input
         pm = pressure_at_hybrid_levels(
