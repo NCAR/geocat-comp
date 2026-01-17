@@ -15,11 +15,11 @@ This release...
 New Features
 ^^^^^^^^^^^^
 * Update ``calendar_average`` and ``climate_anomaly`` to allow for monthly data with non-uniform spacing by `Katelyn FitzGerald`_ in (:pr:`805`, :pr:`809`)
-* Update ``pressure_at_hybrid_levels`` and ``interp_hybrid_to_pressure`` to allow for multidimensional hybrid coefficients for xarray inputs by `Anissa Zacharias`_ in (:pr:`811`)
 
 Bug Fixes
 ^^^^^^^^^
 * Rewrite ``heat_index`` so that the calculation is be more in line with the NWS implementation and removes internal functions ``_xheat_index`` and ``_heat_index`` by `Anissa Zacharias`_ in (:pr:`807`)
+* Update ``pressure_at_hybrid_levels`` and ``interp_hybrid_to_pressure`` to allow for multidimensional hybrid coefficients for xarray inputs by `Anissa Zacharias`_ in (:pr:`811`)
 
 v2025.12.1 (December 17, 2025)
 ------------------------------
