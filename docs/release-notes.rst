@@ -21,6 +21,11 @@ Bug Fixes
 * Rewrite ``heat_index`` so that the calculation is be more in line with the NWS implementation and removes internal functions ``_xheat_index`` and ``_heat_index`` by `Anissa Zacharias`_ in (:pr:`807`)
 * Update ``pressure_at_hybrid_levels`` and ``interp_hybrid_to_pressure`` to allow for multidimensional hybrid coefficients for xarray inputs by `Anissa Zacharias`_ in (:pr:`811`)
 
+Documentation
+^^^^^^^^^^^^^
+* Update logos and color schemes by `Anissa Zacharias`_ in (:pr:`813`)
+
+
 v2025.12.1 (December 17, 2025)
 ------------------------------
 This release fixes a bug in ``nmse`` and adds a new function, ``delta_pressure_hybrid``.
