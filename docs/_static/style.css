@@ -14,14 +14,13 @@
     height: auto;
 }
 
-/* override toc css */
-/* controls dropdown icon color */
-.bd-toc-item.active {
-    margin-bottom: 1rem;
-    color: #012169;
+html[data-theme="light"] {
+    --pst-color-primary: #0057C2;
+    --pst-color-secondary: #00357A;
+    --pst-color-table-row-hover-bg: #42C0FF;
 }
 
-/* controls sidebar header color */
-.caption-text {
-    color: #012169;
-}
+html[data-theme="dark"] {
+    --pst-color-primary: #42C0FF;
+    --pst-color-secondary: #FAA119;
+    --pst-color-table-row-hover-bg: #00357A;
