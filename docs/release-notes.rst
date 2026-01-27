@@ -8,9 +8,13 @@
 Release Notes
 =============
 
-vYYYY.MM.## (unreleased)
-------------------------
-This release...
+v2026.01.0 (January 27, 2026)
+-----------------------------
+This release updates ``calendar_average`` and ``climate_anomaly`` to allow for
+monthly data with non-uniform spacing, rewrites ``heat_index`` to be more in
+line with the NWS implementation, and updates ``pressure_at_hybrid_levels``
+and ``interp_hybrid_to_pressure`` to allow for multidimensional hybrid
+coefficients for xarray inputs.
 
 New Features
 ^^^^^^^^^^^^
