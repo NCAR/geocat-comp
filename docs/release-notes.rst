@@ -8,8 +8,79 @@
 Release Notes
 =============
 
-v2025.10.01 (Ocotber 7, 2025)
-------------------------
+v2026.01.0 (January 27, 2026)
+-----------------------------
+This release updates ``calendar_average`` and ``climate_anomaly`` to allow for
+monthly data with non-uniform spacing, rewrites ``heat_index`` to be more in
+line with the NWS implementation, and updates ``pressure_at_hybrid_levels``
+and ``interp_hybrid_to_pressure`` to allow for multidimensional hybrid
+coefficients for xarray inputs.
+
+New Features
+^^^^^^^^^^^^
+* Update ``calendar_average`` and ``climate_anomaly`` to allow for monthly data with non-uniform spacing by `Katelyn FitzGerald`_ in (:pr:`805`, :pr:`809`)
+
+Bug Fixes
+^^^^^^^^^
+* Rewrite ``heat_index`` so that the calculation is be more in line with the NWS implementation and removes internal functions ``_xheat_index`` and ``_heat_index`` by `Anissa Zacharias`_ in (:pr:`807`)
+* Update ``pressure_at_hybrid_levels`` and ``interp_hybrid_to_pressure`` to allow for multidimensional hybrid coefficients for xarray inputs by `Anissa Zacharias`_ in (:pr:`811`)
+
+Documentation
+^^^^^^^^^^^^^
+* Update logos and color schemes by `Anissa Zacharias`_ in (:pr:`813`)
+
+
+v2025.12.1 (December 17, 2025)
+------------------------------
+This release fixes a bug in ``nmse`` and adds a new function, ``delta_pressure_hybrid``.
+
+New Features
+^^^^^^^^^^^^
+* Adds ``delta_pressure_hybrid`` function by `Anissa Zacharias`_ in (:pr:`797`)
+* Add a ``pressure_top`` argument to ``delta_pressure`` by Anissa Zacharias`_ in (:pr:`798`)
+
+Bug Fixes
+^^^^^^^^^
+* Fix ``nmse`` coordinate matching issue `Anissa Zacharias`_ in (:pr:`796`)
+
+Documentation
+^^^^^^^^^^^^^
+* Add ``delta_pressure`` calculation reference by `Anissa Zacharias`_ in (:pr:`800`)
+
+v2025.12.0 (December 2, 2025)
+-----------------------------
+This release adds a normalized mean squared error metric function.
+
+New Features
+^^^^^^^^^^^^
+* Add normalized mean square error (NMSE) metric function, ``nmse`` by `Anissa Zacharias`_ in (:pr:`787`)
+
+v2025.11.0 (November 24, 2025)
+------------------------------
+This release adds an initial benchmarking suite, exposes a new ``pressure_at_hybrid_levels`` function,
+and addresses several attribute related issues following upstream changes in Xarray.
+
+Bug Fixes
+^^^^^^^^^
+* Update ``climate_anomaly`` to ensure consistent behavior for the ``keep_attrs`` option by `Katelyn FitzGerald`_ in (:pr:`783`)
+* Revert back to passing only `pressure.data` rather than the full DataArray to avoid unit handling issues in ``interp_hybrid_to_pressure`` by `Katelyn FitzGerald`_ in (:pr:`781`)
+
+New Features
+^^^^^^^^^^^^
+* Move ``_pressure_from_hybrid`` to public API as ``pressure_at_hybrid_levels`` by `Anissa Zacharias`_ in (:pr:`776`)
+
+
+Developer Features
+^^^^^^^^^^^^^^^^^^
+* Create initial benchmarking suite by `Anissa Zacharias`_ in (:pr:`772`)
+
+Documentation
+^^^^^^^^^^^^^
+* Add latitude/longitude axis labels in ``vimfc`` example plot by `Cora Schneck`_ in (:pr:`784`)
+
+
+v2025.10.01 (October 7, 2025)
+-----------------------------
 This release updates to dependabot and optional PR ASV runs
 
 Internal Changes

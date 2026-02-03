@@ -1,6 +1,6 @@
-import pytest
-
 import numpy as np
+import pytest
+from random import uniform
 import xarray as xr
 import uxarray as ux
 
@@ -121,19 +121,8 @@ class Test_dewtemp:
 
 class Test_heat_index:
     # set up ground truths
-    ncl_gt_1 = [
-        137.36142,
-        135.86795,
-        104.684456,
-        131.25621,
-        105.39449,
-        79.78999,
-        83.57511,
-        59.965,
-        30.0,
-    ]
-    ncl_gt_2 = [
-        68.585,
+    # use ncl for alt coefficient testing within unchanged ranges
+    hi_ncl_alt = [
         76.13114,
         75.12854,
         99.43573,
@@ -144,63 +133,60 @@ class Test_heat_index:
         150.34001,
         106.87023,
     ]
+    t_alt = np.array([75, 80, 85, 90, 95, 100, 105, 110, 115])
+    rh_alt = np.array([75, 15, 80, 65, 25, 30, 40, 50, 5])
 
-    t1 = np.array([104, 100, 92, 92, 86, 80, 80, 60, 30])
-    rh1 = np.array([55, 65, 60, 90, 90, 40, 75, 90, 50])
+    t_nws = [80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100, 102, 104, 106, 108, 110]
+    rh_nws = [40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]
+    t_nws, rh_nws = np.meshgrid(t_nws, rh_nws)
 
-    t2 = np.array([70, 75, 80, 85, 90, 95, 100, 105, 110, 115])
-    rh2 = np.array([10, 75, 15, 80, 65, 25, 30, 40, 50, 5])
+    # used javascript to query NWS form
+    @pytest.fixture(scope="class")
+    def hi_nws(self):
+        try:
+            return np.genfromtxt("heat-index.csv", delimiter=",").T
+        except Exception:
+            return np.genfromtxt("test/heat-index.csv", delimiter=",").T
 
-    def test_numpy_input(self) -> None:
-        assert np.allclose(
-            heat_index(self.t1, self.rh1, False), self.ncl_gt_1, atol=0.005
-        )
+    def test_numpy_input(self, hi_nws) -> None:
+        hi = heat_index(self.t_nws, self.rh_nws, False)
+        assert np.allclose(hi.round(1), hi_nws)
 
     def test_multi_dimensional_input(self) -> None:
         assert np.allclose(
-            heat_index(self.t2.reshape(2, 5), self.rh2.reshape(2, 5), True),
-            np.asarray(self.ncl_gt_2).reshape(2, 5),
+            heat_index(self.t_alt.reshape(3, 3), self.rh_alt.reshape(3, 3), True),
+            np.asarray(self.hi_ncl_alt).reshape(3, 3),
             atol=0.005,
         )
 
     def test_alt_coef(self) -> None:
         assert np.allclose(
-            heat_index(self.t2, self.rh2, True), self.ncl_gt_2, atol=0.005
+            heat_index(self.t_alt, self.rh_alt, True), self.hi_ncl_alt, atol=0.005
         )
 
     def test_xarray_alt_coef(self) -> None:
-        assert np.allclose(
-            heat_index(xr.DataArray(self.t2), xr.DataArray(self.rh2), True),
-            self.ncl_gt_2,
-            atol=0.005,
-        )
+        hi_alt = heat_index(xr.DataArray(self.t_alt), xr.DataArray(self.rh_alt), True)
+        assert np.allclose(hi_alt, self.hi_ncl_alt, atol=0.005)
 
     def test_float_input(self) -> None:
         assert np.allclose(heat_index(80, 75), 83.5751, atol=0.005)
 
-    def test_list_input(self) -> None:
-        assert np.allclose(
-            heat_index(self.t1.tolist(), self.rh1.tolist()), self.ncl_gt_1, atol=0.005
-        )
+    def test_list_input(self, hi_nws) -> None:
+        hi = heat_index(self.t_nws.tolist(), self.rh_nws.tolist())
+        hi = [[round(x, 1) for x in r] for r in hi]
+        assert np.allclose(hi, hi_nws)
 
-    def test_xarray_input(self) -> None:
-        t = xr.DataArray(self.t1)
-        rh = xr.DataArray(self.rh1)
+    def test_xarray_input(self, hi_nws) -> None:
+        t = xr.DataArray(self.t_nws)
+        rh = xr.DataArray(self.rh_nws)
 
-        assert np.allclose(heat_index(t, rh), self.ncl_gt_1, atol=0.005)
-
-    def test_alternate_xarray_tag(self) -> None:
-        t = xr.DataArray([15, 20])
-        rh = xr.DataArray([15, 20])
-
-        out = heat_index(t, rh)
-        assert out.tag == "NCL: heat_index_nws; (Steadman+t)*0.5"
+        assert np.allclose(heat_index(t, rh).round(1), hi_nws)
 
     def test_rh_warning(self) -> None:
         with pytest.warns(UserWarning):
             heat_index([50, 80, 90], [0.1, 0.2, 0.5])
 
-    def test_rh_valid(self) -> None:
+    def test_rh_invalid(self) -> None:
         with pytest.raises(ValueError):
             heat_index([50, 80, 90], [-1, 101, 50])
 
@@ -214,11 +200,15 @@ class Test_heat_index:
 
     def test_xarray_type_error(self) -> None:
         with pytest.raises(TypeError):
-            heat_index(self.t1, xr.DataArray(self.rh1))
+            heat_index(self.t_nws, xr.DataArray(self.rh_nws))
 
     def test_dims_error(self) -> None:
         with pytest.raises(ValueError):
-            heat_index(self.t1[:10], self.rh1[:8])
+            heat_index(self.t_nws[:10], self.rh_nws[:8])
+
+    def test_bad_list_input(self):
+        with pytest.raises(ValueError):
+            heat_index(np.asarray([[85, 85], [85]]), np.asarray([[60, 60], [60]]))
 
 
 class Test_relhum:
@@ -764,6 +754,47 @@ class Test_Delta_Pressure:
             self.pressure_lev_da, self.surface_pressure_3D
         )
         assert isinstance(delta_pressure_np, np.ndarray)
+
+    def test_pressure_top_specified(self) -> None:
+        # pressure_top <= min(pressure_lev)
+        # 0 < pressure_top <= 1
+        pressure_top = round(uniform(0.1, 0.99), 2)
+
+        # test scalar
+        delta_p = delta_pressure(self.pressure_lev, self.surface_pressure_scalar)
+        delta_p_top = delta_pressure(
+            self.pressure_lev, self.surface_pressure_scalar, pressure_top=pressure_top
+        )
+        assert delta_p_top[0] == delta_p[0] + min(self.pressure_lev) - pressure_top
+
+        # test multi-dimensional
+        delta_p = delta_pressure(self.pressure_lev, self.surface_pressure_3D)
+        delta_p_top = delta_pressure(
+            self.pressure_lev, self.surface_pressure_3D, pressure_top=pressure_top
+        )
+        np.testing.assert_equal(
+            delta_p_top[:, :, :, 0],
+            delta_p[:, :, :, 0] + min(self.pressure_lev) - pressure_top,
+        )
+
+        # test multidim xarray
+        delta_p_da = delta_pressure(self.pressure_lev_da, self.surface_pressure_3D_da)
+        delta_p_da_top = delta_pressure(
+            self.pressure_lev_da, self.surface_pressure_3D_da, pressure_top=pressure_top
+        )
+        np.testing.assert_allclose(delta_p_top, delta_p_da_top.values)
+        xr.testing.assert_equal(
+            delta_p_da_top[:, :, :, 0],
+            delta_p_da[:, :, :, 0] + min(self.pressure_lev_da) - pressure_top,
+        )
+
+        # test list input for pressure_lev for .min() usage w/ pressure_top
+        delta_pressure(self.pressure_lev.tolist(), self.surface_pressure_scalar)
+        delta_pressure(
+            self.pressure_lev.tolist(),
+            self.surface_pressure_scalar,
+            pressure_top=pressure_top,
+        )
 
 
 # ---- Tests for zonal_mpsi ----

@@ -48,123 +48,6 @@ def _dewtemp(
     return tdk
 
 
-def _heat_index(
-    temperature: np.ndarray,
-    relative_humidity: typing.Union[np.ndarray, xr.DataArray, list, float],
-    alternate_coeffs: bool = False,
-) -> np.ndarray:
-    """Compute the 'heat index' as calculated by the National Weather Service.
-
-    Internal function for heat_index
-
-    Parameters
-    ----------
-    temperature : ndarray
-        temperature(s) in Fahrenheit
-
-    relative_humidity : ndarray, :class:`xarray.DataArray`, :class:`list`, :class:`float`
-        relative humidity as a percentage. Must be the same shape as
-        ``temperature``
-
-    alternate_coeffs : bool, optional
-        flag to use alternate set of coefficients appropriate for
-        temperatures from 70F to 115F and humidities between 0% and 80%
-
-    Returns
-    -------
-    heatindex : ndarray
-        Calculated heat index. Same shape as ``temperature``
-
-
-    See Also
-    --------
-    Related GeoCAT Functions:
-    :func:`heat_index`,
-    :func:`_xheat_index`
-
-    Related NCL Functions:
-    `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__
-    """
-    # Default coefficients for (t>=80F) and (40<gh<100)
-    coeffs = [
-        -42.379,
-        2.04901523,
-        10.14333127,
-        -0.22475541,
-        -0.00683783,
-        -0.05481717,
-        0.00122874,
-        0.00085282,
-        -0.00000199,
-    ]
-    crit = [80, 40, 100]  # [T_low [F], RH_low, RH_high]
-
-    # optional flag coefficients for (70F<t<115F) and (0<gh<80)
-    # within 3F of default coeffs
-    if alternate_coeffs:
-        coeffs = [
-            0.363445176,
-            0.988622465,
-            4.777114035,
-            -0.114037667,
-            -0.000850208,
-            -0.020716198,
-            0.000687678,
-            0.000274954,
-            0.0,
-        ]
-        crit = [70, 0, 80]  # [T_low [F], RH_low, RH_high]
-
-    # NWS practice
-    # average Steadman and t
-    heatindex = (
-        0.5
-        * (
-            temperature
-            + 61.0
-            + ((temperature - 68.0) * 1.2)
-            + (relative_humidity * 0.094)
-        )
-        + temperature
-    ) * 0.5
-
-    # http://ehp.niehs.nih.gov/1206273/
-    heatindex = xr.where(temperature < 40, temperature, heatindex)
-
-    # if all t values less than critical, return hi
-    # otherwise perform calculation
-    if not all(temperature.ravel() < crit[0]):
-        heatindex = xr.where(
-            heatindex > crit[0],
-            _nws_eqn(coeffs, temperature, relative_humidity),
-            heatindex,
-        )
-
-        # adjustments
-        heatindex = xr.where(
-            np.logical_and(
-                relative_humidity < 13,
-                np.logical_and(temperature > 80, temperature < 112),
-            ),
-            heatindex
-            - ((13 - relative_humidity) / 4)
-            * np.sqrt((17 - abs(temperature - 95)) / 17),
-            heatindex,
-        )
-
-        heatindex = xr.where(
-            np.logical_and(
-                relative_humidity > 85,
-                np.logical_and(temperature > 80, temperature < 87),
-            ),
-            heatindex
-            + ((relative_humidity - 85.0) / 10.0) * ((87.0 - temperature) / 5.0),
-            heatindex,
-        )
-
-    return heatindex
-
-
 def _nws_eqn(coeffs, temp, rel_hum):
     """Helper function to compute the heat index.
 
@@ -191,8 +74,7 @@ def _nws_eqn(coeffs, temp, rel_hum):
     See Also
     --------
     Related GeoCAT Functions:
-    :func:`heat_index`,
-    :func:`_heat_index`
+    :func:`heat_index`
 
     Related NCL Functions:
     `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__,
@@ -369,128 +251,6 @@ def _relhum_water(
     return rh
 
 
-def _xheat_index(
-    temperature: xr.DataArray,
-    relative_humidity: xr.DataArray,
-    alternate_coeffs: bool = False,
-) -> tuple([xr.DataArray, int]):
-    """Compute the 'heat index' as calculated by the National Weather Service.
-
-    Internal function for heat_index for dask
-
-    Parameters
-    ----------
-    temperature : :class:`xarray.DataArray`
-        temperature(s) in Fahrenheit
-
-    relative_humidity : :class:`xarray.DataArray`
-        relative humidity as a percentage. Must be the same shape as
-        ``temperature``
-
-    alternate_coeffs : bool, optional
-        flag to use alternate set of coefficients appropriate for
-        temperatures from 70F to 115F and humidities between 0% and 80%
-
-    Returns
-    -------
-    heatindex : :class:`xarray.DataArray`
-        Calculated heat index. Same shape as ``temperature``
-
-    eqtype : :class:`int`
-        version of equations used, for xarray attrs output
-
-    See Also
-    --------
-    Related GeoCAT Functions:
-    :func:`heat_index`
-    :func:`_heat_index`
-
-    Related NCL Functions:
-    `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__,
-    """
-    # Default coefficients for (t>=80F) and (40<gh<100)
-    coeffs = [
-        -42.379,
-        2.04901523,
-        10.14333127,
-        -0.22475541,
-        -0.00683783,
-        -0.05481717,
-        0.00122874,
-        0.00085282,
-        -0.00000199,
-    ]
-    crit = [80, 40, 100]  # [T_low [F], RH_low, RH_high]
-
-    # optional flag coefficients for (70F<t<115F) and (0<gh<80)
-    # within 3F of default coeffs
-    if alternate_coeffs:
-        coeffs = [
-            0.363445176,
-            0.988622465,
-            4.777114035,
-            -0.114037667,
-            -0.000850208,
-            -0.020716198,
-            0.000687678,
-            0.000274954,
-            0.0,
-        ]
-        crit = [70, 0, 80]  # [T_low [F], RH_low, RH_high]
-
-    # NWS practice
-    # average Steadman and t
-    heatindex = (
-        0.5
-        * (
-            temperature
-            + 61.0
-            + ((temperature - 68.0) * 1.2)
-            + (relative_humidity * 0.094)
-        )
-        + temperature
-    ) * 0.5
-
-    # http://ehp.niehs.nih.gov/1206273/
-    heatindex = xr.where(temperature < 40, temperature, heatindex)
-
-    # if all t values less than critical, return hi
-    # otherwise perform calculation
-    eqtype = 0
-    if not all(temperature.data.ravel() < crit[0]):
-        eqtype = 1
-
-        heatindex = xr.where(
-            heatindex > crit[0],
-            _nws_eqn(coeffs, temperature, relative_humidity),
-            heatindex,
-        )
-
-        # adjustments
-        heatindex = xr.where(
-            np.logical_and(
-                relative_humidity < 13,
-                np.logical_and(temperature > 80, temperature < 112),
-            ),
-            heatindex
-            - ((13 - relative_humidity) / 4)
-            * np.sqrt((17 - abs(temperature - 95)) / 17),
-            heatindex,
-        )
-
-        heatindex = xr.where(
-            np.logical_and(
-                relative_humidity > 85,
-                np.logical_and(temperature > 80, temperature < 87),
-            ),
-            heatindex
-            + ((relative_humidity - 85.0) / 10.0) * ((87.0 - temperature) / 5.0),
-            heatindex,
-        )
-
-    return heatindex, eqtype
-
-
 def dewtemp(
     temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
     relative_humidity: typing.Union[np.ndarray, xr.DataArray, list, float],
@@ -571,7 +331,6 @@ def heat_index(
 
     The computation of the heat index is a refinement of a result obtained by multiple regression analysis carried
     out by Lans P. Rothfusz and described in a 1990 National Weather Service (NWS) Technical Attachment (SR 90-23).
-    All values less that 40F/4.4C/277.65K are set to the ambient temperature.
 
     In practice, the Steadman formula is computed first and the result averaged with the temperature. If this heat
     index value is 80 degrees F or higher, the full regression equation along with any adjustment as described above
@@ -609,74 +368,126 @@ def heat_index(
 
     See Also
     --------
-    Related GeoCAT Functions:
-    :func:`_heat_index`
-    :func:`_xheat_index`
-
     Related NCL Functions:
     `heat_index_nws <https://www.ncl.ucar.edu/Document/Functions/Contributed/heat_index_nws.shtml>`__
     """
-
     inputs = [temperature, relative_humidity]
 
-    # ensure all inputs same size
-    if not (np.shape(x) == np.shape(inputs[0]) for x in inputs):
-        raise ValueError("heat_index: dimensions of inputs are not the same")
-
-    # Get input types
+    # get input types
     in_types = [type(item) for item in inputs]
 
-    # run dask compatible version if input is xarray
-    if xr.DataArray in in_types:
-        # check all inputs are xarray.DataArray
-        if not all(x == xr.DataArray for x in in_types):
-            raise TypeError("heat_index: if using xarray, all inputs must be xarray")
-
-        # input validation on relative humidity
-        if any(relative_humidity.data.ravel() < 0) or any(
-            relative_humidity.data.ravel() > 100
-        ):
-            raise ValueError('heat_index: invalid values for relative humidity')
-
-        # Check if relative humidity fractional
-        if all(relative_humidity.data.ravel() < 1):
-            warnings.warn("WARNING: rh must be %, not fractional; All rh are < 1")
-
-        # call internal computation function
-        heatindex, eqtype = _xheat_index(
-            temperature, relative_humidity, alternate_coeffs
+    # ensure all same input type
+    if len(set(in_types)) != 1:
+        raise TypeError(
+            f"heat_index: input types are not the same, received {in_types}"
         )
 
-        # set xarray attributes
+    # if inputs not xarray or numpy (float, int, list), elevate to np
+    if not isinstance(temperature, xr.DataArray) and not isinstance(
+        temperature, np.ndarray
+    ):
+        try:
+            temperature = np.asarray(temperature)
+            relative_humidity = np.asarray(relative_humidity)
+        except [ValueError, TypeError] as e:
+            raise TypeError(f"heat_index: cannot convert input to numpy array, {e}")
+
+    # ensure all inputs same size
+    if not temperature.shape == relative_humidity.shape:
+        raise ValueError(
+            f"heat_index: dimensions of inputs are not the same, received {temperature.shape}, {relative_humidity.shape}"
+        )
+
+    # check relative humidity within valid range 0 to 100
+    if relative_humidity.min() < 0 or relative_humidity.max() > 100:
+        raise ValueError(
+            'heat_index: invalid values for relative humidity, expected all between 0 and 100'
+        )
+
+    # check if relative humidity fractional
+    if relative_humidity.max() <= 1:
+        warnings.warn("WARNING: rh must be %, not fractional; All rh are <= 1")
+
+    # Default coefficients for (t>=80F) and (40<rh<100)
+    coeffs = [
+        -42.379,
+        2.04901523,
+        10.14333127,
+        -0.22475541,
+        -0.00683783,
+        -0.05481717,
+        0.00122874,
+        0.00085282,
+        -0.00000199,
+    ]
+    crit = 79
+
+    # optional flag coefficients for (70F<t<115F) and (0<gh<80)
+    # within 3F of default coeffs
+    if alternate_coeffs:
+        coeffs = [
+            0.363445176,
+            0.988622465,
+            4.777114035,
+            -0.114037667,
+            -0.000850208,
+            -0.020716198,
+            0.000687678,
+            0.000274954,
+            0.0,
+        ]
+        crit = 70
+
+    # calculate simple formula first, average of Steadman and temperature
+    steadman = 61 + ((temperature - 68) * 1.2) + relative_humidity * 0.094
+    rothfusz = _nws_eqn(coeffs, temperature, relative_humidity)
+    heatindex = (steadman + temperature) / 2
+
+    # where t<40F, heatindex=t
+    # https://pmc.ncbi.nlm.nih.gov/articles/PMC3801457/
+    heatindex = xr.where(temperature < 40, temperature, heatindex)
+
+    # the NWS javascript implementation actually uses Rothfusz for > 79.0,
+    # but the equation page says "80 degrees F or higher", we're going to
+    # use Rothfusz for > 79 F for default coeffs to match the published table
+    # https://www.weather.gov/safety/heat-tools
+    # https://www.weather.gov/images/safety/heatindexchart-650.jpg
+    heatindex = xr.where(heatindex >= crit, rothfusz, heatindex)
+
+    # adjustment for rh <= 13, 80F <= t <= 112F
+    heatindex = xr.where(
+        np.logical_and(
+            relative_humidity <= 13,
+            np.logical_and(temperature >= 80, temperature <= 112),
+        ),
+        heatindex
+        - ((13 - relative_humidity) / 4)
+        * np.sqrt(abs((17 - abs(temperature - 95))) / 17),
+        heatindex,
+    )
+    # adjustment for rh > 85 and 80F <= t <= 87F
+    heatindex = xr.where(
+        np.logical_and(
+            relative_humidity > 85,
+            np.logical_and(temperature >= 80, temperature <= 87),
+        ),
+        heatindex + ((relative_humidity - 85.0) / 10.0) * ((87.0 - temperature) / 5.0),
+        heatindex,
+    )
+
+    # if elevated to np array, return to original type
+    if in_types[0] in {list, float, int} and isinstance(heatindex, np.ndarray):
+        heatindex = heatindex.tolist()
+
+    # if xarray, set attributes
+    if in_types[0] == xr.DataArray:
         heatindex.attrs['long_name'] = "heat index: NWS"
         heatindex.attrs['units'] = "F"
         heatindex.attrs['www'] = (
             "https://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml"
         )
         heatindex.attrs['info'] = "appropriate for shady locations with no wind"
-
-        if eqtype == 1:
-            heatindex.attrs['tag'] = (
-                "NCL: heat_index_nws; (Steadman+t)*0.5 and Rothfusz"
-            )
-        else:
-            heatindex.attrs['tag'] = "NCL: heat_index_nws; (Steadman+t)*0.5"
-
-    else:
-        # ensure in numpy array for function call
-        temperature = np.atleast_1d(temperature)
-        relative_humidity = np.atleast_1d(relative_humidity)
-
-        # input validation on relative humidity
-        if any(relative_humidity.ravel() < 0) or any(relative_humidity.ravel() > 100):
-            raise ValueError('heat_index: invalid values for relative humidity')
-
-        # Check if relative humidity fractional
-        if all(relative_humidity.ravel() < 1):
-            warnings.warn("WARNING: rh must be %, not fractional; All rh are < 1")
-
-        # function call for non-dask/xarray
-        heatindex = _heat_index(temperature, relative_humidity, alternate_coeffs)
+        heatindex.attrs['tag'] = "heat_index: (Steadman+t)*0.5 and Rothfusz"
 
     return heatindex
 
@@ -1335,7 +1146,7 @@ def saturation_vapor_pressure_slope(
     return svp_slope
 
 
-def _delta_pressure1D(pressure_lev, surface_pressure):
+def _delta_pressure1D(pressure_lev, surface_pressure, pressure_top):
     """Helper function for `delta_pressure`. Calculates the pressure layer
     thickness, i.e. the change in pressure (delta pressure), for each layer
     in a one-dimensional pressure level array taking into account a
@@ -1353,15 +1164,16 @@ def _delta_pressure1D(pressure_lev, surface_pressure):
         The scalar surface pressure. Must have the same units as
         `pressure_lev`.
 
+    pressure_top : :class:`float`
+        A scalar specifying the top of the column. Should be <= min(pressure_lev)
+        and have the same  units as ``pressure_lev``.
+
     Returns
     -------
     delta_pressure : :class:`numpy.ndarray`
         The pressure layer thickness array. Shares dimensions and units of
         `pressure_lev`.
     """
-
-    # Leaving this here to lay groundwork for including it as a separate argument
-    pressure_top = min(pressure_lev)
 
     # Safety checks
     if pressure_top < 0:
@@ -1400,7 +1212,7 @@ def _delta_pressure1D(pressure_lev, surface_pressure):
             pressure_lev[start_level + 2 : end_level + 1],
             pressure_lev[start_level:end_level],
         )
-    ]
+    ]  # delta p_k = p_{k+1/2} - p_{k-1/2}
 
     delta_pressure[end_level] = (
         surface_pressure - (pressure_lev[end_level] + pressure_lev[end_level - 1]) / 2
@@ -1413,10 +1225,16 @@ def _delta_pressure1D(pressure_lev, surface_pressure):
     return delta_pressure
 
 
-def delta_pressure(pressure_lev, surface_pressure):
+def delta_pressure(pressure_lev, surface_pressure, pressure_top=None):
     """Calculates the pressure layer thickness, i.e. the change in pressure
     (delta pressure), for each layer in a specified constant pressure level
     coordinate system and accounting for specified surface pressure(s).
+
+    Calculated as described by `Simmons & Burridge (1981) <https://doi.org/10.1175/1520-0493(1981)109%3C0758:AEAAMC%3E2.0.CO;2>`__
+    in equation (3.1):
+
+      .. math::
+           \Delta p = p_{k+1/2} - p_{k-1/2}
 
     Returns an array of shape matching (``surface_pressure``, ``pressure_lev``).
 
@@ -1429,6 +1247,11 @@ def delta_pressure(pressure_lev, surface_pressure):
     surface_pressure : :class:`int`, :class:`float`, :class:`numpy.ndarray`, :class:`xarray.DataArray`
         The scalar or N-dimensional surface pressure array. Must have the same
         units as ``pressure_lev``.
+
+    pressure_top : :class:`float`, optional
+        A scalar specifying the top of the column. Should be <= min(pressure_lev)
+        and have the same  units as ``pressure_lev``. If left as None,
+        `min(pressure_lev)` will be used.
 
     Returns
     -------
@@ -1450,6 +1273,12 @@ def delta_pressure(pressure_lev, surface_pressure):
     )  # save type for delta_pressure to same type as surface_pressure at end
     type_pressure_level = type(pressure_lev)
 
+    # cast pressure_lev to np if not xr or np input for .min() later
+    if not isinstance(pressure_lev, xr.DataArray) and not isinstance(
+        pressure_lev, np.ndarray
+    ):
+        pressure_lev = np.asarray(pressure_lev)
+
     # Preserve attributes for Xarray
     if type_surface_pressure == xr.DataArray:
         da_coords = dict(surface_pressure.coords)
@@ -1460,9 +1289,16 @@ def delta_pressure(pressure_lev, surface_pressure):
             pressure_lev.attrs
         )  # Overwrite attributes to match pressure_lev
 
+    # get or calculate pressure_top
+    if pressure_top is None:
+        pressure_top = pressure_lev.min()
+    else:
+        if pressure_top > pressure_lev.min():
+            raise ValueError("pressure_top must be <= min(pressure_lev)")
+
     # Calculate delta pressure
     if np.isscalar(surface_pressure):  # scalar case
-        delta_pressure = _delta_pressure1D(pressure_lev, surface_pressure)
+        delta_pressure = _delta_pressure1D(pressure_lev, surface_pressure, pressure_top)
     else:  # multi-dimensional cases
         shape = surface_pressure.shape
         delta_pressure_shape = shape + (
@@ -1473,7 +1309,8 @@ def delta_pressure(pressure_lev, surface_pressure):
             surface_pressure
         )  # flatten to avoid nested for loops
         delta_pressure = [
-            _delta_pressure1D(pressure_lev, e) for e in surface_pressure_flattened
+            _delta_pressure1D(pressure_lev, e, pressure_top)
+            for e in surface_pressure_flattened
         ]
 
         delta_pressure = np.array(delta_pressure).reshape(delta_pressure_shape)
@@ -1500,8 +1337,8 @@ def delta_pressure(pressure_lev, surface_pressure):
 
 
 # NCL NAME WRAPPER FUNCTIONS BELOW
-def dpres_plev(pressure_lev, surface_pressure):
-    return delta_pressure(pressure_lev, surface_pressure)
+def dpres_plev(pressure_lev, surface_pressure, pressure_top=None):
+    return delta_pressure(pressure_lev, surface_pressure, pressure_top)
 
 
 _generate_wrapper_docstring(dpres_plev, delta_pressure)

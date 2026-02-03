@@ -46,9 +46,11 @@ Interpolation
    :nosignatures:
    :toctree: ./generated/
 
+   delta_pressure_hybrid
    interp_hybrid_to_pressure
    interp_sigma_to_hybrid
    interp_multidim
+   pressure_at_hybrid_levels
 
 Meteorology
 ^^^^^^^^^^^
@@ -90,6 +92,7 @@ Statistics
 
    eofunc_eofs
    eofunc_pcs
+   nmse
    pearson_r
 
 NCL Function Name Wrappers

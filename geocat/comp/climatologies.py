@@ -209,13 +209,13 @@ def climate_anomaly(
         )
     if freq == 'season':
         anom = dset.groupby(f"{time_dim}.season") - clim
-        return anom.assign_attrs(attrs)
+        return anom.drop_attrs().assign_attrs(attrs)
     else:
         anom = (
             dset.groupby(dset[time_dim].dt.strftime(format))
             - clim.groupby(clim[time_dim].dt.strftime(format)).sum()
         )
-        return anom.drop_vars('strftime').assign_attrs(attrs)
+        return anom.drop_vars('strftime').drop_attrs().assign_attrs(attrs)
 
 
 def month_to_season(
@@ -421,9 +421,10 @@ def calendar_average(
 
     # Check if data is uniformly spaced
     if xr.infer_freq(dset[time_dim]) is None:
-        raise ValueError(
-            f"Data needs to be uniformly spaced in the {time_dim!r} dimension."
-        )
+        if not (dset[time_dim].resample({time_dim: 'MS'}).count() == 1).all():
+            raise ValueError(
+                f"Data needs to be uniformly spaced in the {time_dim!r} dimension."
+            )
 
     # Retrieve calendar name
     calendar = _infer_calendar_name(dset[time_dim])
@@ -592,9 +593,11 @@ def climatology_average(
 
     # Check if data is uniformly spaced
     if xr.infer_freq(dset[time_dim]) is None:
-        raise ValueError(
-            f"Data needs to be uniformly spaced in the {time_dim!r} dimension."
-        )
+        # if spacing cannot be inferred, allow spacings of 1/month
+        if not (dset[time_dim].resample({time_dim: 'MS'}).count() == 1).all():
+            raise ValueError(
+                f"Data needs to be uniformly spaced in the {time_dim!r} dimension."
+            )
 
     # Retrieve calendar name
     calendar = _infer_calendar_name(dset[time_dim])

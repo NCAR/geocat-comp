@@ -1,4 +1,5 @@
 import cftime
+import datetime
 import numpy as np
 from packaging.version import Version
 import pandas as pd
@@ -752,6 +753,27 @@ class Test_Calendar_Average:
         with pytest.raises(ValueError):
             calendar_average(non_uniform, freq='day')
 
+    def test_missing_month_calendar_average(self) -> None:
+        time = pd.to_datetime(['2020-01-01', '2020-02-01', '2020-04-01'])
+        missing_month = xr.Dataset(
+            data_vars={'data': (('time'), np.arange(3))}, coords={'time': time}
+        )
+        with pytest.raises(ValueError):
+            calendar_average(missing_month, freq='year')
+
+    def test_uneven_months_calendar_average(self) -> None:
+        time = pd.to_datetime(['2020-01-1', '2020-02-1', '2020-03-1'])
+        even_months = xr.Dataset(
+            data_vars={'data': (('time'), np.arange(3))}, coords={'time': time}
+        )
+        even_result = calendar_average(even_months, freq='year')
+        time = pd.to_datetime(['2020-01-15', '2020-02-14', '2020-03-16'])
+        uneven_months = xr.Dataset(
+            data_vars={'data': (('time'), np.arange(3))}, coords={'time': time}
+        )
+        uneven_result = calendar_average(uneven_months, freq='year')
+        xr.testing.assert_equal(even_result, uneven_result)
+
     @pytest.mark.parametrize(
         "name, dset, expected",
         [
@@ -1042,6 +1064,23 @@ class Test_Climatology_Average:
         )
         with pytest.raises(ValueError):
             climatology_average(non_uniform, freq='day')
+
+    def test_missing_month_climatology_average(self) -> None:
+        time = pd.to_datetime(['2020-01-01', '2020-02-01', '2020-04-01'])
+        missing_month = xr.Dataset(
+            data_vars={'data': (('time'), np.arange(3))}, coords={'time': time}
+        )
+        with pytest.raises(ValueError):
+            climatology_average(missing_month, freq='month')
+
+    def test_uneven_months_climatology_average(self) -> None:
+        array_expected = self.day_2_month_clim['data']
+        input_array = array_expected.copy()
+        new_time_index = list(input_array.indexes['time'])
+        new_time_index[1] = new_time_index[1] + datetime.timedelta(hours=24)
+        input_array['time'] = new_time_index
+        result = climatology_average(input_array, freq='month')
+        xr.testing.assert_allclose(result, array_expected)
 
     @pytest.mark.parametrize(
         "name, dset, expected",
