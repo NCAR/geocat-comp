@@ -8,6 +8,8 @@ import xarray as xr
 import numpy as np
 import geocat.datafiles as gdf
 
+from util import _get_toy_climatology_data, get_fake_climatology_dataset
+
 # import everything for dask compatibility and performance tests
 from geocat.comp.meteorology import (
     dewtemp,
@@ -29,6 +31,13 @@ from geocat.comp.gradient import (
 from geocat.comp.interpolation import (
     interp_hybrid_to_pressure,
     interp_sigma_to_hybrid,
+)
+
+from geocat.comp.climatologies import (
+    climate_anomaly,
+    month_to_season,
+    calendar_average,
+    climatology_average,
 )
 
 
@@ -363,3 +372,33 @@ class TestDaskCompat:
 
         assert isinstance(out.data, dask.array.Array)
         assert np.allclose(xh_expected, out, atol=5e-6, equal_nan=True)
+
+
+class TestDaskCompat_climatology:
+    def test_climate_anomaly_dask(self):
+        ds = _get_toy_climatology_data('2020-01-01', '2021-12-31', 'D', 4, 1)
+        daily = ds.data.chunk({'lat': 1})
+
+        out = climate_anomaly(daily, 'season')
+
+        assert isinstance(out.data, dask.array.Array)
+
+    def test_month_to_season_dask(self):
+        ds = get_fake_climatology_dataset(
+            start_month="2000-01", nmonths=12, nlats=1, nlons=1
+        )
+        da = ds.my_var.chunk({'time': 4})
+        out = month_to_season(da, 'JFM')
+        assert isinstance(out.data, dask.array.Array)
+
+    def test_calendar_average_dask(self):
+        ds = _get_toy_climatology_data('2020-01-01', '2021-12-01', 'MS', 1, 1)
+        monthly = ds.data.chunk({'time': 6})
+        out = calendar_average(monthly, 'season')
+        assert isinstance(out.data, dask.array.Array)
+
+    def test_climatology_average_dask(self):
+        ds = _get_toy_climatology_data('2020-01-01', '2021-12-01', 'MS', 1, 1)
+        monthly = ds.data.chunk({'time': 6})
+        out = climatology_average(monthly, 'season')
+        assert isinstance(out.data, dask.array.Array)
