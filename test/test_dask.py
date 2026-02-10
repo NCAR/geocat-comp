@@ -1,3 +1,5 @@
+from typing import Any, Generator
+
 import pytest
 
 import dask.array
@@ -31,7 +33,7 @@ from geocat.comp.interpolation import (
 
 
 @pytest.fixture(scope="module")
-def client() -> None:
+def client() -> Generator[dask.distributed.Client]:
     # dask client reference for all subsequent tests
     client = Client()
     yield client
