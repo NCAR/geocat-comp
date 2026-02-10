@@ -8,6 +8,8 @@ import xarray.testing
 import xarray as xr
 from xarray import __version__ as xarray_version
 
+from util import get_fake_climatology_dataset, _get_toy_climatology_data
+
 from geocat.comp import (
     climate_anomaly,
     month_to_season,
@@ -17,62 +19,8 @@ from geocat.comp import (
 from geocat.comp.climatologies import _infer_calendar_name
 
 
-##### Helper Functions #####
-def get_fake_dataset(start_month, nmonths, nlats, nlons):
-    """Returns a very simple xarray dataset for testing.
-
-    Data values are equal to "month of year" for monthly time steps.
-    """
-    # Create coordinates
-    months = pd.date_range(
-        start=pd.to_datetime(start_month), periods=nmonths, freq="MS"
-    )
-    lats = np.linspace(start=-90, stop=90, num=nlats, dtype="float32")
-    lons = np.linspace(start=-180, stop=180, num=nlons, dtype="float32")
-
-    # Create data variable. Construct a 3D array with time as the first
-    # dimension.
-    month_values = np.expand_dims(np.arange(start=1, stop=nmonths + 1), axis=(1, 2))
-    var_values = np.tile(month_values, (1, nlats, nlons))
-
-    ds = xr.Dataset(
-        data_vars={
-            "my_var": (("time", "lat", "lon"), var_values.astype("float32")),
-        },
-        coords={"time": months, "lat": lats, "lon": lons},
-        attrs={'Description': 'This is dummy data for testing.'},
-    )
-    return ds
-
-
-def _get_dummy_data(start_date, end_date, freq, nlats, nlons, calendar='standard'):
-    """Returns a simple xarray dataset to test with.
-
-    Data can be hourly, daily, or monthly.
-    """
-    # Coordinates
-    time = xr.date_range(
-        start=start_date, end=end_date, freq=freq, calendar=calendar, use_cftime=True
-    )
-    lats = np.linspace(start=-90, stop=90, num=nlats, dtype='float32')
-    lons = np.linspace(start=-180, stop=180, num=nlons, dtype='float32')
-
-    # Create data variable
-    values = np.expand_dims(np.arange(len(time)), axis=(1, 2))
-    data = np.tile(values, (1, nlats, nlons))
-    ds = xr.Dataset(
-        data_vars={'data': (('time', 'lat', 'lon'), data)},
-        coords={'time': time, 'lat': lats, 'lon': lons},
-        attrs={'Description': 'This is dummy data for testing.'},
-    )
-    return ds
-
-
-##### End Helper Functions #####
-
-
 class Test_Climate_Anomaly:
-    daily = _get_dummy_data('2020-01-01', '2021-12-31', 'D', 1, 1)
+    daily = _get_toy_climatology_data('2020-01-01', '2021-12-31', 'D', 1, 1)
 
     def test_daily_anomaly(self) -> None:
         expected_anom = np.concatenate(
@@ -281,10 +229,14 @@ class Test_Climate_Anomaly:
 
 
 class Test_Month_to_Season:
-    ds1 = get_fake_dataset(start_month="2000-01", nmonths=12, nlats=1, nlons=1)
+    ds1 = get_fake_climatology_dataset(
+        start_month="2000-01", nmonths=12, nlats=1, nlons=1
+    )
 
     # Create another dataset for the year 2001.
-    ds2 = get_fake_dataset(start_month="2001-01", nmonths=12, nlats=1, nlons=1)
+    ds2 = get_fake_climatology_dataset(
+        start_month="2001-01", nmonths=12, nlats=1, nlons=1
+    )
 
     # Create a dataset that combines the two previous datasets, for two
     # years of data.
@@ -293,19 +245,19 @@ class Test_Month_to_Season:
     ds4 = xr.tutorial.open_dataset("rasm").rename({"time": "Times"})
 
     # Create a dataset with the wrong number of months.
-    partial_year_dataset = get_fake_dataset(
+    partial_year_dataset = get_fake_climatology_dataset(
         start_month="2000-01", nmonths=13, nlats=1, nlons=1
     )
 
     # Create a dataset with a custom time coordinate.
-    custom_time_dataset = get_fake_dataset(
+    custom_time_dataset = get_fake_climatology_dataset(
         start_month="2000-01", nmonths=12, nlats=1, nlons=1
     )
     custom_time_dataset = custom_time_dataset.rename({"time": "my_time"})
 
-    # Create a more complex dataset just to verify that get_fake_dataset()
+    # Create a more complex dataset just to verify that get_fake_climatology_dataset()
     # is generally working.
-    complex_dataset = get_fake_dataset(
+    complex_dataset = get_fake_climatology_dataset(
         start_month="2001-01", nmonths=12, nlats=10, nlons=10
     )
 
@@ -378,10 +330,12 @@ class Test_Month_to_Season:
 
 
 class Test_Calendar_Average:
-    minute = _get_dummy_data('2020-01-01', '2021-12-31 23:30:00', '30min', 1, 1)
-    hourly = _get_dummy_data('2020-01-01', '2021-12-31 23:00:00', 'h', 1, 1)
-    daily = _get_dummy_data('2020-01-01', '2021-12-31', 'D', 1, 1)
-    monthly = _get_dummy_data('2020-01-01', '2021-12-01', 'MS', 1, 1)
+    minute = _get_toy_climatology_data(
+        '2020-01-01', '2021-12-31 23:30:00', '30min', 1, 1
+    )
+    hourly = _get_toy_climatology_data('2020-01-01', '2021-12-31 23:00:00', 'h', 1, 1)
+    daily = _get_toy_climatology_data('2020-01-01', '2021-12-31', 'D', 1, 1)
+    monthly = _get_toy_climatology_data('2020-01-01', '2021-12-01', 'MS', 1, 1)
 
     month_avg = np.array(
         [
@@ -460,16 +414,16 @@ class Test_Calendar_Average:
     custom_time = daily.rename({'time': time_dim})
     custom_time_expected = day_2_month_avg.rename({'time': time_dim})
 
-    julian_daily = _get_dummy_data(
+    julian_daily = _get_toy_climatology_data(
         '2020-01-01', '2021-12-31', 'D', 1, 1, calendar='julian'
     )
-    noleap_daily = _get_dummy_data(
+    noleap_daily = _get_toy_climatology_data(
         '2020-01-01', '2021-12-31', 'D', 1, 1, calendar='noleap'
     )
-    all_leap_daily = _get_dummy_data(
+    all_leap_daily = _get_toy_climatology_data(
         '2020-01-01', '2021-12-31', 'D', 1, 1, calendar='all_leap'
     )
-    day_360_daily = _get_dummy_data(
+    day_360_daily = _get_toy_climatology_data(
         '2020-01-01', '2021-12-30', 'D', 1, 1, calendar='360_day'
     )
     # Daily -> Monthly Means for Julian Calendar
@@ -791,13 +745,15 @@ class Test_Calendar_Average:
 
 
 class Test_Climatology_Average:
-    minute = _get_dummy_data('2020-01-01', '2021-12-31 23:30:00', '30min', 1, 1)
+    minute = _get_toy_climatology_data(
+        '2020-01-01', '2021-12-31 23:30:00', '30min', 1, 1
+    )
 
-    hourly = _get_dummy_data('2020-01-01', '2021-12-31 23:00:00', 'h', 1, 1)
+    hourly = _get_toy_climatology_data('2020-01-01', '2021-12-31 23:00:00', 'h', 1, 1)
 
-    daily = _get_dummy_data('2020-01-01', '2021-12-31', 'D', 1, 1)
+    daily = _get_toy_climatology_data('2020-01-01', '2021-12-31', 'D', 1, 1)
 
-    monthly = _get_dummy_data('2020-01-01', '2021-12-01', 'MS', 1, 1)
+    monthly = _get_toy_climatology_data('2020-01-01', '2021-12-01', 'MS', 1, 1)
 
     hour_clim = np.concatenate(
         [
@@ -859,16 +815,16 @@ class Test_Climatology_Average:
         },
     )
 
-    julian_daily = _get_dummy_data(
+    julian_daily = _get_toy_climatology_data(
         '2020-01-01', '2021-12-31', 'D', 1, 1, calendar='julian'
     )
-    noleap_daily = _get_dummy_data(
+    noleap_daily = _get_toy_climatology_data(
         '2020-01-01', '2021-12-31', 'D', 1, 1, calendar='noleap'
     )
-    all_leap_daily = _get_dummy_data(
+    all_leap_daily = _get_toy_climatology_data(
         '2020-01-01', '2021-12-31', 'D', 1, 1, calendar='all_leap'
     )
-    day_360_daily = _get_dummy_data(
+    day_360_daily = _get_toy_climatology_data(
         '2020-01-01', '2021-12-30', 'D', 1, 1, calendar='360_day'
     )
 
