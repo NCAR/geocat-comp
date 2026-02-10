@@ -23,7 +23,7 @@ jobs:
       CONDA_ENV_FILE: ci/environment.yml
 
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #v6-beta
+      - uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98 #v6-beta
         with:
           fetch-depth: 0
 
@@ -32,7 +32,7 @@ jobs:
         run: echo "value=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_OUTPUT  # just the repo name, not owner
 
       - name: Setup Miniforge
-        uses: conda-incubator/setup-miniconda@835234971496cad1653abb28a638a281cf32541f # v3
+        uses: conda-incubator/setup-miniconda@fc2d68f6413eb2d87b895e92f8584b5b94a10167 # v3
         with:
           miniforge-version: "24.1.2-0"
           activate-environment: asv-bench
