@@ -49,7 +49,7 @@ def client() -> Generator[dask.distributed.Client]:
     client.close()
 
 
-class TestDaskCompat:
+class TestDaskCompat_meteorology:
     def test_dewtemp_dask(self):
         # fmt: off
         t_def = [29.3, 28.1, 23.5, 20.9, 18.4, 15.9, 13.1, 10.1, 6.7, 3.1,
@@ -218,6 +218,8 @@ class TestDaskCompat:
         assert isinstance(out.data, dask.array.Array)
         assert np.allclose(out, ncl_gt, atol=0.005)
 
+
+class TestDaskCompat_gradient:
     @pytest.mark.xfail(reason="gradient not compatible with dask")
     def test_gradient_dask(self):
         test_data = (
@@ -239,6 +241,8 @@ class TestDaskCompat:
             np.array(out), np.array(expected_results), decimal=3
         )
 
+
+class TestDaskCompat_interpolation:
     def test_interp_hybrid_to_pressure_dask(self):
         pres3d = np.asarray([1000, 950, 800, 700, 600, 500, 400, 300, 200]) * 100
 
