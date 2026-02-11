@@ -7,6 +7,7 @@ from dask.distributed import Client
 import xarray as xr
 import numpy as np
 import geocat.datafiles as gdf
+from math import tau
 
 from util import _get_toy_climatology_data, get_fake_climatology_dataset
 
@@ -38,6 +39,13 @@ from geocat.comp.climatologies import (
     month_to_season,
     calendar_average,
     climatology_average,
+)
+
+from geocat.comp.fourier_filters import (
+    fourier_band_block,
+    fourier_high_pass,
+    fourier_low_pass,
+    fourier_band_pass,
 )
 
 
@@ -405,4 +413,60 @@ class TestDaskCompat_climatology:
         ds = _get_toy_climatology_data('2020-01-01', '2021-12-01', 'MS', 1, 1)
         monthly = ds.data.chunk({'time': 6})
         out = climatology_average(monthly, 'season')
+        assert isinstance(out.data, dask.array.Array)
+
+
+class TestDaskCompat_fourier:
+    freq = 1000
+    t = np.arange(1000) / freq
+    t_data_1 = (
+        np.sin(t * tau) / 0.1
+        + np.sin(2 * t * tau) / 0.2
+        + np.sin(5 * t * tau) / 0.5
+        + np.sin(10 * t * tau)
+        + np.sin(20 * t * tau) / 2
+        + np.sin(50 * t * tau) / 5
+        + np.sin(100 * t * tau) / 10
+    )
+
+    t_data_2 = (
+        np.sin(t * tau) / 0.1
+        + np.sin(2 * t * tau) / 0.2
+        + np.sin(10 * t * tau)
+        + np.sin(20 * t * tau) / 2
+        + np.sin(100 * t * tau) / 10
+    )
+
+    da = xr.DataArray(
+        data=[t_data_1, t_data_2],
+        dims=['signal', "frequency"],
+        coords={"frequency": t},
+    )
+
+    @pytest.mark.xfail(reason="fourier_high_pass not compatible with dask")
+    def test_fourier_high_pass_dask(self):
+        signal = self.da.chunk({'signal': 1})
+        out = fourier_high_pass(signal, self.freq, 15)
+
+        assert isinstance(out.data, dask.array.Array)
+
+    @pytest.mark.xfail(reason="fourier_low_pass not compatible with dask")
+    def test_fourier_low_pass_dask(self):
+        signal = self.da.chunk({'signal': 1})
+        out = fourier_low_pass(signal, self.freq, 15)
+
+        assert isinstance(out.data, dask.array.Array)
+
+    @pytest.mark.xfail(reason="fourier_band_pass not compatible with dask")
+    def test_fourier_band_pass_dask(self):
+        signal = self.da.chunk({'signal': 1})
+        out = fourier_band_pass(signal, self.freq, 3, 15)
+
+        assert isinstance(out.data, dask.array.Array)
+
+    @pytest.mark.xfail(reason="fourier_band_block not compatible with dask")
+    def test_fourier_band_block_dask(self):
+        signal = self.da.chunk({'signal': 1})
+        out = fourier_band_block(signal, self.freq, 3, 30)
+
         assert isinstance(out.data, dask.array.Array)
