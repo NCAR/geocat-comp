@@ -1384,7 +1384,7 @@ def zonal_mpsi(uxds, lat=(-90, 10, 90)):
     g = 9.80665  # gravity (m/s^2)
 
     # Define possible names
-    wind_names = ['V', 'vs', 'meridional_wind', 'zonal_wind']
+    wind_names = ['V', 'vs', 'meridional_wind', 'northward_wind']
     pressure_names = [
         'PS',
         'ps',
@@ -1396,18 +1396,18 @@ def zonal_mpsi(uxds, lat=(-90, 10, 90)):
     hybridB_names = ['hybm', 'hybrid_B_midpoints']
     plev_names = ['plev', 'pressure_lev', 'pressure_levels']
 
-    zonal_wind = _find_coord(uxds, wind_names)
+    meridional_wind = _find_coord(uxds, wind_names)
     surface_pressure = _find_coord(uxds, pressure_names)
     hyam = _find_optional_coord(uxds, hybridA_names)
     hybm = _find_optional_coord(uxds, hybridB_names)
     plev = _find_optional_coord(uxds, plev_names)
 
     # Check if interpolation needs to be done
-    if plev and plev in uxds[zonal_wind].dims:
-        ux_ipress = uxds[zonal_wind]
+    if plev and plev in uxds[meridional_wind].dims:
+        ux_ipress = uxds[meridional_wind]
     elif hyam and hybm:
         da_ipress = interp_hybrid_to_pressure(
-            uxds[zonal_wind], uxds[surface_pressure], uxds[hyam], uxds[hybm]
+            uxds[meridional_wind], uxds[surface_pressure], uxds[hyam], uxds[hybm]
         )
         ux_ipress = ux.UxDataArray(da_ipress, uxgrid=uxds.uxgrid)
     else:
