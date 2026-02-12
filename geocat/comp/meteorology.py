@@ -1344,7 +1344,8 @@ def dpres_plev(pressure_lev, surface_pressure, pressure_top=None):
 _generate_wrapper_docstring(dpres_plev, delta_pressure)
 
 
-def zonal_mpsi(uxds):
+def zonal_mpsi(uxds, 
+                lat=list(range(-90, 91, 10))):
     """
     Calculate the zonally averaged meridional mass streamfunction (mpsi) from a UXarray Dataset.
 
@@ -1358,10 +1359,11 @@ def zonal_mpsi(uxds):
             - hyam : Hybrid A coefficients (if V is on hybrid sigma-pressure levels)
             - hybm : Hybrid B coefficients (if V is on hybrid sigma-pressure levels)
             - uxgrid : Grid information for uxarray
+    lat: list of latitudes to use for zonal mean (default: every 10 degrees from -90 to 90)
 
     Returns
     -------
-    ux_mpsi : uxarray.UxDataArray
+    da_mpsi : xarray.DataArray
         Zonal mean meridional mass streamfunction, scaled by Earth's geometry and gravity.
         Dimensions: ["time", "latitudes", "plev"]
 
@@ -1380,6 +1382,7 @@ def zonal_mpsi(uxds):
 
     # Basic input validation
     if not hasattr(uxds, "V") or not hasattr(uxds, "PS"):
+        print("uxds variables:", list(uxds.data_vars))
         raise AttributeError(
             "zonal_mpsi: input uxds must contain 'V' and 'PS' variables"
         )
@@ -1388,110 +1391,41 @@ def zonal_mpsi(uxds):
         raise AttributeError(
             "zonal_mpsi: input uxds missing required 'uxgrid' metadata (uxarray)"
         )
-
-    # Auto-detect whether V is already on pressure levels (prefer explicit 'plev').
-    is_on_plev = False
-    if "plev" in getattr(uxds.V, "coords", {}) or "plev" in getattr(uxds.V, "dims", ()):
-        is_on_plev = True
-
-    if is_on_plev:
-        # accept UxDataArray or DataArray inputs
-        if isinstance(uxds.V, ux.UxDataArray):
-            da_ipress = uxds.V
-        else:
-            da = uxds.V if isinstance(uxds.V, xr.DataArray) else xr.DataArray(uxds.V)
-        # Only pass a ux.Grid instance to UxDataArray; otherwise pass None
-        _uxgrid = getattr(uxds, "uxgrid", None)
-        grid_param = (
-            _uxgrid if (hasattr(ux, "Grid") and isinstance(_uxgrid, ux.Grid)) else None
-        )
-        ux_ipress = ux.UxDataArray(da, uxgrid=grid_param)
+    
+    # Check if interpolation needs to be done
+    if "plev" in uxds["V"].dims:
+        ux_ipress = uxds["V"]
+    elif hasattr(uxds, "hyam") and hasattr(uxds, "hybm"):
+        da_ipress = interp_hybrid_to_pressure(
+            uxds.V, 
+            uxds.PS, 
+            uxds.hyam, 
+            uxds.hybm)
+        ux_ipress = ux.UxDataArray(da_ipress, uxgrid=uxds.uxgrid)
     else:
-        # require hybrid coefficients
-        if not hasattr(uxds, "hyam") or not hasattr(uxds, "hybm"):
-            raise AttributeError(
+        raise AttributeError(
                 "zonal_mpsi: input uxds must have either a 'plev' coordinate on V or hybrid coefficients 'hyam' and 'hybm'"
             )
 
-        # determine a reasonable lev_dim to pass to the interpolator (use the last dim of V)
-        lev_dim = (
-            uxds.V.dims[-1]
-            if hasattr(uxds.V, "dims") and len(uxds.V.dims) > 0
-            else None
-        )
-
-        try:
-            da_ipress = interp_hybrid_to_pressure(
-                uxds.V, uxds.PS, uxds.hyam, uxds.hybm, lev_dim=lev_dim
-            )
-        except Exception as e:
-            raise RuntimeError(
-                f"zonal_mpsi: failed to convert hybrid levels to pressure levels: {e}"
-            )
-
-        # Ensure we have an xarray DataArray and convert to uxarray UxDataArray
-        if not isinstance(da_ipress, xr.DataArray):
-            da_ipress = xr.DataArray(da_ipress)
-
-    _uxgrid = getattr(uxds, "uxgrid", None)
-    grid_param = (
-        _uxgrid if (hasattr(ux, "Grid") and isinstance(_uxgrid, ux.Grid)) else None
-    )
-    ux_ipress = ux.UxDataArray(da_ipress, uxgrid=grid_param)
-
-    # Require a canonical 'plev' coordinate on the pressure-level data.
-    if "plev" not in ux_ipress.coords and "plev" not in ux_ipress.dims:
-        raise ValueError(
-            "zonal_mpsi: could not find pressure-level coordinate 'plev' in converted data; provide 'plev' or hybrid coefficients"
-        )
-
-    # Keep UX types up through the zonal_mean step, Xarray after
-    da_v_zonal = ux_ipress.zonal_mean()
-
-    # Zonal mean of surface pressure
-    if hasattr(uxds.PS, "zonal_mean"):
-        ux_PS_zonal = uxds.PS.zonal_mean()
-    else:
-        # infer a longitude dim name
-        lon_dim = None
-        for d in uxds.PS.dims:
-            if "lon" in d or "long" in d:
-                lon_dim = d
-                break
-        if lon_dim is None:
-            raise ValueError(
-                "zonal_mpsi: cannot compute zonal mean of PS; no longitude dimension found"
-            )
-        ux_PS_zonal = uxds.PS.mean(dim=lon_dim)
-    # integration deltas
-    plev_coord = da_v_zonal.coords['plev']
-    dp = delta_pressure(plev_coord, ux_PS_zonal)
-
-    # Convert delta_pressure result to an xarray DataArray
-    if isinstance(dp, xr.DataArray):
-        da_dp_zonal = dp
-    else:
-        # infer dims and coords from da_v_zonal
-        dims = da_v_zonal.dims
-        coords = {d: da_v_zonal.coords[d] for d in dims if d in da_v_zonal.coords}
-        coords['plev'] = da_v_zonal.coords['plev']
-        da_dp_zonal = xr.DataArray(dp, dims=dims, coords=coords, name="delta_pressure")
+    # zonal means
+    da_v_zonal = ux_ipress.zonal_mean(lat=lat)
+    da_v_zonal['plev'] = ux_ipress.plev
+    da_PS_zonal = uxds.PS.zonal_mean(lat=lat)
 
     # scaling factor
-    if "latitudes" not in da_v_zonal.coords:
-        lat_candidates = ("lat", "latitude", "latitudes")
-        lat_name = next((n for n in lat_candidates if n in da_v_zonal.coords), None)
-        if lat_name is None:
-            raise ValueError(
-                "zonal_mpsi: could not find latitude coordinate on zonal data"
-            )
-    else:
-        lat_name = "latitudes"
+    da_scaling_factor = 2 * np.pi * a * np.cos(lat) / g
 
-    da_scaling_factor = xr.DataArray(
-        2 * np.pi * a * np.cos(da_v_zonal.coords[lat_name]) / g,
-        coords={lat_name: da_v_zonal.coords[lat_name]},
-        dims=(lat_name,),
+    # delta pressure for integration
+    np_dp_zonal = delta_pressure(da_v_zonal.plev, da_PS_zonal)
+
+    da_dp_zonal = xr.DataArray(
+        np_dp_zonal,
+        dims=["time", "latitudes", "plev"],
+        coords={
+            "plev": da_v_zonal.plev,
+            "latitudes": lat
+            },
+        name="delta_pressure"
     )
 
     # check orientation and integrate along pressure dim
