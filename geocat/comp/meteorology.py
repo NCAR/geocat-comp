@@ -1398,6 +1398,7 @@ def zonal_mpsi(uxds, lat=(-90, 10, 90)):
         possible_names=[
             'PS',
             'ps',
+            'p_surface',
             'surface_pressure',
             'pressure_surface',
         ],
@@ -1429,7 +1430,7 @@ def zonal_mpsi(uxds, lat=(-90, 10, 90)):
         ux_ipress = ux.UxDataArray(da_ipress, uxgrid=uxds.uxgrid)
     else:
         raise AttributeError(
-            "zonal_mpsi: input uxds must have either a 'plev' coordinate on V or hybrid coefficients 'hyam' and 'hybm'"
+            "zonal_mpsi: input uxds must have either a pressure level coordinate for its meridional_wind variable or hybrid coefficients."
         )
 
     # zonal means
