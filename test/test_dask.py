@@ -9,7 +9,11 @@ import numpy as np
 import geocat.datafiles as gdf
 from math import tau
 
-from util import _get_toy_climatology_data, get_fake_climatology_dataset
+from util import (
+    _get_toy_climatology_data,
+    get_fake_climatology_dataset,
+    make_toy_temp_dataset,
+)
 
 # import everything for dask compatibility and performance tests
 from geocat.comp.meteorology import (
@@ -47,6 +51,10 @@ from geocat.comp.fourier_filters import (
     fourier_low_pass,
     fourier_band_pass,
 )
+
+from geocat.comp.spherical import decomposition, recomposition, scale_voronoi
+
+from geocat.comp.stats import eofunc_eofs, eofunc_pcs, pearson_r, nmse
 
 
 @pytest.fixture(scope="module")
@@ -469,4 +477,91 @@ class TestDaskCompat_fourier:
         signal = self.da.chunk({'signal': 1})
         out = fourier_band_block(signal, self.freq, 3, 30)
 
+        assert isinstance(out.data, dask.array.Array)
+
+
+class TestDaskCompat_spherical:
+    def test_decomposition_dask(self, spherical_data):
+        out = decomposition(
+            spherical_data['test_data_xr'].chunk(),
+            spherical_data['test_scale_xr'].chunk(),
+            spherical_data['theta_xr'].chunk(),
+            spherical_data['phi_xr'].chunk(),
+        )
+
+        assert isinstance(out.data, dask.array.Array)
+
+    def test_recomputation_dask(self, spherical_data):
+        out = recomposition(
+            spherical_data['test_results_xr'].chunk(),
+            spherical_data['theta_xr'].chunk(),
+            spherical_data['phi_xr'].chunk(),
+        )
+
+        assert isinstance(out.data, dask.array.Array)
+
+    @pytest.mark.xfail(reason="scale_voroni not compatible with dask")
+    def test_scale_voroni_dask(self, spherical_data):
+        out = scale_voronoi(
+            spherical_data['theta_xr'].chunk(),
+            spherical_data['phi_xr'].chunk(),
+        )
+        # out.data is a memory view?
+        assert isinstance(out.data, dask.array.Array)
+
+
+class TestDaskCompat_stats:
+    @pytest.mark.xfail(reason="eofunc_eofs not compatible with dask")
+    def test_eofunc_eofs_dask(self):
+        data = xr.DataArray(
+            np.arange(64, dtype='double').reshape((4, 4, 4)), dims=["time", "x1", "x2"]
+        ).chunk()
+        out = eofunc_eofs(data, neofs=1, time_dim=2)
+
+        assert isinstance(out.data, dask.array.Array)
+
+    @pytest.mark.xfail(reason="eofunc_eofs not compatible with dask")
+    def test_eofunc_pcs_dask(self):
+        data = xr.DataArray(
+            np.arange(64, dtype='double').reshape((4, 4, 4)), dims=["time", "x1", "x2"]
+        ).chunk()
+        out = eofunc_pcs(data, npcs=5)
+
+        assert isinstance(out.data, dask.array.Array)
+
+    def test_pearson_r_dask(self):
+        times = xr.date_range(
+            start='2022-08-01', end='2022-08-03', freq='D', use_cftime=True
+        )
+        lats = np.linspace(start=-45, stop=45, num=3, dtype='float32')
+        lons = np.linspace(start=-180, stop=180, num=2, dtype='float32')
+        x, y, z = np.meshgrid(lons, lats, times)
+        a = np.random.random_sample((len(lats), len(lons), len(times)))
+        b = np.power(a, 2)
+        weights = np.cos(np.deg2rad(y))
+        ds = xr.Dataset(
+            data_vars={
+                'a': (('lat', 'lon', 'time'), a),
+                'b': (('lat', 'lon', 'time'), b),
+                'weights': (('lat', 'lon', 'time'), weights),
+            },
+            coords={'lat': lats, 'lon': lons, 'time': times},
+            attrs={'description': 'Test data'},
+        )
+        axr = ds.a.chunk()
+        bxr = ds.b.chunk()
+        wxr = ds.weights.chunk()
+        out = pearson_r(axr, bxr, weights=wxr)
+
+        assert isinstance(out.data, dask.array.Array)
+
+    def test_nmse_dask(self):
+        nlat = 10
+        nlon = 10
+        nt = 2
+
+        m = make_toy_temp_dataset(nlat=nlat, nlon=nlon, nt=nt, nans=True).t.chunk()
+        o = make_toy_temp_dataset(nlat=nlat, nlon=nlon, nt=nt, nans=True).t.chunk()
+
+        out = nmse(o, m)
         assert isinstance(out.data, dask.array.Array)
