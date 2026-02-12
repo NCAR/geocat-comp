@@ -1347,7 +1347,7 @@ _generate_wrapper_docstring(dpres_plev, delta_pressure)
 
 def zonal_mpsi(uxds, lat=(-90, 10, 90)):
     """
-    Calculate the zonally averaged meridional mass streamfunction (mpsi) from a UXarray Dataset.
+    Calculate the zonally averaged meridional stream function (mpsi) from a UXarray Dataset.
 
     Parameters
     ----------
@@ -1367,7 +1367,7 @@ def zonal_mpsi(uxds, lat=(-90, 10, 90)):
     Returns
     -------
     da_mpsi : xarray.DataArray
-        Zonal mean meridional mass streamfunction, scaled by Earth's geometry and gravity.
+        Zonal mean meridional streamf unction, scaled by Earth's geometry and gravity.
         Dimensions: ["time", "latitudes", "plev"]
 
     Notes
@@ -1401,7 +1401,7 @@ def zonal_mpsi(uxds, lat=(-90, 10, 90)):
     hyam = _find_optional_coord(uxds, hybridA_names)
     hybm = _find_optional_coord(uxds, hybridB_names)
     plev = _find_optional_coord(uxds, plev_names)
-                               
+
     # Check if interpolation needs to be done
     if plev and plev in uxds[zonal_wind].dims:
         ux_ipress = uxds[zonal_wind]
@@ -1447,9 +1447,9 @@ def zonal_mpsi(uxds, lat=(-90, 10, 90)):
     try:
         da_mpsi.attrs.update(
             {
-                "long_name": "zonal mean meridional mass streamfunction",
+                "long_name": "zonal mean meridional stream function",
                 "units": "kg/s",
-                "info": "zonal_mpsi: integrated meridional mass streamfunction",
+                "info": "zonal_mpsi: integrated meridional stream function",
             }
         )
     except Exception:
