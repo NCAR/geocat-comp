@@ -72,15 +72,14 @@ def _find_var(
     KeyError
         If no matching variable is found
     """
-    error_parts = [f"Could not find {description}. "]
+    error_parts = []
 
     # First try CF standard_name attribute match
     if standard_name:
         for var_name in ds.data_vars:
             var_attrs = ds[var_name].attrs
-            if (
-                var_name == standard_name
-                or var_attrs.get('standard_name') == standard_name
+            if var_name == standard_name or standard_name in var_attrs.get(
+                'standard_name', ''
             ):
                 return var_name
         error_parts.append(f"Tried standard_name: {standard_name}. ")
@@ -89,7 +88,7 @@ def _find_var(
     if long_name:
         for var_name in ds.data_vars:
             var_attrs = ds[var_name].attrs
-            if var_attrs.get('long_name') == long_name:
+            if long_name in var_attrs.get('long_name', ''):
                 return var_name
         error_parts.append(f"Tried long_name: {long_name}. ")
 
@@ -105,18 +104,18 @@ def _find_var(
         for var_name in ds.data_vars:
             var_attrs = ds[var_name].attrs
             if 'units' in var_attrs:
-                if var_attrs.get('units') == units:
+                if units in var_attrs.get('units', ''):
                     warnings.warn(
                         f"Found {description} '{var_name}' using units attribute only. "
                         f"This is unreliable - multiple variables may share the same units. "
-                        f"Please verify this is correct and add CF standard_name.",
+                        f"Please verify this is correct and add CF standard_name. {error_parts}",
                         UserWarning,
                         stacklevel=3,
                     )
                     return var_name
         error_parts.append(f"Tried units: {units}. ")
 
-    raise KeyError(" ".join(error_parts))
+    raise KeyError(f"Could not find {description} in dataset. {' '.join(error_parts)}")
 
 
 def _find_optional_var(
@@ -129,14 +128,14 @@ def _find_optional_var(
     ----------
     ds : xr.Dataset or ux.UxDataset
         The dataset to search
-    standard_names : list of str, optional
-        List of CF standard_names
-    long_names : list of str, optional
-        List of long_names
+    standard_name : str, optional
+        CF standard_name to check in attrs
+    long_name : str, optional
+        Long_name to check in attrs
     possible_names : list of str, optional
         List of possible variable names
-    units : list of str, optional
-        List of possible units
+    units : str, optional
+        Possible units to check in attrs
 
     Returns
     -------
