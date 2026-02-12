@@ -5,7 +5,7 @@ import xarray as xr
 import uxarray as ux
 import cf_xarray as cfxr
 
-from .gc_util import _generate_wrapper_docstring, _find_coord, _find_optional_coord
+from .gc_util import _generate_wrapper_docstring, _find_var, _find_optional_var
 from .interpolation import interp_hybrid_to_pressure
 
 
@@ -1383,24 +1383,41 @@ def zonal_mpsi(uxds, lat=(-90, 10, 90)):
     a = 6.371e6  # Earth radius (m)
     g = 9.80665  # gravity (m/s^2)
 
-    # Define possible names
-    wind_names = ['V', 'vs', 'meridional_wind', 'northward_wind']
-    pressure_names = [
-        'PS',
-        'ps',
-        'surface_pressure',
-        'surface_air_pressure',
-        'pressure_surface',
-    ]
-    hybridA_names = ['hyam', 'hybrid_A_midpoints']
-    hybridB_names = ['hybm', 'hybrid_B_midpoints']
-    plev_names = ['plev', 'pressure_lev', 'pressure_levels']
-
-    meridional_wind = _find_coord(uxds, wind_names)
-    surface_pressure = _find_coord(uxds, pressure_names)
-    hyam = _find_optional_coord(uxds, hybridA_names)
-    hybm = _find_optional_coord(uxds, hybridB_names)
-    plev = _find_optional_coord(uxds, plev_names)
+    # Find variables
+    meridional_wind = _find_var(
+        uxds,
+        standard_name='northward_wind',
+        long_name='Meridional wind',
+        possible_names=['V', 'vs', 'meridional_wind'],
+        units='m/s',
+    )
+    surface_pressure = _find_var(
+        uxds,
+        standard_name='surface_air_pressure',
+        long_name='Surface pressure',
+        possible_names=[
+            'PS',
+            'ps',
+            'surface_pressure',
+            'pressure_surface',
+        ],
+        units='Pa',
+    )
+    hyam = _find_optional_var(
+        uxds,
+        long_name='hybrid A coefficient at layer midpoints',
+        possible_names=['hyam', 'hybrid_A_midpoints'],
+    )
+    hybm = _find_optional_var(
+        uxds,
+        long_name='hybrid B coefficient at layer midpoints',
+        possible_names=['hybm', 'hybrid_B_midpoints'],
+    )
+    plev = _find_optional_var(
+        uxds,
+        standard_name='air_pressure',
+        possible_names=['plev', 'pressure_lev', 'pressure_levels'],
+    )
 
     # Check if interpolation needs to be done
     if plev and plev in uxds[meridional_wind].dims:
