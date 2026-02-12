@@ -33,6 +33,7 @@ from .meteorology import (
     saturation_vapor_pressure_slope,
     delta_pressure,
     dpres_plev,
+    zonal_meridional_psi,
     zonal_mpsi,
 )
 from .spherical import decomposition, recomposition, scale_voronoi

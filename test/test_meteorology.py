@@ -16,7 +16,7 @@ from geocat.comp.meteorology import (
     saturation_vapor_pressure,
     saturation_vapor_pressure_slope,
     delta_pressure,
-    zonal_mpsi,
+    zonal_meridional_psi,
 )
 from geocat.comp.interpolation import interp_hybrid_to_pressure
 
@@ -798,14 +798,14 @@ class Test_Delta_Pressure:
         )
 
 
-# ---- Tests for zonal_mpsi ----
-class Test_zonal_mpsi:
+# ---- Tests for zonal_meridional_psi ----
+class Test_zonal_meridional_psi:
     lat = np.arange(36, 45, 1)
 
-    def test_zonal_mpsi_pressure_levels(self) -> None:
+    def test_zonal_meridional_psi_pressure_levels(self) -> None:
         uxds = ux.open_dataset("test/grid_subset.nc", "test/plev_subset.nc")
 
-        out = zonal_mpsi(uxds, lat=self.lat)
+        out = zonal_meridional_psi(uxds, lat=self.lat)
 
         # ---- structural checks ----
         assert isinstance(out, xr.DataArray)
@@ -822,11 +822,11 @@ class Test_zonal_mpsi:
         assert np.isfinite(out).all()
         assert not np.allclose(out.values, 0)
 
-    def test_zonal_mpsi_hybrid_equivalence(self) -> None:
+    def test_zonal_meridional_psi_hybrid_equivalence(self) -> None:
         uxds = ux.open_dataset("test/grid_subset.nc", "test/hybrid_subset.nc")
 
         # ---- function output (hybrid path) ----
-        out_func = zonal_mpsi(uxds, lat=self.lat)
+        out_func = zonal_meridional_psi(uxds, lat=self.lat)
 
         # ---- manual calculation ----
         da_ipress = interp_hybrid_to_pressure(uxds.V, uxds.PS, uxds.hyam, uxds.hybm)

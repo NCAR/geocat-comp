@@ -119,7 +119,12 @@ def _find_var(
 
 
 def _find_optional_var(
-    ds, standard_name=None, long_name=None, possible_names=None, units=None
+    ds,
+    standard_name=None,
+    long_name=None,
+    possible_names=None,
+    units=None,
+    description=None,
 ):
     """
     Find an optional variable using CF-compliant checks.
@@ -143,6 +148,8 @@ def _find_optional_var(
         The name of the found coordinate, or None if not found
     """
     try:
-        return _find_var(ds, standard_name, long_name, possible_names, units)
+        return _find_var(
+            ds, standard_name, long_name, possible_names, units, description
+        )
     except KeyError:
         return None
