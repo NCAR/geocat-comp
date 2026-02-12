@@ -27,3 +27,58 @@ def _generate_wrapper_docstring(
 
     # assign docstring to wrapper function
     setattr(wrapper_fcn, '__doc__', wrapper_docstring)
+
+
+def _find_coord(ds, possible_names, description="coordinate"):
+    """
+    Find a coordinate/variable in uxds by checking multiple possible names.
+
+    Parameters
+    ----------
+    ds : Xr.Dataset
+        The dataset to search
+    possible_names : list of str
+        List of possible names for the coordinate, in priority order
+    description : str, optional
+        Description of the coordinate for error messages
+
+    Returns
+    -------
+    str
+        The name of the found coordinate
+
+    Raises
+    ------
+    KeyError
+        If none of the possible names are found
+    """
+    for name in possible_names:
+        if name in ds:
+            return name
+
+    raise KeyError(
+        f"Could not find {description}. Tried: {possible_names}. "
+        f"Available variables: {list(ds.data_vars)}"
+    )
+
+
+def _find_optional_coord(ds, possible_names):
+    """
+    Find a coordinate that may or may not exist.
+
+    Parameters
+    ----------
+    ds : Xr.Dataset
+        The dataset to search
+    possible_names : list of str
+        List of possible names for the coordinate
+
+    Returns
+    -------
+    str or None
+        The name of the found coordinate, or None if not found
+    """
+    for name in possible_names:
+        if name in ds:
+            return name
+    return None

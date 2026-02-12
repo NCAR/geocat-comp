@@ -3,8 +3,9 @@ import typing
 import warnings
 import xarray as xr
 import uxarray as ux
+import cf_xarray as cfxr
 
-from .gc_util import _generate_wrapper_docstring
+from .gc_util import _generate_wrapper_docstring, _find_coord, _find_optional_coord
 from .interpolation import interp_hybrid_to_pressure
 
 
@@ -1344,7 +1345,7 @@ def dpres_plev(pressure_lev, surface_pressure, pressure_top=None):
 _generate_wrapper_docstring(dpres_plev, delta_pressure)
 
 
-def zonal_mpsi(uxds, lat=list(range(-90, 91, 10))):
+def zonal_mpsi(uxds, lat=(-90, 10, 90)):
     """
     Calculate the zonally averaged meridional mass streamfunction (mpsi) from a UXarray Dataset.
 
@@ -1352,14 +1353,17 @@ def zonal_mpsi(uxds, lat=list(range(-90, 91, 10))):
     ----------
     uxds : uxarray.UxDataset
         Input dataset containing the following required fields:
-            - V : Meridional wind component (on pressure or hybrid sigma-pressure levels)
-            - PS : Surface pressure
+            - meridional_wind : CF Compliant Meridional wind component (on pressure or hybrid sigma-pressure levels)
+            - surface_air_pressure : CF Compliant Surface pressure
             - plev : Pressure levels (if V is on pressure levels)
             - hyam : Hybrid A coefficients (if V is on hybrid sigma-pressure levels)
             - hybm : Hybrid B coefficients (if V is on hybrid sigma-pressure levels)
             - uxgrid : Grid information for uxarray
-    lat: list of latitudes to use for zonal mean (default: every 10 degrees from -90 to 90)
-
+        lat : tuple, float, or array-like, default=(-90, 90, 10)
+            Latitude specification:
+                - tuple (start, end, step): Computes meridional stream function at intervals of `step`.
+                - float: Single latitude
+                - array-like: Latitudes to sample.
     Returns
     -------
     da_mpsi : xarray.DataArray
@@ -1379,23 +1383,33 @@ def zonal_mpsi(uxds, lat=list(range(-90, 91, 10))):
     a = 6.371e6  # Earth radius (m)
     g = 9.80665  # gravity (m/s^2)
 
-    # Basic input validation
-    if not hasattr(uxds, "V") or not hasattr(uxds, "PS"):
-        print("uxds variables:", list(uxds.data_vars))
-        raise AttributeError(
-            "zonal_mpsi: input uxds must contain 'V' and 'PS' variables"
-        )
+    # Define possible names
+    wind_names = ['V', 'vs', 'meridional_wind', 'zonal_wind']
+    pressure_names = [
+        'PS',
+        'ps',
+        'surface_pressure',
+        'surface_air_pressure',
+        'pressure_surface',
+    ]
+    hybridA_names = ['hyam', 'hybrid_A_midpoints']
+    hybridB_names = ['hybm', 'hybrid_B_midpoints']
+    plev_names = ['plev', 'pressure_lev', 'pressure_levels']
 
-    if not hasattr(uxds, "uxgrid"):
-        raise AttributeError(
-            "zonal_mpsi: input uxds missing required 'uxgrid' metadata (uxarray)"
-        )
+    zonal_wind = _find_coord(uxds, wind_names)
+    surface_pressure = _find_coord(uxds, pressure_names)
+    hyam = _find_optional_coord(uxds, hybridA_names)
+    hybm = _find_optional_coord(uxds, hybridB_names)
+    plev = _find_optional_coord(uxds, plev_names)
 
     # Check if interpolation needs to be done
-    if "plev" in uxds["V"].dims:
-        ux_ipress = uxds["V"]
-    elif hasattr(uxds, "hyam") and hasattr(uxds, "hybm"):
-        da_ipress = interp_hybrid_to_pressure(uxds.V, uxds.PS, uxds.hyam, uxds.hybm)
+    plev_coord = _find_optional_coord(uxds, plev_names)
+    if plev_coord and plev_coord in uxds[zonal_wind].dims:
+        ux_ipress = uxds[zonal_wind]
+    elif hyam and hybm:
+        da_ipress = interp_hybrid_to_pressure(
+            uxds[zonal_wind], uxds[surface_pressure], uxds[hyam], uxds[hybm]
+        )
         ux_ipress = ux.UxDataArray(da_ipress, uxgrid=uxds.uxgrid)
     else:
         raise AttributeError(
@@ -1405,15 +1419,16 @@ def zonal_mpsi(uxds, lat=list(range(-90, 91, 10))):
     # zonal means
     da_v_zonal = ux_ipress.zonal_mean(lat=lat)
     da_v_zonal['plev'] = ux_ipress.plev
-    da_PS_zonal = uxds.PS.zonal_mean(lat=lat)
+    da_PS_zonal = uxds[surface_pressure].zonal_mean(lat=lat)
 
     # delta pressure for integration
     np_dp_zonal = delta_pressure(da_v_zonal.plev, da_PS_zonal)
 
+    lats = da_PS_zonal.latitudes
     da_dp_zonal = xr.DataArray(
         np_dp_zonal,
         dims=["time", "latitudes", "plev"],
-        coords={"plev": da_v_zonal.plev, "latitudes": lat},
+        coords={"plev": da_v_zonal.plev, "latitudes": lats},
         name="delta_pressure",
     )
 
@@ -1429,7 +1444,7 @@ def zonal_mpsi(uxds, lat=list(range(-90, 91, 10))):
         da_mpsi = integrand.cumsum(dim="plev").isel({"plev": slice(None, None, -1)})
 
     # apply scaling factor
-    da_scaling_factor = 2 * np.pi * a * np.cos(lat) / g
+    da_scaling_factor = 2 * np.pi * a * np.cos(lats) / g
     da_mpsi = da_mpsi * da_scaling_factor
 
     # metadata
