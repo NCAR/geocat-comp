@@ -1344,8 +1344,7 @@ def dpres_plev(pressure_lev, surface_pressure, pressure_top=None):
 _generate_wrapper_docstring(dpres_plev, delta_pressure)
 
 
-def zonal_mpsi(uxds, 
-                lat=list(range(-90, 91, 10))):
+def zonal_mpsi(uxds, lat=list(range(-90, 91, 10))):
     """
     Calculate the zonally averaged meridional mass streamfunction (mpsi) from a UXarray Dataset.
 
@@ -1391,29 +1390,22 @@ def zonal_mpsi(uxds,
         raise AttributeError(
             "zonal_mpsi: input uxds missing required 'uxgrid' metadata (uxarray)"
         )
-    
+
     # Check if interpolation needs to be done
     if "plev" in uxds["V"].dims:
         ux_ipress = uxds["V"]
     elif hasattr(uxds, "hyam") and hasattr(uxds, "hybm"):
-        da_ipress = interp_hybrid_to_pressure(
-            uxds.V, 
-            uxds.PS, 
-            uxds.hyam, 
-            uxds.hybm)
+        da_ipress = interp_hybrid_to_pressure(uxds.V, uxds.PS, uxds.hyam, uxds.hybm)
         ux_ipress = ux.UxDataArray(da_ipress, uxgrid=uxds.uxgrid)
     else:
         raise AttributeError(
-                "zonal_mpsi: input uxds must have either a 'plev' coordinate on V or hybrid coefficients 'hyam' and 'hybm'"
-            )
+            "zonal_mpsi: input uxds must have either a 'plev' coordinate on V or hybrid coefficients 'hyam' and 'hybm'"
+        )
 
     # zonal means
     da_v_zonal = ux_ipress.zonal_mean(lat=lat)
     da_v_zonal['plev'] = ux_ipress.plev
     da_PS_zonal = uxds.PS.zonal_mean(lat=lat)
-
-    # scaling factor
-    da_scaling_factor = 2 * np.pi * a * np.cos(lat) / g
 
     # delta pressure for integration
     np_dp_zonal = delta_pressure(da_v_zonal.plev, da_PS_zonal)
@@ -1421,11 +1413,8 @@ def zonal_mpsi(uxds,
     da_dp_zonal = xr.DataArray(
         np_dp_zonal,
         dims=["time", "latitudes", "plev"],
-        coords={
-            "plev": da_v_zonal.plev,
-            "latitudes": lat
-            },
-        name="delta_pressure"
+        coords={"plev": da_v_zonal.plev, "latitudes": lat},
+        name="delta_pressure",
     )
 
     # check orientation and integrate along pressure dim
@@ -1440,6 +1429,7 @@ def zonal_mpsi(uxds,
         da_mpsi = integrand.cumsum(dim="plev").isel({"plev": slice(None, None, -1)})
 
     # apply scaling factor
+    da_scaling_factor = 2 * np.pi * a * np.cos(lat) / g
     da_mpsi = da_mpsi * da_scaling_factor
 
     # metadata

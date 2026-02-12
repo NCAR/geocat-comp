@@ -803,8 +803,7 @@ class Test_zonal_mpsi:
     lat = np.arange(36, 45, 1)
 
     def test_zonal_mpsi_pressure_levels(self) -> None:
-        uxds = ux.open_dataset("test/grid_subset.nc",
-                            "test/plev_subset.nc")
+        uxds = ux.open_dataset("test/grid_subset.nc", "test/plev_subset.nc")
 
         out = zonal_mpsi(uxds, lat=self.lat)
 
@@ -824,19 +823,13 @@ class Test_zonal_mpsi:
         assert not np.allclose(out.values, 0)
 
     def test_zonal_mpsi_hybrid_equivalence(self) -> None:
-        uxds = ux.open_dataset("test/grid_subset.nc",
-                            "test/hybrid_subset.nc")
+        uxds = ux.open_dataset("test/grid_subset.nc", "test/hybrid_subset.nc")
 
         # ---- function output (hybrid path) ----
         out_func = zonal_mpsi(uxds, lat=self.lat)
 
         # ---- manual calculation ----
-        da_ipress = interp_hybrid_to_pressure(
-            uxds.V,
-            uxds.PS,
-            uxds.hyam,
-            uxds.hybm
-        )
+        da_ipress = interp_hybrid_to_pressure(uxds.V, uxds.PS, uxds.hyam, uxds.hybm)
         ux_ipress = ux.UxDataArray(da_ipress, uxgrid=uxds.uxgrid)
 
         ux_v_zonal = ux_ipress.zonal_mean(lat=self.lat)
@@ -851,11 +844,8 @@ class Test_zonal_mpsi:
         da_dp_zonal = xr.DataArray(
             np_dp_zonal,
             dims=["time", "latitudes", "plev"],
-            coords={
-                "plev": ux_v_zonal.plev,
-                "latitudes": ux_v_zonal.latitudes
-                },
-            name="delta_pressure"
+            coords={"plev": ux_v_zonal.plev, "latitudes": ux_v_zonal.latitudes},
+            name="delta_pressure",
         )
         ux_dp_zonal = ux.UxDataArray(da_dp_zonal, uxgrid=uxds.uxgrid)
         integrand = ux_v_zonal * ux_dp_zonal
@@ -866,7 +856,5 @@ class Test_zonal_mpsi:
         )
         out_manual = ux_mpsi * da_scaling_factor
 
-
         # ---- compare results ----
         xr.testing.assert_allclose(out_func, out_manual)
-

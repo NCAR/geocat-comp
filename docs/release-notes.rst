@@ -8,6 +8,17 @@
 Release Notes
 =============
 
+
+vYYYY.MM.## (unreleased)
+------------------------
+This release has updates to our internatl structure to ingest UXarray datasets in a new zonal meridional stream function for unstructured grid datafiles using UXarray in ``meteorology.zonal_mpsi``.
+
+New Features
+^^^^^^^^^^^^
+* Zonal Meridional Stream Function for unstructured grid datafiles using
+UXarray in ``meteorology.zonal_mpsi`` by `Julia Kent`_ in (:pr:`773`)
+
+
 v2026.01.0 (January 27, 2026)
 -----------------------------
 This release updates ``calendar_average`` and ``climate_anomaly`` to allow for
@@ -120,11 +131,6 @@ Bug Fixes
 Internal Changes
 ^^^^^^^^^^^^^^^^
 * Replace deprecated ``xarray.cftime_range`` with ``xarray.date_range`` by `Katelyn FitzGerald`_ in (:pr:`739`)
-
-New Features
-^^^^^^^^^^^^
-* Zonal Meridional Stream Function for unstructured grid datafiles using
-UXarray in ``meteorology.zonal_mpsi`` by `Julia Kent`_ in (:pr:`773`)
 
 Maintenance
 ^^^^^^^^^^^
