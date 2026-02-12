@@ -1402,9 +1402,8 @@ def zonal_mpsi(uxds, lat=(-90, 10, 90)):
     hybm = _find_optional_coord(uxds, hybridB_names)
     plev = _find_optional_coord(uxds, plev_names)
 
-    # Check if interpolation needs to be done
-    plev_coord = _find_optional_coord(uxds, plev_names)
-    if plev_coord and plev_coord in uxds[zonal_wind].dims:
+    # Check if interpolation needs to be done\
+    if plev and plev in uxds[zonal_wind].dims:
         ux_ipress = uxds[zonal_wind]
     elif hyam and hybm:
         da_ipress = interp_hybrid_to_pressure(
@@ -1433,8 +1432,7 @@ def zonal_mpsi(uxds, lat=(-90, 10, 90)):
     )
 
     # check orientation and integrate along pressure dim
-    plev_values = da_v_zonal.coords["plev"].values
-    increasing = plev_values[0] < plev_values[-1]
+    increasing = da_v_zonal.plev.isel(plev=0) < da_v_zonal.plev.isel(plev=-1)
 
     if increasing:
         integrand = da_v_zonal * da_dp_zonal
