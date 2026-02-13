@@ -1363,9 +1363,9 @@ def zonal_meridional_psi(
         Input dataset containing the following required fields:
             - meridional_wind : CF Compliant Meridional wind component (on pressure or hybrid sigma-pressure levels)
             - surface_air_pressure : CF Compliant Surface pressure
-            - plev : Pressure levels (if V is on pressure levels)
-            - hyam : Hybrid A coefficients (if V is on hybrid sigma-pressure levels)
-            - hybm : Hybrid B coefficients (if V is on hybrid sigma-pressure levels)
+            - plev : Pressure levels (if meridional_wind is on pressure levels)
+            - hyam : Hybrid A coefficients (if meridional_wind is on hybrid sigma-pressure levels)
+            - hybm : Hybrid B coefficients (if meridional_wind is on hybrid sigma-pressure levels)
             - uxgrid : Grid information for uxarray
     meridonal_wind_varname : str, optional
         The variable name for the meridional wind component in `uxds`. If not provided, the function will attempt to find a variable with standard_name 'northward_wind' or long_name 'Meridional wind', or one of the possible names ['V', 'vs', 'meridional_wind'].
@@ -1525,9 +1525,9 @@ def zonal_mpsi(
         Input dataset containing the following required fields:
             - meridional_wind : CF Compliant Meridional wind component (on pressure or hybrid sigma-pressure levels)
             - surface_air_pressure : CF Compliant Surface pressure
-            - plev : Pressure levels (if V is on pressure levels)
-            - hyam : Hybrid A coefficients (if V is on hybrid sigma-pressure levels)
-            - hybm : Hybrid B coefficients (if V is on hybrid sigma-pressure levels)
+            - plev : Pressure levels (if meridional_wind is on pressure levels)
+            - hyam : Hybrid A coefficients (if meridional_wind is on hybrid sigma-pressure levels)
+            - hybm : Hybrid B coefficients (if meridional_wind is on hybrid sigma-pressure levels)
             - uxgrid : Grid information for uxarray
     meridonal_wind_varname : str, optional
         The variable name for the meridional wind component in `uxds`. If not provided, the function will attempt to find a variable with standard_name 'northward_wind' or long_name 'Meridional wind', or one of the possible names ['V', 'vs', 'meridional_wind'].
