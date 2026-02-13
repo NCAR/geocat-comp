@@ -1506,7 +1506,7 @@ def zonal_meridional_psi(
     return da_mpsi
 
 
-def zonal_meridional_psi(
+def zonal_mpsi(
     uxds,
     meridional_wind_varname=None,
     surface_air_pressure_varname=None,
