@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 from random import uniform
 import xarray as xr
+import uxarray as ux
 
 from geocat.comp.meteorology import (
     dewtemp,
@@ -15,7 +16,9 @@ from geocat.comp.meteorology import (
     saturation_vapor_pressure,
     saturation_vapor_pressure_slope,
     delta_pressure,
+    zonal_meridional_psi,
 )
+from geocat.comp.interpolation import interp_hybrid_to_pressure
 
 
 class Test_dewtemp:
@@ -793,3 +796,65 @@ class Test_Delta_Pressure:
             self.surface_pressure_scalar,
             pressure_top=pressure_top,
         )
+
+
+# ---- Tests for zonal_meridional_psi ----
+class Test_zonal_meridional_psi:
+    lat = np.arange(36, 45, 1)
+
+    def test_zonal_meridional_psi_pressure_levels(self) -> None:
+        uxds = ux.open_dataset("test/grid_subset.nc", "test/plev_subset.nc")
+
+        out = zonal_meridional_psi(uxds, lat=self.lat)
+
+        # ---- structural checks ----
+        assert isinstance(out, xr.DataArray)
+
+        assert "time" in out.dims
+        assert "latitudes" in out.dims
+        assert "plev" in out.dims
+
+        # shape checks
+        assert out.sizes["latitudes"] == len(self.lat)
+        assert out.sizes["plev"] == len(uxds.V.plev)
+
+        # ---- numerical sanity ----
+        assert np.isfinite(out).all()
+        assert not np.allclose(out.values, 0)
+
+    def test_zonal_meridional_psi_hybrid_equivalence(self) -> None:
+        uxds = ux.open_dataset("test/grid_subset.nc", "test/hybrid_subset.nc")
+
+        # ---- function output (hybrid path) ----
+        out_func = zonal_meridional_psi(uxds, lat=self.lat)
+
+        # ---- manual calculation ----
+        da_ipress = interp_hybrid_to_pressure(uxds.V, uxds.PS, uxds.hyam, uxds.hybm)
+        ux_ipress = ux.UxDataArray(da_ipress, uxgrid=uxds.uxgrid)
+
+        ux_v_zonal = ux_ipress.zonal_mean(lat=self.lat)
+        ux_v_zonal['plev'] = ux_ipress.plev
+        ux_PS_zonal = uxds.PS.zonal_mean(lat=self.lat)
+
+        a = 6.371e6
+        g = 9.80665
+        da_scaling_factor = 2 * np.pi * a * np.cos(self.lat) / g
+        np_dp_zonal = delta_pressure(ux_v_zonal.plev, ux_PS_zonal)
+
+        da_dp_zonal = xr.DataArray(
+            np_dp_zonal,
+            dims=["time", "latitudes", "plev"],
+            coords={"plev": ux_v_zonal.plev, "latitudes": ux_v_zonal.latitudes},
+            name="delta_pressure",
+        )
+        ux_dp_zonal = ux.UxDataArray(da_dp_zonal, uxgrid=uxds.uxgrid)
+        integrand = ux_v_zonal * ux_dp_zonal
+        ux_mpsi = (
+            integrand.isel(plev=slice(None, None, -1))
+            .cumsum(dim="plev")
+            .isel(plev=slice(None, None, -1))
+        )
+        out_manual = ux_mpsi * da_scaling_factor
+
+        # ---- compare results ----
+        xr.testing.assert_allclose(out_func, out_manual)
