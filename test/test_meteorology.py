@@ -798,7 +798,6 @@ class Test_Delta_Pressure:
         )
 
 
-# ---- Tests for zonal_meridional_psi ----
 class Test_zonal_meridional_psi:
     lat = np.arange(36, 45, 1)
 

@@ -35,7 +35,6 @@ def _find_var(
     standard_name=None,
     long_name=None,
     possible_names=None,
-    units=None,
     description='variable',
 ):
     """
@@ -45,7 +44,6 @@ def _find_var(
     1. CF standard_name attribute match (if standard_names provided)
     2. Name attribute match (if long_names provided)
     3. Direct variable name match (if possible_names provided)
-    4. Units match (if units provided)
 
     Parameters
     ----------
@@ -57,10 +55,8 @@ def _find_var(
         long_name to check in attrs
     possible_names : list of str, optional
         List of possible variable names to check first
-    units : str, optional
-        Possible units to check in attrs
     description : str, optional
-        String
+        String for descriptive Error message
 
     Returns
     -------
@@ -76,44 +72,67 @@ def _find_var(
 
     # First try CF standard_name attribute match
     if standard_name:
+        standard_name_variations = {
+            standard_name,
+            standard_name.lower(),
+            standard_name.upper(),
+            standard_name.capitalize(),
+            '_'.join(word.capitalize() for word in standard_name.split('_')),
+        }
+
         for var_name in ds.data_vars:
             var_attrs = ds[var_name].attrs
-            if var_name == standard_name or standard_name in var_attrs.get(
-                'standard_name', ''
+            attr_standard_name = var_attrs.get('standard_name', '')
+            if (
+                var_name in standard_name_variations
+                or attr_standard_name in standard_name_variations
             ):
                 return var_name
+
         error_parts.append(f"Tried standard_name: {standard_name}. ")
 
     # Then try long_name attribute match
     if long_name:
+        long_name_variations = {
+            long_name,
+            long_name.lower(),
+            long_name.upper(),
+            long_name.capitalize(),
+            ' '.join(word.capitalize() for word in long_name.split(' ')),
+            '_'.join(word.capitalize() for word in long_name.split('_')),
+            long_name.replace(' ', '_'),
+            long_name.replace('_', ' '),
+        }
+
         for var_name in ds.data_vars:
             var_attrs = ds[var_name].attrs
-            if long_name in var_attrs.get('long_name', ''):
+            attr_long_name = var_attrs.get('long_name', '')
+            if (
+                var_name in long_name_variations
+                or attr_long_name in long_name_variations
+            ):
                 return var_name
+
         error_parts.append(f"Tried long_name: {long_name}. ")
 
     # Then try direct name match
     if possible_names:
+        possible_names_expanded = set()
         for name in possible_names:
+            possible_names_expanded.update(
+                {
+                    name,
+                    name.lower(),
+                    name.upper(),
+                    name.capitalize(),
+                    '_'.join(word.capitalize() for word in name.split('_')),
+                }
+            )
+
+        for name in possible_names_expanded:
             if name in ds:
                 return name
         error_parts.append(f"Tried names: {possible_names}. ")
-
-    # Finally try units match (less reliable)
-    if units:
-        for var_name in ds.data_vars:
-            var_attrs = ds[var_name].attrs
-            if 'units' in var_attrs:
-                if units in var_attrs.get('units', ''):
-                    warnings.warn(
-                        f"Found {description} '{var_name}' using units attribute only. "
-                        f"This is unreliable - multiple variables may share the same units. "
-                        f"Please verify this is correct and add CF standard_name. {error_parts}",
-                        UserWarning,
-                        stacklevel=3,
-                    )
-                    return var_name
-        error_parts.append(f"Tried units: {units}. ")
 
     raise KeyError(f"Could not find {description} in dataset. {' '.join(error_parts)}")
 
@@ -123,7 +142,6 @@ def _find_optional_var(
     standard_name=None,
     long_name=None,
     possible_names=None,
-    units=None,
     description=None,
 ):
     """
@@ -139,8 +157,9 @@ def _find_optional_var(
         Long_name to check in attrs
     possible_names : list of str, optional
         List of possible variable names
-    units : str, optional
-        Possible units to check in attrs
+    description: str
+        String for descriptive Error message
+
 
     Returns
     -------
@@ -148,8 +167,6 @@ def _find_optional_var(
         The name of the found coordinate, or None if not found
     """
     try:
-        return _find_var(
-            ds, standard_name, long_name, possible_names, units, description
-        )
+        return _find_var(ds, standard_name, long_name, possible_names, description)
     except KeyError:
         return None

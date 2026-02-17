@@ -1408,7 +1408,6 @@ def zonal_meridional_psi(
             standard_name='northward_wind',
             long_name='Meridional wind',
             possible_names=['V', 'vs', 'meridional_wind'],
-            units='m/s',
         )
     if not surface_air_pressure_varname:
         surface_air_pressure_varname = _find_var(
@@ -1416,34 +1415,32 @@ def zonal_meridional_psi(
             standard_name='surface_air_pressure',
             long_name='Surface pressure',
             possible_names=[
-                'PS',
                 'ps',
                 'p_surface',
                 'surface_pressure',
                 'pressure_surface',
             ],
-            units='Pa',
         )
     if not hyam_coordname:
         hyam_coordname = _find_optional_var(
             uxds,
             long_name='hybrid A coefficient at layer midpoints',
             possible_names=['hyam', 'hya', 'hybrid_A_midpoints'],
-            description='coordinate,',
+            description='hybrid coordinate,',
         )
     if not hybm_coordname:
         hybm_coordname = _find_optional_var(
             uxds,
             long_name='hybrid B coefficient at layer midpoints',
             possible_names=['hybm', 'hyb', 'hybrid_B_midpoints'],
-            description='coordinate,',
+            description='hybrid coordinate,',
         )
     if not plev_coordname:
         plev_coordname = _find_optional_var(
             uxds,
             standard_name='air_pressure',
             possible_names=['plev', 'pressure_lev', 'pressure_levels'],
-            description='coordinate,',
+            description='pressure coordinate,',
         )
 
     # Check if interpolation needs to be done
