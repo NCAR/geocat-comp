@@ -7,6 +7,13 @@
 
 Release Notes
 =============
+vYYYY.MM.## (unreleased)
+------------------------
+This release...
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Add dask compatibility testing for all functionality by `Anissa Zacharias`_ in (:pr:`819`)
 
 v2026.01.0 (January 27, 2026)
 -----------------------------
