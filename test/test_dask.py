@@ -1,5 +1,3 @@
-from typing import Any, Generator
-
 import pytest
 
 import dask.array
@@ -54,7 +52,6 @@ from geocat.comp.fourier_filters import (
     fourier_high_pass,
     fourier_low_pass,
     fourier_band_pass,
-    fourier_filter,
 )
 
 from geocat.comp.spherical import decomposition, recomposition, scale_voronoi
@@ -63,7 +60,7 @@ from geocat.comp.stats import eofunc_eofs, eofunc_pcs, pearson_r, nmse
 
 
 @pytest.fixture(scope="module")
-def client() -> Generator[dask.distributed.Client]:
+def client():
     # dask client reference for all subsequent tests
     client = Client()
     yield client
