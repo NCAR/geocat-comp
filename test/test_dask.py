@@ -9,7 +9,7 @@ import numpy as np
 import geocat.datafiles as gdf
 from math import tau
 
-from util import (
+from .util import (
     _get_toy_climatology_data,
     get_fake_climatology_dataset,
     make_toy_temp_dataset,

@@ -8,7 +8,7 @@ import xarray.testing
 import xarray as xr
 from xarray import __version__ as xarray_version
 
-from util import get_fake_climatology_dataset, _get_toy_climatology_data
+from .util import get_fake_climatology_dataset, _get_toy_climatology_data
 
 from geocat.comp import (
     climate_anomaly,
