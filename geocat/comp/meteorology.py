@@ -1380,13 +1380,19 @@ def zonal_meridional_psi(
         Zonal mean meridional streamfunction, scaled by Earth's geometry and gravity.
         Dimensions: ["time", "latitudes", "plev"]
 
-    Notes
+    Notes and Correspondence:
     -----
     - Optionally converts wind data from hybrid sigma-pressure levels to pressure levels.
     - Computes zonal means and pressure integration deltas.
     - Integrates over pressure levels, handling orientation.
     - Applies scaling factor based on Earth's radius and gravity.
     - Currently only supports UXarray Datasets with specified structure.
+
+    Buja, L. E. (1994)
+    CCM Processor User's Guide(Unicos Version).
+    NCAR Technical Note NCAR/TN-384+IA,
+    pages B-17 to B-18.
+    https://opensky.ucar.edu/islandora/object/technotes%3A151
 
     See Also
     --------
