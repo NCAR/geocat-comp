@@ -1385,7 +1385,7 @@ def zonal_meridional_psi(
     Returns
     -------
     da_mpsi : xarray.DataArray
-        Zonal mean meridional streamf unction, scaled by Earth's geometry and gravity.
+        Zonal mean meridional stream function, scaled by Earth's geometry and gravity.
         Dimensions: ["time", "latitudes", "plev"]
 
     Notes
