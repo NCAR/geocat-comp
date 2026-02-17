@@ -801,10 +801,24 @@ class Test_Delta_Pressure:
 class Test_zonal_meridional_psi:
     lat = np.arange(36, 45, 1)
 
-    def test_zonal_meridional_psi_pressure_levels(self) -> None:
-        uxds = ux.open_dataset("test/grid_subset.nc", "test/plev_subset.nc")
+    @pytest.fixture
+    def uxds_plev(self):
+        """Load UXarray dataset with pressure level data."""
+        try:
+            return ux.open_dataset("grid_subset.nc", "plev_subset.nc")
+        except FileNotFoundError:
+            return ux.open_dataset("test/grid_subset.nc", "test/plev_subset.nc")
 
-        out = zonal_meridional_psi(uxds, lat=self.lat)
+    @pytest.fixture
+    def uxds_hybrid(self):
+        """Load UXarray dataset with hybrid level data."""
+        try:
+            return ux.open_dataset("grid_subset.nc", "hybrid_subset.nc")
+        except FileNotFoundError:
+            return ux.open_dataset("test/grid_subset.nc", "test/hybrid_subset.nc")
+
+    def test_zonal_meridional_psi_pressure_levels(self, uxds_plev) -> None:
+        out = zonal_meridional_psi(uxds_plev, lat=self.lat)
 
         # ---- structural checks ----
         assert isinstance(out, xr.DataArray)
@@ -815,25 +829,25 @@ class Test_zonal_meridional_psi:
 
         # shape checks
         assert out.sizes["latitudes"] == len(self.lat)
-        assert out.sizes["plev"] == len(uxds.V.plev)
+        assert out.sizes["plev"] == len(uxds_plev.V.plev)
 
         # ---- numerical coherence ----
         assert np.isfinite(out).all()
         assert not np.allclose(out.values, 0)
 
-    def test_zonal_meridional_psi_hybrid_equivalence(self) -> None:
-        uxds = ux.open_dataset("test/grid_subset.nc", "test/hybrid_subset.nc")
-
+    def test_zonal_meridional_psi_hybrid_equivalence(self, uxds_hybrid) -> None:
         # ---- function output (hybrid path) ----
-        out_func = zonal_meridional_psi(uxds, lat=self.lat)
+        out_func = zonal_meridional_psi(uxds_hybrid, lat=self.lat)
 
         # ---- manual calculation ----
-        da_ipress = interp_hybrid_to_pressure(uxds.V, uxds.PS, uxds.hyam, uxds.hybm)
-        ux_ipress = ux.UxDataArray(da_ipress, uxgrid=uxds.uxgrid)
+        da_ipress = interp_hybrid_to_pressure(
+            uxds_hybrid.V, uxds_hybrid.PS, uxds_hybrid.hyam, uxds_hybrid.hybm
+        )
+        ux_ipress = ux.UxDataArray(da_ipress, uxgrid=uxds_hybrid.uxgrid)
 
         ux_v_zonal = ux_ipress.zonal_mean(lat=self.lat)
         ux_v_zonal['plev'] = ux_ipress.plev
-        ux_PS_zonal = uxds.PS.zonal_mean(lat=self.lat)
+        ux_PS_zonal = uxds_hybrid.PS.zonal_mean(lat=self.lat)
 
         a = 6.371e6
         g = 9.80665
@@ -846,7 +860,7 @@ class Test_zonal_meridional_psi:
             coords={"plev": ux_v_zonal.plev, "latitudes": ux_v_zonal.latitudes},
             name="delta_pressure",
         )
-        ux_dp_zonal = ux.UxDataArray(da_dp_zonal, uxgrid=uxds.uxgrid)
+        ux_dp_zonal = ux.UxDataArray(da_dp_zonal, uxgrid=uxds_hybrid.uxgrid)
         integrand = ux_v_zonal * ux_dp_zonal
         ux_mpsi = (
             integrand.isel(plev=slice(None, None, -1))
