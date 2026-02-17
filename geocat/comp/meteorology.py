@@ -1337,14 +1337,6 @@ def delta_pressure(pressure_lev, surface_pressure, pressure_top=None):
     return delta_pressure
 
 
-# NCL NAME WRAPPER FUNCTIONS BELOW
-def dpres_plev(pressure_lev, surface_pressure, pressure_top=None):
-    return delta_pressure(pressure_lev, surface_pressure, pressure_top)
-
-
-_generate_wrapper_docstring(dpres_plev, delta_pressure)
-
-
 def zonal_meridional_psi(
     uxds,
     meridional_wind_varname=None,
@@ -1352,7 +1344,7 @@ def zonal_meridional_psi(
     plev_coordname=None,
     hyam_coordname=None,
     hybm_coordname=None,
-    lat=(-90, 10, 90),
+    lat=(-90, 90, 10),
 ):
     """
     Calculate the zonally averaged meridional streamfunction (mpsi) from a UXarray Dataset.
@@ -1370,7 +1362,7 @@ def zonal_meridional_psi(
     meridional_wind_varname : str, optional
         The variable name for the meridional wind component in `uxds`. If not provided, the function will attempt to find a variable with standard_name 'northward_wind' or long_name 'Meridional wind', or one of the possible names ['V', 'vs', 'meridional_wind'].
     surface_air_pressure_varname : str, optional
-        The variable name for the surface air pressure in `uxds`. If not provided, the function will attempt to find a variable with standard_name 'surface_air_pressure' or long_name 'Surface pressure', or one of the possible names ['PS', 'ps', 'p_surface', 'surface_pressure', 'pressure_surface'].
+        The variable name for the surface air pressure in `uxds`. If not provided, the function will attempt to find a variable with standard_name 'surface_air_pressure' or long_name 'Surface pressure', or one of the possible names ['PS', 'p_surface', 'surface_pressure', 'pressure_surface'].
     plev_coordname : str, optional
         The coordinate name for pressure levels in `uxds`. If not provided, the function will attempt to find a coordinate with standard_name 'air_pressure' or one of the possible names ['plev', 'pressure_lev', 'pressure_levels'].
     hyam_coordname : str, optional
@@ -1395,6 +1387,11 @@ def zonal_meridional_psi(
     - Integrates over pressure levels, handling orientation.
     - Applies scaling factor based on Earth's radius and gravity.
     - Currently only supports UXarray Datasets with specified structure.
+
+    See Also
+    --------
+    Related NCL Functions:
+    `zonal_mpsi <https://www.ncl.ucar.edu/Document/Functions/Built-in/zonal_mpsi.shtml>`__
     """
 
     # constants
@@ -1489,18 +1486,20 @@ def zonal_meridional_psi(
     da_mpsi = da_mpsi * da_scaling_factor
 
     # metadata
-    try:
-        da_mpsi.attrs.update(
-            {
-                "long_name": "zonal mean meridional streamfunction",
-                "units": "kg/s",
-                "info": "zonal_meridional_psi: integrated meridional streamfunction",
-            }
-        )
-    except Exception:
-        pass
+    da_mpsi.attrs.update(
+        {
+            "long_name": "zonal mean meridional streamfunction",
+            "units": "kg/s",
+            "info": "zonal_meridional_psi: integrated meridional streamfunction",
+        }
+    )
 
     return da_mpsi
+
+
+# NCL NAME WRAPPER FUNCTIONS BELOW
+def dpres_plev(pressure_lev, surface_pressure, pressure_top=None):
+    return delta_pressure(pressure_lev, surface_pressure, pressure_top)
 
 
 def zonal_mpsi(
@@ -1510,57 +1509,18 @@ def zonal_mpsi(
     plev_coordname=None,
     hyam_coordname=None,
     hybm_coordname=None,
-    lat=(-90, 10, 90),
+    lat=(-90, 90, 10),
 ):
-    """
-    Wrapper function for `zonal_meridional_psi` to match NCL function name `zonal_mpsi`. See `zonal_meridional_psi` for full documentation.
-    Calculate the zonally averaged meridional streamfunction (psi) from a UXarray Dataset.
-
-    Parameters
-    ----------
-    uxds : uxarray.UxDataset
-        Input dataset containing the following required fields:
-            - meridional_wind : CF Compliant Meridional wind component (on pressure or hybrid sigma-pressure levels)
-            - surface_air_pressure : CF Compliant Surface pressure
-            - plev : Pressure levels (if meridional_wind is on pressure levels)
-            - hyam : Hybrid A coefficients (if meridional_wind is on hybrid sigma-pressure levels)
-            - hybm : Hybrid B coefficients (if meridional_wind is on hybrid sigma-pressure levels)
-            - uxgrid : Grid information for uxarray
-    meridonal_wind_varname : str, optional
-        The variable name for the meridional wind component in `uxds`. If not provided, the function will attempt to find a variable with standard_name 'northward_wind' or long_name 'Meridional wind', or one of the possible names ['V', 'vs', 'meridional_wind'].
-    surface_air_pressure_varname : str, optional
-        The variable name for the surface air pressure in `uxds`. If not provided, the function will attempt to find a variable with standard_name 'surface_air_pressure' or long_name 'Surface pressure', or one of the possible names ['PS', 'ps', 'p_surface', 'surface_pressure', 'pressure_surface'].
-    plev_coordname : str, optional
-        The coordinate name for pressure levels in `uxds`. If not provided, the function will attempt to find a coordinate with standard_name 'air_pressure' or one of the possible names ['plev', 'pressure_lev', 'pressure_levels'].
-    hyam_coordname : str, optional
-        The coordinate name for hybrid A coefficients in `uxds`. If not provided, the function will attempt to find a coordinate with long_name 'hybrid A coefficient at layer midpoints' or one of the possible names ['hyam', 'hya', 'hybrid_A_midpoints'].
-    hybm_coordname : str, optional
-        The coordinate name for hybrid B coefficients in `uxds`. If not provided, the function will attempt to find a coordinate with long_name 'hybrid B coefficient at layer midpoints' or one of the possible names ['hybm', 'hyb', 'hybrid_B_midpoints'].
-    lat : tuple, float, or array-like, default=(-90, 90, 10)
-        Latitude specification:
-            - tuple (start, end, step): Computes meridional streamfunction at intervals of `step`.
-            - float: Single latitude
-            - array-like: Latitudes to sample.
-    Returns
-    -------
-    da_mpsi : xarray.DataArray
-        Zonal mean meridional streamf unction, scaled by Earth's geometry and gravity.
-        Dimensions: ["time", "latitudes", "plev"]
-
-    Notes
-    -----
-    - Optionally converts wind data from hybrid sigma-pressure levels to pressure levels.
-    - Computes zonal means and pressure integration deltas.
-    - Integrates over pressure levels, handling orientation.
-    - Applies scaling factor based on Earth's radius and gravity.
-    - Currently only supports UXarray Datasets with specified structure.
-    """
     return zonal_meridional_psi(
         uxds,
-        meridional_wind_varname=meridional_wind_varname,
-        surface_air_pressure_varname=surface_air_pressure_varname,
-        plev_coordname=plev_coordname,
-        hyam_coordname=hyam_coordname,
-        hybm_coordname=hybm_coordname,
-        lat=lat,
+        meridional_wind_varname=None,
+        surface_air_pressure_varname=None,
+        plev_coordname=None,
+        hyam_coordname=None,
+        hybm_coordname=None,
+        lat=(-90, 90, 10),
     )
+
+
+_generate_wrapper_docstring(dpres_plev, delta_pressure)
+_generate_wrapper_docstring(zonal_mpsi, zonal_meridional_psi)

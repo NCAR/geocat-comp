@@ -817,7 +817,7 @@ class Test_zonal_meridional_psi:
         assert out.sizes["latitudes"] == len(self.lat)
         assert out.sizes["plev"] == len(uxds.V.plev)
 
-        # ---- numerical sanity ----
+        # ---- numerical coherence ----
         assert np.isfinite(out).all()
         assert not np.allclose(out.values, 0)
 

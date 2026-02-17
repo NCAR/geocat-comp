@@ -6,7 +6,6 @@ import warnings
 import metpy.interpolate
 import numpy as np
 import xarray as xr
-import uxarray as ux
 
 supported_types = typing.Union[xr.DataArray, np.ndarray]
 
@@ -383,15 +382,16 @@ def pressure_at_hybrid_levels(psfc, hya, hyb, p0=100000.0):
     `pres_hybrid_ccm <https://www.ncl.ucar.edu/Document/Functions/Built-in/pres_hybrid_ccm.shtml>`__
     """
     # check input types
-    in_types = [type(psfc), type(hya), type(hyb)]
-    if (
-        not set(in_types).issubset(
-            {xr.DataArray, np.ndarray, ux.core.dataarray.UxDataArray}
-        )
-        or len(set(in_types)) > 1
+    if not all(isinstance(x, (xr.DataArray, np.ndarray)) for x in [psfc, hya, hyb]):
+        raise TypeError("psfc, hya, and hyb must be xarray DataArrays or numpy arrays")
+
+    # Check all inputs are the same type (all numpy or all xarray/uxarray)
+    if not (
+        all(isinstance(x, np.ndarray) for x in [psfc, hya, hyb])
+        or all(isinstance(x, xr.DataArray) for x in [psfc, hya, hyb])
     ):
         raise TypeError(
-            "psfc, hya, and hyb must be xarray DataArrays or all numpy arrays"
+            "psfc, hya, and hyb must all be the same type (all numpy arrays or all xarray DataArrays)"
         )
 
     # check shape
