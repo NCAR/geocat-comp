@@ -1355,7 +1355,7 @@ def zonal_meridional_psi(
     lat=(-90, 10, 90),
 ):
     """
-    Calculate the zonally averaged meridional stream function (mpsi) from a UXarray Dataset.
+    Calculate the zonally averaged meridional streamfunction (mpsi) from a UXarray Dataset.
 
     Parameters
     ----------
@@ -1367,7 +1367,7 @@ def zonal_meridional_psi(
             - hyam : Hybrid A coefficients (if meridional_wind is on hybrid sigma-pressure levels)
             - hybm : Hybrid B coefficients (if meridional_wind is on hybrid sigma-pressure levels)
             - uxgrid : Grid information for uxarray
-    meridonal_wind_varname : str, optional
+    meridional_wind_varname : str, optional
         The variable name for the meridional wind component in `uxds`. If not provided, the function will attempt to find a variable with standard_name 'northward_wind' or long_name 'Meridional wind', or one of the possible names ['V', 'vs', 'meridional_wind'].
     surface_air_pressure_varname : str, optional
         The variable name for the surface air pressure in `uxds`. If not provided, the function will attempt to find a variable with standard_name 'surface_air_pressure' or long_name 'Surface pressure', or one of the possible names ['PS', 'ps', 'p_surface', 'surface_pressure', 'pressure_surface'].
@@ -1379,13 +1379,13 @@ def zonal_meridional_psi(
         The coordinate name for hybrid B coefficients in `uxds`. If not provided, the function will attempt to find a coordinate with long_name 'hybrid B coefficient at layer midpoints' or one of the possible names ['hybm', 'hyb', 'hybrid_B_midpoints'].
     lat : tuple, float, or array-like, default=(-90, 90, 10)
         Latitude specification:
-            - tuple (start, end, step): Computes meridional stream function at intervals of `step`.
+            - tuple (start, end, step): Computes meridional streamfunction at intervals of `step`.
             - float: Single latitude
             - array-like: Latitudes to sample.
     Returns
     -------
     da_mpsi : xarray.DataArray
-        Zonal mean meridional streamf unction, scaled by Earth's geometry and gravity.
+        Zonal mean meridional streamfunction, scaled by Earth's geometry and gravity.
         Dimensions: ["time", "latitudes", "plev"]
 
     Notes
@@ -1492,9 +1492,9 @@ def zonal_meridional_psi(
     try:
         da_mpsi.attrs.update(
             {
-                "long_name": "zonal mean meridional stream function",
+                "long_name": "zonal mean meridional streamfunction",
                 "units": "kg/s",
-                "info": "zonal_meridional_psi: integrated meridional stream function",
+                "info": "zonal_meridional_psi: integrated meridional streamfunction",
             }
         )
     except Exception:
@@ -1513,8 +1513,8 @@ def zonal_mpsi(
     lat=(-90, 10, 90),
 ):
     """
-    Wrapper function for `zonal_meridional_psi` to match NCL function name `mpsi_zonal_plev`. See `zonal_meridional_psi` for full documentation.
-    Calculate the zonally averaged meridional stream function (mpsi) from a UXarray Dataset.
+    Wrapper function for `zonal_meridional_psi` to match NCL function name `zonal_mpsi`. See `zonal_meridional_psi` for full documentation.
+    Calculate the zonally averaged meridional streamfunction (psi) from a UXarray Dataset.
 
     Parameters
     ----------
@@ -1538,7 +1538,7 @@ def zonal_mpsi(
         The coordinate name for hybrid B coefficients in `uxds`. If not provided, the function will attempt to find a coordinate with long_name 'hybrid B coefficient at layer midpoints' or one of the possible names ['hybm', 'hyb', 'hybrid_B_midpoints'].
     lat : tuple, float, or array-like, default=(-90, 90, 10)
         Latitude specification:
-            - tuple (start, end, step): Computes meridional stream function at intervals of `step`.
+            - tuple (start, end, step): Computes meridional streamfunction at intervals of `step`.
             - float: Single latitude
             - array-like: Latitudes to sample.
     Returns
