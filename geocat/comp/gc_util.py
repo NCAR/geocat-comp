@@ -115,7 +115,7 @@ def _find_var(
                     return var_name
         error_parts.append(f"Tried units: {units}. ")
 
-    raise KeyError(f"Could not find {description} in dataset. {' '.join(error_parts)}")
+    raise KeyError(f"Could not find {description} in dataset. {''.join(error_parts)}")
 
 
 def _find_optional_var(
