@@ -1423,21 +1423,21 @@ def zonal_meridional_psi(
             uxds,
             long_name='hybrid A coefficient at layer midpoints',
             possible_names=['hyam', 'hya', 'hybrid_A_midpoints'],
-            description='hybrid coordinate,',
+            description='hybrid coordinate',
         )
     if not hybm_coordname:
         hybm_coordname = _find_optional_var(
             uxds,
             long_name='hybrid B coefficient at layer midpoints',
             possible_names=['hybm', 'hyb', 'hybrid_B_midpoints'],
-            description='hybrid coordinate,',
+            description='hybrid coordinate',
         )
     if not plev_coordname:
         plev_coordname = _find_optional_var(
             uxds,
             standard_name='air_pressure',
             possible_names=['plev', 'pressure_lev', 'pressure_levels'],
-            description='pressure coordinate,',
+            description='pressure coordinate',
         )
 
     # Check if interpolation needs to be done

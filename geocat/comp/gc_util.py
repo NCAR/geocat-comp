@@ -89,7 +89,7 @@ def _find_var(
             ):
                 return var_name
 
-        error_parts.append(f"Tried standard_name: {standard_name}. ")
+        error_parts.append(f"Tried standard_name: {standard_name}.")
 
     # Then try long_name attribute match
     if long_name:
@@ -113,7 +113,7 @@ def _find_var(
             ):
                 return var_name
 
-        error_parts.append(f"Tried long_name: {long_name}. ")
+        error_parts.append(f"Tried long_name: {long_name}.")
 
     # Then try direct name match
     if possible_names:
@@ -132,7 +132,7 @@ def _find_var(
         for name in possible_names_expanded:
             if name in ds:
                 return name
-        error_parts.append(f"Tried names: {possible_names}. ")
+        error_parts.append(f"Tried names: {possible_names}.")
 
     raise KeyError(f"Could not find {description} in dataset. {' '.join(error_parts)}")
 
