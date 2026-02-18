@@ -140,9 +140,9 @@ class TestDaskCompat_meteorology:
         w = 3.7 / 1000.0
         p = 1000.0 * 100.0
 
-        tk = xr.DataArray(np.full((9, 9), tk)).chunk((1, 9))
-        w = xr.DataArray(np.full((9, 9), w)).chunk((1, 9))
-        p = xr.DataArray(np.full((9, 9), p)).chunk((1, 9))
+        tk = xr.DataArray(np.full((9, 9), tk)).chunk()
+        w = xr.DataArray(np.full((9, 9), w)).chunk()
+        p = xr.DataArray(np.full((9, 9), p)).chunk()
 
         out = relhum_ice(tk, w, p)
 
@@ -153,9 +153,9 @@ class TestDaskCompat_meteorology:
         t = 18.0 + 273.15
         q = 6.0 / 1000.0
 
-        p = xr.DataArray(np.full((9, 9), p)).chunk((1, 9))
-        t = xr.DataArray(np.full((9, 9), t)).chunk((1, 9))
-        q = xr.DataArray(np.full((9, 9), q)).chunk((1, 9))
+        p = xr.DataArray(np.full((9, 9), p)).chunk()
+        t = xr.DataArray(np.full((9, 9), t)).chunk()
+        q = xr.DataArray(np.full((9, 9), q)).chunk()
 
         out = relhum_water(t, q, p)
 
