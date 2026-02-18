@@ -35,12 +35,12 @@ begin
  hyam = f->hyam
  hybm = f->hybm
  P0mb = 1000.                        ; reference pressure [mb]
- PS   = f->PS(:, :2, :1)
- T    = f->T(:, :, :2, :1)                         ; MODEL on hybrid levels
- Q    = f->Q(:, :, :2, :1)
- TS   = f->TS(:, :2, :1)
- Z    = f->Z3(:, :, :2, :1)
- PHIS = f->PHIS(:, :2, :1)
+ PS   = f->PS(:, 10:14, 20:24)
+ T    = f->T(:, :, 10:14, 20:24)                         ; MODEL on hybrid levels
+ Q    = f->Q(:, :, 10:14, 20:24)
+ TS   = f->TS(:, 10:14, 20:24)
+ Z    = f->Z3(:, :, 10:14, 20:24)
+ PHIS = f->PHIS(:, 10:14, 20:24)
 
  Q    = Q*1000.                      ; make g/kg for nicer plot
  Q@units = "g/kg"
