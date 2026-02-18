@@ -6,6 +6,9 @@ import xarray as xr
 import numpy as np
 import geocat.datafiles as gdf
 from math import tau
+from packaging.version import Version
+from scipy import __version__ as scipy_version
+
 
 from .util import (
     _get_toy_climatology_data,
@@ -447,6 +450,10 @@ class TestDaskCompat_spherical:
 
         assert isinstance(out.data, dask.array.Array)
 
+    @pytest.mark.xfail(
+        Version(scipy_version) < Version('1.15.0'),
+        reason="old scipy version not compatible with dask",
+    )
     def test_recomputation_dask(self, spherical_data):
         out = recomposition(
             spherical_data['test_results_xr'].chunk(),
