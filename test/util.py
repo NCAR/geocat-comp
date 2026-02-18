@@ -81,3 +81,55 @@ def make_toy_temp_dataset(
         ds.time.attrs["standard_name"] = "time"
 
     return ds
+
+
+def get_fake_climatology_dataset(start_month, nmonths, nlats, nlons):
+    """Returns a very simple xarray dataset for testing.
+
+    Data values are equal to "month of year" for monthly time steps.
+    """
+    # Create coordinates
+    months = pd.date_range(
+        start=pd.to_datetime(start_month), periods=nmonths, freq="MS"
+    )
+    lats = np.linspace(start=-90, stop=90, num=nlats, dtype="float32")
+    lons = np.linspace(start=-180, stop=180, num=nlons, dtype="float32")
+
+    # Create data variable. Construct a 3D array with time as the first
+    # dimension.
+    month_values = np.expand_dims(np.arange(start=1, stop=nmonths + 1), axis=(1, 2))
+    var_values = np.tile(month_values, (1, nlats, nlons))
+
+    ds = xr.Dataset(
+        data_vars={
+            "my_var": (("time", "lat", "lon"), var_values.astype("float32")),
+        },
+        coords={"time": months, "lat": lats, "lon": lons},
+        attrs={'Description': 'This is dummy data for testing.'},
+    )
+    return ds
+
+
+def _get_toy_climatology_data(
+    start_date, end_date, freq, nlats, nlons, calendar='standard'
+):
+    """Returns a simple xarray dataset to test with.
+
+    Data can be hourly, daily, or monthly.
+    """
+    # Coordinates
+    time = xr.date_range(
+        start=start_date, end=end_date, freq=freq, calendar=calendar, use_cftime=True
+    )
+    lats = np.linspace(start=-90, stop=90, num=nlats, dtype='float32')
+    lons = np.linspace(start=-180, stop=180, num=nlons, dtype='float32')
+
+    # Create data variable
+    values = np.expand_dims(np.arange(len(time)), axis=(1, 2))
+    data = np.tile(values, (1, nlats, nlons))
+    ds = xr.Dataset(
+        data_vars={'data': (('time', 'lat', 'lon'), data)},
+        coords={'time': time, 'lat': lats, 'lon': lons},
+        attrs={'Description': 'This is dummy data for testing.'},
+    )
+    return ds
