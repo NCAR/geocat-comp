@@ -21,5 +21,6 @@ dependencies:
   - pint
   - pytest
   - pytest-cov
+  - uxarray
 # The package below is for formatting standards
   - pre-commit
