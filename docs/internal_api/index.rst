@@ -9,6 +9,10 @@ Utility Functions
 
    geocat.comp.gc_util._generate_wrapper_docstring
 
+   geocat.comp.gc_util._find_var
+
+   geocat.comp.gc_util._find_optional_var
+
 Internal Functionality Helpers
 ------------------------------
 .. autosummary::

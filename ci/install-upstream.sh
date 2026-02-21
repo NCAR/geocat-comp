@@ -12,6 +12,7 @@ conda remove -y --force \
     pint \
     scipy \
     xarray \
+    uxarray \
     xskillscore
 
 # conda list
@@ -26,7 +27,8 @@ python -m pip install \
     numpy \
     pandas \
     scipy \
-    xarray
+    xarray \
+    uxarray
 
 # install rest from source
 python -m pip install \
