@@ -14,13 +14,12 @@ dependencies:
   - pandas
   - xarray
   - xskillscore>=0.0.17
-  - uxarray>=2025.12.0
 # Packages listed below are for testing
   - geocat-datafiles
   - netcdf4
   - pint
   - pytest
   - pytest-cov
-  - uxarray
+  - uxarray>=2025.12.0
 # The package below is for formatting standards
   - pre-commit
