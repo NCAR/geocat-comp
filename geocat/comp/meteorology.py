@@ -1546,12 +1546,12 @@ def zonal_mpsi(
 ):
     return zonal_meridional_psi(
         uxds,
-        meridional_wind_varname=None,
-        surface_air_pressure_varname=None,
-        plev_coordname=None,
-        hyam_coordname=None,
-        hybm_coordname=None,
-        lat=(-90, 90, 10),
+        meridional_wind_varname=meridional_wind_varname,
+        surface_air_pressure_varname=surface_air_pressure_varname,
+        plev_coordname=plev_coordname,
+        hyam_coordname=hyam_coordname,
+        hybm_coordname=hybm_coordname,
+        lat=lat,
     )
 
 
