@@ -27,8 +27,7 @@ python -m pip install \
     numpy \
     pandas \
     scipy \
-    xarray \
-    uxarray
+    xarray
 
 # install rest from source
 python -m pip install \
@@ -39,4 +38,5 @@ python -m pip install \
     git+https://github.com/dask/distributed.git \
     git+https://github.com/Unidata/MetPy.git \
     git+https://github.com/hgrecco/pint.git \
-    git+https://github.com/xarray-contrib/xskillscore.git
+    git+https://github.com/xarray-contrib/xskillscore.git \
+    git+https://github.com/Uxarray/uxarray.git
