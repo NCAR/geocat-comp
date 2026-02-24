@@ -103,6 +103,7 @@ NCL Function Name Wrappers
    :toctree: ./generated/
 
    meteorology.dpres_plev
+   meteorology.zonal_mpsi
 
 Deprecated Functions
 ---------------------
