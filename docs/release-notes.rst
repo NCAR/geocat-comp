@@ -11,7 +11,7 @@ Release Notes
 
 vYYYY.MM.## (unreleased)
 ------------------------
-This release has updates to our internal structure to ingest UXarray datasets in a new zonal meridional stream function for unstructured grid datafiles using UXarray in ``meteorology.zonal_meridional_psi``. There are also two new helper functioins ``gc_util._find_coord`` and ``gc_util._find_optional_coord``
+This release has updates to our internal structure to ingest UXarray datasets in a new zonal mean meridional stream function for data on unstructured grids using UXarray in ``meteorology.zonal_meridional_psi``. There are also two new helper functions ``gc_util._find_coord`` and ``gc_util._find_optional_coord``
 
 New Features
 ^^^^^^^^^^^^
