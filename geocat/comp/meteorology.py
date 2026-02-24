@@ -1385,7 +1385,7 @@ def zonal_meridional_psi(
         Zonal mean meridional streamfunction, scaled by Earth's geometry and gravity.
         Dimensions: ["time", "latitudes", "plev"]
 
-    Notes and Correspondence:
+    Notes
     -----
     - Optionally converts wind data from hybrid sigma-pressure levels to pressure levels.
     - Computes zonal means and pressure integration deltas.
