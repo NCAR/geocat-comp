@@ -12,7 +12,6 @@ from geocat.comp.meteorology import (
     saturation_vapor_pressure,
     saturation_vapor_pressure_slope,
     delta_pressure,
-    zonal_meridional_psi,
 )
 
 
@@ -106,19 +105,3 @@ class Bench_delta_pressure:
 
     def time_delta_pressure(self):
         delta_pressure(self.pressure_lev, self.surface_pressure_scalar)
-
-
-class Bench_zonal_meridional_mpsi:
-    def setup(self):
-        # Load test data
-        try:
-            self.uxds = ux.open_dataset("test/grid_subset.nc", "test/plev_subset.nc")
-        except FileNotFoundError:
-            self.uxds = ux.open_dataset(
-                "../test/grid_subset.nc", "../test/plev_subset.nc"
-            )
-
-        self.lat = np.arange(36, 45, 1)
-
-    def time_zonal_meridional_psi(self):
-        zonal_meridional_psi(self.uxds, lat=self.lat)
