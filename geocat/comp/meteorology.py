@@ -3,7 +3,15 @@ import typing
 import warnings
 import xarray as xr
 
-from .gc_util import _generate_wrapper_docstring
+from .gc_util import _generate_wrapper_docstring, _find_var, _find_optional_var
+from .interpolation import interp_hybrid_to_pressure
+
+try:
+    import uxarray as ux
+
+    has_uxarray = True
+except ImportError:
+    has_uxarray = False
 
 
 def _dewtemp(
@@ -1368,9 +1376,221 @@ def delta_pressure(pressure_lev, surface_pressure, pressure_top=None):
     return delta_pressure
 
 
+def zonal_meridional_psi(
+    uxds,
+    meridional_wind_varname=None,
+    surface_air_pressure_varname=None,
+    plev_coordname=None,
+    hyam_coordname=None,
+    hybm_coordname=None,
+    lat=(-90, 90, 10),
+):
+    """
+    Calculate the zonally averaged meridional streamfunction (mpsi) from a UXarray Dataset.
+
+    Parameters
+    ----------
+    uxds : uxarray.UxDataset
+        Input dataset containing the following required fields:
+            - meridional_wind : CF Compliant Meridional wind component (on pressure or hybrid sigma-pressure levels)
+            - surface_air_pressure : CF Compliant Surface pressure
+            - plev : Pressure levels (if meridional_wind is on pressure levels)
+            - hyam : Hybrid A coefficients (if meridional_wind is on hybrid sigma-pressure levels)
+            - hybm : Hybrid B coefficients (if meridional_wind is on hybrid sigma-pressure levels)
+            - uxgrid : Grid information for uxarray
+    meridional_wind_varname : str, optional
+        The variable name for the meridional wind component in `uxds`. If not provided, the function will attempt to find a variable with standard_name 'northward_wind' or long_name 'Meridional wind', or one of the possible names ['V', 'vs', 'meridional_wind'].
+    surface_air_pressure_varname : str, optional
+        The variable name for the surface air pressure in `uxds`. If not provided, the function will attempt to find a variable with standard_name 'surface_air_pressure' or long_name 'Surface pressure', or one of the possible names ['PS', 'p_surface', 'surface_pressure', 'pressure_surface'].
+    plev_coordname : str, optional
+        The coordinate name for pressure levels in `uxds`. If not provided, the function will attempt to find a coordinate with standard_name 'air_pressure' or one of the possible names ['plev', 'pressure_lev', 'pressure_levels'].
+    hyam_coordname : str, optional
+        The coordinate name for hybrid A coefficients in `uxds`. If not provided, the function will attempt to find a coordinate with long_name 'hybrid A coefficient at layer midpoints' or one of the possible names ['hyam', 'hya', 'hybrid_A_midpoints'].
+    hybm_coordname : str, optional
+        The coordinate name for hybrid B coefficients in `uxds`. If not provided, the function will attempt to find a coordinate with long_name 'hybrid B coefficient at layer midpoints' or one of the possible names ['hybm', 'hyb', 'hybrid_B_midpoints'].
+    lat : tuple, float, or array-like, default=(-90, 90, 10)
+        Latitude specification:
+            - tuple (start, end, step): Computes meridional streamfunction at intervals of `step`.
+            - float: Single latitude
+            - array-like: Latitudes to sample.
+    Returns
+    -------
+    da_mpsi : xarray.DataArray
+        Zonal mean meridional streamfunction, scaled by Earth's geometry and gravity.
+        Dimensions: ["time", "latitudes", "plev"]
+
+    Notes
+    -----
+    - Optionally converts wind data from hybrid sigma-pressure levels to pressure levels.
+    - Computes zonal means and pressure integration deltas.
+    - Integrates over pressure levels, handling orientation.
+    - Applies scaling factor based on Earth's radius (6378137 m) and gravity.
+    - Currently only supports UXarray Datasets with specified structure.
+
+    Zonal meridional streamfunction defined from:
+    Buja, L. E. (1994)
+    CCM Processor User's Guide(Unicos Version).
+    NCAR Technical Note NCAR/TN-384+IA,
+    pages B-17 to B-18.
+    https://opensky.ucar.edu/islandora/object/technotes%3A151
+
+    Earth's average radius from:
+    Moritz, H. Geodetic Reference System (1980)
+    Journal of Geodesy 74, 128–133 (2000).
+    page 128.
+    https://doi.org/10.1007/s001900050278
+
+    See Also
+    --------
+    Related NCL Functions:
+    `zonal_mpsi <https://www.ncl.ucar.edu/Document/Functions/Built-in/zonal_mpsi.shtml>`__
+    """
+
+    if not has_uxarray:
+        raise ImportError(
+            "UXarray is required for zonal_meridional_psi but is not installed. "
+            "Install it with: `conda install -c conda-forge uxarray`."
+        )
+    # constants
+    a = 6378137  # Earth radius (m)
+    g = 9.80665  # gravity (m/s^2)
+
+    # Find variables
+    if not meridional_wind_varname:
+        meridional_wind_varname = _find_var(
+            uxds,
+            standard_name='northward_wind',
+            long_name='Meridional wind',
+            possible_names=['V', 'vs', 'meridional_wind'],
+        )
+    if not surface_air_pressure_varname:
+        surface_air_pressure_varname = _find_var(
+            uxds,
+            standard_name='surface_air_pressure',
+            long_name='Surface pressure',
+            possible_names=[
+                'ps',
+                'p_surface',
+                'surface_pressure',
+                'pressure_surface',
+            ],
+        )
+    if not hyam_coordname:
+        hyam_coordname = _find_optional_var(
+            uxds,
+            long_name='hybrid A coefficient at layer midpoints',
+            possible_names=['hyam', 'hya', 'hybrid_A_midpoints'],
+            description='hybrid coordinate',
+        )
+    if not hybm_coordname:
+        hybm_coordname = _find_optional_var(
+            uxds,
+            long_name='hybrid B coefficient at layer midpoints',
+            possible_names=['hybm', 'hyb', 'hybrid_B_midpoints'],
+            description='hybrid coordinate',
+        )
+    if not plev_coordname:
+        plev_coordname = _find_optional_var(
+            uxds,
+            standard_name='air_pressure',
+            possible_names=['plev', 'pressure_lev', 'pressure_levels'],
+            description='pressure coordinate',
+        )
+
+    # Check if interpolation needs to be done
+    if plev_coordname and plev_coordname in uxds[meridional_wind_varname].dims:
+        ux_ipress = uxds[meridional_wind_varname]
+    elif hyam_coordname and hybm_coordname:
+        da_ipress = interp_hybrid_to_pressure(
+            uxds[meridional_wind_varname],
+            uxds[surface_air_pressure_varname],
+            uxds[hyam_coordname],
+            uxds[hybm_coordname],
+        )
+        ux_ipress = ux.UxDataArray(da_ipress, uxgrid=uxds.uxgrid)
+        plev_coordname = 'plev'
+    else:
+        raise AttributeError(
+            "zonal_meridional_psi: input uxds must have either a pressure level coordinate for its meridional_wind variable or hybrid coefficients."
+        )
+
+    # zonal means
+    da_v_zonal = ux_ipress.zonal_mean(lat=lat)
+    da_v_zonal['plev'] = ux_ipress[plev_coordname]
+    da_PS_zonal = uxds[surface_air_pressure_varname].zonal_mean(lat=lat)
+
+    # Validate surface pressure before integration
+    if da_PS_zonal is None:
+        raise ValueError(
+            "zonal_meridional_psi: surface air pressure variable could not be determined."
+        )
+    if np.isnan(da_PS_zonal).any():
+        raise ValueError(
+            "zonal_meridional_psi: surface air pressure contains NaN values. "
+            "Cannot compute pressure thickness."
+        )
+    if (da_PS_zonal <= 0).any():
+        raise ValueError("zonal_meridional_psi: surface air pressure must be positive.")
+
+    # delta pressure for integration
+    np_dp_zonal = delta_pressure(da_v_zonal.plev, da_PS_zonal)
+
+    lats = da_PS_zonal.latitudes
+    da_dp_zonal = xr.DataArray(
+        np_dp_zonal,
+        dims=["time", "latitudes", "plev"],
+        coords={"plev": da_v_zonal.plev, "latitudes": lats},
+        name="delta_pressure",
+    )
+
+    # check orientation and integrate along pressure dim
+    if da_v_zonal.plev.isel(plev=0) < da_v_zonal.plev.isel(plev=-1):
+        integrand = da_v_zonal * da_dp_zonal
+        da_mpsi = integrand.cumsum(dim="plev")
+    else:
+        integrand = (da_v_zonal * da_dp_zonal).isel({"plev": slice(None, None, -1)})
+        da_mpsi = integrand.cumsum(dim="plev").isel({"plev": slice(None, None, -1)})
+
+    # apply scaling factor
+    da_scaling_factor = 2 * np.pi * a * np.cos(lats) / g
+    da_mpsi = da_mpsi * da_scaling_factor
+
+    # metadata
+    da_mpsi.attrs.update(
+        {
+            "long_name": "zonal mean meridional streamfunction",
+            "units": "kg/s",
+            "info": "zonal_meridional_psi: integrated meridional streamfunction",
+        }
+    )
+
+    return da_mpsi
+
+
 # NCL NAME WRAPPER FUNCTIONS BELOW
 def dpres_plev(pressure_lev, surface_pressure, pressure_top=None):
     return delta_pressure(pressure_lev, surface_pressure, pressure_top)
 
 
+def zonal_mpsi(
+    uxds,
+    meridional_wind_varname=None,
+    surface_air_pressure_varname=None,
+    plev_coordname=None,
+    hyam_coordname=None,
+    hybm_coordname=None,
+    lat=(-90, 90, 10),
+):
+    return zonal_meridional_psi(
+        uxds,
+        meridional_wind_varname=meridional_wind_varname,
+        surface_air_pressure_varname=surface_air_pressure_varname,
+        plev_coordname=plev_coordname,
+        hyam_coordname=hyam_coordname,
+        hybm_coordname=hybm_coordname,
+        lat=lat,
+    )
+
+
 _generate_wrapper_docstring(dpres_plev, delta_pressure)
+_generate_wrapper_docstring(zonal_mpsi, zonal_meridional_psi)

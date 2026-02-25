@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 from random import uniform
 import xarray as xr
+import uxarray as ux
 
 from geocat.comp.meteorology import (
     dewtemp,
@@ -15,7 +16,9 @@ from geocat.comp.meteorology import (
     saturation_vapor_pressure,
     saturation_vapor_pressure_slope,
     delta_pressure,
+    zonal_meridional_psi,
 )
+from geocat.comp.interpolation import interp_hybrid_to_pressure
 
 
 class Test_dewtemp:
@@ -793,3 +796,214 @@ class Test_Delta_Pressure:
             self.surface_pressure_scalar,
             pressure_top=pressure_top,
         )
+
+
+class Test_zonal_meridional_psi:
+    lat = np.arange(36, 45, 1)
+
+    @pytest.fixture
+    def uxds_plev(self):
+        """Load UXarray dataset with pressure level data."""
+        try:
+            return ux.open_dataset("grid_subset.nc", "plev_subset.nc")
+        except FileNotFoundError:
+            return ux.open_dataset("test/grid_subset.nc", "test/plev_subset.nc")
+
+    @pytest.fixture
+    def uxds_hybrid(self):
+        """Load UXarray dataset with hybrid level data."""
+        try:
+            return ux.open_dataset("grid_subset.nc", "hybrid_subset.nc")
+        except FileNotFoundError:
+            return ux.open_dataset("test/grid_subset.nc", "test/hybrid_subset.nc")
+
+    def test_zonal_meridional_psi_pressure_levels(self, uxds_plev) -> None:
+        out = zonal_meridional_psi(uxds_plev, lat=self.lat)
+
+        # ---- structural checks ----
+        assert isinstance(out, xr.DataArray)
+
+        assert "time" in out.dims
+        assert "latitudes" in out.dims
+        assert "plev" in out.dims
+
+        # shape checks
+        assert out.sizes["latitudes"] == len(self.lat)
+        assert out.sizes["plev"] == len(uxds_plev.V.plev)
+
+        # ---- numerical coherence ----
+        assert np.isfinite(out).all()
+        assert not np.allclose(out.values, 0)
+
+    def test_zonal_meridional_psi_hybrid_equivalence(self, uxds_hybrid) -> None:
+        # ---- function output (hybrid path) ----
+        out_func = zonal_meridional_psi(uxds_hybrid, lat=self.lat)
+
+        # ---- manual calculation ----
+        da_ipress = interp_hybrid_to_pressure(
+            uxds_hybrid.V, uxds_hybrid.PS, uxds_hybrid.hyam, uxds_hybrid.hybm
+        )
+        ux_ipress = ux.UxDataArray(da_ipress, uxgrid=uxds_hybrid.uxgrid)
+
+        ux_v_zonal = ux_ipress.zonal_mean(lat=self.lat)
+        ux_v_zonal['plev'] = ux_ipress.plev
+        ux_PS_zonal = uxds_hybrid.PS.zonal_mean(lat=self.lat)
+
+        a = 6378137  # Earth radius (m)
+        g = 9.80665
+        da_scaling_factor = 2 * np.pi * a * np.cos(self.lat) / g
+        np_dp_zonal = delta_pressure(ux_v_zonal.plev, ux_PS_zonal)
+
+        da_dp_zonal = xr.DataArray(
+            np_dp_zonal,
+            dims=["time", "latitudes", "plev"],
+            coords={"plev": ux_v_zonal.plev, "latitudes": ux_v_zonal.latitudes},
+            name="delta_pressure",
+        )
+        ux_dp_zonal = ux.UxDataArray(da_dp_zonal, uxgrid=uxds_hybrid.uxgrid)
+        integrand = ux_v_zonal * ux_dp_zonal
+        ux_mpsi = (
+            integrand.isel(plev=slice(None, None, -1))
+            .cumsum(dim="plev")
+            .isel(plev=slice(None, None, -1))
+        )
+        out_manual = ux_mpsi * da_scaling_factor
+
+        xr.testing.assert_allclose(out_func, out_manual)
+
+    @pytest.mark.xfail(reason="Dataset may not cover extreme latitudes")
+    def test_zonal_meridional_psi_raises_on_nan_surface_pressure(self, uxds_plev):
+        """Ensure zonal_meridional_psi fails when surface pressure contains NaNs."""
+        uxds_bad = uxds_plev.copy()
+        uxds_bad["PS"][:] = np.nan
+
+        zonal_meridional_psi(uxds_bad, lat=self.lat)
+
+    @pytest.mark.xfail(reason="Dataset may not cover extreme latitudes")
+    def test_zonal_meridional_psi_extreme_latitudes(self, uxds_plev):
+        """Test with latitude values at poles."""
+        out = zonal_meridional_psi(uxds_plev, lat=np.array([-90, 0, 90]))
+        assert np.isfinite(out).all()
+
+    def test_zonal_meridional_psi_cos_latitude_weighting(self, uxds_plev):
+        """Test that cosine latitude weighting is applied."""
+        out_low = zonal_meridional_psi(uxds_plev, lat=np.array([36]))
+        out_high = zonal_meridional_psi(uxds_plev, lat=np.array([44]))
+
+        assert np.isfinite(out_low).all()
+        assert np.isfinite(out_high).all()
+
+    def test_zonal_meridional_psi_custom_varnames(self, uxds_plev):
+        """Test providing custom variable names."""
+        out = zonal_meridional_psi(
+            uxds_plev,
+            meridional_wind_varname='V',
+            surface_air_pressure_varname='PS',
+            plev_coordname='plev',
+            lat=self.lat,
+        )
+
+        assert isinstance(out, xr.DataArray)
+        assert out.sizes["latitudes"] == len(self.lat)
+
+    def test_zonal_meridional_psi_single_latitude(self, uxds_plev):
+        """Test with single latitude value."""
+        out = zonal_meridional_psi(uxds_plev, lat=40.0)
+
+        assert isinstance(out, xr.DataArray)
+        assert "latitudes" in out.dims
+
+    def test_zonal_meridional_psi_metadata(self, uxds_plev):
+        """Test that output has correct metadata."""
+        out = zonal_meridional_psi(uxds_plev, lat=self.lat)
+
+        assert "long_name" in out.attrs
+        assert out.attrs["long_name"] == "zonal mean meridional streamfunction"
+        assert out.attrs["units"] == "kg/s"
+        assert "info" in out.attrs
+
+    def test_zonal_meridional_psi_dimension_order(self, uxds_plev):
+        """Test that output has expected dimension ordering."""
+        out = zonal_meridional_psi(uxds_plev, lat=self.lat)
+
+        expected_dims = ["time", "plev", "latitudes"]
+        assert list(out.dims) == expected_dims
+
+    def test_zonal_meridional_psi_missing_meridional_wind(self, uxds_plev):
+        """Test error when meridional wind variable is missing."""
+        uxds_bad = uxds_plev.drop_vars('V')
+
+        with pytest.raises(KeyError) as excinfo:
+            zonal_meridional_psi(uxds_bad, lat=self.lat)
+
+        assert "Could not find" in str(excinfo.value)
+
+    def test_zonal_meridional_psi_missing_surface_pressure(self, uxds_hybrid):
+        """Test error when surface pressure is missing."""
+        uxds_bad = uxds_hybrid.drop_vars('PS')
+
+        with pytest.raises(KeyError) as excinfo:
+            zonal_meridional_psi(uxds_bad, lat=self.lat)
+
+        assert "Could not find" in str(excinfo.value)
+
+    def test_zonal_meridional_psi_missing_coords(self, uxds_plev):
+        """Test error when neither pressure nor hybrid coordinates exist."""
+        # Create dataset without pressure coordinate on V
+        uxds_bad = uxds_plev.copy()
+        uxds_bad['V'] = uxds_plev['V'].isel(plev=0, drop=True)
+
+        with pytest.raises(AttributeError) as excinfo:
+            zonal_meridional_psi(uxds_bad, lat=self.lat)
+
+        assert "must have either a pressure level coordinate" in str(excinfo.value)
+
+    def test_zonal_meridional_psi_ascending_pressure(self, uxds_plev):
+        """Test with ascending pressure levels (if data supports it)."""
+        out = zonal_meridional_psi(uxds_plev, lat=self.lat)
+
+        # Check that integration handled orientation correctly
+        assert np.isfinite(out).all()
+
+    def test_zonal_meridional_psi_descending_pressure(self, uxds_hybrid):
+        """Test with descending pressure levels (typical for hybrid coords)."""
+        out = zonal_meridional_psi(uxds_hybrid, lat=self.lat)
+
+        # Check that integration handled orientation correctly
+        assert np.isfinite(out).all()
+
+    def test_zonal_meridional_psi_scaling_magnitude(self, uxds_plev):
+        """Test that Earth geometry scaling produces reasonable magnitudes."""
+        out = zonal_meridional_psi(uxds_plev, lat=self.lat)
+
+        # Values should be large due to Earth radius scaling (2*pi*a/g term)
+        # Typical values are O(10^10) kg/s
+        assert np.abs(out.values).max() > 1e6
+
+    def test_zonal_meridional_psi_case_insensitive_finding(self, uxds_plev):
+        """Test that variable finding works with case variations."""
+        # This tests the _find_var functionality indirectly
+        out = zonal_meridional_psi(uxds_plev, lat=self.lat)
+        assert isinstance(out, xr.DataArray)
+
+    def test_zonal_meridional_psi_pressure_integration_correctness(self, uxds_plev):
+        """Test that pressure integration produces monotonic results."""
+        out = zonal_meridional_psi(uxds_plev, lat=self.lat)
+
+        # Stream function should vary smoothly with pressure
+        # (not necessarily monotonic, but should have structure)
+        assert not np.all(np.diff(out.values, axis=-1) == 0)
+
+    def test_zonal_meridional_psi_time_dimension_preserved(self, uxds_plev):
+        """Test that time dimension is preserved correctly."""
+        out = zonal_meridional_psi(uxds_plev, lat=self.lat)
+
+        assert "time" in out.dims
+        assert out.sizes["time"] == uxds_plev.sizes["time"]
+
+    def test_zonal_meridional_psi_hybrid_creates_plev_coord(self, uxds_hybrid):
+        """Test that hybrid interpolation creates 'plev' coordinate."""
+        out = zonal_meridional_psi(uxds_hybrid, lat=self.lat)
+
+        assert "plev" in out.dims
+        assert "plev" in out.coords

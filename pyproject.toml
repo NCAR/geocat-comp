@@ -38,6 +38,7 @@ dev = [
   "pint",
   "pre-commit",
   "pytest",
+  "uxarray"
 ]
 
 [project.urls]
