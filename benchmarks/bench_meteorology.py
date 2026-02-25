@@ -110,7 +110,14 @@ class Bench_delta_pressure:
 
 class Bench_zonal_meridional_mpsi:
     def setup(self):
-        self.uxds = ux.open_dataset("test/grid_subset.nc", "test/plev_subset.nc")
+        # Load test data
+        try:
+            self.uxds = ux.open_dataset("test/grid_subset.nc", "test/plev_subset.nc")
+        except FileNotFoundError:
+            self.uxds = ux.open_dataset(
+                "../test/grid_subset.nc", "../test/plev_subset.nc"
+            )
+
         self.lat = np.arange(36, 45, 1)
 
     def time_zonal_meridional_psi(self):

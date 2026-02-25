@@ -17,6 +17,7 @@ dependencies:
   - scipy
   - setuptools
   - setuptools_scm
+  - uxarray
   - xarray
   - xskillscore>=0.0.17
   - pip:
