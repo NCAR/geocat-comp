@@ -1390,14 +1390,21 @@ def zonal_meridional_psi(
     - Optionally converts wind data from hybrid sigma-pressure levels to pressure levels.
     - Computes zonal means and pressure integration deltas.
     - Integrates over pressure levels, handling orientation.
-    - Applies scaling factor based on Earth's radius and gravity.
+    - Applies scaling factor based on Earth's radius (6378137 m) and gravity.
     - Currently only supports UXarray Datasets with specified structure.
 
+    Zonal meridional streamfunction defined from:
     Buja, L. E. (1994)
     CCM Processor User's Guide(Unicos Version).
     NCAR Technical Note NCAR/TN-384+IA,
     pages B-17 to B-18.
     https://opensky.ucar.edu/islandora/object/technotes%3A151
+
+    Earth's average radius from:
+    Moritz, H. Geodetic Reference System (1980)
+    Journal of Geodesy 74, 128–133 (2000).
+    page 128.
+    https://doi.org/10.1007/s001900050278
 
     See Also
     --------
@@ -1411,7 +1418,7 @@ def zonal_meridional_psi(
             "Install it with: `conda install -c conda-forge uxarray`."
         )
     # constants
-    a = 6.371e6  # Earth radius (m)
+    a = 6378137  # Earth radius (m)
     g = 9.80665  # gravity (m/s^2)
 
     # Find variables

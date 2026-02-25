@@ -849,7 +849,7 @@ class Test_zonal_meridional_psi:
         ux_v_zonal['plev'] = ux_ipress.plev
         ux_PS_zonal = uxds_hybrid.PS.zonal_mean(lat=self.lat)
 
-        a = 6.371e6
+        a = 6378137  # Earth radius (m)
         g = 9.80665
         da_scaling_factor = 2 * np.pi * a * np.cos(self.lat) / g
         np_dp_zonal = delta_pressure(ux_v_zonal.plev, ux_PS_zonal)
