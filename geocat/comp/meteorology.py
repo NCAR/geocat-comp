@@ -6,13 +6,6 @@ import xarray as xr
 from .gc_util import _generate_wrapper_docstring, _find_var, _find_optional_var
 from .interpolation import interp_hybrid_to_pressure
 
-try:
-    import uxarray as ux
-
-    has_uxarray = True
-except ImportError:
-    has_uxarray = False
-
 
 def _dewtemp(
     tk: typing.Union[np.ndarray, xr.DataArray, list, float],
@@ -1412,11 +1405,14 @@ def zonal_meridional_psi(
     `zonal_mpsi <https://www.ncl.ucar.edu/Document/Functions/Built-in/zonal_mpsi.shtml>`__
     """
 
-    if not has_uxarray:
+    try:
+        import uxarray as ux
+    except ImportError:
         raise ImportError(
             "UXarray is required for zonal_meridional_psi but is not installed. "
-            "Install it with: `conda install -c conda-forge uxarray`."
+            "Install it with: `conda install -c conda-forge uxarray`"
         )
+
     # constants
     a = 6378137  # Earth radius (m)
     g = 9.80665  # gravity (m/s^2)
