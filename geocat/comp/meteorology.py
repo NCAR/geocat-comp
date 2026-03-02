@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 import typing
 import warnings
@@ -824,6 +826,8 @@ def max_daylight(
     Related NCL Functions:
     `daylight_fao56 <https://www.ncl.ucar.edu/Document/Functions/Crop/daylight_fao56.shtml>`__
     """
+
+    time.sleep(10)
 
     x_out = False
     if isinstance(jday, xr.DataArray):
