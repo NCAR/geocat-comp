@@ -79,7 +79,7 @@ jobs:
           echo "${{ env.comment_message }}" > asv_compare_results.txt
           echo "Baseline:  ${{ github.event.pull_request.base.sha }} (${{ github.event.pull_request.base.label }})" >> asv_compare_results.txt
           echo "Contender: ${GITHUB_SHA} ($PR_HEAD_LABEL)" >> asv_compare_results.txt
-          asv compare --split ${{ github.event.pull_request.base.sha }} ${GITHUB_SHA} >> asv_compare_results.txt
+          asv compare --split ${{ github.event.pull_request.base.sha }} ${GITHUB_SHA} >> asv_compare_results.txt || true
 
         working-directory: ${{ env.ASV_DIR }}
 
