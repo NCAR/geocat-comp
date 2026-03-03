@@ -16,7 +16,9 @@ This release has updates to our internal structure to ingest UXarray datasets in
 New Features
 ^^^^^^^^^^^^
 * Zonal mean meridional stream function for data on unstructured grids using
-UXarray in ``meteorology.zonal_meridional_psi`` by `Julia Kent`_ in (:pr:`773`)
+New Features
+^^^^^^^^^^^^
+* Zonal mean meridional stream function for data on unstructured grids using UXarray in ``meteorology.zonal_meridional_psi`` by `Julia Kent`_ in (:pr:`773`)
 
 
 v2026.01.0 (January 27, 2026)
