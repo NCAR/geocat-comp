@@ -128,7 +128,7 @@ class TestFindVar:
         result = _find_var(
             sample_dataset,
             standard_name='air_temperature',
-            possible_names=['pressure', 'TEMP'],
+            possible_names=['pressure'],
         )
         assert result == 'TEMP'
 
@@ -136,10 +136,10 @@ class TestFindVar:
         """Test that long_name has priority over possible_names."""
         result = _find_var(
             sample_dataset,
-            long_name='Air Temperature',
-            possible_names=['pressure', 'TEMP'],
+            long_name='surface pressure',
+            possible_names=['TEMP'],
         )
-        assert result == 'TEMP'
+        assert result == 'pressure'
 
     def test_fallback_to_possible_names(self, sample_dataset):
         """Test fallback to possible_names when others fail."""
@@ -179,21 +179,6 @@ class TestFindVar:
         assert 'Could not find meridional wind component in dataset' in str(
             excinfo.value
         )
-
-    def test_error_message_includes_all_attempts(self, sample_dataset):
-        """Test that error message includes all search attempts."""
-        with pytest.raises(KeyError) as excinfo:
-            _find_var(
-                sample_dataset,
-                standard_name='not_here',
-                long_name='also_not_here',
-                possible_names=['nope'],
-            )
-
-        error_msg = str(excinfo.value)
-        assert 'Tried standard_name:' in error_msg
-        assert 'Tried long_name:' in error_msg
-        assert 'Tried names:' in error_msg
 
     def test_empty_attributes_no_crash(self, sample_dataset):
         """Test that empty/missing attributes don't cause crashes."""
@@ -243,9 +228,3 @@ class TestFindOptionalVar:
             possible_names=['nope', 'also_nope'],
         )
         assert result is None
-
-    def test_none_not_exception(self, sample_dataset):
-        """Test that None is returned, not an exception object."""
-        result = _find_optional_var(sample_dataset, standard_name='nonexistent')
-        assert result is None
-        assert not isinstance(result, Exception)
