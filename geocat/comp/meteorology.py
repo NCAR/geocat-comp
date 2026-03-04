@@ -1488,7 +1488,7 @@ def zonal_meridional_psi(
         )
     if np.isnan(da_PS_zonal).any():
         raise ValueError(
-            "zonal_meridional_psi: surface air pressure contains all NaN values. "
+            "zonal_meridional_psi: zonal mean of surface air pressure contains all NaN values. "
             "Cannot compute pressure thickness."
         )
     if (da_PS_zonal <= 0).any():

@@ -871,14 +871,16 @@ class Test_zonal_meridional_psi:
 
         xr.testing.assert_allclose(out_func, out_manual)
 
-    def test_zonal_meridional_psi_raises_on_all_nan_surface_pressure(self, uxds_plev):
-        """Ensure zonal_meridional_psi fails when surface pressure containsall  NaNs."""
+    def test_zonal_meridional_psi_raises_on_nan_zonal_mean(self, uxds_plev):
+        """Test error when zonal mean contains NaN (achieved by passing all-NaN input)."""
         uxds_bad = uxds_plev.copy()
         uxds_bad["PS"][:] = np.nan
 
         with pytest.raises(ValueError) as errinfo:
             zonal_meridional_psi(uxds_bad, lat=self.lat)
-        assert "surface air pressure contains all NaN values" in str(errinfo.value)
+        assert "zonal mean of surface air pressure contains all NaN values" in str(
+            errinfo.value
+        )
 
     def test_zonal_meridional_psi_custom_varnames(self, uxds_plev):
         """Test providing custom variable names."""
