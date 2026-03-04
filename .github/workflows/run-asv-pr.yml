@@ -103,6 +103,8 @@ jobs:
           with open('asv_compare_results.txt', 'w') as f:
               f.write(out)
 
+        working-directory: ${{ env.ASV_DIR }}
+
       - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  #v7.0.0
         if: always()
         with:
