@@ -74,12 +74,16 @@ jobs:
           echo "Contender: ${GITHUB_SHA} ($PR_HEAD_LABEL)"
           # Run benchmarks for current commit against base
           ASV_OPTIONS="--split --show-stderr"
+          echo "CHECKPOINT 1"
           asv continuous $ASV_OPTIONS ${{ github.event.pull_request.base.sha }} ${GITHUB_SHA}
           # Save compare results
+          echo "CHECKPOINT 2"
           echo "${{ env.comment_message }}" > asv_compare_results.txt
           echo "Baseline:  ${{ github.event.pull_request.base.sha }} (${{ github.event.pull_request.base.label }})" >> asv_compare_results.txt
           echo "Contender: ${GITHUB_SHA} ($PR_HEAD_LABEL)" >> asv_compare_results.txt
           asv compare --split ${{ github.event.pull_request.base.sha }} ${GITHUB_SHA} >> asv_compare_results.txt || true
+          echo "CHECKPOINT 3"
+          cat asv_compare_results.txt
 
         working-directory: ${{ env.ASV_DIR }}
 
