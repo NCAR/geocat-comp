@@ -14,6 +14,7 @@ This release...
 Internal Changes
 ^^^^^^^^^^^^^^^^
 * Add dask compatibility testing for all functionality by `Anissa Zacharias`_ in (:pr:`819`)
+* Updates ASV PR comparison action that was failing when it found a regression by `Anissa Zacharias`_ in (:pr:`824`)
 
 v2026.01.0 (January 27, 2026)
 -----------------------------
