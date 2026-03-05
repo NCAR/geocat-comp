@@ -74,12 +74,30 @@ jobs:
           echo "Contender: ${GITHUB_SHA} ($PR_HEAD_LABEL)"
           # Run benchmarks for current commit against base
           ASV_OPTIONS="--split --show-stderr"
-          asv continuous $ASV_OPTIONS ${{ github.event.pull_request.base.sha }} ${GITHUB_SHA}
+          asv continuous $ASV_OPTIONS ${{ github.event.pull_request.base.sha }} ${GITHUB_SHA} || true
           # Save compare results
           echo "${{ env.comment_message }}" > asv_compare_results.txt
           echo "Baseline:  ${{ github.event.pull_request.base.sha }} (${{ github.event.pull_request.base.label }})" >> asv_compare_results.txt
           echo "Contender: ${GITHUB_SHA} ($PR_HEAD_LABEL)" >> asv_compare_results.txt
           asv compare --split ${{ github.event.pull_request.base.sha }} ${GITHUB_SHA} >> asv_compare_results.txt
+
+        working-directory: ${{ env.ASV_DIR }}
+
+
+      - name: format to collapse unchanged benchmarks
+        shell: python
+        run: |
+          import re
+
+          with open('asv_compare_results.txt') as f:
+              d = f.read()
+
+          findstr = r'\n(Benchmarks that have stayed the same:)\n{2}((\|.*\n)*)'
+          substr = r'\n<details>\n<summary>\1</summary>\n\n\2</details>'
+          out = re.sub(findstr, substr, d)
+
+          with open('asv_compare_results.txt', 'w') as f:
+              f.write(out)
 
         working-directory: ${{ env.ASV_DIR }}
 
