@@ -12,6 +12,7 @@ conda remove -y --force \
     pint \
     scipy \
     xarray \
+    uxarray \
     xskillscore
 
 # conda list
@@ -37,4 +38,5 @@ python -m pip install \
     git+https://github.com/dask/distributed.git \
     git+https://github.com/Unidata/MetPy.git \
     git+https://github.com/hgrecco/pint.git \
-    git+https://github.com/xarray-contrib/xskillscore.git
+    git+https://github.com/xarray-contrib/xskillscore.git \
+    git+https://github.com/Uxarray/uxarray.git

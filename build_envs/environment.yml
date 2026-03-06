@@ -12,6 +12,7 @@ dependencies:
   - scipy
   - numpy
   - pandas
+  - uxarray>=2025.12.0
   - xarray
   - xskillscore>=0.0.17
 # Packages listed below are for testing
