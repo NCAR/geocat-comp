@@ -878,9 +878,28 @@ class Test_zonal_meridional_psi:
 
         with pytest.raises(ValueError) as errinfo:
             zonal_meridional_psi(uxds_bad, lat=self.lat)
-        assert "zonal mean of surface air pressure contains all NaN values" in str(
-            errinfo.value
-        )
+        assert "contains NaN values" in str(errinfo.value)
+
+    def test_zonal_meridional_psi_bad_lat_ranges(self, uxds_plev):
+        # just one outside range of lats in uxds_plev
+        with pytest.raises(ValueError) as errinfo:
+            zonal_meridional_psi(uxds_plev, lat=self.lat.tolist() + [45])
+        assert "contains NaN values" in str(errinfo.value)
+
+        # barely inside range of lats in uxds_plev
+        with pytest.raises(ValueError) as errinfo:
+            zonal_meridional_psi(uxds_plev, lat=[30, 31, 32, 33, 34, 35, 36])
+        assert "contains NaN values" in str(errinfo.value)
+
+        # bigger range of lats outside of uxds_plev
+        with pytest.raises(ValueError) as errinfo:
+            zonal_meridional_psi(uxds_plev, lat=self.lat.tolist() + [45, 46, 47, 48])
+        assert "contains NaN values" in str(errinfo.value)
+
+        # all outside range of lats in uxds_plev
+        with pytest.raises(ValueError) as errinfo:
+            zonal_meridional_psi(uxds_plev, lat=[10, 11, 12, 13, 14, 15])
+        assert "contains NaN values" in str(errinfo.value)
 
     def test_zonal_meridional_psi_custom_varnames(self, uxds_plev):
         """Test providing custom variable names."""

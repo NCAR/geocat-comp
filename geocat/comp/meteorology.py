@@ -1337,12 +1337,12 @@ def delta_pressure(pressure_lev, surface_pressure, pressure_top=None):
 
 def zonal_meridional_psi(
     uxds,
+    lat=(-90, 90, 10),
     meridional_wind_varname=None,
     surface_air_pressure_varname=None,
     plev_coordname=None,
     hyam_coordname=None,
     hybm_coordname=None,
-    lat=(-90, 90, 10),
 ):
     """
     Calculate the zonally averaged meridional streamfunction (mpsi) from a UXarray Dataset.
@@ -1357,6 +1357,11 @@ def zonal_meridional_psi(
             - hyam : Hybrid A coefficients (if meridional_wind is on hybrid sigma-pressure levels)
             - hybm : Hybrid B coefficients (if meridional_wind is on hybrid sigma-pressure levels)
             - uxgrid : Grid information for uxarray
+    lat : tuple, float, or array-like, default=(-90, 90, 10)
+        Latitude specification:
+            - tuple (start, end, step): Computes meridional streamfunction at intervals of `step`.
+            - float: Single latitude
+            - array-like: Latitudes to sample.
     meridional_wind_varname : str, optional
         The variable name for the meridional wind component in `uxds`. If not provided, the function will attempt to find a variable with standard_name 'northward_wind' or long_name 'Meridional wind', or one of the possible names ['V', 'vs', 'meridional_wind'].
     surface_air_pressure_varname : str, optional
@@ -1367,11 +1372,6 @@ def zonal_meridional_psi(
         The coordinate name for hybrid A coefficients in `uxds`. If not provided, the function will attempt to find a coordinate with long_name 'hybrid A coefficient at layer midpoints' or one of the possible names ['hyam', 'hya', 'hybrid_A_midpoints'].
     hybm_coordname : str, optional
         The coordinate name for hybrid B coefficients in `uxds`. If not provided, the function will attempt to find a coordinate with long_name 'hybrid B coefficient at layer midpoints' or one of the possible names ['hybm', 'hyb', 'hybrid_B_midpoints'].
-    lat : tuple, float, or array-like, default=(-90, 90, 10)
-        Latitude specification:
-            - tuple (start, end, step): Computes meridional streamfunction at intervals of `step`.
-            - float: Single latitude
-            - array-like: Latitudes to sample.
     Returns
     -------
     da_mpsi : xarray.DataArray
@@ -1488,10 +1488,10 @@ def zonal_meridional_psi(
         )
     if np.isnan(da_PS_zonal).any():
         raise ValueError(
-            "zonal_meridional_psi: zonal mean of surface air pressure contains all NaN values. "
-            "Cannot compute pressure thickness."
+            "zonal_meridional_psi: zonal mean of surface air pressure for provided latitudes contains NaN values. "
+            "Cannot compute pressure thickness. Check if the `lat` argument matches the range of your data, tried `lat={lat}`."
         )
-    if (da_PS_zonal <= 0).any():
+    if (uxds[surface_air_pressure_varname] <= 0).any():
         raise ValueError("zonal_meridional_psi: surface air pressure must be positive.")
 
     # delta pressure for integration
@@ -1536,21 +1536,21 @@ def dpres_plev(pressure_lev, surface_pressure, pressure_top=None):
 
 def zonal_mpsi(
     uxds,
+    lat=(-90, 90, 10),
     meridional_wind_varname=None,
     surface_air_pressure_varname=None,
     plev_coordname=None,
     hyam_coordname=None,
     hybm_coordname=None,
-    lat=(-90, 90, 10),
 ):
     return zonal_meridional_psi(
         uxds,
+        lat=lat,
         meridional_wind_varname=meridional_wind_varname,
         surface_air_pressure_varname=surface_air_pressure_varname,
         plev_coordname=plev_coordname,
         hyam_coordname=hyam_coordname,
         hybm_coordname=hybm_coordname,
-        lat=lat,
     )
 
 
