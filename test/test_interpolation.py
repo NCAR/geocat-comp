@@ -4,6 +4,8 @@ import numpy.testing as nt
 import xarray as xr
 import pytest
 import pint
+import uxarray as ux
+
 
 from geocat.comp import (
     interp_multidim,
@@ -622,3 +624,21 @@ class Test_interp_larger_dataset:
         )
 
         np.testing.assert_almost_equal(test_output, data_xr.values, decimal=8)
+
+
+class TestPressureAtHybridLevels:
+    @pytest.fixture
+    def uxds(self):
+        """Load UXarray dataset"""
+        try:
+            return ux.open_dataset("ux-grid.nc", "ux-data.nc")
+        except FileNotFoundError:
+            return ux.open_dataset("test/ux-grid.nc", "test/ux-data.nc")
+
+    def test_uxarray_subclass_passes(self, uxds):
+        """Ensure pressure_at_hybrid_levels works with UXarray (subclass of xarray)"""
+
+        arg_var = uxds['t2m']  # passing in same ux.DataArray 3 times
+
+        output = pressure_at_hybrid_levels(arg_var, arg_var, arg_var)
+        assert output.shape[0] == arg_var.shape[0]
