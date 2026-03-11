@@ -7,26 +7,19 @@
 
 Release Notes
 =============
-vYYYY.MM.## (unreleased)
-------------------------
-This release...
+
+v2026.03.0 (March 11, 2026)
+---------------------------
+This release has updates to our internal structure to ingest UXarray datasets in a new zonal mean meridional stream function for data on unstructured grids using UXarray in ``meteorology.zonal_meridional_psi``.
+
+New Features
+^^^^^^^^^^^^
+* Zonal mean meridional stream function for data on unstructured grids using UXarray in ``meteorology.zonal_meridional_psi`` by `Julia Kent`_ in (:pr:`773`)
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
 * Add dask compatibility testing for all functionality by `Anissa Zacharias`_ in (:pr:`819`)
 * Updates ASV PR comparison action that was failing when it found a regression by `Anissa Zacharias`_ in (:pr:`824`)
-
-
-vYYYY.MM.## (unreleased)
-------------------------
-This release has updates to our internal structure to ingest UXarray datasets in a new zonal mean meridional stream function for data on unstructured grids using UXarray in ``meteorology.zonal_meridional_psi``.
-
-New Features
-^^^^^^^^^^^^
-* Zonal mean meridional stream function for data on unstructured grids using
-New Features
-^^^^^^^^^^^^
-* Zonal mean meridional stream function for data on unstructured grids using UXarray in ``meteorology.zonal_meridional_psi`` by `Julia Kent`_ in (:pr:`773`)
 
 
 v2026.01.0 (January 27, 2026)
