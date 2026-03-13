@@ -7,7 +7,6 @@ conda remove -y --force \
     dask \
     distributed \
     metpy \
-    numpy \
     pandas \
     pint \
     scipy \
@@ -24,7 +23,6 @@ python -m pip install \
     --no-deps \
     --pre \
     --upgrade \
-    numpy \
     pandas \
     scipy \
     xarray
