@@ -798,6 +798,7 @@ class Test_Delta_Pressure:
         )
 
 
+@pytest.mark.uxarray
 class Test_zonal_meridional_psi:
     lat = np.arange(36, 45, 1)
 
