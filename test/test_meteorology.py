@@ -2,7 +2,6 @@ import numpy as np
 import pytest
 from random import uniform
 import xarray as xr
-import uxarray as ux
 
 from geocat.comp.meteorology import (
     dewtemp,
@@ -804,6 +803,8 @@ class Test_zonal_meridional_psi:
 
     @pytest.fixture
     def uxds_plev(self):
+        import uxarray as ux
+
         """Load UXarray dataset with pressure level data."""
         try:
             return ux.open_dataset("grid_subset.nc", "plev_subset.nc")
@@ -812,6 +813,8 @@ class Test_zonal_meridional_psi:
 
     @pytest.fixture
     def uxds_hybrid(self):
+        import uxarray as ux
+
         """Load UXarray dataset with hybrid level data."""
         try:
             return ux.open_dataset("grid_subset.nc", "hybrid_subset.nc")
@@ -837,6 +840,8 @@ class Test_zonal_meridional_psi:
         assert not np.allclose(out.values, 0)
 
     def test_zonal_meridional_psi_hybrid_equivalence(self, uxds_hybrid) -> None:
+        import uxarray as ux
+
         # ---- function output (hybrid path) ----
         out_func = zonal_meridional_psi(uxds_hybrid, lat=self.lat)
 
