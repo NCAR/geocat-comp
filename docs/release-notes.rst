@@ -7,6 +7,13 @@
 
 Release Notes
 =============
+vYYYY.MM.## (unreleased)
+------------------------
+This release...
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Fix upstream testing numpy pinning incompatibility and mark tests that require uxarray by `Anissa Zacharias`_ in (:pr:`828`)
 
 v2026.03.0 (March 11, 2026)
 ---------------------------
