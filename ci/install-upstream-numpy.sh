@@ -11,6 +11,7 @@ conda remove -y --force \
     pandas \
     pint \
     scipy \
+    uxarray \
     xarray \
     xskillscore
 
