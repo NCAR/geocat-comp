@@ -71,3 +71,8 @@ quote-style = "preserve"
 # Skip E402 Module level import not at top of cell
 # Skip F401 Module imported but unused
 ignore = ["E402", "F401"]
+
+[tool.pytest.ini_options]
+markers = [
+    "uxarray: mark tests that require uxarray",
+]

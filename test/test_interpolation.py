@@ -4,7 +4,6 @@ import numpy.testing as nt
 import xarray as xr
 import pytest
 import pint
-import uxarray as ux
 
 
 from geocat.comp import (
@@ -626,9 +625,12 @@ class Test_interp_larger_dataset:
         np.testing.assert_almost_equal(test_output, data_xr.values, decimal=8)
 
 
+@pytest.mark.uxarray
 class TestPressureAtHybridLevels:
     @pytest.fixture
     def uxds(self):
+        import uxarray as ux
+
         """Load UXarray dataset"""
         try:
             return ux.open_dataset("ux-grid.nc", "ux-data.nc")
