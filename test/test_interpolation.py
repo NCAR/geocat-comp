@@ -625,11 +625,10 @@ class Test_interp_larger_dataset:
         np.testing.assert_almost_equal(test_output, data_xr.values, decimal=8)
 
 
-@pytest.mark.uxarray
 class TestPressureAtHybridLevels:
     @pytest.fixture
     def uxds(self):
-        import uxarray as ux
+        ux = pytest.importorskip("uxarray")
 
         """Load UXarray dataset"""
         try:
