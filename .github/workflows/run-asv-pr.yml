@@ -74,7 +74,7 @@ jobs:
           echo "Contender: ${GITHUB_SHA} ($PR_HEAD_LABEL)"
           # Run benchmarks for current commit against base
           ASV_OPTIONS="--split --show-stderr"
-          asv continuous $ASV_OPTIONS ${{ github.event.pull_request.base.sha }} ${GITHUB_SHA}
+          asv continuous $ASV_OPTIONS ${{ github.event.pull_request.base.sha }} ${GITHUB_SHA} || true
           # Save compare results
           echo "${{ env.comment_message }}" > asv_compare_results.txt
           echo "Baseline:  ${{ github.event.pull_request.base.sha }} (${{ github.event.pull_request.base.label }})" >> asv_compare_results.txt
@@ -83,7 +83,25 @@ jobs:
 
         working-directory: ${{ env.ASV_DIR }}
 
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  #v6.0.0
+
+      - name: format to collapse unchanged benchmarks
+        shell: python
+        run: |
+          import re
+
+          with open('asv_compare_results.txt') as f:
+              d = f.read()
+
+          findstr = r'\n(Benchmarks that have stayed the same:)\n{2}((\|.*\n)*)'
+          substr = r'\n<details>\n<summary>\1</summary>\n\n\2</details>'
+          out = re.sub(findstr, substr, d)
+
+          with open('asv_compare_results.txt', 'w') as f:
+              f.write(out)
+
+        working-directory: ${{ env.ASV_DIR }}
+
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  #v7.0.0
         if: always()
         with:
           name: benchmark-results
@@ -95,7 +113,7 @@ jobs:
         run: |
           mkdir -p ./pr
           echo ${{ github.event.number }} > ./pr/NR
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  #v6.0.0
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  #v7.0.0
         with:
           name: pr
           path: pr/

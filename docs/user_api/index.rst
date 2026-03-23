@@ -70,6 +70,7 @@ Meteorology
    relhum_water
    saturation_vapor_pressure
    saturation_vapor_pressure_slope
+   zonal_meridional_psi
 
 Spherical Harmonics
 ^^^^^^^^^^^^^^^^^^^
@@ -102,6 +103,7 @@ NCL Function Name Wrappers
    :toctree: ./generated/
 
    meteorology.dpres_plev
+   meteorology.zonal_mpsi
 
 Deprecated Functions
 ---------------------
