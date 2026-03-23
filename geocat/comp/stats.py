@@ -1,19 +1,157 @@
+import cf_xarray
 from eofs.xarray import Eof
 import numpy as np
-from typing import Iterable
+from typing import Iterable, Union
 import xskillscore as xs
 import xskillscore.core.np_deterministic as xs_internal
 import xarray as xr
 import warnings
 
 
-def pearson_r(a,
-              b,
-              dim=None,
-              weights=None,
-              skipna=False,
-              keep_attrs=False,
-              axis=None):
+def nmse(
+    observed: Union[xr.Dataset, xr.DataArray], modeled: Union[xr.Dataset, xr.DataArray]
+) -> Union[xr.Dataset, xr.DataArray]:
+    r"""Calculate the normalized mean squared error metric of
+    `Williamson, 1995 <https://library.wmo.int/idurl/4/37026>`__
+    as described in section 3 of *"An Evaluation of the Large-Scale
+    Atmospheric Circulation and Its Variability in CESM2 and Other CMIP
+    Models"* (`Simpson et al., 2020 <https://doi.org/10.1029/2020JD032835>`__).
+
+    .. math::
+        NMSE(X_m) = \frac{\overline{(X_m - X_o)^2}}{\overline{(X'_o)^2}}
+
+    where :math:`X_m` is the modeled field, :math:`X_o` is the observed field,
+    :math:`X'_o` is the weighted deviation of the observed field
+    (:math:`X'_o = X_o - X_{wo}`) and the overbar indicates a weighted
+    spatial average.
+
+    The weights are calculated by:
+
+    .. math::
+        weights = \cos(lat)
+
+    and assumes regular spacing.
+
+    This implementation is based on Isla Simpson's implementation in
+    `CASanalysis <https://github.com/islasimpson/CASanalysis>`__ and
+    `CUPID <https://github.com/NCAR/CUPiD/blob/b6a32b5dd7b88369689dbc3746c3df21af8ce40a/nblibrary/atm/nmse_utils.py>`__.
+
+    Parameters
+    ----------
+    observed : :class:`xarray.DataArray` or :class:`xarray.Dataset`
+        The observed field.
+
+    modeled : :class:`xarray.DataArray` or :class:`xarray.Dataset`
+        The modeled field. Must have the same dimensions as `observed`.
+
+    Returns
+    -------
+    nmse : :class:`xarray.DataArray` or :class:`xarray.Dataset`
+        The normalized mean squared error between the modeled and observed fields.
+
+    """
+
+    # Validate Inputs
+    # type check
+    if not {type(observed), type(modeled)}.issubset({xr.DataArray, xr.Dataset}):
+        raise TypeError("Inputs must be xarray DataArrays or Datasets")
+
+    # check both datasets or both dataarrays
+    if type(observed) is not type(modeled):
+        raise TypeError(
+            "Both inputs must be of the same type, either DataArray or Dataset"
+        )
+
+    # check if coord names match
+    if not set(observed.coords) == set(modeled.coords):
+        raise KeyError(
+            f"Warning: coordinate names do not match. observed: {set(observed.coords)} modeled: {set(modeled.coords)}"
+        )
+
+    # try to find lat and lon
+    observed = observed.cf.guess_coord_axis()
+    modeled = modeled.cf.guess_coord_axis()
+
+    if (not {'latitude', 'longitude'}.issubset(observed.cf.keys())) or (
+        not {'latitude', 'longitude'}.issubset(modeled.cf.keys())
+    ):
+        raise ValueError(
+            "Unable to determine latitude and longitude from inputs. Try making inputs CF compliant"
+        )
+
+    # check for even lon/lat spacing
+    lat_diff = np.diff(observed.cf["latitude"], axis=0)
+    lat_diff = (
+        lat_diff
+        if not all(lat_diff.ravel() == 0)
+        else np.diff(observed.cf["latitude"], axis=1)
+    )
+    lon_diff = np.diff(observed.cf["longitude"], axis=0)
+    lon_diff = (
+        lon_diff
+        if not all(lon_diff.ravel() == 0)
+        else np.diff(observed.cf["longitude"], axis=1)
+    )
+    if not np.allclose(lat_diff, lat_diff[0]) or not np.allclose(lon_diff, lon_diff[0]):
+        raise ValueError(
+            "Uneven latitude or longitude spacing, weighting calculation will not work"
+        )
+
+    # get lat and lon names
+    lat_name = observed.cf.coordinates['latitude']
+    lon_name = observed.cf.coordinates['longitude']
+
+    # if more than one latitude found, error out
+    if len(lat_name) > 1 or len(lon_name) > 1:
+        raise ValueError(
+            f"Multiple latitude/longitude coordinates not supported. Found lat: {lat_name} and lon: {lon_name} "
+        )
+
+    lat_name = lat_name[0]
+    lon_name = lon_name[0]
+
+    # get lat lon name dimensions, eg ['lat', 'lon'] or ['x', 'y']
+    spatial_dims = set(observed.cf["latitude"].dims).union(
+        set(observed.cf["longitude"].dims)
+    )
+
+    # calculate weights
+    weights = np.cos(np.deg2rad(observed.cf["latitude"]))
+
+    # weight by zero if modeled or observed is nan
+    weights = weights.where(np.logical_not(np.isnan(observed) | np.isnan(modeled)), 0)
+    observed = observed.where(weights != 0, 0)
+    modeled = modeled.where(weights != 0, 0)
+
+    # make sure weights are a DataArray
+    if isinstance(weights, xr.Dataset):
+        weights = weights.to_dataarray()
+    if not isinstance(weights, xr.DataArray):
+        weights = xr.DataArray(weights)
+
+    # calculate weighted observed
+    observed_w = observed.weighted(weights).mean(dim=spatial_dims)
+
+    # calculate numerator, overbar((X_m - X_o)^2)
+    num = (modeled - observed) ** 2
+    num = num.weighted(weights).mean(dim=spatial_dims)
+
+    # calculate denominator, overbar((X_o')^2)
+    denom = (observed - observed_w) ** 2
+    denom = denom.weighted(weights).mean(dim=spatial_dims)
+
+    metric = num / denom
+
+    # clear out existing metadata on return object
+    metric = metric.drop_attrs()
+    metric.attrs['description'] = (
+        "Normalized Mean Squared Error (NMSE) between modeled and observed fields"
+    )
+
+    return metric
+
+
+def pearson_r(a, b, dim=None, weights=None, skipna=False, keep_attrs=False, axis=None):
     """This function wraps the function of the same name from `xskillscore <htt
     ps://xskillscore.readthedocs.io/en/stable/api/xskillscore.pearson_r.html#xs
     killscore.pearson_r>`__. The difference between the xskillscore version and
@@ -48,7 +186,8 @@ def pearson_r(a,
     if not isinstance(a, xr.DataArray) and not isinstance(b, xr.DataArray):
         if (dim is not None) and (axis is not None):
             warnings.warn(
-                "The `dim` keyword is unused with non xarray.DataArray inputs")
+                "The `dim` keyword is unused with non xarray.DataArray inputs"
+            )
         if axis is None:  # squash array to 1D for element wise computation
             axis = 0
             a = np.ravel(a)
@@ -61,8 +200,7 @@ def pearson_r(a,
             print('Data along `axis` must have the same dimension as `weights`')
     else:  # if a and b are xr.DataArrays
         if (dim is not None) and (axis is not None):
-            warnings.warn(
-                "The `axis` keyword is unused with xarray.DataArray inputs")
+            warnings.warn("The `axis` keyword is unused with xarray.DataArray inputs")
         try:
             return xs.pearson_r(a, b, dim, weights, skipna, keep_attrs)
         except ValueError:
@@ -75,7 +213,6 @@ def _generate_eofs_solver(data, time_dim=0, weights=None, center=True, ddof=1):
 
     # ''' Start of boilerplate
     if not isinstance(data, xr.DataArray):
-
         data = np.asarray(data)
 
         if (time_dim >= data.ndim) or (time_dim < -data.ndim):
@@ -84,7 +221,8 @@ def _generate_eofs_solver(data, time_dim=0, weights=None, center=True, ddof=1):
         # Transpose data if time_dim is not 0 (i.e. the first/left-most dimension)
         dims_to_transpose = np.arange(data.ndim).tolist()
         dims_to_transpose.insert(
-            0, dims_to_transpose.pop(dims_to_transpose.index(time_dim)))
+            0, dims_to_transpose.pop(dims_to_transpose.index(time_dim))
+        )
         data = np.transpose(data, axes=dims_to_transpose)
 
         dims = [f"dim_{i}" for i in range(data.ndim)]
@@ -100,15 +238,17 @@ def _generate_eofs_solver(data, time_dim=0, weights=None, center=True, ddof=1):
     return data, solver
 
 
-def eofunc_eofs(data,
-                neofs=1,
-                time_dim=0,
-                eofscaling=0,
-                weights=None,
-                center=True,
-                ddof=1,
-                vfscaled=False,
-                meta=False):
+def eofunc_eofs(
+    data,
+    neofs=1,
+    time_dim=0,
+    eofscaling=0,
+    weights=None,
+    center=True,
+    ddof=1,
+    vfscaled=False,
+    meta=False,
+):
     """Computes empirical orthogonal functions (EOFs, aka: Principal Component
     Analysis).
 
@@ -229,11 +369,9 @@ def eofunc_eofs(data,
     `eofunc_n <https://www.ncl.ucar.edu/Document/Functions/Built-in/eofunc_n.shtml>`__,
     `eofunc_n_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_n_Wrap.shtml>`__
     """
-    data, solver = _generate_eofs_solver(data,
-                                         time_dim=time_dim,
-                                         weights=weights,
-                                         center=center,
-                                         ddof=ddof)
+    data, solver = _generate_eofs_solver(
+        data, time_dim=time_dim, weights=weights, center=center, ddof=ddof
+    )
 
     # Checking number of EOFs
     if neofs <= 0:
@@ -255,11 +393,8 @@ def eofunc_eofs(data,
     attrs['varianceFraction'] = solver.varianceFraction(neigs=neofs)
 
     if meta:
-        dims = ["eof"
-               ] + [data.dims[i] for i in range(data.ndim) if i != time_dim]
-        coords = {
-            k: v for (k, v) in data.coords.items() if k != data.dims[time_dim]
-        }
+        dims = ["eof"] + [data.dims[i] for i in range(data.ndim) if i != time_dim]
+        coords = {k: v for (k, v) in data.coords.items() if k != data.dims[time_dim]}
     else:
         dims = ["eof"] + [f"dim_{i}" for i in range(data.ndim) if i != time_dim]
         coords = {}
@@ -267,14 +402,9 @@ def eofunc_eofs(data,
     return xr.DataArray(eofs, attrs=attrs, dims=dims, coords=coords)
 
 
-def eofunc_pcs(data,
-               npcs=1,
-               time_dim=0,
-               pcscaling=0,
-               weights=None,
-               center=True,
-               ddof=1,
-               meta=False):
+def eofunc_pcs(
+    data, npcs=1, time_dim=0, pcscaling=0, weights=None, center=True, ddof=1, meta=False
+):
     """Computes the principal components (time projection) in the empirical
     orthogonal function analysis.
 
@@ -363,11 +493,9 @@ def eofunc_pcs(data,
     `eofunc_ts_n_Wrap <https://www.ncl.ucar.edu/Document/Functions/Contributed/eofunc_ts_n_Wrap.shtml>`__
     """
 
-    data, solver = _generate_eofs_solver(data,
-                                         time_dim=time_dim,
-                                         weights=weights,
-                                         center=center,
-                                         ddof=ddof)
+    data, solver = _generate_eofs_solver(
+        data, time_dim=time_dim, weights=weights, center=center, ddof=ddof
+    )
 
     # Checking number of EOFs
     if npcs <= 0:
@@ -405,7 +533,8 @@ def eofunc(data: Iterable, neval, **kwargs) -> xr.DataArray:
         "correlation"
         "`, and 'missing_value' other than np.nan. The output "
         " and its attributes may thus not be as expected, too. Use `eofunc_eofs` instead.",
-        PendingDeprecationWarning)
+        PendingDeprecationWarning,
+    )
 
     if not isinstance(data, xr.DataArray) or not isinstance(data, np.ndarray):
         data = np.asarray(data)
@@ -423,7 +552,8 @@ def eofunc_ts(data: Iterable, evec, **kwargs) -> xr.DataArray:
         "correlation"
         "`, and 'missing_value' other than np.nan. The output "
         " and its attributes may thus not be as expected, too. Use `eofunc_pcs` instead.",
-        PendingDeprecationWarning)
+        PendingDeprecationWarning,
+    )
 
     if not isinstance(data, xr.DataArray) or not isinstance(data, np.ndarray):
         data = np.asarray(data)

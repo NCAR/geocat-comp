@@ -17,6 +17,8 @@ from .interpolation import (
     interp_hybrid_to_pressure,
     interp_sigma_to_hybrid,
     interp_multidim,
+    pressure_at_hybrid_levels,
+    delta_pressure_hybrid,
 )
 from .meteorology import (
     dewtemp,
@@ -33,7 +35,7 @@ from .meteorology import (
     dpres_plev,
 )
 from .spherical import decomposition, recomposition, scale_voronoi
-from .stats import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts, pearson_r
+from .stats import eofunc, eofunc_eofs, eofunc_pcs, eofunc_ts, pearson_r, nmse
 from .deprecated import (
     grid_to_triple,
     linint1,
@@ -54,4 +56,4 @@ try:
 except Exception:
     # Local copy or not installed with setuptools.
     # Disable minimum version checks on downstream libraries.
-    __version__ = "999"
+    __version__ = "9999"

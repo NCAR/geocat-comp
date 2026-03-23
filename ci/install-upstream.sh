@@ -30,6 +30,8 @@ python -m pip install \
 
 # install rest from source
 python -m pip install \
+    --no-deps \
+    --upgrade \
     git+https://github.com/xarray-contrib/cf-xarray.git \
     git+https://github.com/dask/dask.git \
     git+https://github.com/dask/distributed.git \

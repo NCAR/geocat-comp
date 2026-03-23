@@ -14,8 +14,7 @@ Submitting Feature Requests
 ---------------------------
 Search open `issues <https://github.com/NCAR/geocat-comp/issues>`__ on the GeoCAT-comp GitHub repository to see if the
 feature you want has already been requested. If not, open an issue and follow the *feature request* template provided.
-If you are not comfortable with GitHub issues, you can fill out `this form <https://forms.gle/6DTo3ELLri4DAGfG8>`__
-to request features.
+If you are not comfortable with GitHub issues, you can fill out `this form <https://forms.gle/6DTo3ELLri4DAGfG8>`__.
 
 Earth System Data Science (ESDS) Office Hours
 ---------------------------------------------
@@ -25,9 +24,10 @@ GeoCAT specific questions. For more info about NSF NCAR's Earth System Data Scie
 
 Have a Usage Question?
 ----------------------
-For general usage questions, please submit an issue to the overarching `GeoCAT project GitHub repository <https://github.com/NCAR/geocat>`__.
+For general usage questions, please submit an `issue  <https://github.com/NCAR/geocat-comp/issues>`__ to the GeoCAT-comp GitHub repository using the *issue* template.
+If you are not comfortable with GitHub issues, you can fill out `this form <https://forms.gle/6DTo3ELLri4DAGfG8>`__.
 
 Non-GitHub Support
 ------------------
 Not everyone is familiar with GitHub, and that's okay! If you have questions for us, you can email geocat@ucar.edu and
-someone on our team will get back to you. You can also request features through `this form <https://forms.gle/6DTo3ELLri4DAGfG8>`__.
+someone on our team will get back to you. You can also submit suggestions and feedback via `this form <https://forms.gle/6DTo3ELLri4DAGfG8>`__.

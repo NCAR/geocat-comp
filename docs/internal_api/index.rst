@@ -35,7 +35,7 @@ Internal Functionality Helpers
 
    geocat.comp.interpolation._geo_height_extrapolate
 
-   geocat.comp.interpolation._pressure_from_hybrid
+   geocat.comp.interpolation._interpolate_mb
 
    geocat.comp.interpolation._sigma_from_hybrid
 
@@ -53,16 +53,8 @@ Internal Functionality Helpers
 
    geocat.comp.meteorology._dewtemp
 
-   geocat.comp.meteorology._heat_index
-
    geocat.comp.meteorology._nws_eqn
-
-   geocat.comp.meteorology._relhum
 
    geocat.comp.meteorology._relhum_ice
 
    geocat.comp.meteorology._relhum_water
-
-   geocat.comp.meteorology._xheat_index
-
-   geocat.comp.meteorology._xrelhum

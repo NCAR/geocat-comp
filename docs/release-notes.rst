@@ -7,13 +7,198 @@
 
 Release Notes
 =============
-
 vYYYY.MM.## (unreleased)
 ------------------------
+This release...
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Add dask compatibility testing for all functionality by `Anissa Zacharias`_ in (:pr:`819`)
+
+v2026.01.0 (January 27, 2026)
+-----------------------------
+This release updates ``calendar_average`` and ``climate_anomaly`` to allow for
+monthly data with non-uniform spacing, rewrites ``heat_index`` to be more in
+line with the NWS implementation, and updates ``pressure_at_hybrid_levels``
+and ``interp_hybrid_to_pressure`` to allow for multidimensional hybrid
+coefficients for xarray inputs.
+
+New Features
+^^^^^^^^^^^^
+* Update ``calendar_average`` and ``climate_anomaly`` to allow for monthly data with non-uniform spacing by `Katelyn FitzGerald`_ in (:pr:`805`, :pr:`809`)
+
+Bug Fixes
+^^^^^^^^^
+* Rewrite ``heat_index`` so that the calculation is be more in line with the NWS implementation and removes internal functions ``_xheat_index`` and ``_heat_index`` by `Anissa Zacharias`_ in (:pr:`807`)
+* Update ``pressure_at_hybrid_levels`` and ``interp_hybrid_to_pressure`` to allow for multidimensional hybrid coefficients for xarray inputs by `Anissa Zacharias`_ in (:pr:`811`)
+
+Documentation
+^^^^^^^^^^^^^
+* Update logos and color schemes by `Anissa Zacharias`_ in (:pr:`813`)
+
+
+v2025.12.1 (December 17, 2025)
+------------------------------
+This release fixes a bug in ``nmse`` and adds a new function, ``delta_pressure_hybrid``.
+
+New Features
+^^^^^^^^^^^^
+* Adds ``delta_pressure_hybrid`` function by `Anissa Zacharias`_ in (:pr:`797`)
+* Add a ``pressure_top`` argument to ``delta_pressure`` by Anissa Zacharias`_ in (:pr:`798`)
+
+Bug Fixes
+^^^^^^^^^
+* Fix ``nmse`` coordinate matching issue `Anissa Zacharias`_ in (:pr:`796`)
+
+Documentation
+^^^^^^^^^^^^^
+* Add ``delta_pressure`` calculation reference by `Anissa Zacharias`_ in (:pr:`800`)
+
+v2025.12.0 (December 2, 2025)
+-----------------------------
+This release adds a normalized mean squared error metric function.
+
+New Features
+^^^^^^^^^^^^
+* Add normalized mean square error (NMSE) metric function, ``nmse`` by `Anissa Zacharias`_ in (:pr:`787`)
+
+v2025.11.0 (November 24, 2025)
+------------------------------
+This release adds an initial benchmarking suite, exposes a new ``pressure_at_hybrid_levels`` function,
+and addresses several attribute related issues following upstream changes in Xarray.
+
+Bug Fixes
+^^^^^^^^^
+* Update ``climate_anomaly`` to ensure consistent behavior for the ``keep_attrs`` option by `Katelyn FitzGerald`_ in (:pr:`783`)
+* Revert back to passing only `pressure.data` rather than the full DataArray to avoid unit handling issues in ``interp_hybrid_to_pressure`` by `Katelyn FitzGerald`_ in (:pr:`781`)
+
+New Features
+^^^^^^^^^^^^
+* Move ``_pressure_from_hybrid`` to public API as ``pressure_at_hybrid_levels`` by `Anissa Zacharias`_ in (:pr:`776`)
+
+
+Developer Features
+^^^^^^^^^^^^^^^^^^
+* Create initial benchmarking suite by `Anissa Zacharias`_ in (:pr:`772`)
+
+Documentation
+^^^^^^^^^^^^^
+* Add latitude/longitude axis labels in ``vimfc`` example plot by `Cora Schneck`_ in (:pr:`784`)
+
+
+v2025.10.01 (October 7, 2025)
+-----------------------------
+This release updates to dependabot and optional PR ASV runs
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Group Dependabot updates by `Katelyn FitzGerald`_ in (:pr:`764`)
+
+v2025.09.0 (September 9, 2025)
+------------------------------
+This release removes dask as a mandatory dependency and reworks some internal dask usage.
+
+Breaking Changes
+^^^^^^^^^^^^^^^^
+* ``scale_voronoi`` no longer accepts ``chunk_size`` as an optional argument and will not automatically chunk xarray inputs from `Anissa Zacharias`_ in (:pr:`749`)
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Update ``interp_hybrid_to_pressure`` to remove forced dask usage by `Anissa Zacharias`_ in (:pr:`748`)
+* Remove dask as an explicit dependency and forced dask internal usage by `Anissa Zacharias`_ in (:pr:`749`)
+
+Developer Features
+^^^^^^^^^^^^^^^^^^
+* Add option to enable asv comparison runs on PR branches by `Anissa Zacharias`_ in (:pr:`753`)
+
+Documentation
+^^^^^^^^^^^^^
+* Update links to cartopy docs by `Katelyn FitzGerald`_ in (:pr:`757`)
+
+v2025.07.0 (July 15, 2025)
+---------------------------
+This release updates packaging, replaces deprecated xarray functionality, and
+addresses a bug in ``interp_hybrid_to_pressure``.
+
+Bug Fixes
+^^^^^^^^^
+* Change ``interp_hybrid_to_pressure`` to use ``t_bot`` directly for temperature extrapolation rather than the temperature from the (sometimes incorrectly) presumed lowest level by `Katelyn FitzGerald`_ in (:pr:`737`)
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Replace deprecated ``xarray.cftime_range`` with ``xarray.date_range`` by `Katelyn FitzGerald`_ in (:pr:`739`)
 
 Maintenance
 ^^^^^^^^^^^
+* Streamline packaging and dependencies by `Katelyn FitzGerald`_ in (:pr:`740`)
+
+
+v2025.05.0 (May 20, 2025)
+------------------------
+This release includes documentation improvements, fixes a delta_pressure
+thickness bug, and adds improved CFTime and Datetime object compatibility to
+climatology functionality.
+
+Documentation
+^^^^^^^^^^^^^
+* Remove reference to NCAR/geocat repo from support page by `Katelyn FitzGerald`_ in (:pr:`709`)
+* Add additional relative humidity documentation by `Cora Schneck`_ in (:pr:`710`)
+* Clarify definition of ``delta_pressure`` by `Katelyn FitzGerald`_ in (:pr:`718`)
+* Correct ``psychrometric_constant`` equation references in documentation by `Cora Schneck`_ in (:pr:`723`)
+* Add note about alternate hybrid-sigma pressure formulation to ``interp_hybrid_to_pressure`` docs by `Katelyn FitzGerald`_ in (:pr:`727`)
+
+Bug Fixes
+^^^^^^^^^
+* Update near surface pressure thickness calculations in ``delta_pressure`` for consistency with NCL by `Katelyn FitzGerald`_ in (:pr:`726`)
+* Updates internal climatology function to ensure compatibility with both CFTime and Datetime indices by `Katelyn FitzGerald`_ in (:pr:`717`)
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Updates GitHub Actions workflows per new guidance by `Cora Schneck`_ in (:pr:`716`)
+* Adds `blackdoc` to linter for rst and markdown by `Cora Schneck`_ in (:pr:`720`)
+* Unpins ``asv`` and adds Python 3.13 to benchmarking matrix by `Anissa Zacharias`_ in (:pr:`722`)
+* Updates to GitHub Actions workflows by `Katelyn FitzGerald`_ in (:pr:`733`)
+
+v2025.03.0 (March 25, 2025)
+---------------------------
+This release unpins scipy, establishes minimum version testing, and switches
+from ``yapf`` to ``ruff`` formatting.
+
+Enhancements
+^^^^^^^^^^^^
+* Add minimum dependency version testing and address minor compatibility issues with Pandas and Xarray by `Katelyn FitzGerald`_ in (:pr:`699`)
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+* Reconfigure analytics by `Katelyn FitzGerald`_ in (:pr:`698`)
+* Remove ``docformatter`` and setup ``ruff`` by `Cora Schneck`_ in (:pr:`700`)
+
+Bug Fixes
+^^^^^^^^^
+* Unpin scipy and update ``sph_harm`` to ``sph_harm_y`` by `Anissa Zacharias`_ in (:pr:`695`)
+
+Breaking Changes
+^^^^^^^^^^^^^^^^
+* The ``chunk_size`` parameter was removed from :func:`.decomposition` and :func:`.recomposition` in (:pr:`695`)
+
+v2025.02.0 (February 25, 2025)
+------------------------------
+This release adds support and testing for Python 3.13, unpins numpy dependency, increases support for
+`non-nanosecond datetime objects <https://github.com/NCAR/geocat-comp/issues/682>`__,
+and updates our `code of conduct <https://github.com/NCAR/geocat-comp/commit/48b16cc0143ce63ebc4ce2735d0d1afc5f7bee5f>`__.
+
+Enhancements
+^^^^^^^^^^^^
+* Add tests and support for non-nanosecond datetime objects by `Katelyn FitzGerald`_ in (:pr:`691`)
+
+Maintenance
+^^^^^^^^^^^
+* Add support and testing for Python 3.13 by `Katelyn FitzGerald`_ in (:pr:`688`)
 * Remove NumPy version pin by `Katelyn FitzGerald`_ in (:pr:`686`)
+
+Documentation
+^^^^^^^^^^^^^
+* Updates Code of Conduct by `Orhan Eroglu`_ in `48b16cc <https://github.com/NCAR/geocat-comp/commit/48b16cc0143ce63ebc4ce2735d0d1afc5f7bee5f>`__
 
 v2025.01.0 (January 28, 2025)
 -----------------------------
@@ -427,6 +612,7 @@ Maintenance
 .. _`Cora Schneck`: https://github.com/cyschneck
 .. _`Philip Chmielowiec`: https://github.com/philipc2
 .. _`AnshRoshan`: https://github.com/AnshRoshan
+.. _`Orhan Eroglu`: https://github.com/erogluorhan
 
 ..
     TEMPLATE

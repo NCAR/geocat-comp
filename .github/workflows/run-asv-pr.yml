@@ -1,0 +1,101 @@
+name: ASV PR Comparison
+
+# read-only repo token
+on:
+  pull_request:
+      types: [opened, reopened, synchronize, labeled]
+  workflow_dispatch:
+
+env:
+  PR_HEAD_LABEL: ${{ github.event.pull_request.head.label }}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  benchmark:
+    if: ${{ contains(github.event.pull_request.labels.*.name, 'run-benchmark') && github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' }}
+    name: Linux
+    runs-on: ubuntu-latest
+    env:
+      ASV_DIR: "./benchmarks"
+      CONDA_ENV_FILE: ci/environment.yml
+
+    steps:
+      - uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98 #v6-beta
+        with:
+          fetch-depth: 0
+
+      - name: fetch repo name
+        id: repo-name
+        run: echo "value=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_OUTPUT  # just the repo name, not owner
+
+      - name: Setup Miniforge
+        uses: conda-incubator/setup-miniconda@fc2d68f6413eb2d87b895e92f8584b5b94a10167 # v3
+        with:
+          miniforge-version: "24.1.2-0"
+          activate-environment: asv-bench
+
+      - name: Get date
+        run: echo "today=$(/bin/date -u '+%Y%m%d')" >> $GITHUB_ENV
+        shell: bash
+
+      - name: set message
+        run: |
+          echo "comment_message=Meowdy! Here's your benchmark comparison:" >> $GITHUB_ENV
+
+      - name: Cache environment
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb  #v5.0.1
+        with:
+          path: ${{ env.CONDA }}/envs
+          key:
+            conda-${{ runner.os }}--${{ runner.arch }}--${{ env.today }}-
+              ${{ hashFiles('./build_envs/asv-bench.yml') }}-${{ env.CACHE_NUMBER}}
+        env:
+          # Increase this value to reset cache if the environment file has not changed
+          CACHE_NUMBER: 0
+        id: cache
+
+      - name: Update environment
+        if: steps.cache.outputs.cache-hit != 'true'
+        run:
+          conda env update -n asv-bench -f
+          ./build_envs/asv-bench.yml
+
+      - name: Run Benchmarks
+        shell: bash -l {0}
+        id: benchmark
+        run: |
+          set -x
+          # ID this runner
+          asv machine --yes
+          echo "Baseline:  ${{ github.event.pull_request.base.sha }} (${{ github.event.pull_request.base.label }})"
+          echo "Contender: ${GITHUB_SHA} ($PR_HEAD_LABEL)"
+          # Run benchmarks for current commit against base
+          ASV_OPTIONS="--split --show-stderr"
+          asv continuous $ASV_OPTIONS ${{ github.event.pull_request.base.sha }} ${GITHUB_SHA}
+          # Save compare results
+          echo "${{ env.comment_message }}" > asv_compare_results.txt
+          echo "Baseline:  ${{ github.event.pull_request.base.sha }} (${{ github.event.pull_request.base.label }})" >> asv_compare_results.txt
+          echo "Contender: ${GITHUB_SHA} ($PR_HEAD_LABEL)" >> asv_compare_results.txt
+          asv compare --split ${{ github.event.pull_request.base.sha }} ${GITHUB_SHA} >> asv_compare_results.txt
+
+        working-directory: ${{ env.ASV_DIR }}
+
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  #v6.0.0
+        if: always()
+        with:
+          name: benchmark-results
+          path: |
+            ${{ env.ASV_DIR }}/results
+            ${{ env.ASV_DIR }}/asv_compare_results.txt
+
+      - name: Save PR number
+        run: |
+          mkdir -p ./pr
+          echo ${{ github.event.number }} > ./pr/NR
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  #v6.0.0
+        with:
+          name: pr
+          path: pr/
