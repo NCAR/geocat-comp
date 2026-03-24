@@ -80,7 +80,7 @@ jobs:
             eval "$(micromamba shell hook --shell bash)"
             micromamba activate
             micromamba activate geocat_comp_build
-            python -m pytest test -v --cov=./geocat/comp --cov-report=xml --junitxml=pytest.xml
+            python -m pytest test -v --last-failed --cov=./geocat/comp --cov-report=xml --junitxml=pytest.xml
 
       - name: Run Tests (windows)
         if: matrix.os == 'windows-latest'
@@ -92,7 +92,7 @@ jobs:
             micromamba.exe shell hook -s powershell | Out-String | Invoke-Expression
             micromamba activate
             micromamba activate geocat_comp_build
-            python -m pytest test -v --cov=./geocat/comp --cov-report=xml --junitxml=pytest.xml
+            python -m pytest test -v --last-failed --cov=./geocat/comp --cov-report=xml --junitxml=pytest.xml
 
       - name: Upload test results
         uses: actions/upload-artifact@v7.0.0
