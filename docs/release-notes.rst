@@ -14,6 +14,7 @@ This release...
 Internal Changes
 ^^^^^^^^^^^^^^^^
 * Fix upstream testing numpy pinning incompatibility and mark tests that require uxarray by `Anissa Zacharias`_ in (:pr:`828`)
+* Update automatic github release notes template by `Anissa Zacharias`_ in (:pr:`832`)
 
 v2026.03.0 (March 11, 2026)
 ---------------------------
