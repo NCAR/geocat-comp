@@ -23,6 +23,13 @@ changelog:
         - developer feature
         - refactor
         - testing
-    - title: Misc
+        - github_actions
+    - title: Everything else
       labels:
         - "*"
+  exclude:
+    labels:
+        - release
+    authors:
+        - dependabot[bot]
+        - pre-commit-ci[bot]
