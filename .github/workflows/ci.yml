@@ -72,7 +72,7 @@ jobs:
 
       - name: Run Tests (non-windows)
         if: matrix.os != 'windows-latest'
-        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
         with:
           timeout_minutes: 60
           max_attempts: 3
@@ -84,7 +84,7 @@ jobs:
 
       - name: Run Tests (windows)
         if: matrix.os == 'windows-latest'
-        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
         with:
           timeout_minutes: 60
           max_attempts: 3
@@ -102,7 +102,7 @@ jobs:
 
       - name: Upload code coverage to Codecov
         if: github.repository == 'NCAR/geocat-comp'
-        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
+        uses: codecov/codecov-action@1af58845a975a7985b0beb0cbe6fbbb71a41dbad # v5.5.3
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
@@ -149,7 +149,7 @@ jobs:
         run: |
           conda list
       - name: Make docs with linkcheck
-        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
         with:
           timeout_minutes: 60
           max_attempts: 3
