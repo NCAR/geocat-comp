@@ -520,9 +520,9 @@ class Test_eof_ts(BaseEOFTestClass):
     @pytest.fixture(scope="class")
     def _nc_ds(self):
         try:
-            return xr.open_dataset("eofunc_dataset.nc")
+            return xr.open_dataset("./data/eofunc_dataset.nc")
         except Exception:
-            return xr.open_dataset("test/eofunc_dataset.nc")
+            return xr.open_dataset("test/data/eofunc_dataset.nc")
 
     def test_01(self, _nc_ds) -> None:
         sst = _nc_ds.sst

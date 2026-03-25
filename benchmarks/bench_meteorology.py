@@ -112,10 +112,12 @@ class Bench_zonal_meridional_mpsi:
     def setup(self):
         # Load test data
         try:
-            self.uxds = ux.open_dataset("test/grid_subset.nc", "test/plev_subset.nc")
+            self.uxds = ux.open_dataset(
+                "test/data/grid_subset.nc", "test/data/plev_subset.nc"
+            )
         except FileNotFoundError:
             self.uxds = ux.open_dataset(
-                "../test/grid_subset.nc", "../test/plev_subset.nc"
+                "../test/data/grid_subset.nc", "../test/data/plev_subset.nc"
             )
 
         self.lat = np.arange(36, 45, 1)

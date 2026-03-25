@@ -9,15 +9,15 @@ from geocat.comp import gradient
 class Test_Gradient:
     @pytest.fixture(scope="class")
     def test_data_xr(self):
-        return xr.load_dataset('test/gradient_test_data.nc').to_array().squeeze()
+        return xr.load_dataset('test/data/gradient_test_data.nc').to_array().squeeze()
 
     @pytest.fixture(scope="class")
     def expected_results(self):
         return [
-            xr.load_dataset('test/gradient_test_results_longitude.nc')
+            xr.load_dataset('test/data/gradient_test_results_longitude.nc')
             .to_array()
             .squeeze(),
-            xr.load_dataset('test/gradient_test_results_latitude.nc')
+            xr.load_dataset('test/data/gradient_test_results_latitude.nc')
             .to_array()
             .squeeze(),
         ]
