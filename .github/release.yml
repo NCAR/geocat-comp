@@ -30,6 +30,6 @@ changelog:
         - refactor
         - testing
         - github_actions
-    - title: Everything else
+    - title: Other
       labels:
         - "*"
