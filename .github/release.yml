@@ -1,6 +1,12 @@
 # .github/release.yml
 
 changelog:
+  exclude:
+    labels:
+        - release
+    authors:
+        - dependabot[bot]
+        - pre-commit-ci[bot]
   categories:
     - title: New Features
       labels:
@@ -23,6 +29,7 @@ changelog:
         - developer feature
         - refactor
         - testing
-    - title: Misc
+        - github_actions
+    - title: Other
       labels:
         - "*"

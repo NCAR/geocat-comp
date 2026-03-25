@@ -15,6 +15,8 @@ Developer Features
 ^^^^^^^^^^^^^^^^^^
 * Fix upstream testing numpy pinning incompatibility and mark tests that require uxarray by `Anissa Zacharias`_ in (:pr:`828`)
 * Add automatic issue creation on upstream testing failure and only retest previously failed tests on re-run by `Anissa Zacharias`_ in (:pr:`830`)
+* Update automatic github release notes template by `Anissa Zacharias`_ in (:pr:`832`)
+
 
 v2026.03.0 (March 11, 2026)
 ---------------------------
