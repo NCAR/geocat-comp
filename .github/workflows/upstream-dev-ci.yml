@@ -65,7 +65,7 @@ jobs:
         id: tests
         uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
         with:
-          timeout_minutes: 60
+          timeout_minutes: 15
           max_attempts: 3
           command: |
             eval "$(micromamba shell hook --shell bash)"
@@ -129,7 +129,7 @@ jobs:
         id: tests
         uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
         with:
-          timeout_minutes: 60
+          timeout_minutes: 15
           max_attempts: 3
           command: |
             eval "$(micromamba shell hook --shell bash)"
