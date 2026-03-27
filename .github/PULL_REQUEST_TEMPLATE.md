@@ -11,13 +11,10 @@ Closes #XXX
 - [ ] Add appropriate labels to this PR
 - [ ] PR follows the [Contributor's Guide](https://geocat-comp.readthedocs.io/en/stable/contrib.html)
 
-**Functionality**
+**New Functionality**
 - [ ] New function(s) intended for public API added to `geocat/comp/__init__.py` file
-
-**Testing**
-- [ ] Update or create tests in appropriate test file
-
-**Documentation**
+- [ ] Add testing for any new functionality, including a dask compatibility test.
+- [ ] If appropriate, add a new benchmark for new functions
 - [ ] Docstrings have been created and/or updated in accordance with [Documentation Standards](https://geocat-comp.readthedocs.io/en/stable/contrib.html#docstrings).
 - [ ] Internal functions have a preceding underscore (`_`) and have been added to `docs/internal_api/index.rst`
 - [ ] User facing functions have been added to `docs/user_api/index.rst` under their module
