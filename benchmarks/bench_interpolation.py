@@ -18,7 +18,7 @@ class Bench_interp_hybrid_to_pressure_extrap_temp:
             )
         except Exception:
             self.ds_ccsm = xr.open_dataset(
-                "test/ccsm35.h0.0021-01.demo.nc", decode_times=False
+                "test/data/ccsm35.h0.0021-01.demo.nc", decode_times=False
             )
 
         # Set up input parameters similar to test class
@@ -70,7 +70,7 @@ class Bench_interp_hybrid_to_pressure:
                 gdf.get("netcdf_files/atmos.nc"), decode_times=False
             )
         except Exception:
-            self.ds_atmos = xr.open_dataset("test/atmos.nc", decode_times=False)
+            self.ds_atmos = xr.open_dataset("test/data/atmos.nc", decode_times=False)
 
         # Set up input parameters similar to test class
         self._hyam = self.ds_atmos.hyam
@@ -113,7 +113,7 @@ class Bench_interp_sigma_to_hybrid:
             )
         except Exception:
             ds_u = xr.open_dataset(
-                "test/u.89335.1_subset_time361.nc", decode_times=False
+                "test/data/u.89335.1_subset_time361.nc", decode_times=False
             )
 
         try:
@@ -121,7 +121,7 @@ class Bench_interp_sigma_to_hybrid:
                 gdf.get("netcdf_files/ps.89335.1.nc"), decode_times=False
             )
         except Exception:
-            ds_ps = xr.open_dataset("test/ps.89335.1.nc", decode_times=False)
+            ds_ps = xr.open_dataset("test/data/ps.89335.1.nc", decode_times=False)
 
         self.hyam = xr.DataArray([0.0108093, 0.0130731, 0.03255911, 0.0639471])
         self.hybm = xr.DataArray([0.0108093, 0.0173664, 0.06069280, 0.1158237])
