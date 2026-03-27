@@ -17,6 +17,7 @@ Developer Features
 * Add automatic issue creation on upstream testing failure and only retest previously failed tests on re-run by `Anissa Zacharias`_ in (:pr:`830`)
 * Update automatic github release notes template by `Anissa Zacharias`_ in (:pr:`832`)
 * Moves testing data files into their own subdirectory by `Anissa Zacharias`_ in (:pr:`834`)
+* Updates PR template by `Anissa Zacharias`_ in (:pr:`836`)
 
 
 v2026.03.0 (March 11, 2026)
