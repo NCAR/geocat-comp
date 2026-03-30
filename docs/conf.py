@@ -378,7 +378,8 @@ nb_execution_mode = "off"
 linkcheck_ignore = [
     r'https://stackoverflow.com/help/*',
     r'https://agupubs.onlinelibrary.wiley.com/*',  # 403 Client Error: Forbidden for url
-    r'https://zenodo.org/search*',  # 403 Client Error: Forbidden for url:
+    r'https://zenodo.org/search*',  # 403 Client Error: Forbidden for url
+    r'https://library.wmo.int',  # requires verification
 ]
 
 # ignore doi redirect warnings
