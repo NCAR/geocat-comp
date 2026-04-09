@@ -86,8 +86,8 @@ jobs:
           fi
           cp -r benchmarks/results/ geocat-comp-asv/
           cd geocat-comp-asv
-          git config --local user.email "anissaz@ucar.edu"
-          git config --local user.name "anissa111"
+          git config --local user.email "cyschneck@gmail.com"
+          git config --local user.name "cyschneck"
           git add results
           git commit -m "[🤖] Update benchmark results"
 
