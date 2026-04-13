@@ -93,7 +93,7 @@ jobs:
 
       - name: Push to geocat-comp-asv
         if: github.ref == 'refs/heads/main' && github.repository == 'NCAR/geocat-comp'
-        uses: ad-m/github-push-action@77c5b412c50b723d2a4fbc6d71fb5723bcd439aa # master
+        uses: ad-m/github-push-action@4cc74773234f74829a8c21bc4d69dd4be9cfa599 # master
         with:
           github_token: ${{ secrets.COMP_ASV_PAT }}
           branch: main
