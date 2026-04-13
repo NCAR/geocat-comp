@@ -1,14 +1,13 @@
 version: 2
 updates:
-  # - package-ecosystem: pip
-  #   directory: "/"
-  #   schedule:
-  #     interval: daily
+  # updates once a week, with a 7-day cooldown
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
       # Check for updates once a week
       interval: 'weekly'
+    cooldown:
+      default-days: 7 # one week lag
     groups:
       actions:
         patterns:
