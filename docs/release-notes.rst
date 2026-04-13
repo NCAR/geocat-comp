@@ -13,6 +13,7 @@ This release...
 
 Developer Features
 ^^^^^^^^^^^^^^^^^^
+* 7-day cooldown for dependabot by `Cora Schneck`_ in (:pr:`843`)
 * Fix upstream testing numpy pinning incompatibility and mark tests that require uxarray by `Anissa Zacharias`_ in (:pr:`828`)
 * Add automatic issue creation on upstream testing failure and only retest previously failed tests on re-run by `Anissa Zacharias`_ in (:pr:`830`)
 * Update automatic github release notes template by `Anissa Zacharias`_ in (:pr:`832`)
