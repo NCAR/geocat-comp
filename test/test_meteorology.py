@@ -849,7 +849,7 @@ class Test_zonal_meridional_psi:
         da_ipress = interp_hybrid_to_pressure(
             uxds_hybrid.V, uxds_hybrid.PS, uxds_hybrid.hyam, uxds_hybrid.hybm
         )
-        ux_ipress = ux.UxDataArray(da_ipress, uxgrid=uxds_hybrid.uxgrid)
+        ux_ipress = ux.UxDataArray.from_xarray(da_ipress, uxgrid=uxds_hybrid.uxgrid)
 
         ux_v_zonal = ux_ipress.zonal_mean(lat=self.lat)
         ux_v_zonal['plev'] = ux_ipress.plev
@@ -866,7 +866,7 @@ class Test_zonal_meridional_psi:
             coords={"plev": ux_v_zonal.plev, "latitudes": ux_v_zonal.latitudes},
             name="delta_pressure",
         )
-        ux_dp_zonal = ux.UxDataArray(da_dp_zonal, uxgrid=uxds_hybrid.uxgrid)
+        ux_dp_zonal = ux.UxDataArray.from_xarray(da_dp_zonal, uxgrid=uxds_hybrid.uxgrid)
         integrand = ux_v_zonal * ux_dp_zonal
         ux_mpsi = (
             integrand.isel(plev=slice(None, None, -1))
