@@ -10,7 +10,7 @@ Release Notes
 
 v2026.04.0 (April 21, 2026)
 ------------------------
-This release has updates to fix upstream incompatibility, setup dependabot cooldown, updates to the PR template, moves data files for testing into a new subdirectory, and updates the github release notes template
+This release has updates to fix upstream testing, setup dependabot cooldown, updates to the PR template, moves data files for testing into a new subdirectory, and updates the github release notes template
 
 Developer Features
 ^^^^^^^^^^^^^^^^^^
