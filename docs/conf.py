@@ -380,6 +380,7 @@ linkcheck_ignore = [
     r'https://agupubs.onlinelibrary.wiley.com/*',  # 403 Client Error: Forbidden for url
     r'https://zenodo.org/search*',  # 403 Client Error: Forbidden for url
     r'https://library.wmo.int',  # requires verification
+    r'https://journals.ametsoc.org/*',  # 405 Client Error: Not Allowed for url
 ]
 
 # ignore doi redirect warnings
