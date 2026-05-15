@@ -49,6 +49,7 @@ jobs:
         continue-on-error: true
         uses: mamba-org/setup-micromamba@d7c9bd84e824b79d2af72a2d4196c7f4300d3476 # v2
         with:
+          micromamba-version: '2.6.0-0'
           environment-file: ${{ env.CONDA_ENV_FILE }}
           cache-environment: true
           cache-environment-key: "CI ${{runner.os}}-${{runner.arch}}-py${{matrix.python-version}}-${{env.TODAY}}"
