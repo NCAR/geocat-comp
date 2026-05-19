@@ -23,7 +23,6 @@ Bug Fixes
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
-* Pin micromamba version in CI by `Katelyn FitzGerald`_ in (:pr:`855`)
 
 Documentation
 ^^^^^^^^^^^^^
