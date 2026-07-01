@@ -23,7 +23,7 @@ jobs:
       CONDA_ENV_FILE: ci/environment.yml
 
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 #v6-beta
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v6-beta
         with:
           fetch-depth: 0
 
@@ -46,7 +46,7 @@ jobs:
           echo "comment_message=Meowdy! Here's your benchmark comparison:" >> $GITHUB_ENV
 
       - name: Cache environment
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae  #v5.0.5
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  #v6.1.0
         with:
           path: ${{ env.CONDA }}/envs
           key:
