@@ -13,7 +13,6 @@ functions for operating on geosciences data. Many of these functions originated
 in NCL and were translated into Python in GeoCAT-comp; however, developers are
 welcome to suggest novel computational functions for geosciences data.
 
-
 # Documentation
 
 [GeoCAT Homepage](https://geocat.ucar.edu/)
