@@ -20,6 +20,7 @@ Breaking Changes
 
 Bug Fixes
 ^^^^^^^^^
+* Fix input-conversion ``except`` clauses in ``heat_index``, ``relhum_ice``, and ``relhum_water`` that used a list instead of a tuple by `Arpit Jain`_ in (:pr:`PLACEHOLDER_PR`)
 
 Internal Changes
 ^^^^^^^^^^^^^^^^
@@ -654,6 +655,7 @@ Maintenance
 .. _`Philip Chmielowiec`: https://github.com/philipc2
 .. _`AnshRoshan`: https://github.com/AnshRoshan
 .. _`Orhan Eroglu`: https://github.com/erogluorhan
+.. _`Arpit Jain`: https://github.com/arpitjain099
 
 ..
     TEMPLATE
