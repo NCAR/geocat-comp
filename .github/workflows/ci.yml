@@ -47,7 +47,7 @@ jobs:
       - name: environment setup
         id: env-setup
         continue-on-error: true
-        uses: mamba-org/setup-micromamba@ce51e99f4bb8a82ab7158c4dc59ef4634c59c4f9 # v2
+        uses: mamba-org/setup-micromamba@f457c30a868e4760d3a6fcea5f25dc655b8edf39 # v2
         with:
           environment-file: ${{ env.CONDA_ENV_FILE }}
           cache-environment: true
@@ -57,7 +57,7 @@ jobs:
 
       - name: retry environment set up if failed
         if: steps.env-setup.outcome == 'failure'
-        uses: mamba-org/setup-micromamba@ce51e99f4bb8a82ab7158c4dc59ef4634c59c4f9 # v2
+        uses: mamba-org/setup-micromamba@f457c30a868e4760d3a6fcea5f25dc655b8edf39 # v2
         with:
           download-micromamba: false
           environment-file: ${{ env.CONDA_ENV_FILE }}
@@ -123,7 +123,7 @@ jobs:
       - name: environment setup
         id: link-env-setup
         continue-on-error: true
-        uses: mamba-org/setup-micromamba@ce51e99f4bb8a82ab7158c4dc59ef4634c59c4f9 # v2
+        uses: mamba-org/setup-micromamba@f457c30a868e4760d3a6fcea5f25dc655b8edf39 # v2
         with:
           environment-file: build_envs/docs.yml
           cache-environment: true
@@ -133,7 +133,7 @@ jobs:
 
       - name: retry environment set up if failed
         if: steps.link-env-setup.outcome == 'failure'
-        uses: mamba-org/setup-micromamba@ce51e99f4bb8a82ab7158c4dc59ef4634c59c4f9 # v2
+        uses: mamba-org/setup-micromamba@f457c30a868e4760d3a6fcea5f25dc655b8edf39 # v2
         with:
           download-micromamba: false
           environment-file: build_envs/docs.yml
