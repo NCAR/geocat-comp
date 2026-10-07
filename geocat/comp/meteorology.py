@@ -1503,7 +1503,7 @@ def zonal_meridional_psi(
             uxds[hyam_coordname],
             uxds[hybm_coordname],
         )
-        ux_ipress = ux.UxDataArray(da_ipress, uxgrid=uxds.uxgrid)
+        ux_ipress = ux.UxDataArray.from_xarray(da_ipress, uxgrid=uxds.uxgrid)
         plev_coordname = 'plev'
     else:
         raise AttributeError(
