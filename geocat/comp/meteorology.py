@@ -1143,7 +1143,7 @@ def saturation_vapor_pressure_slope(
         # calculate svp_slope
         svp_slope = xr.where(
             temp_c > 0,
-            4096
+            4098
             * (
                 0.6108
                 * np.exp((17.27 * temp_c) / (temp_c + 237.3))
@@ -1167,7 +1167,7 @@ def saturation_vapor_pressure_slope(
         # calculate svp_slope
         svp_slope = np.where(
             temp_c > 0,
-            4096
+            4098
             * (
                 0.6108
                 * np.exp((17.27 * temp_c) / (temp_c + 237.3))
