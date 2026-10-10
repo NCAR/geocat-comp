@@ -1122,7 +1122,7 @@ def saturation_vapor_pressure_slope(
     >>> from geocat.comp import saturation_vapor_pressure_slope
     >>> temp = np.array([50, 60, 70])
     >>> saturation_vapor_pressure_slope(temp)
-    array([0.08224261, 0.11322096, 0.153595  ])
+    array([0.61249395 0.92418176 1.35467349  ])
 
 
     See Also
@@ -1143,7 +1143,7 @@ def saturation_vapor_pressure_slope(
         # calculate svp_slope
         svp_slope = xr.where(
             temp_c > 0,
-            4096
+            4098
             * (
                 0.6108
                 * np.exp((17.27 * temp_c) / (temp_c + 237.3))
@@ -1167,7 +1167,7 @@ def saturation_vapor_pressure_slope(
         # calculate svp_slope
         svp_slope = np.where(
             temp_c > 0,
-            4096
+            4098
             * (
                 0.6108
                 * np.exp((17.27 * temp_c) / (temp_c + 237.3))

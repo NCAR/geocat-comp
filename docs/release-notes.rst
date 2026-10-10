@@ -27,6 +27,13 @@ Internal Changes
 Documentation
 ^^^^^^^^^^^^^
 
+vYYYY.MM.## (unreleased)
+------------------------
+This release...
+
+Bug Fixes
+^^^^^^^^^
+* Fix bug inherited from NCL for Penman-Monteith constant in saturation_vapor_pressure_slope by `Cora Schneck`_ in (:pr:`880`)
 
 v2026.04.0 (April 21, 2026)
 ------------------------
