@@ -608,9 +608,9 @@ class Test_saturation_vapor_pressure_slope:
     temp_gt = np.arange(1, 101, 1)
 
     @pytest.fixture(scope="class")
-    # Bug in NCL code which uses 4096 instead of the true 4098 Penman-Monteith constant        
+    # Bug in NCL code which uses 4096 instead of the true 4098 Penman-Monteith constant
 
-    #def ncl_gt(self):
+    # def ncl_gt(self):
     #    # get ground truth from ncl run netcdf file
     #    try:
     #        return xr.open_dataarray(
@@ -620,10 +620,16 @@ class Test_saturation_vapor_pressure_slope:
     #        return xr.open_dataarray("test/data/satvpr_slope_fao56_output.nc").values
 
     def fao_gt(self):
-        temp_f = np.arange(1, 101, 1) # temperature range in F
-        temp_f = np.where(temp_f <= 32, np.nan, temp_f) # invalid range below 32 degrees
-        temp_c = (temp_f - 32) * (5/9) # temperature range in C
-        temp_slope = 4098 * (0.6108 * np.exp((17.27 * temp_c) / (temp_c + 237.3)) ) / ((temp_c + 237.3) ** 2)
+        temp_f = np.arange(1, 101, 1)  # temperature range in F
+        temp_f = np.where(
+            temp_f <= 32, np.nan, temp_f
+        )  # invalid range below 32 degrees
+        temp_c = (temp_f - 32) * (5 / 9)  # temperature range in C
+        temp_slope = (
+            4098
+            * (0.6108 * np.exp((17.27 * temp_c) / (temp_c + 237.3)))
+            / ((temp_c + 237.3) ** 2)
+        )
         return temp_slope
 
     def test_numpy_input(self, fao_gt) -> None:
