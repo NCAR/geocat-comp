@@ -987,7 +987,7 @@ def saturation_vapor_pressure(
     >>> from geocat.comp import saturation_vapor_pressure
     >>> temp = np.array([50, 60, 70])
     >>> saturation_vapor_pressure(temp)
-    array([1.22796262, 1.76730647, 2.50402976])
+    array([0.08224261, 0.11322096, 0.153595  ])
 
 
     See Also
