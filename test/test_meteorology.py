@@ -604,24 +604,27 @@ class Test_saturation_vapor_pressure:
 
 
 class Test_saturation_vapor_pressure_slope:
-    # set up ground truths   
+    # set up ground truths
 
     @pytest.fixture(scope="class")
     def fao_gt(self):
         # Bug in NCL code which uses 4096 instead of the true 4098 Penman-Monteith constant, so cannot compare to NCL output
         fao_gt = np.loadtxt("test/data/satvpr_slope_fao56_output.csv", delimiter=",")
         return fao_gt
-    
+
     @pytest.fixture(scope="class")
     def temp_gt(self, fao_gt):
         # collect range of temperatures based on table values
-        temp_gt = fao_gt[:,0]
-        temp_gt = (9/5) * temp_gt + 32 # convert from Fahrenheit to Celsius
+        temp_gt = fao_gt[:, 0]
+        temp_gt = (9 / 5) * temp_gt + 32  # convert from Fahrenheit to Celsius
         return temp_gt
 
     def test_numpy_input(self, temp_gt, fao_gt) -> None:
         assert np.allclose(
-            saturation_vapor_pressure_slope(temp_gt), fao_gt[:,1], equal_nan=True, atol=0.01
+            saturation_vapor_pressure_slope(temp_gt),
+            fao_gt[:, 1],
+            equal_nan=True,
+            atol=0.01,
         )
 
     def test_float_input(self) -> None:
@@ -632,22 +635,22 @@ class Test_saturation_vapor_pressure_slope:
     def test_list_input(self, temp_gt, fao_gt) -> None:
         assert np.allclose(
             saturation_vapor_pressure_slope(temp_gt.tolist()),
-            fao_gt[:,1].tolist(),
+            fao_gt[:, 1].tolist(),
             equal_nan=True,
-            atol=0.005
+            atol=0.005,
         )
 
     def test_multi_dimensional_input(self, temp_gt, fao_gt) -> None:
         assert np.allclose(
             saturation_vapor_pressure_slope(temp_gt.reshape(2, 48)),
-            fao_gt[:,1].reshape(2, 48),
+            fao_gt[:, 1].reshape(2, 48),
             atol=0.005,
             equal_nan=True,
         )
 
     def test_xarray_input(self, temp_gt, fao_gt) -> None:
         tempf = xr.DataArray(temp_gt)
-        expected = xr.DataArray(fao_gt[:,1])
+        expected = xr.DataArray(fao_gt[:, 1])
 
         assert np.allclose(
             saturation_vapor_pressure_slope(tempf), expected, atol=0.005, equal_nan=True
