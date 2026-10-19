@@ -1267,7 +1267,7 @@ def delta_pressure(pressure_lev, surface_pressure, pressure_top=None):
     in equation (3.1):
 
       .. math::
-           \Delta p = p_{k+1/2} - p_{k-1/2}
+           \\Delta p = p_{k+1/2} - p_{k-1/2}
 
     Returns an array of shape matching (``surface_pressure``, ``pressure_lev``).
 
