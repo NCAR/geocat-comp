@@ -610,7 +610,7 @@ class Test_saturation_vapor_pressure_slope:
     def fao_gt(self):
         # Bug in NCL code which uses 4096 instead of the true 4098 Penman-Monteith constant, so cannot compare to NCL output
         # See geocat-comp PR #880 for more details
-        fao_gt = np.loadtxt("test/data/satvpr_slope_fao56_output.txt", delimiter=",")
+        fao_gt = np.loadtxt("test/data/satvpr_slope_fao56_output.csv", delimiter=",")
         return fao_gt
 
     @pytest.fixture(scope="class")
