@@ -1,5 +1,5 @@
 `satvpr_slope_fao56_output.ncl` was removed in https://github.com/NCAR/geocat-comp/pull/880
-as a bug was found in the original NCL code making comparison against the original NCL no 
+as a bug was found in the original NCL code making comparison against the original NCL no
 longer viable
 
 See: https://github.com/NCAR/geocat-comp/issues/879 for more details
