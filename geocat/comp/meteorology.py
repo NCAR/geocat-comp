@@ -388,7 +388,7 @@ def heat_index(
         try:
             temperature = np.asarray(temperature)
             relative_humidity = np.asarray(relative_humidity)
-        except [ValueError, TypeError] as e:
+        except (ValueError, TypeError) as e:
             raise TypeError(f"heat_index: cannot convert input to numpy array, {e}")
 
     # ensure all inputs same size
@@ -659,7 +659,7 @@ def relhum_ice(
             temperature = np.asarray(temperature)
             mixing_ratio = np.asarray(mixing_ratio)
             pressure = np.asarray(pressure)
-        except [ValueError, TypeError] as e:
+        except (ValueError, TypeError) as e:
             raise TypeError(f"relhum_ice: cannot convert input to numpy array, {e}")
 
     # If xarray input, pull data and store metadata
@@ -757,7 +757,7 @@ def relhum_water(
             temperature = np.asarray(temperature)
             mixing_ratio = np.asarray(mixing_ratio)
             pressure = np.asarray(pressure)
-        except [ValueError, TypeError] as e:
+        except (ValueError, TypeError) as e:
             raise TypeError(f"relhum_water: cannot convert input to numpy array, {e}")
 
     # If xarray input, pull data and store metadata
