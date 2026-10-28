@@ -27,7 +27,7 @@ def _generate_wrapper_docstring(
     )
 
     # assign docstring to wrapper function
-    wrapper_fcn.__doc__ = wrapper_docstring
+    setattr(wrapper_fcn, '__doc__', wrapper_docstring)
 
 
 def _find_var(

@@ -1,5 +1,6 @@
-import numpy as np
 import pytest
+
+import numpy as np
 import xarray as xr
 
 from geocat.comp import gradient

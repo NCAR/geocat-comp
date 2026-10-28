@@ -1,12 +1,11 @@
 import math as m
-import typing
-
 import numpy as np
+import typing
 import xarray as xr
 
 
 def fourier_filter(
-    signal: np.ndarray | xr.DataArray,
+    signal: typing.Union[np.ndarray, xr.DataArray],
     frequency: float,
     cutoff_frequency_low: float = 0,
     cutoff_frequency_high: float = 0,
@@ -15,7 +14,7 @@ def fourier_filter(
     high_pass: bool = False,
     band_pass: bool = False,
     band_block: bool = False,
-) -> np.ndarray | xr.DataArray:
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """Filter a dataset by frequency. This function allows for low_pass,
     high_pass, band_pass, or band_block filtering of the data's frequency
     representation.
@@ -174,11 +173,11 @@ def fourier_filter(
 
 
 def fourier_low_pass(
-    signal: np.ndarray | xr.DataArray,
+    signal: typing.Union[np.ndarray, xr.DataArray],
     frequency: float,
     cutoff_frequency_low: float,
     time_axis: int = 0,
-) -> np.ndarray | xr.DataArray:
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """Filter a dataset by frequency. This function allows for low_pass
     filtering of the data's frequency representation.
 
@@ -211,11 +210,11 @@ def fourier_low_pass(
 
 
 def fourier_high_pass(
-    signal: np.ndarray | xr.DataArray,
+    signal: typing.Union[np.ndarray, xr.DataArray],
     frequency: float,
     cutoff_frequency_high: float,
     time_axis: int = 0,
-) -> np.ndarray | xr.DataArray:
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """Filter a dataset by frequency. This function allows for high_pass
     filtering of the data's frequency representation.
 
@@ -248,12 +247,12 @@ def fourier_high_pass(
 
 
 def fourier_band_pass(
-    signal: np.ndarray | xr.DataArray,
+    signal: typing.Union[np.ndarray, xr.DataArray],
     frequency: float,
     cutoff_frequency_low: float,
     cutoff_frequency_high: float,
     time_axis: int = 0,
-) -> np.ndarray | xr.DataArray:
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """Filter a dataset by frequency. This function allows for band_pass
     filtering of the data's frequency representation.
 
@@ -290,12 +289,12 @@ def fourier_band_pass(
 
 
 def fourier_band_block(
-    signal: np.ndarray | xr.DataArray,
+    signal: typing.Union[np.ndarray, xr.DataArray],
     frequency: float,
     cutoff_frequency_low: float,
     cutoff_frequency_high: float,
     time_axis: int = 0,
-) -> np.ndarray | xr.DataArray:
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """Filter a dataset by frequency. This function allows for band_block
     filtering of the data's frequency representation.
 

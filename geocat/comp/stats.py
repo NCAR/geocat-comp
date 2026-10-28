@@ -1,18 +1,16 @@
-import warnings
-from collections.abc import Iterable
-from typing import Union
-
 import cf_xarray
+from eofs.xarray import Eof
 import numpy as np
-import xarray as xr
+from typing import Iterable, Union
 import xskillscore as xs
 import xskillscore.core.np_deterministic as xs_internal
-from eofs.xarray import Eof
+import xarray as xr
+import warnings
 
 
 def nmse(
-    observed: xr.Dataset | xr.DataArray, modeled: xr.Dataset | xr.DataArray
-) -> xr.Dataset | xr.DataArray:
+    observed: Union[xr.Dataset, xr.DataArray], modeled: Union[xr.Dataset, xr.DataArray]
+) -> Union[xr.Dataset, xr.DataArray]:
     r"""Calculate the normalized mean squared error metric of
     `Williamson, 1995 <https://library.wmo.int/idurl/4/37026>`__
     as described in section 3 of *"An Evaluation of the Large-Scale

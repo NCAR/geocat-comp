@@ -1,17 +1,16 @@
+import numpy as np
 import typing
 import warnings
-
-import numpy as np
 import xarray as xr
 
-from .gc_util import _find_optional_var, _find_var, _generate_wrapper_docstring
+from .gc_util import _generate_wrapper_docstring, _find_var, _find_optional_var
 from .interpolation import interp_hybrid_to_pressure
 
 
 def _dewtemp(
-    tk: np.ndarray | xr.DataArray | list | float,
-    rh: np.ndarray | xr.DataArray | list | float,
-) -> np.ndarray | xr.DataArray | list | float:
+    tk: typing.Union[np.ndarray, xr.DataArray, list, float],
+    rh: typing.Union[np.ndarray, xr.DataArray, list, float],
+) -> typing.Union[np.ndarray, xr.DataArray, list, float]:
     """This function calculates the dew point temperature given temperature and
     relative humidity using equations from John Dutton's "Ceaseless Wind" (pp
     273-274)
@@ -95,10 +94,10 @@ def _nws_eqn(coeffs, temp, rel_hum):
 
 
 def _relhum_ice(
-    t: xr.DataArray | np.ndarray,
-    w: xr.DataArray | np.ndarray,
-    p: xr.DataArray | np.ndarray,
-) -> xr.DataArray | np.ndarray:
+    t: typing.Union[xr.DataArray, np.ndarray],
+    w: typing.Union[xr.DataArray, np.ndarray],
+    p: typing.Union[xr.DataArray, np.ndarray],
+) -> typing.Union[xr.DataArray, np.ndarray]:
     """Calculates relative humidity with respect to ice, given temperature,
     mixing ratio, and pressure.
 
@@ -168,10 +167,10 @@ def _relhum_ice(
 
 
 def _relhum_water(
-    t: xr.DataArray | np.ndarray,
-    w: xr.DataArray | np.ndarray,
-    p: xr.DataArray | np.ndarray,
-) -> xr.DataArray | np.ndarray:
+    t: typing.Union[xr.DataArray, np.ndarray],
+    w: typing.Union[xr.DataArray, np.ndarray],
+    p: typing.Union[xr.DataArray, np.ndarray],
+) -> typing.Union[xr.DataArray, np.ndarray]:
     """Calculates relative humidity with respect to water, given temperature,
     mixing ratio, and pressure.
 
@@ -252,9 +251,9 @@ def _relhum_water(
 
 
 def dewtemp(
-    temperature: np.ndarray | xr.DataArray | list | float,
-    relative_humidity: np.ndarray | xr.DataArray | list | float,
-) -> np.ndarray | float:
+    temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
+    relative_humidity: typing.Union[np.ndarray, xr.DataArray, list, float],
+) -> typing.Union[np.ndarray, float]:
     """This function calculates the dew point temperature given temperature and
     relative humidity using equations from John Dutton's "Ceaseless Wind" (pp
     273-274)
@@ -315,10 +314,10 @@ def dewtemp(
 
 
 def heat_index(
-    temperature: np.ndarray | xr.DataArray | list | float,
-    relative_humidity: np.ndarray | xr.DataArray | list | float,
+    temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
+    relative_humidity: typing.Union[np.ndarray, xr.DataArray, list, float],
     alternate_coeffs: bool = False,
-) -> np.ndarray | xr.DataArray:
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """Compute the 'heat index' as calculated by the National Weather Service.
 
     The heat index calculation in this function is described at:
@@ -462,7 +461,7 @@ def heat_index(
         ),
         heatindex
         - ((13 - relative_humidity) / 4)
-        * np.sqrt(abs(17 - abs(temperature - 95)) / 17),
+        * np.sqrt(abs((17 - abs(temperature - 95))) / 17),
         heatindex,
     )
     # adjustment for rh > 85 and 80F <= t <= 87F
@@ -493,10 +492,10 @@ def heat_index(
 
 
 def relhum(
-    temperature: np.ndarray | xr.DataArray | list | float,
-    mixing_ratio: np.ndarray | xr.DataArray | list | float,
-    pressure: np.ndarray | xr.DataArray | list | float,
-) -> np.ndarray | xr.DataArray:
+    temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
+    mixing_ratio: typing.Union[np.ndarray, xr.DataArray, list, float],
+    pressure: typing.Union[np.ndarray, xr.DataArray, list, float],
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """This function calculates the relative humidity given temperature, mixing
     ratio, and pressure.
 
@@ -599,10 +598,10 @@ def relhum(
 
 
 def relhum_ice(
-    temperature: xr.DataArray | np.ndarray | list | float,
-    mixing_ratio: xr.DataArray | np.ndarray | list | float,
-    pressure: xr.DataArray | np.ndarray | list | float,
-) -> xr.DataArray | np.ndarray | list | float:
+    temperature: typing.Union[xr.DataArray, np.ndarray, list, float],
+    mixing_ratio: typing.Union[xr.DataArray, np.ndarray, list, float],
+    pressure: typing.Union[xr.DataArray, np.ndarray, list, float],
+) -> typing.Union[xr.DataArray, np.ndarray, list, float]:
     """Calculates relative humidity with respect to ice, given temperature,
     mixing ratio, and pressure.
 
@@ -691,10 +690,10 @@ def relhum_ice(
 
 
 def relhum_water(
-    temperature: xr.DataArray | np.ndarray | list | float,
-    mixing_ratio: xr.DataArray | np.ndarray | list | float,
-    pressure: xr.DataArray | np.ndarray | list | float,
-) -> xr.DataArray | np.ndarray | list | float:
+    temperature: typing.Union[xr.DataArray, np.ndarray, list, float],
+    mixing_ratio: typing.Union[xr.DataArray, np.ndarray, list, float],
+    pressure: typing.Union[xr.DataArray, np.ndarray, list, float],
+) -> typing.Union[xr.DataArray, np.ndarray, list, float]:
     """Calculates relative humidity with respect to water, given temperature,
     mixing ratio, and pressure.
 
@@ -785,9 +784,9 @@ def relhum_water(
 
 
 def max_daylight(
-    jday: np.ndarray | xr.DataArray | list | float,
-    lat: np.ndarray | xr.DataArray | list | float,
-) -> np.ndarray | xr.DataArray | float:
+    jday: typing.Union[np.ndarray, xr.DataArray, list, float],
+    lat: typing.Union[np.ndarray, xr.DataArray, list, float],
+) -> typing.Union[np.ndarray, xr.DataArray, float]:
     """Computes maximum number of daylight hours as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
 
@@ -880,8 +879,8 @@ def max_daylight(
 
 
 def psychrometric_constant(
-    pressure: np.ndarray | xr.DataArray | list | float,
-) -> np.ndarray | xr.DataArray:
+    pressure: typing.Union[np.ndarray, xr.DataArray, list, float],
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """Compute psychrometric constant [kPa / C] as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56 entitled:
 
@@ -951,9 +950,9 @@ def psychrometric_constant(
 
 
 def saturation_vapor_pressure(
-    temperature: np.ndarray | xr.DataArray | list | float,
-    tfill: float = np.nan,
-) -> np.ndarray | xr.DataArray:
+    temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
+    tfill: typing.Union[float] = np.nan,
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """Compute saturation vapor pressure as described in the Food and
     Agriculture Organization (FAO) Irrigation and Drainage Paper 56
     entitled:
@@ -1030,9 +1029,9 @@ def saturation_vapor_pressure(
 
 
 def actual_saturation_vapor_pressure(
-    tdew: np.ndarray | xr.DataArray | list | float,
-    tfill: float = np.nan,
-) -> np.ndarray | xr.DataArray:
+    tdew: typing.Union[np.ndarray, xr.DataArray, list, float],
+    tfill: typing.Union[float] = np.nan,
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """Compute 'actual' saturation vapor pressure [kPa] as described in the
     Food and Agriculture Organization (FAO) Irrigation and Drainage Paper 56
     entitled:
@@ -1093,9 +1092,9 @@ def actual_saturation_vapor_pressure(
 
 
 def saturation_vapor_pressure_slope(
-    temperature: np.ndarray | xr.DataArray | list | float,
-    tfill: float = np.nan,
-) -> np.ndarray | xr.DataArray:
+    temperature: typing.Union[np.ndarray, xr.DataArray, list, float],
+    tfill: typing.Union[float] = np.nan,
+) -> typing.Union[np.ndarray, xr.DataArray]:
     """Compute the slope [kPa/C] of saturation vapor pressure curve as
     described in the Food and Agriculture Organization (FAO) Irrigation and
     Drainage Paper 56 entitled:
@@ -1260,7 +1259,7 @@ def _delta_pressure1D(pressure_lev, surface_pressure, pressure_top):
 
 
 def delta_pressure(pressure_lev, surface_pressure, pressure_top=None):
-    r"""Calculates the pressure layer thickness, i.e. the change in pressure
+    """Calculates the pressure layer thickness, i.e. the change in pressure
     (delta pressure), for each layer in a specified constant pressure level
     coordinate system and accounting for specified surface pressure(s).
 

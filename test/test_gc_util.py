@@ -1,8 +1,7 @@
-import numpy as np
 import pytest
 import xarray as xr
-
-from geocat.comp.gc_util import _find_optional_var, _find_var
+import numpy as np
+from geocat.comp.gc_util import _find_var, _find_optional_var
 
 
 class TestFindVar:

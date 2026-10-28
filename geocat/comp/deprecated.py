@@ -13,6 +13,8 @@ def grid_to_triple(*args, **kwargs):
         "``geocat.f2py.grid_to_triple``."
     )
 
+    return None
+
 
 def linint1(*args, **kwargs):
     r"""
@@ -25,6 +27,8 @@ def linint1(*args, **kwargs):
         "To use this function, install the geocat-f2py package and import as "
         "``geocat.f2py.linint1``."
     )
+
+    return None
 
 
 def linint2(*args, **kwargs):
@@ -39,6 +43,8 @@ def linint2(*args, **kwargs):
         "``geocat.f2py.linint2``."
     )
 
+    return None
+
 
 def linint2pts(*args, **kwargs):
     r"""
@@ -51,6 +57,8 @@ def linint2pts(*args, **kwargs):
         "To use this function, install the geocat-f2py package and import as "
         "``geocat.f2py.linint2pts``."
     )
+
+    return None
 
 
 def moc_globe_atl(*args, **kwargs):
@@ -65,6 +73,8 @@ def moc_globe_atl(*args, **kwargs):
         "``geocat.f2py.moc_globe_atl``."
     )
 
+    return None
+
 
 def rcm2points(*args, **kwargs):
     r"""
@@ -77,6 +87,8 @@ def rcm2points(*args, **kwargs):
         "To use this function, install the geocat-f2py package and import as "
         "``geocat.f2py.rcm2points``."
     )
+
+    return None
 
 
 def rcm2rgrid(*args, **kwargs):
@@ -91,6 +103,8 @@ def rcm2rgrid(*args, **kwargs):
         "``geocat.f2py.rcm2rgrid``."
     )
 
+    return None
+
 
 def rgrid2rcm(*args, **kwargs):
     r"""
@@ -104,6 +118,8 @@ def rgrid2rcm(*args, **kwargs):
         "``geocat.f2py.rgrid2rcm``."
     )
 
+    return None
+
 
 def triple_to_grid(*args, **kwargs):
     r"""
@@ -116,3 +132,5 @@ def triple_to_grid(*args, **kwargs):
         "To use this function, install the geocat-f2py package and import as "
         "``geocat.f2py.triple_to_grid``."
     )
+
+    return None

@@ -1,6 +1,6 @@
+import xarray as xr
 import numpy as np
 import pandas as pd
-import xarray as xr
 
 
 def make_toy_temp_dataset(

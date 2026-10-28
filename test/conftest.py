@@ -1,9 +1,9 @@
-from math import pi, tau
-
 import geocat.datafiles as gdf
+from math import pi, tau
 import numpy as np
 import pytest
 import xarray as xr
+
 from packaging.version import Version
 from scipy import __version__ as scipy_version
 

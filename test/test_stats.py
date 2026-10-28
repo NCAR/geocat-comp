@@ -1,20 +1,18 @@
 from abc import ABCMeta
-
-import numpy as np
-import pytest
-import xarray as xr
 from cf_xarray.datasets import popds as pop
+import numpy as np
+import xarray as xr
+import pytest
 
+from .util import make_toy_temp_dataset
 from geocat.comp.stats import (
     eofunc,
     eofunc_eofs,
     eofunc_pcs,
     eofunc_ts,
-    nmse,
     pearson_r,
+    nmse,
 )
-
-from .util import make_toy_temp_dataset
 
 if hasattr(xr, "AlignmentError"):
     AlignmentError = xr.AlignmentError

@@ -1,23 +1,22 @@
-import datetime
-
 import cftime
+import datetime
 import numpy as np
+from packaging.version import Version
 import pandas as pd
 import pytest
-import xarray as xr
 import xarray.testing
-from packaging.version import Version
+import xarray as xr
 from xarray import __version__ as xarray_version
 
+from .util import get_fake_climatology_dataset, _get_toy_climatology_data
+
 from geocat.comp import (
-    calendar_average,
     climate_anomaly,
-    climatology_average,
     month_to_season,
+    calendar_average,
+    climatology_average,
 )
 from geocat.comp.climatologies import _infer_calendar_name
-
-from .util import _get_toy_climatology_data, get_fake_climatology_dataset
 
 
 class Test_Climate_Anomaly:

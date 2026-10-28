@@ -1,11 +1,10 @@
-import typing
-import warnings
-
 import cf_xarray
 import cftime
 import numpy as np
 import pandas as pd
+import typing
 import xarray as xr
+import warnings
 
 _FREQUENCIES = {"day", "month", "year", "season"}
 
@@ -41,14 +40,14 @@ def _get_time_coordinate_info(dset, time_coord_name):
 
 
 def _calculate_center_of_time_bounds(
-    dset: xr.Dataset | xr.DataArray,
+    dset: typing.Union[xr.Dataset, xr.DataArray],
     time_dim: str,
     freq: str,
     calendar: str,
-    start: str | cftime.datetime,
-    end: str | cftime.datetime,
+    start: typing.Union[str, cftime.datetime],
+    end: typing.Union[str, cftime.datetime],
     keep_attrs: bool = None,
-) -> xr.Dataset | xr.DataArray:
+) -> typing.Union[xr.Dataset, xr.DataArray]:
     """Helper function to determine the time bounds based on the given dataset
     and frequency and then calculate the averages of them.
 
@@ -91,7 +90,11 @@ def _calculate_center_of_time_bounds(
     See `xarray.date_range <https://docs.xarray.dev/en/stable/generated/xarray.date_range.html>`__ for accepted values for `freq` and `calendar`.
     """
 
-    if isinstance(start, cftime.datetime) or isinstance(start, str):
+    if isinstance(start, cftime.datetime):
+        time_bounds = xr.date_range(
+            start=start, end=end, freq=freq, calendar=calendar, use_cftime=True
+        )
+    elif isinstance(start, str):
         time_bounds = xr.date_range(
             start=start, end=end, freq=freq, calendar=calendar, use_cftime=True
         )
@@ -120,11 +123,11 @@ def _infer_calendar_name(dates):
 
 
 def climate_anomaly(
-    dset: xr.DataArray | xr.Dataset,
+    dset: typing.Union[xr.DataArray, xr.Dataset],
     freq: str,
     time_dim: str = None,
     keep_attrs: bool = 'default',
-) -> xr.DataArray | xr.Dataset:
+) -> typing.Union[xr.DataArray, xr.Dataset]:
     """This function calculates climate anomalies by subtracting the long term
     mean of each ``freq`` period (day, month, season, or year) from each
     datapoint.
@@ -216,11 +219,11 @@ def climate_anomaly(
 
 
 def month_to_season(
-    dset: xr.Dataset | xr.DataArray,
+    dset: typing.Union[xr.Dataset, xr.DataArray],
     season: str,
     time_coord_name: str = None,
     keep_attrs: bool = None,
-) -> xr.Dataset | xr.DataArray:
+) -> typing.Union[xr.Dataset, xr.DataArray]:
     """Computes a user-specified three-month seasonal mean.
 
     This function takes an xarray dataset containing monthly data spanning years and
@@ -339,11 +342,11 @@ def month_to_season(
 
 
 def calendar_average(
-    dset: xr.DataArray | xr.Dataset,
+    dset: typing.Union[xr.DataArray, xr.Dataset],
     freq: str,
     time_dim: str = None,
     keep_attrs: bool = 'default',
-) -> xr.DataArray | xr.Dataset:
+) -> typing.Union[xr.DataArray, xr.Dataset]:
     """This function divides the data into time periods (months, seasons, etc)
     and computes the average for the data in each one.
 
@@ -466,12 +469,12 @@ def calendar_average(
 
 
 def climatology_average(
-    dset: xr.DataArray | xr.Dataset,
+    dset: typing.Union[xr.DataArray, xr.Dataset],
     freq: str,
-    custom_seasons: list | str = None,
+    custom_seasons: typing.Union[list, str] = None,
     time_dim: str = None,
     keep_attrs: bool = None,
-) -> xr.DataArray | xr.Dataset:
+) -> typing.Union[xr.DataArray, xr.Dataset]:
     """This function calculates long term hourly, daily, monthly, or seasonal
     averages across all years in the given dataset.
 

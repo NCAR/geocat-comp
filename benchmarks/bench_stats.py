@@ -1,8 +1,7 @@
-import os
-import sys
-
 import numpy as np
 import xarray as xr
+import os
+import sys
 
 from geocat.comp import eofunc_eofs, eofunc_pcs, pearson_r
 
