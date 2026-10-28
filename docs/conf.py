@@ -12,12 +12,13 @@
 #
 # -- Project information -----------------------------------------------------
 
-import sys
 import pathlib
+import sys
+from textwrap import dedent, indent
+
 import yaml
 from sphinx.application import Sphinx
 from sphinx.util import logging
-from textwrap import dedent, indent
 
 print("sys.path:", sys.path)
 
@@ -28,7 +29,7 @@ LOGGER = logging.getLogger("conf")
 try:
     from unittest.mock import MagicMock
 except ImportError:
-    from mock import Mock as MagicMock
+    from unittest.mock import Mock as MagicMock
 
 
 class Mock(MagicMock):

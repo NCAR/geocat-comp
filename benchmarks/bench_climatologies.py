@@ -1,12 +1,12 @@
 import numpy as np
-import xarray as xr
 import pandas as pd
+import xarray as xr
 
 from geocat.comp import (
-    climate_anomaly,
-    month_to_season,
     calendar_average,
+    climate_anomaly,
     climatology_average,
+    month_to_season,
 )
 
 

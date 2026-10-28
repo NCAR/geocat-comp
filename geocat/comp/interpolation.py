@@ -871,7 +871,7 @@ def interp_multidim(
     cyclic: bool = False,
     missing_val: np.number = None,
     method: str = "linear",
-    fill_value: typing.Union[str, np.number] = np.nan,
+    fill_value: str | np.number = np.nan,
 ) -> supported_types:
     """Multidimensional interpolation of variables. Uses ``xarray.interp`` to
     perform interpolation. Will not perform extrapolation by default, returns

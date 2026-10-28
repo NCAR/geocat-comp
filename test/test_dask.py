@@ -1,65 +1,59 @@
-import pytest
+from math import tau
 
 import dask.array
-from dask.distributed import Client
-import xarray as xr
-import numpy as np
 import geocat.datafiles as gdf
-from math import tau
+import numpy as np
+import pytest
+import xarray as xr
+from dask.distributed import Client
 from packaging.version import Version
 from scipy import __version__ as scipy_version
 
+from geocat.comp.climatologies import (
+    calendar_average,
+    climate_anomaly,
+    climatology_average,
+    month_to_season,
+)
+from geocat.comp.fourier_filters import (
+    fourier_band_block,
+    fourier_band_pass,
+    fourier_high_pass,
+    fourier_low_pass,
+)
+from geocat.comp.gradient import (
+    gradient,
+)
+from geocat.comp.interpolation import (
+    delta_pressure_hybrid,
+    interp_hybrid_to_pressure,
+    interp_multidim,
+    interp_sigma_to_hybrid,
+    pressure_at_hybrid_levels,
+)
+
+# import everything for dask compatibility and performance tests
+from geocat.comp.meteorology import (
+    actual_saturation_vapor_pressure,
+    delta_pressure,
+    dewtemp,
+    heat_index,
+    max_daylight,
+    psychrometric_constant,
+    relhum,
+    relhum_ice,
+    relhum_water,
+    saturation_vapor_pressure,
+    saturation_vapor_pressure_slope,
+)
+from geocat.comp.spherical import decomposition, recomposition, scale_voronoi
+from geocat.comp.stats import eofunc_eofs, eofunc_pcs, nmse, pearson_r
 
 from .util import (
     _get_toy_climatology_data,
     get_fake_climatology_dataset,
     make_toy_temp_dataset,
 )
-
-# import everything for dask compatibility and performance tests
-from geocat.comp.meteorology import (
-    delta_pressure,
-    dewtemp,
-    heat_index,
-    relhum,
-    relhum_ice,
-    relhum_water,
-    actual_saturation_vapor_pressure,
-    saturation_vapor_pressure,
-    saturation_vapor_pressure_slope,
-    max_daylight,
-    psychrometric_constant,
-)
-
-from geocat.comp.gradient import (
-    gradient,
-)
-
-from geocat.comp.interpolation import (
-    interp_hybrid_to_pressure,
-    interp_sigma_to_hybrid,
-    interp_multidim,
-    pressure_at_hybrid_levels,
-    delta_pressure_hybrid,
-)
-
-from geocat.comp.climatologies import (
-    climate_anomaly,
-    month_to_season,
-    calendar_average,
-    climatology_average,
-)
-
-from geocat.comp.fourier_filters import (
-    fourier_band_block,
-    fourier_high_pass,
-    fourier_low_pass,
-    fourier_band_pass,
-)
-
-from geocat.comp.spherical import decomposition, recomposition, scale_voronoi
-
-from geocat.comp.stats import eofunc_eofs, eofunc_pcs, pearson_r, nmse
 
 
 @pytest.fixture(scope="module")
@@ -76,7 +70,7 @@ class TestDaskCompat_meteorology:
     )
     def test_delta_pressure_dask(self):
         pressure_lev = xr.DataArray(np.array([1, 5, 100, 1000])).chunk()
-        surface_pressure_1D = xr.DataArray((np.array([1018, 1019]))).chunk()
+        surface_pressure_1D = xr.DataArray(np.array([1018, 1019])).chunk()
 
         out = delta_pressure(pressure_lev, surface_pressure_1D)
 

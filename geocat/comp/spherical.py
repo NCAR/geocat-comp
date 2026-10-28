@@ -1,10 +1,10 @@
 from typing import Union
 
 import numpy as np
-from packaging.version import Version
-from scipy.spatial import SphericalVoronoi
-from scipy import __version__ as scipy_version
 import xarray as xr
+from packaging.version import Version
+from scipy import __version__ as scipy_version
+from scipy.spatial import SphericalVoronoi
 
 # import scipy shp_harm[_y] function depending on scipy version
 old_scipy = False
@@ -65,9 +65,7 @@ def decomposition(
     # scale_val is the inverse of the total sphere area times the magnitude of
     # the first harmonic. This is used to scale the output so that the output
     # is unaffected by the surface area of the original sphere.
-    scale_val = np.array(
-        (1 / (np.sum(scale, axis=(0, 1)) * sph_harm_y(0, 0, 0, 0) ** 2))
-    )
+    scale_val = np.array(1 / (np.sum(scale, axis=(0, 1)) * sph_harm_y(0, 0, 0, 0) ** 2))
 
     mlist = []  # ordered list of the m harmonics
     nlist = []  # ordered list of the n harmonics
