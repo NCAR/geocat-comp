@@ -877,8 +877,7 @@ class Test_zonal_meridional_psi:
             coords={"plev": ux_v_zonal.plev, "latitudes": ux_v_zonal.latitudes},
             name="delta_pressure",
         )
-        ux_dp_zonal = ux.UxDataArray(da_dp_zonal, uxgrid=uxds_hybrid.uxgrid)
-        integrand = ux_v_zonal * ux_dp_zonal
+        integrand = ux_v_zonal * da_dp_zonal
         ux_mpsi = (
             integrand.isel(plev=slice(None, None, -1))
             .cumsum(dim="plev")

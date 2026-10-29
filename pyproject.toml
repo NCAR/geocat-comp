@@ -68,6 +68,8 @@ skip = '*.ipynb'
 quote-style = "preserve"
 
 [tool.ruff.lint]
+# Keep ruff's default rule set from before v0.16
+select = ["E4", "E7", "E9", "F"]
 # Skip E402 Module level import not at top of cell
 # Skip F401 Module imported but unused
 ignore = ["E402", "F401"]
