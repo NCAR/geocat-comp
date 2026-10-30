@@ -1122,8 +1122,7 @@ def saturation_vapor_pressure_slope(
     >>> from geocat.comp import saturation_vapor_pressure_slope
     >>> temp = np.array([50, 60, 70])
     >>> saturation_vapor_pressure_slope(temp)
-    array([0.08224261, 0.11322096, 0.153595  ])
-
+    array([0.08228276, 0.11327624, 0.15366999])
 
     See Also
     --------
@@ -1143,7 +1142,7 @@ def saturation_vapor_pressure_slope(
         # calculate svp_slope
         svp_slope = xr.where(
             temp_c > 0,
-            4096
+            4098
             * (
                 0.6108
                 * np.exp((17.27 * temp_c) / (temp_c + 237.3))
@@ -1167,7 +1166,7 @@ def saturation_vapor_pressure_slope(
         # calculate svp_slope
         svp_slope = np.where(
             temp_c > 0,
-            4096
+            4098
             * (
                 0.6108
                 * np.exp((17.27 * temp_c) / (temp_c + 237.3))
@@ -1267,7 +1266,7 @@ def delta_pressure(pressure_lev, surface_pressure, pressure_top=None):
     in equation (3.1):
 
       .. math::
-           \Delta p = p_{k+1/2} - p_{k-1/2}
+           \\Delta p = p_{k+1/2} - p_{k-1/2}
 
     Returns an array of shape matching (``surface_pressure``, ``pressure_lev``).
 
