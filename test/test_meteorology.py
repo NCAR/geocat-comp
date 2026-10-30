@@ -608,7 +608,9 @@ class Test_saturation_vapor_pressure_slope:
 
     @pytest.fixture(scope="class")
     def fao_gt(self):
-        # Bug in NCL code which uses 4096 instead of the true 4098 Penman-Monteith constant, so cannot compare to NCL output
+        # Bug in NCL code which uses 4096 instead of the true 4098 Penman-Monteith constant
+        # Instead, we are now comparing the example temperature values and expected results in Table 2.4 from the Food and Agriculture Organization (FAO) Irrigation and Drainage Paper 56
+        # https://www.fao.org/4/x0490e/x0490e0j.htm#annex%202.%20meteorological%20tables
         # See geocat-comp PR #880 for more details
         fao_gt = np.loadtxt("test/data/satvpr_slope_fao56_output.csv", delimiter=",")
         return fao_gt
