@@ -210,6 +210,13 @@ class Test_heat_index:
         with pytest.raises(ValueError):
             heat_index(np.asarray([[85, 85], [85]]), np.asarray([[60, 60], [60]]))
 
+    def test_unconvertible_input_raises_clean_typeerror(self):
+        # A ragged nested list can't be turned into an array by np.asarray, which
+        # trips the input-conversion handler. It should surface the helpful
+        # message, not the interpreter's "catching classes ..." error.
+        with pytest.raises(TypeError, match="cannot convert input to numpy array"):
+            heat_index([[1, 2], [3]], [[1, 2], [3]])
+
 
 class Test_relhum:
     # set up ground truths
@@ -398,6 +405,10 @@ class Test_relhum_water:
 
         assert np.allclose(relhum_water(t, q, p), self.rh_gt_1, atol=0.1)
 
+    def test_unconvertible_input_raises_clean_typeerror(self):
+        with pytest.raises(TypeError, match="cannot convert input to numpy array"):
+            relhum_water([[1, 2], [3]], [[1, 2], [3]], [[1, 2], [3]])
+
 
 class Test_relhum_ice:
     rh_gt_1 = 147.8802
@@ -409,6 +420,10 @@ class Test_relhum_ice:
         p = 1000.0 * 100.0
 
         assert np.allclose(relhum_ice(tk, w, p), self.rh_gt_1, atol=0.1)
+
+    def test_unconvertible_input_raises_clean_typeerror(self):
+        with pytest.raises(TypeError, match="cannot convert input to numpy array"):
+            relhum_ice([[1, 2], [3]], [[1, 2], [3]], [[1, 2], [3]])
 
 
 class Test_actual_saturation_vapor_pressure:
