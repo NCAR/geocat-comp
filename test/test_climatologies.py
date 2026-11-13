@@ -328,6 +328,25 @@ class Test_Month_to_Season:
         season_ds = month_to_season(dataset, "JFM", time_coord_name=time_coordinate)
         np.testing.assert_almost_equal(season_ds[var_name].data, expected, decimal=1)
 
+    @pytest.mark.parametrize(
+        "name, season, default_values, complete_values",
+        [
+            # first DJF is Jan+Feb 2000 only; complete DJF is Dec 2000-Feb 2001
+            ('DJF', 'DJF', [1.5, 5.0], [5.0]),
+            # last NDJ is Nov+Dec 2001 only; complete NDJ is Nov 2000-Jan 2001
+            ('NDJ', 'NDJ', [8.0, 11.5], [8.0]),
+            # seasons within one calendar year are unaffected
+            ('JJA', 'JJA', [7.0, 7.0], [7.0, 7.0]),
+        ],
+    )
+    def test_month_to_season_drop_incomplete(
+        self, name, season, default_values, complete_values
+    ) -> None:
+        default_ds = month_to_season(self.ds3, season)
+        np.testing.assert_equal(default_ds["my_var"].data.ravel(), default_values)
+        complete_ds = month_to_season(self.ds3, season, drop_incomplete=True)
+        np.testing.assert_equal(complete_ds["my_var"].data.ravel(), complete_values)
+
 
 class Test_Calendar_Average:
     minute = _get_toy_climatology_data(
@@ -654,6 +673,36 @@ class Test_Calendar_Average:
     ) -> None:
         result = calendar_average(dset, freq='month')
         xr.testing.assert_equal(result, expected)
+
+    def test_drop_incomplete_seasons_calendar_average(self) -> None:
+        # Monthly data, Jan 2001 - Dec 2004, values equal to the month number
+        time = pd.date_range('2001-01-01', '2004-12-01', freq='MS')
+        monthly = xr.DataArray(
+            time.month.values.astype(float), coords={'time': time}, dims='time'
+        )
+        default = calendar_average(monthly, freq='season')
+        # 15 complete seasons plus a Jan-Feb 2001 "DJF" and a Dec 2004 "DJF"
+        assert default.size == 17
+        np.testing.assert_allclose(default.values[0], (31 * 1 + 28 * 2) / 59)
+        assert default.values[-1] == 12.0
+
+        complete = calendar_average(monthly, freq='season', drop_incomplete=True)
+        assert complete.size == 15
+        # first and last complete seasons are MAM 2001 and SON 2004
+        np.testing.assert_allclose(complete.values[0], 4.0)
+        np.testing.assert_allclose(complete.values[-1], 10.0)
+        assert complete.time.dt.month.values[0] in (3, 4)
+        assert complete.time.dt.year.values[-1] == 2004
+
+    def test_drop_incomplete_years_calendar_average(self) -> None:
+        # Monthly data starting in April 2001: 2001 is incomplete
+        time = pd.date_range('2001-04-01', '2004-12-01', freq='MS')
+        monthly = xr.DataArray(
+            time.month.values.astype(float), coords={'time': time}, dims='time'
+        )
+        assert calendar_average(monthly, freq='year').size == 4
+        complete = calendar_average(monthly, freq='year', drop_incomplete=True)
+        np.testing.assert_equal(complete.time.dt.year.values, [2002, 2003, 2004])
 
 
 class Test_Climatology_Average:
