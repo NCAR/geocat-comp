@@ -14,6 +14,7 @@ This release...
 
 New Features
 ^^^^^^^^^^^^
+* Add ``drop_incomplete`` option to ``calendar_average`` and ``month_to_season`` to drop seasons (and, for ``calendar_average``, years) built from incomplete months at the edges of the record by `Mark Morrissey`_ in (:pr:`889`)
 
 Breaking Changes
 ^^^^^^^^^^^^^^^^
@@ -26,6 +27,7 @@ Internal Changes
 
 Documentation
 ^^^^^^^^^^^^^
+* Document partial edge seasons returned by ``calendar_average(freq='season')`` and ``month_to_season`` for "DJF" and "NDJ" by `Mark Morrissey`_ in (:pr:`889`)
 
 vYYYY.MM.## (unreleased)
 ------------------------
@@ -661,6 +663,7 @@ Maintenance
 .. _`Philip Chmielowiec`: https://github.com/philipc2
 .. _`AnshRoshan`: https://github.com/AnshRoshan
 .. _`Orhan Eroglu`: https://github.com/erogluorhan
+.. _`Mark Morrissey`: https://github.com/klemmeri
 
 ..
     TEMPLATE

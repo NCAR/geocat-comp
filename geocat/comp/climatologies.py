@@ -223,6 +223,7 @@ def month_to_season(
     season: str,
     time_coord_name: str = None,
     keep_attrs: bool = None,
+    drop_incomplete: bool = False,
 ) -> typing.Union[xr.Dataset, xr.DataArray]:
     """Computes a user-specified three-month seasonal mean.
 
@@ -258,6 +259,11 @@ def month_to_season(
         If False, the new object will be returned without attributes.
         Defaults to None which means the attrs will only be kept in unambiguous circumstances.
 
+    drop_incomplete : bool, optional
+        If True, seasons built from fewer than three months are dropped from
+        the output. Defaults to False, which keeps the historical (NCL)
+        behavior described in the Note below.
+
     Returns
     -------
     computed_dset : :class:`xarray.Dataset`, :class:`xarray.DataArray`
@@ -270,6 +276,14 @@ def month_to_season(
     If a calculated season's timestamp falls outside the original range of monthly values, then the calculated mean
     is dropped.  For example, if the monthly data's time range is [Jan-2000, Dec-2003] and the season is "DJF", the
     seasonal mean computed from the single month of Dec-2003 is dropped.
+
+    Seasons that span two calendar years ("DJF" and "NDJ") have one incomplete
+    season at the edge of the record when ``drop_incomplete=False``: with data
+    for [Jan-2000, Dec-2003], the first "DJF" mean is the average of Jan-2000 and
+    Feb-2000 only, and for "NDJ" the last mean is the average of Nov-2003 and
+    Dec-2003 only (as in NCL). Because these two-month means are biased by the
+    seasonal cycle and sit at the ends of the series, they can bias trends; use
+    ``drop_incomplete=True`` to drop them.
 
 
     See Also
@@ -322,6 +336,12 @@ def month_to_season(
 
     # Group the months into three and take the mean
     means = data_filter.resample({time_coord_name: quarter}).mean(keep_attrs=keep_attrs)
+    if drop_incomplete:
+        # Number of months contributing to each season
+        n_months = (
+            data_filter[time_coord_name].resample({time_coord_name: quarter}).count()
+        )
+        means = means.where(n_months == 3, drop=True)
     # Set offset for supported array formats
     if isinstance(means.indexes[time_coord_name], xr.coding.cftimeindex.CFTimeIndex):
         means[time_coord_name] = means.indexes[
@@ -346,6 +366,7 @@ def calendar_average(
     freq: str,
     time_dim: str = None,
     keep_attrs: bool = 'default',
+    drop_incomplete: bool = False,
 ) -> typing.Union[xr.DataArray, xr.Dataset]:
     """This function divides the data into time periods (months, seasons, etc)
     and computes the average for the data in each one.
@@ -379,6 +400,12 @@ def calendar_average(
         If False, the new object will be returned without attributes.
         Defaults to None which means the attrs will only be kept in unambiguous circumstances.
 
+    drop_incomplete : bool, optional
+        Only used when ``freq`` is ``'season'`` or ``'year'``. If True, seasons
+        with fewer than three months of data and years with fewer than twelve
+        are dropped from the output. Defaults to False, which returns averages
+        of whatever months are present (see Note).
+
     Examples
     --------
     See this `example notebook <https://geocat-comp.readthedocs.io/en/latest/examples/calendar_average.html>`__.
@@ -390,6 +417,14 @@ def calendar_average(
     hours, every two days, every month, etc.) and must not cross month
     boundaries (i.e. don't use weekly averages where the week falls in two
     different months)
+
+    With ``freq='season'`` and ``drop_incomplete=False``, seasons at the edges of
+    the record are averaged over whatever months are present. For monthly data
+    covering [Jan-2000, Dec-2003], the first DJF is the average of Jan-2000 and
+    Feb-2000 only, and an additional final DJF (centered in Jan-2004) is
+    Dec-2003 alone. In the Northern Hemisphere December is usually warmer than
+    January and February, so these partial seasons can noticeably bias winter
+    trends. Use ``drop_incomplete=True`` to keep only complete seasons.
 
 
     See Also
@@ -451,6 +486,12 @@ def calendar_average(
 
         dset_weighted = dset * weights
         dset = (dset_weighted).resample({time_dim: frequency}).sum()
+
+        if drop_incomplete:
+            # Number of months contributing to each season/year
+            expected = 3 if freq == 'season' else 12
+            n_months = month_length.count()
+            dset = dset.where(n_months == expected, drop=True)
 
     # Center the time coordinate by inferring and then averaging the time bounds
     dset = _calculate_center_of_time_bounds(
