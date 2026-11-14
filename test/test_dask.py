@@ -379,6 +379,24 @@ class TestDaskCompat_climatology:
         out = calendar_average(monthly, 'season')
         assert isinstance(out.data, dask.array.Array)
 
+    def test_month_to_season_drop_incomplete_dask(self):
+        ds = get_fake_climatology_dataset(
+            start_month="2000-01", nmonths=48, nlats=1, nlons=1
+        )
+        da = ds.my_var.chunk({'time': 12})
+        out = month_to_season(da, 'DJF', drop_incomplete=True)
+        assert isinstance(out.data, dask.array.Array)
+        # The first DJF (Jan-Feb 2000 only) is dropped, leaving 3 complete seasons
+        assert out.sizes['time'] == 3
+
+    def test_calendar_average_drop_incomplete_dask(self):
+        ds = _get_toy_climatology_data('2020-01-01', '2021-12-01', 'MS', 1, 1)
+        monthly = ds.data.chunk({'time': 6})
+        out = calendar_average(monthly, 'season', drop_incomplete=True)
+        assert isinstance(out.data, dask.array.Array)
+        # Partial DJF seasons at both ends are dropped, leaving 7 complete seasons
+        assert out.sizes['time'] == 7
+
     def test_climatology_average_dask(self):
         ds = _get_toy_climatology_data('2020-01-01', '2021-12-01', 'MS', 1, 1)
         monthly = ds.data.chunk({'time': 6})
