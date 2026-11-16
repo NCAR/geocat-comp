@@ -27,9 +27,9 @@ Internal Changes
 Documentation
 ^^^^^^^^^^^^^
 
-vYYYY.MM.## (unreleased)
+v2026.11.0 (November 16, 2016)
 ------------------------
-This release...
+This release has updates to fix bug inherited from NCL for Penman-Monteith constant in saturation_vapor_pressure_slope
 
 Bug Fixes
 ^^^^^^^^^
